@@ -1,0 +1,15 @@
+.git
+.github
+node_modules
+functions
+migrations
+index.js
+_worker.js
+wrangler.toml
+package.json
+package-lock.json
+bun.lock
+bun.lockb
+README.md
+*.sql
+*.md
