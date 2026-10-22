@@ -1,0 +1,3261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Almai Ads Products — Kenya's Premier WhatsApp Monetization & Advertising Network</title>
+  <meta name="description" content="Turn your genuine WhatsApp Status views into daily guaranteed income. Partner with Almai Ads Products for verified brand campaigns paid directly via M-Pesa.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ====================================================================
+       ALMAI DESIGN SYSTEM & TOKENS
+       ==================================================================== */
+    :root {
+      --bg-cream: #F8F0E2;
+      --bg-cream-dark: #EDE3D2;
+      --primary-purple: #6D28D9;
+      --primary-purple-hover: #5B21B6;
+      --primary-purple-light: #F5F3FF;
+      --deep-purple-heading: #54218F;
+      --light-purple-accent: #8B5CF6;
+      --charcoal-text: #242124;
+      --charcoal-muted: #57534E;
+      --warning-red: #B91C1C;
+      --warning-red-bg: #FEF2F2;
+      --white-card: #FFFFFF;
+      --beige-border: #E8DFD2;
+      --success-green: #047857;
+      --success-green-bg: #ECFDF5;
+      --gold-accent: #D97706;
+      --shadow-sm: 0 1px 3px rgba(36, 33, 36, 0.05);
+      --shadow-md: 0 4px 12px rgba(84, 33, 143, 0.07);
+      --shadow-lg: 0 10px 25px -3px rgba(84, 33, 143, 0.12);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-full: 9999px;
+      --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-cream);
+      color: var(--charcoal-text);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      font-size: 16px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, .brand-font {
+      font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
+      color: var(--deep-purple-heading);
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+    }
+
+    a {
+      color: var(--primary-purple);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    a:hover {
+      color: var(--primary-purple-hover);
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    input, select, textarea {
+      font-family: inherit;
+      outline: none;
+      border: 1px solid var(--beige-border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      font-size: 15px;
+      background: var(--white-card);
+      color: var(--charcoal-text);
+      width: 100%;
+      transition: var(--transition);
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--light-purple-accent);
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* SVG Icon utility classes */
+    .svg-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      vertical-align: middle;
+    }
+    .svg-icon svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ====================================================================
+       TOP NAVIGATION BAR & RESPONSIVE MOBILE DRAWER
+       ==================================================================== */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(248, 240, 226, 0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--beige-border);
+      padding: 14px 0;
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 20px;
+      color: var(--deep-purple-heading);
+      letter-spacing: -0.03em;
+      user-select: none;
+    }
+    .brand-logo-icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, var(--deep-purple-heading), var(--primary-purple));
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 900;
+      font-size: 19px;
+      box-shadow: 0 4px 10px rgba(109, 40, 217, 0.25);
+    }
+    .brand-tag {
+      display: inline-block;
+      background: var(--primary-purple-light);
+      color: var(--primary-purple);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(109, 40, 217, 0.15);
+      margin-left: 4px;
+    }
+
+    /* Desktop Navigation Links */
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      list-style: none;
+    }
+    .nav-link-item {
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--charcoal-muted);
+      cursor: pointer;
+      position: relative;
+      padding: 6px 0;
+    }
+    .nav-link-item:hover, .nav-link-item.active {
+      color: var(--deep-purple-heading);
+    }
+    .nav-link-item.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2.5px;
+      background: var(--primary-purple);
+      border-radius: var(--radius-full);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Hamburger Menu Button */
+    .menu-toggle {
+      display: none;
+      background: var(--white-card);
+      border: 1px solid var(--beige-border);
+      border-radius: var(--radius-sm);
+      width: 42px;
+      height: 42px;
+      color: var(--deep-purple-heading);
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-sm);
+    }
+    .menu-toggle:hover {
+      background: var(--bg-cream-dark);
+    }
+
+    /* Mobile Drawer & Backdrop */
+    .mobile-menu-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(36, 33, 36, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 150;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .mobile-menu-backdrop.open {
+      display: block;
+      opacity: 1;
+    }
+
+    .mobile-drawer {
+      position: fixed;
+      top: 0;
+      right: -320px;
+      width: 300px;
+      height: 100%;
+      background: var(--white-card);
+      z-index: 200;
+      box-shadow: -6px 0 24px rgba(36, 33, 36, 0.15);
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow-y: auto;
+    }
+    .mobile-drawer.open {
+      right: 0;
+    }
+
+    .mobile-drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--beige-border);
+      margin-bottom: 20px;
+    }
+    .mobile-nav-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .mobile-nav-item {
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--charcoal-text);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .mobile-nav-item:hover, .mobile-nav-item.active {
+      background: var(--primary-purple-light);
+      color: var(--primary-purple);
+    }
+    .mobile-drawer-footer {
+      margin-top: auto;
+      padding-top: 20px;
+      border-top: 1px solid var(--beige-border);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 14.5px;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background-color: var(--primary-purple);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(109, 40, 217, 0.25);
+    }
+    .btn-primary:hover {
+      background-color: var(--primary-purple-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(109, 40, 217, 0.35);
+    }
+    .btn-secondary {
+      background-color: var(--white-card);
+      color: var(--deep-purple-heading);
+      border: 1px solid var(--beige-border);
+    }
+    .btn-secondary:hover {
+      background-color: var(--bg-cream-dark);
+      border-color: #d8cbbc;
+    }
+    .btn-danger {
+      background-color: var(--warning-red);
+      color: #ffffff;
+    }
+    .btn-danger:hover {
+      background-color: #991b1b;
+    }
+    .btn-success {
+      background-color: var(--success-green);
+      color: #ffffff;
+    }
+    .btn-success:hover {
+      background-color: #065f46;
+    }
+    .btn-lg {
+      padding: 14px 28px;
+      font-size: 16px;
+      border-radius: var(--radius-md);
+    }
+    .btn-sm {
+      padding: 7px 14px;
+      font-size: 13.5px;
+      border-radius: var(--radius-sm);
+    }
+    .btn-block {
+      width: 100%;
+    }
+
+    /* Main View Switcher System */
+    .view-container {
+      flex: 1;
+      display: none;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    .view-container.active-view {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ====================================================================
+       1. HERO & HOME VIEW
+       ==================================================================== */
+    .hero-section {
+      padding: 60px 0 40px;
+      text-align: center;
+      position: relative;
+    }
+    .hero-title {
+      font-size: clamp(32px, 5.2vw, 58px);
+      font-weight: 800;
+      max-width: 940px;
+      margin: 0 auto 18px;
+      line-height: 1.18;
+    }
+    .hero-title span {
+      background: linear-gradient(135deg, var(--deep-purple-heading), var(--primary-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-subtitle {
+      font-size: clamp(16px, 2vw, 19px);
+      color: var(--charcoal-muted);
+      max-width: 720px;
+      margin: 0 auto 34px;
+      line-height: 1.6;
+    }
+    .hero-cta-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 44px;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+      margin-bottom: 60px;
+    }
+    .stat-card {
+      background: var(--white-card);
+      border: 1px solid var(--beige-border);
+      border-radius: var(--radius-md);
+      padding: 22px 18px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+    .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--light-purple-accent);
+    }
+    .stat-val {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--deep-purple-heading);
+      margin-bottom: 4px;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .stat-lbl {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--charcoal-muted);
+    }
+
+    /* ====================================================================
+       RESPONSIVE CALCULATOR SECTION
+       ==================================================================== */
+    .calc-box {
+      background: var(--white-card);
+      border: 2px solid var(--beige-border);
+      border-radius: var(--radius-lg);
+      padding: 36px 30px;
+      margin: 40px 0 60px;
+      box-shadow: var(--shadow-lg);
+    }
+    .calc-header {
+      text-align: center;
+      max-width: 620px;
+      margin: 0 auto 28px;
+    }
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 32px;
+      align-items: stretch;
+    }
+    .calc-controls {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .range-group {
+      margin-bottom: 22px;
+    }
+    .range-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      margin-bottom: 10px;
+      font-size: 14.5px;
+    }
+    .tier-switcher-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .tier-btn {
+      padding: 10px 8px;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--beige-border);
+      background: var(--bg-cream);
+      color: var(--charcoal-text);
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .tier-btn.active {
+      background: var(--primary-purple);
+      color: #ffffff;
+      border-color: var(--primary-purple);
+      box-shadow: 0 4px 10px rgba(109, 40, 217, 0.25);
+    }
+    .range-slider {
+      width: 100%;
+      height: 10px;
+      accent-color: var(--primary-purple);
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .calc-result-card {
+      background: linear-gradient(145deg, var(--deep-purple-heading), #431975);
+      border-radius: var(--radius-md);
+      padding: 28px 24px;
+      color: #ffffff;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      box-shadow: 0 10px 25px rgba(84, 33, 143, 0.3);
+    }
+    .calc-res-title {
+      font-size: 13.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      opacity: 0.85;
+      margin-bottom: 6px;
+      color: #fff;
+    }
+    .calc-res-amount {
+      font-size: clamp(32px, 4vw, 42px);
+      font-weight: 800;
+      font-family: 'Space Grotesk', sans-serif;
+      margin-bottom: 4px;
+      color: #F8F0E2;
+    }
+    .calc-res-sub {
+      font-size: 13px;
+      opacity: 0.85;
+      margin-bottom: 18px;
+    }
+
+    /* Steps Section */
+    .steps-section {
+      padding: 50px 0;
+    }
+    .section-header {
+      text-align: center;
+      max-width: 650px;
+      margin: 0 auto 40px;
+    }
+    .section-title {
+      font-size: clamp(26px, 3.8vw, 38px);
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    .section-desc {
+      font-size: 15.5px;
+      color: var(--charcoal-muted);
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 22px;
+    }
+    .step-card {
+      background: var(--white-card);
+      border: 1px solid var(--beige-border);
+      border-radius: var(--radius-md);
+      padding: 30px 22px;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+    }
+    .step-icon-wrap {
+      width: 46px;
+      height: 46px;
+      background: var(--primary-purple-light);
+      color: var(--primary-purple);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 18px;
+      border: 1px solid rgba(109, 40, 217, 0.2);
+    }
+    .step-card h3 {
+      font-size: 19px;
+      margin-bottom: 8px;
+    }
+    .step-card p {
+      color: var(--charcoal-muted);
+      font-size: 14px;
+    }
+
+    /* ====================================================================
+       2. PRODUCTS & SERVICES VIEW
+       ==================================================================== */
+    .packages-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 24px;
+      margin: 36px 0 50px;
+    }
+    .pkg-card {
+      background: var(--white-card);
+      border: 2px solid var(--beige-border);
+      border-radius: var(--radius-lg);
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+    .pkg-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--light-purple-accent);
+    }
+    .pkg-card.featured {
+      border-color: var(--primary-purple);
+      box-shadow: 0 8px 24px rgba(109, 40, 217, 0.15);
+    }
+    .pkg-badge {
+      position: absolute;
+      top: -12px;
+      left: 24px;
+      background: var(--primary-purple);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 3px 12px;
+      border-radius: var(--radius-full);
+      letter-spacing: 0.04em;
+    }
+    .pkg-name {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .pkg-cost-headline {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary-purple);
+      margin-bottom: 12px;
+    }
+    .pkg-price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin-bottom: 18px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--beige-border);
+    }
+    .pkg-currency {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--deep-purple-heading);
+    }
+    .pkg-price {
+      font-size: 38px;
+      font-weight: 800;
+      color: var(--deep-purple-heading);
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .pkg-reward-callout {
+      background: var(--primary-purple-light);
+      border: 1px solid rgba(109, 40, 217, 0.2);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .pkg-reward-text {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--deep-purple-heading);
+    }
+    .pkg-feature-list {
+      list-style: none;
+      margin-bottom: 26px;
+      flex: 1;
+    }
+    .pkg-feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--charcoal-muted);
+      margin-bottom: 10px;
+    }
+    .check-icon {
+      color: var(--primary-purple);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* Brand Solutions Box */
+    .brand-solutions-box {
+      background: linear-gradient(135deg, #2D1152, var(--deep-purple-heading));
+      border-radius: var(--radius-lg);
+      padding: 44px 34px;
+      color: #fff;
+      margin: 50px 0;
+      display: grid;
+      grid-template-columns: 1.3fr 0.7fr;
+      gap: 28px;
+      align-items: center;
+    }
+    .brand-solutions-box h2 {
+      color: #fff;
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+    .brand-solutions-box p {
+      color: #E8DFD2;
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    /* ====================================================================
+       3. SIGN IN / GET STARTED VIEW
+       ==================================================================== */
+    .auth-wrapper {
+      max-width: 460px;
+      margin: 50px auto;
+      background: var(--white-card);
+      border: 1px solid var(--beige-border);
+      border-radius: var(--radius-lg);
+      padding: 34px 28px;
+      box-shadow: var(--shadow-lg);
+    }
+    .auth-tabs {
+      display: flex;
+      background: var(--bg-cream);
+      padding: 4px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 24px;
+      border: 1px solid var(--beige-border);
+    }
+    .auth-tab-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--charcoal-muted);
+      background: none;
+      text-align: center;
+    }
+    .auth-tab-btn.active {
+      background: var(--white-card);
+      color: var(--deep-purple-heading);
+      box-shadow: var(--shadow-sm);
+    }
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-label {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--charcoal-text);
+      margin-bottom: 6px;
+    }
+    .form-hint {
+      font-size: 12px;
+      color: var(--charcoal-muted);
+      margin-top: 4px;
+    }
+
+    .alert {
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13.5px;
+      font-weight: 600;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .alert-error {
+      background-color: var(--warning-red-bg);
+      color: var(--warning-red);
+      border: 1px solid rgba(185, 28, 28, 0.2);
+    }
+    .alert-success {
+      background-color: var(--success-green-bg);
+      color: var(--success-green);
+      border: 1px solid rgba(4, 120, 87, 0.2);
+    }
+
+    /* ====================================================================
+       4. USER DASHBOARD VIEW
+       ==================================================================== */
+    .dashboard-header {
+      background: var(--white-card);
+      border: 1px solid var(--beige-border);
+      border-radius: var(--radius-md);
+      padding: 22px 24px;
+      margin: 24px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .user-greeting h2 {
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+    .user-pkg-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: var(--primary-purple-light);
+      color: var(--primary-purple);
+      border: 1px solid rgba(109, 40, 217, 0.2);
+      border-radius: var(--radius-full);
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+
+    .dash-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .dash-metric-card {
+      background: var(--white-card);
+      border: 1px solid var(--beige-border);
+      border-radius: var(--radius-md);
+      padding: 20px 18px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+    .dash-metric-card.highlight {
+      border-color: var(--primary-purple);
+      background: #FAF8FE;
+    }
+    .dash-metric-lbl {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--charcoal-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dash-metric-val {
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--deep-purple-heading);
+      font-family: 'Space Grotesk', sans-serif;
+      margin-bottom: 4px;
+    }
+    .dash-metric-sub {
+      font-size: 12px;
+      color: var(--charcoal-muted);
+    }
+
+    .cooldown-banner {
+      background: var(--white-card);
+      border: 2px solid var(--beige-border);
+      border-radius: var(--radius-md);
+      padding: 22px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .cooldown-info h3 {
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+    .cooldown-info p {
+      color: var(--charcoal-muted);
+      font-size: 14px;
+    }
+    .timer-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #FEF3C7;
+      color: #92400E;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-weight: 800;
+      font-family: monospace;
+      font-size: 14.5px;
+    }
+
+    .dash-section {
+      background: var(--white-card);
+      border: 1px solid var(--beige-border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .dash-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .dash-section-title {
+      font-size: 19px;
+      font-weight: 800;
+    }
+
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 14px;
+    }
+    th {
+      background: var(--bg-cream);
+      color: var(--charcoal-text);
+      font-weight: 700;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--beige-border);
+      white-space: nowrap;
+    }
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--beige-border);
+      color: var(--charcoal-text);
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: capitalize;
+    }
+    .status-pending {
+      background: #FEF3C7;
+      color: #92400E;
+    }
+    .status-approved, .status-completed {
+      background: var(--success-green-bg);
+      color: var(--success-green);
+    }
+    .status-rejected {
+      background: var(--warning-red-bg);
+      color: var(--warning-red);
+    }
+
+    /* ====================================================================
+       MODALS
+       ==================================================================== */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(36, 33, 36, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      overflow-y: auto;
+    }
+    .modal-backdrop.open {
+      display: flex;
+    }
+    .modal-content {
+      background: var(--white-card);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 520px;
+      padding: 32px 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      position: relative;
+      animation: modalSlide 0.25s ease-out;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-content.modal-lg {
+      max-width: 860px;
+    }
+    @keyframes modalSlide {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .modal-close-btn {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      background: var(--bg-cream);
+      border: 1px solid var(--beige-border);
+      border-radius: var(--radius-full);
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--charcoal-muted);
+      cursor: pointer;
+    }
+    .modal-close-btn:hover {
+      background: var(--bg-cream-dark);
+      color: var(--charcoal-text);
+    }
+
+    /* Admin Navigation */
+    .admin-nav {
+      display: flex;
+      gap: 8px;
+      border-bottom: 2px solid var(--beige-border);
+      margin-bottom: 20px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+    .admin-tab {
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 13.5px;
+      color: var(--charcoal-muted);
+      background: none;
+      white-space: nowrap;
+    }
+    .admin-tab.active {
+      background: var(--primary-purple);
+      color: #fff;
+    }
+
+    /* Footer */
+    footer {
+      background: #242124;
+      color: #E8DFD2;
+      padding: 50px 0 24px;
+      margin-top: auto;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 36px;
+      margin-bottom: 34px;
+    }
+    .footer-col h4 {
+      color: #ffffff;
+      font-size: 16px;
+      margin-bottom: 14px;
+    }
+    .footer-links {
+      list-style: none;
+    }
+    .footer-links li {
+      margin-bottom: 8px;
+    }
+    .footer-links a {
+      color: #A8A29E;
+      font-size: 13.5px;
+    }
+    .footer-links a:hover {
+      color: #ffffff;
+    }
+    .footer-bottom {
+      border-top: 1px solid rgba(232, 223, 210, 0.15);
+      padding-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 13px;
+      color: #A8A29E;
+    }
+
+    /* ====================================================================
+       MOBILE RESPONSIVENESS FIXES
+       ==================================================================== */
+    @media (max-width: 860px) {
+      .nav-links, #nav-guest-actions, #nav-auth-actions {
+        display: none !important;
+      }
+      .menu-toggle {
+        display: inline-flex !important;
+      }
+      .calc-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      .tier-switcher-grid {
+        grid-template-columns: 1fr;
+      }
+      .calc-box {
+        padding: 24px 18px;
+      }
+      .brand-solutions-box {
+        grid-template-columns: 1fr;
+        padding: 28px 20px;
+      }
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      .hero-section {
+        padding: 40px 0 30px;
+      }
+      .dashboard-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ====================================================================
+       TOP NAVIGATION BAR
+       ==================================================================== -->
+  <header class="navbar">
+    <div class="container nav-inner">
+      <div class="brand-logo" onclick="switchView('home')" style="cursor: pointer;">
+        <div class="brand-logo-icon">A</div>
+        <div>
+          <span>ALMAI ADS</span>
+          <span class="brand-tag">KENYA</span>
+        </div>
+      </div>
+
+      <!-- Desktop Navigation Links -->
+      <nav>
+        <ul class="nav-links">
+          <li class="nav-link-item active" id="nav-home" onclick="switchView('home')">Home</li>
+          <li class="nav-link-item" id="nav-products" onclick="switchView('products')">Packages & Pricing</li>
+          <li class="nav-link-item" id="nav-calc" onclick="scrollToCalculator()">Calculator</li>
+          <li class="nav-link-item" id="nav-dashboard-link" style="display: none;" onclick="switchView('dashboard')">Dashboard</li>
+        </ul>
+      </nav>
+
+      <!-- Desktop Action Buttons -->
+      <div class="nav-actions">
+        <!-- Guest Actions -->
+        <div id="nav-guest-actions" style="display: flex; gap: 10px;">
+          <button class="btn btn-secondary btn-sm" onclick="showAuthModal('login')">Sign In</button>
+          <button class="btn btn-primary btn-sm" onclick="showAuthModal('register')">
+            Get Started
+            <span class="svg-icon" style="width: 14px; height: 14px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </span>
+          </button>
+        </div>
+
+        <!-- Authenticated Actions -->
+        <div id="nav-auth-actions" style="display: none; align-items: center; gap: 10px;">
+          <button class="btn btn-primary btn-sm" onclick="switchView('dashboard')">
+            <span class="svg-icon" style="width: 16px; height: 16px; margin-right: 4px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            </span>
+            <span id="nav-user-name">Dashboard</span>
+          </button>
+          <button class="btn btn-secondary btn-sm" id="btn-admin-panel" style="display: none;" onclick="openAdminModal()">
+            <span class="svg-icon" style="width: 15px; height: 15px; margin-right: 4px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            </span>
+            Admin
+          </button>
+          <button class="btn btn-secondary btn-sm" onclick="handleLogout()" title="Sign Out">
+            <span class="svg-icon" style="width: 15px; height: 15px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            </span>
+          </button>
+        </div>
+
+        <!-- Responsive Hamburger Toggle Button -->
+        <button class="menu-toggle" onclick="toggleMobileNav()" aria-label="Toggle Mobile Menu">
+          <span class="svg-icon" id="hamburger-icon" style="width: 22px; height: 22px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer Menu & Overlay -->
+  <div class="mobile-menu-backdrop" id="mobile-backdrop" onclick="closeMobileNav()"></div>
+  <aside class="mobile-drawer" id="mobile-drawer">
+    <div class="mobile-drawer-header">
+      <div class="brand-logo" style="font-size: 18px;">
+        <div class="brand-logo-icon" style="width: 32px; height: 32px; font-size: 16px;">A</div>
+        <span>ALMAI ADS</span>
+      </div>
+      <button class="modal-close-btn" style="position: static;" onclick="closeMobileNav()" aria-label="Close Mobile Menu">
+        <span class="svg-icon" style="width: 16px; height: 16px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </span>
+      </button>
+    </div>
+
+    <ul class="mobile-nav-links">
+      <li class="mobile-nav-item active" onclick="mobileNavAction('home')">
+        <span class="svg-icon" style="width: 18px; height: 18px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        </span>
+        Home
+      </li>
+      <li class="mobile-nav-item" onclick="mobileNavAction('products')">
+        <span class="svg-icon" style="width: 18px; height: 18px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+        </span>
+        Packages & Pricing
+      </li>
+      <li class="mobile-nav-item" onclick="mobileNavAction('calc')">
+        <span class="svg-icon" style="width: 18px; height: 18px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M8 18h.01M12 18h.01"></path></svg>
+        </span>
+        Earnings Calculator
+      </li>
+      <li class="mobile-nav-item" id="mob-nav-dash" style="display: none;" onclick="mobileNavAction('dashboard')">
+        <span class="svg-icon" style="width: 18px; height: 18px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+        </span>
+        Partner Dashboard
+      </li>
+      <li class="mobile-nav-item" id="mob-nav-admin" style="display: none;" onclick="openAdminModal(); closeMobileNav();">
+        <span class="svg-icon" style="width: 18px; height: 18px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        </span>
+        Admin Console
+      </li>
+    </ul>
+
+    <div class="mobile-drawer-footer">
+      <div id="mob-guest-actions" style="display: flex; flex-direction: column; gap: 8px;">
+        <button class="btn btn-primary btn-block" onclick="showAuthModal('register'); closeMobileNav();">
+          Get Started
+        </button>
+        <button class="btn btn-secondary btn-block" onclick="showAuthModal('login'); closeMobileNav();">
+          Sign In
+        </button>
+      </div>
+
+      <div id="mob-auth-actions" style="display: none; flex-direction: column; gap: 8px;">
+        <button class="btn btn-secondary btn-block" onclick="handleLogout(); closeMobileNav();">
+          <span class="svg-icon" style="width: 16px; height: 16px; margin-right: 6px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          </span>
+          Sign Out
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ====================================================================
+       VIEW 1: HOME
+       ==================================================================== -->
+  <main id="view-home" class="view-container active-view">
+    <section class="hero-section">
+      <div class="container">
+        <h1 class="hero-title">
+          Turn Your WhatsApp Status Views Into <span>Guaranteed Daily Cash</span>
+        </h1>
+        <p class="hero-subtitle">
+          Monetize your genuine Kenyan viewers with high-demand corporate ads. Post our verified brand banners, report your 24h view count, and receive instant payouts directly into your M-Pesa.
+        </p>
+
+        <div class="hero-cta-group">
+          <button class="btn btn-primary btn-lg" onclick="showAuthModal('register')">
+            <span>Start Monetizing Today</span>
+            <span class="svg-icon" style="width: 18px; height: 18px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </span>
+          </button>
+          <button class="btn btn-secondary btn-lg" onclick="switchView('products')">
+            Explore Packages
+          </button>
+        </div>
+
+        <!-- Live Platform Stats -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-val">1.8M+</div>
+            <div class="stat-lbl">Verified Views Delivered</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val">KSh 12.4M+</div>
+            <div class="stat-lbl">Disbursed to Kenyan Partners</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val">14,200+</div>
+            <div class="stat-lbl">Active Verified Partners</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val">&lt; 2 Hours</div>
+            <div class="stat-lbl">Average Review & Approval</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Earnings Calculator (100% Mobile Responsive) -->
+    <section class="container" id="calculator-section">
+      <div class="calc-box">
+        <div class="calc-header">
+          <h2 class="section-title">Calculate Your Daily & Monthly Payouts</h2>
+          <p class="section-desc">Estimate your potential earnings based on your average WhatsApp Status view count and partner package tier.</p>
+        </div>
+
+        <div class="calc-grid">
+          <div class="calc-controls">
+            <div class="range-group">
+              <div class="range-label-row">
+                <span>Select Your Package Tier</span>
+                <span id="calc-tier-label" style="color: var(--primary-purple); font-weight: 800;">Exclusive (KSh 50/view)</span>
+              </div>
+              <div class="tier-switcher-grid">
+                <button class="tier-btn" id="calc-btn-starter" onclick="setCalcTier('starter', 20)">
+                  Starter Z<br><small style="font-weight: 500; opacity: 0.85;">KSh 20 / view</small>
+                </button>
+                <button class="tier-btn active" id="calc-btn-exclusive" onclick="setCalcTier('exclusive', 50)">
+                  Exclusive<br><small style="font-weight: 500; opacity: 0.85;">KSh 50 / view</small>
+                </button>
+                <button class="tier-btn" id="calc-btn-premium" onclick="setCalcTier('premium', 100)">
+                  Premium<br><small style="font-weight: 500; opacity: 0.85;">KSh 100 / view</small>
+                </button>
+              </div>
+            </div>
+
+            <div class="range-group">
+              <div class="range-label-row">
+                <span>Average Daily Status Views</span>
+                <span id="calc-views-display" style="font-weight: 800; font-size: 18px; color: var(--deep-purple-heading);">45 Views</span>
+              </div>
+              <input type="range" class="range-slider" id="calc-views-slider" min="5" max="150" value="45" oninput="updateCalculator()">
+              <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--charcoal-muted); margin-top: 6px;">
+                <span>5 views</span>
+                <span>50 views</span>
+                <span>100 views</span>
+                <span>150+ views</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="calc-result-card">
+            <div class="calc-res-title">Estimated Daily Payout</div>
+            <div class="calc-res-amount" id="calc-daily-res">KSh 2,250</div>
+            <div class="calc-res-sub">Credited per approved 24h task</div>
+            
+            <div style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 14px; margin-top: 14px;">
+              <div class="calc-res-title">Estimated Monthly Income</div>
+              <div style="font-size: 26px; font-weight: 800; color: #F8F0E2;" id="calc-monthly-res">KSh 67,500</div>
+            </div>
+
+            <button class="btn btn-secondary btn-block" style="margin-top: 18px; color: var(--deep-purple-heading);" onclick="showAuthModal('register')">
+              Activate This Earnings Rate
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="steps-section container">
+      <div class="section-header">
+        <h2 class="section-title">How It Works in 3 Simple Steps</h2>
+        <p class="section-desc">Join thousands of verified Kenyan creators and students earning genuine daily income with Almai.</p>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-icon-wrap">
+            <span class="svg-icon" style="width: 22px; height: 22px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </span>
+          </div>
+          <h3>1. Choose Your Tier</h3>
+          <p>Pick Starter Z (Pay 250), Exclusive (Pay 500), or Premium (Pay 1200) to lock in your guaranteed rate per verified status view.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-icon-wrap">
+            <span class="svg-icon" style="width: 22px; height: 22px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+            </span>
+          </div>
+          <h3>2. Post Daily Campaigns</h3>
+          <p>Download active corporate banners from your dashboard and post them directly to your WhatsApp Status for 24 hours.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-icon-wrap">
+            <span class="svg-icon" style="width: 22px; height: 22px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>
+            </span>
+          </div>
+          <h3>3. Upload Proof & Withdraw</h3>
+          <p>Submit your unedited view screenshot. Once verified, withdraw your funds immediately into your Safaricom M-Pesa account.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Corporate Advertisers Banner -->
+    <section class="container">
+      <div class="brand-solutions-box">
+        <div>
+          <h2>Need Massive Kenyan WhatsApp Reach for Your Business?</h2>
+          <p>Almai Ads connects verified brands, e-commerce stores, and events with over 500,000+ targeted Kenyan WhatsApp status viewers across Nairobi, Mombasa, and beyond.</p>
+          <button class="btn btn-primary" onclick="openInquiryModal()">
+            <span class="svg-icon" style="width: 18px; height: 18px; margin-right: 4px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            </span>
+            Book a Business Campaign
+          </button>
+        </div>
+        <div style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: var(--radius-md); padding: 22px; text-align: center;">
+          <div style="font-size: 26px; font-weight: 800; color: #fff;">100% Human Proof</div>
+          <div style="font-size: 13.5px; opacity: 0.9; margin: 8px 0 14px;">Audited screenshots with timestamp verification. Real organic Kenyan viewers only.</div>
+          <span style="background: var(--light-purple-accent); color: #fff; font-size: 11.5px; font-weight: 800; padding: 4px 12px; border-radius: var(--radius-full);">Direct ROI</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ====================================================================
+       VIEW 2: PRODUCTS & SERVICES
+       ==================================================================== -->
+  <main id="view-products" class="view-container">
+    <div class="container" style="padding: 40px 20px;">
+      <div class="section-header">
+        <h1 class="section-title">Almai Ads Partner Packages</h1>
+        <p class="section-desc">Select your preferred partner tier. Pay your one-time activation and unlock guaranteed payouts per view.</p>
+      </div>
+
+      <!-- Packages Grid -->
+      <div class="packages-grid" id="packages-list-container">
+        <!-- Rendered dynamically via fetchPackages() -->
+        <div style="text-align: center; grid-column: 1 / -1; padding: 40px;">
+          <div style="font-size: 16px; color: var(--charcoal-muted);">Loading packages...</div>
+        </div>
+      </div>
+
+      <!-- Corporate Services Section -->
+      <div class="section-header" style="margin-top: 60px;">
+        <h2 class="section-title">Business Advertising Solutions</h2>
+        <p class="section-desc">Guaranteed Kenyan viral reach for brands, product launches, concerts, and enterprise promotions.</p>
+      </div>
+
+      <div class="steps-grid" style="margin-bottom: 60px;">
+        <div class="step-card">
+          <div class="step-icon-wrap">
+            <span class="svg-icon" style="width: 22px; height: 22px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+            </span>
+          </div>
+          <h3>WhatsApp Network Blast</h3>
+          <p>Get your brand campaign displayed across 1,000+ active partner statuses simultaneously within 2 hours of booking.</p>
+          <button class="btn btn-secondary btn-sm" style="margin-top: 14px;" onclick="openInquiryModal('WhatsApp Network Blast')">Inquire Package</button>
+        </div>
+
+        <div class="step-card">
+          <div class="step-icon-wrap">
+            <span class="svg-icon" style="width: 22px; height: 22px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+            </span>
+          </div>
+          <h3>Targeted Regional Ads</h3>
+          <p>Filter partners by county (Nairobi, Mombasa, Nakuru, Kisumu, Eldoret) and university demographic segments.</p>
+          <button class="btn btn-secondary btn-sm" style="margin-top: 14px;" onclick="openInquiryModal('Targeted Regional Ads')">Inquire Package</button>
+        </div>
+
+        <div class="step-card">
+          <div class="step-icon-wrap">
+            <span class="svg-icon" style="width: 22px; height: 22px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </span>
+          </div>
+          <h3>Brand Ambassador Retainer</h3>
+          <p>Monthly contractual partnerships with vetted executive micro-influencers delivering high-conversion direct sales.</p>
+          <button class="btn btn-secondary btn-sm" style="margin-top: 14px;" onclick="openInquiryModal('Brand Ambassador Retainer')">Inquire Package</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ====================================================================
+       VIEW 3: SIGN IN / GET STARTED
+       ==================================================================== -->
+  <main id="view-auth" class="view-container">
+    <div class="container">
+      <div class="auth-wrapper">
+        <div class="auth-tabs">
+          <button class="auth-tab-btn active" id="tab-login" onclick="switchAuthTab('login')">Sign In</button>
+          <button class="auth-tab-btn" id="tab-register" onclick="switchAuthTab('register')">Get Started</button>
+        </div>
+
+        <div id="auth-alert" style="display: none;" class="alert"></div>
+
+        <!-- Login Form -->
+        <form id="form-login" onsubmit="handleLoginSubmit(event)">
+          <div class="form-group">
+            <label class="form-label" for="login-email">Email Address</label>
+            <input type="email" id="login-email" required placeholder="you@example.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="login-password">Password</label>
+            <input type="password" id="login-password" required placeholder="••••••••">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block btn-lg" id="btn-login-submit">
+            Sign In to Account
+          </button>
+        </form>
+
+        <!-- Register Form -->
+        <form id="form-register" style="display: none;" onsubmit="handleRegisterSubmit(event)">
+          <div class="form-group">
+            <label class="form-label" for="reg-name">Full Name</label>
+            <input type="text" id="reg-name" required placeholder="John Kamau">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="reg-email">Email Address</label>
+            <input type="email" id="reg-email" required placeholder="you@example.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="reg-phone">M-Pesa Phone Number</label>
+            <input type="tel" id="reg-phone" required placeholder="0712345678 or 254712345678">
+            <div class="form-hint">Used for receiving your verified M-Pesa withdrawal payouts.</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="reg-password">Password (Minimum 8 Characters)</label>
+            <input type="password" id="reg-password" minlength="8" required placeholder="••••••••">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block btn-lg" id="btn-register-submit">
+            Create Free Account
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- ====================================================================
+       VIEW 4: USER DASHBOARD
+       ==================================================================== -->
+  <main id="view-dashboard" class="view-container">
+    <div class="container" style="padding-bottom: 50px;">
+      <!-- Dashboard Header -->
+      <div class="dashboard-header">
+        <div class="user-greeting">
+          <h2>Welcome back, <span id="dash-user-name">Partner</span>!</h2>
+          <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
+            <span class="user-pkg-tag" id="dash-pkg-tag">Starter Z</span>
+            <span style="font-size: 13px; color: var(--charcoal-muted);" id="dash-user-email">user@almai.co.ke</span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button class="btn btn-secondary btn-sm" onclick="switchView('products')">
+            Upgrade Tier
+          </button>
+          <button class="btn btn-success btn-sm" onclick="openWithdrawalModal()">
+            <span class="svg-icon" style="width: 15px; height: 15px; margin-right: 4px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg>
+            </span>
+            Request M-Pesa Payout
+          </button>
+        </div>
+      </div>
+
+      <!-- Financial Ledger Overview Cards -->
+      <div class="dash-metrics-grid">
+        <div class="dash-metric-card highlight">
+          <div class="dash-metric-lbl">Available Balance</div>
+          <div class="dash-metric-val" id="dash-val-avail">KSh 0</div>
+          <div class="dash-metric-sub">Ready for instant withdrawal</div>
+        </div>
+
+        <div class="dash-metric-card">
+          <div class="dash-metric-lbl">Reserved Balance</div>
+          <div class="dash-metric-val" id="dash-val-reserved">KSh 0</div>
+          <div class="dash-metric-sub">Held in pending payout requests</div>
+        </div>
+
+        <div class="dash-metric-card">
+          <div class="dash-metric-lbl">Lifetime Earnings</div>
+          <div class="dash-metric-val" id="dash-val-earned">KSh 0</div>
+          <div class="dash-metric-sub">Total verified rewards earned</div>
+        </div>
+
+        <div class="dash-metric-card">
+          <div class="dash-metric-lbl">Completed Payouts</div>
+          <div class="dash-metric-val" id="dash-val-withdrawn">KSh 0</div>
+          <div class="dash-metric-sub">Disbursed directly via M-Pesa</div>
+        </div>
+      </div>
+
+      <!-- Views Breakdown Cards -->
+      <div class="dash-metrics-grid">
+        <div class="dash-metric-card">
+          <div class="dash-metric-lbl">Reported Views</div>
+          <div class="dash-metric-val" id="dash-views-reported">0</div>
+          <div class="dash-metric-sub">Total views submitted by you</div>
+        </div>
+
+        <div class="dash-metric-card">
+          <div class="dash-metric-lbl">Pending Review</div>
+          <div class="dash-metric-val" id="dash-views-pending">0</div>
+          <div class="dash-metric-sub">Awaiting admin screenshot audit</div>
+        </div>
+
+        <div class="dash-metric-card">
+          <div class="dash-metric-lbl">Approved Views</div>
+          <div class="dash-metric-val" id="dash-views-approved">0</div>
+          <div class="dash-metric-sub">Verified human views paid</div>
+        </div>
+
+        <div class="dash-metric-card">
+          <div class="dash-metric-lbl">Earn Rate</div>
+          <div class="dash-metric-val" id="dash-rate-per-view">KSh 20</div>
+          <div class="dash-metric-sub">Per approved payable view</div>
+        </div>
+      </div>
+
+      <!-- 24-Hour Task Cooldown & Submission Card -->
+      <div class="cooldown-banner">
+        <div class="cooldown-info">
+          <h3 id="cooldown-title">Daily WhatsApp Campaign Available</h3>
+          <p id="cooldown-desc">Post the live Almai campaign to your WhatsApp Status for 24 hours to earn rewards.</p>
+        </div>
+        <div>
+          <span class="timer-badge" id="cooldown-badge" style="display: none;">
+            <span class="svg-icon" style="width: 15px; height: 15px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </span>
+            <span id="cooldown-badge-text">Cooldown Active</span>
+          </span>
+          <button class="btn btn-primary" id="btn-submit-task-trigger" onclick="openTaskModal()">
+            <span class="svg-icon" style="width: 16px; height: 16px; margin-right: 4px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+            </span>
+            Submit 24h WhatsApp Proof
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Campaign Active Banner Info -->
+      <div class="dash-section" id="active-campaign-card">
+        <div class="dash-section-header">
+          <div class="dash-section-title">Today's Active Campaign to Post</div>
+          <span class="status-badge status-approved">Live & Active</span>
+        </div>
+        <div style="background: var(--bg-cream); border: 1px solid var(--beige-border); border-radius: var(--radius-sm); padding: 18px;">
+          <h4 id="camp-title" style="font-size: 16.5px; margin-bottom: 6px;">Almai Digital Growth & Mobile Brand Blast</h4>
+          <p id="camp-guidelines" style="color: var(--charcoal-muted); font-size: 14px; margin-bottom: 14px;">
+            1. Post the official Almai banner on your WhatsApp Status. 2. Caption: "Discover verified digital advertising solutions with Almai!". 3. Keep for 24 hours, take full-screen view count screenshot, and submit proof.
+          </p>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <a href="https://almai.pages.dev" target="_blank" class="btn btn-secondary btn-sm">
+              <span class="svg-icon" style="width: 14px; height: 14px; margin-right: 4px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+              </span>
+              View Target Link
+            </a>
+            <button class="btn btn-secondary btn-sm" onclick="copyCaptionText()">
+              <span class="svg-icon" style="width: 14px; height: 14px; margin-right: 4px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              </span>
+              Copy Suggested Caption
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Task Submissions History Table -->
+      <div class="dash-section">
+        <div class="dash-section-header">
+          <div class="dash-section-title">Your Task Submissions</div>
+          <span style="font-size: 13px; color: var(--charcoal-muted);">Real-time audit status</span>
+        </div>
+
+        <div class="table-responsive">
+          <table id="table-user-tasks">
+            <thead>
+              <tr>
+                <th>Submission Date</th>
+                <th>Reported Views</th>
+                <th>Approved Views</th>
+                <th>Rate / View</th>
+                <th>Reward (KSh)</th>
+                <th>Status</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-user-tasks">
+              <tr>
+                <td colspan="7" style="text-align: center; color: var(--charcoal-muted); padding: 26px;">
+                  No task submissions yet. Complete your first WhatsApp task above!
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Withdrawal Requests Table -->
+      <div class="dash-section">
+        <div class="dash-section-header">
+          <div class="dash-section-title">Your Withdrawal Requests</div>
+          <button class="btn btn-secondary btn-sm" onclick="openWithdrawalModal()">+ New Request</button>
+        </div>
+
+        <div class="table-responsive">
+          <table id="table-user-withdrawals">
+            <thead>
+              <tr>
+                <th>Date Requested</th>
+                <th>Amount (KSh)</th>
+                <th>M-Pesa Phone</th>
+                <th>Status</th>
+                <th>Receipt / Reason</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-user-withdrawals">
+              <tr>
+                <td colspan="5" style="text-align: center; color: var(--charcoal-muted); padding: 26px;">
+                  No withdrawals requested yet. Accumulate KSh 100 or more to request a payout.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ====================================================================
+       MODAL 1: SUBMIT TASK PROOF
+       ==================================================================== -->
+  <div class="modal-backdrop" id="modal-task">
+    <div class="modal-content">
+      <button class="modal-close-btn" onclick="closeModal('modal-task')">
+        <span class="svg-icon" style="width: 16px; height: 16px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </span>
+      </button>
+      <h3 style="font-size: 21px; margin-bottom: 8px;">Submit 24h WhatsApp Proof</h3>
+      <p style="color: var(--charcoal-muted); font-size: 13.5px; margin-bottom: 20px;">
+        Upload an unedited screenshot clearly displaying your WhatsApp Status view count.
+      </p>
+
+      <form id="form-submit-task" onsubmit="handleTaskSubmit(event)">
+        <div class="form-group">
+          <label class="form-label" for="task-reported-views">Number of Genuine Views</label>
+          <input type="number" id="task-reported-views" min="1" max="1000" required placeholder="e.g. 52">
+          <div class="form-hint" id="task-views-hint">Must match the number visible in your screenshot.</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="task-screenshot-file">Screenshot Evidence (Max 3MB)</label>
+          <input type="file" id="task-screenshot-file" accept="image/*" required onchange="previewScreenshot(event)">
+          <div id="screenshot-preview-container" style="display: none; margin-top: 12px; text-align: center;">
+            <img id="screenshot-preview-img" src="" alt="Screenshot Preview" style="max-height: 200px; border-radius: 8px; border: 1px solid var(--beige-border);">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="task-note">Optional Comments</label>
+          <input type="text" id="task-note" placeholder="Any extra information for the audit team">
+        </div>
+
+        <div id="task-submit-alert" style="display: none;" class="alert"></div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-lg" id="btn-task-submit">
+          Submit for Review
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 2: REQUEST WITHDRAWAL
+       ==================================================================== -->
+  <div class="modal-backdrop" id="modal-withdraw">
+    <div class="modal-content">
+      <button class="modal-close-btn" onclick="closeModal('modal-withdraw')">
+        <span class="svg-icon" style="width: 16px; height: 16px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </span>
+      </button>
+      <h3 style="font-size: 21px; margin-bottom: 8px;">Request M-Pesa Withdrawal</h3>
+      <p style="color: var(--charcoal-muted); font-size: 13.5px; margin-bottom: 18px;">
+        Transfer your verified available earnings directly to your Safaricom M-Pesa line.
+      </p>
+
+      <div style="background: var(--bg-cream); border: 1px solid var(--beige-border); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 18px;">
+        <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 700;">
+          <span>Available to Withdraw:</span>
+          <span style="color: var(--primary-purple);" id="withdraw-modal-avail">KSh 0</span>
+        </div>
+      </div>
+
+      <form id="form-withdraw" onsubmit="handleWithdrawalSubmit(event)">
+        <div class="form-group">
+          <label class="form-label" for="withdraw-amount">Amount to Withdraw (KSh)</label>
+          <input type="number" id="withdraw-amount" min="100" required placeholder="Min KSh 100">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="withdraw-phone">M-Pesa Phone Number</label>
+          <input type="tel" id="withdraw-phone" required placeholder="07XXXXXXXX or 254XXXXXXXX">
+          <div class="form-hint">Double check your phone number. Funds cannot be reversed once disbursed.</div>
+        </div>
+
+        <div id="withdraw-alert" style="display: none;" class="alert"></div>
+
+        <div style="font-size: 12.5px; color: var(--charcoal-muted); margin-bottom: 18px; line-height: 1.5;">
+          Almai will never ask you for your M-Pesa PIN. Standard Safaricom M-Pesa transaction fees may apply upon disbursement.
+        </div>
+
+        <button type="submit" class="btn btn-success btn-block btn-lg" id="btn-withdraw-submit">
+          Confirm Withdrawal Request
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 3: ACTIVATE / UPGRADE PACKAGE
+       ==================================================================== -->
+  <div class="modal-backdrop" id="modal-activate-pkg">
+    <div class="modal-content">
+      <button class="modal-close-btn" onclick="closeModal('modal-activate-pkg')">
+        <span class="svg-icon" style="width: 16px; height: 16px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </span>
+      </button>
+      <h3 style="font-size: 21px; margin-bottom: 6px;">Activate Partner Package</h3>
+      <p style="color: var(--charcoal-muted); font-size: 13.5px; margin-bottom: 18px;" id="modal-pkg-subtitle">
+        Starter Z — KSh 250 Activation
+      </p>
+
+      <div style="background: #F3E8FF; border: 1px solid #D8B4FE; border-radius: var(--radius-sm); padding: 16px; margin-bottom: 18px;">
+        <div style="font-weight: 800; color: var(--deep-purple-heading); font-size: 14.5px; margin-bottom: 6px;">
+          M-Pesa Payment Instructions:
+        </div>
+        <ol style="padding-left: 18px; font-size: 13px; color: var(--charcoal-text); line-height: 1.6;">
+          <li>Go to M-Pesa on your phone</li>
+          <li>Select Lipa na M-Pesa &gt; Paybill or Buy Goods</li>
+          <li>Paybill: <strong id="modal-paybill-num">522522 (Account: ALMAI)</strong></li>
+          <li>Enter Package Amount: <strong id="modal-pkg-amount">KSh 250</strong></li>
+          <li>Enter your M-Pesa PIN and complete transaction</li>
+          <li>Copy the 10-character M-Pesa transaction reference code received via SMS</li>
+        </ol>
+      </div>
+
+      <form id="form-activate-pkg" onsubmit="handlePackageActivationSubmit(event)">
+        <input type="hidden" id="activate-pkg-id" value="">
+
+        <div class="form-group">
+          <label class="form-label" for="activate-ref-code">M-Pesa Transaction Reference Code</label>
+          <input type="text" id="activate-ref-code" required placeholder="e.g. SLK94HJ12X" style="text-transform: uppercase;">
+          <div class="form-hint">Enter the 10-character confirmation code from Safaricom.</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="activate-phone">Your Payment Phone Number</label>
+          <input type="tel" id="activate-phone" placeholder="07XXXXXXXX">
+        </div>
+
+        <div id="activate-pkg-alert" style="display: none;" class="alert"></div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-lg" id="btn-activate-submit">
+          Verify Payment & Activate
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 4: SERVICE INQUIRY (BUSINESS ADVERTISERS)
+       ==================================================================== -->
+  <div class="modal-backdrop" id="modal-inquiry">
+    <div class="modal-content">
+      <button class="modal-close-btn" onclick="closeModal('modal-inquiry')">
+        <span class="svg-icon" style="width: 16px; height: 16px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </span>
+      </button>
+      <h3 style="font-size: 21px; margin-bottom: 6px;">Book Corporate Brand Campaign</h3>
+      <p style="color: var(--charcoal-muted); font-size: 13.5px; margin-bottom: 18px;">
+        Reach 500,000+ verified Kenyan WhatsApp users across high-affinity demographic groups.
+      </p>
+
+      <form id="form-inquiry" onsubmit="handleInquirySubmit(event)">
+        <div class="form-group">
+          <label class="form-label" for="inq-name">Your Full Name</label>
+          <input type="text" id="inq-name" required placeholder="Sarah Mwangi">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="inq-biz">Business or Brand Name</label>
+          <input type="text" id="inq-biz" placeholder="e.g. Nairobi Outfitters Co.">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label" for="inq-email">Work Email</label>
+            <input type="email" id="inq-email" required placeholder="sarah@brand.co.ke">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="inq-phone">Contact Phone</label>
+            <input type="tel" id="inq-phone" required placeholder="07XXXXXXXX">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="inq-service">Desired Advertising Service</label>
+          <select id="inq-service">
+            <option value="WhatsApp Status Network Blast">WhatsApp Status Network Blast (100k+ reach)</option>
+            <option value="Targeted Regional Demographic Ads">Targeted Regional Demographic Ads</option>
+            <option value="Brand Ambassador Retainer">Brand Ambassador Retainer</option>
+            <option value="Custom Enterprise Solution">Custom Enterprise Solution</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="inq-message">Campaign Objectives & Scope</label>
+          <textarea id="inq-message" rows="3" required placeholder="Brief description of your products, target dates, and reach goals..."></textarea>
+        </div>
+
+        <div id="inq-alert" style="display: none;" class="alert"></div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-lg" id="btn-inq-submit">
+          Send Campaign Inquiry
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 5: PROTECTED ADMINISTRATOR PANEL
+       ==================================================================== -->
+  <div class="modal-backdrop" id="modal-admin">
+    <div class="modal-content modal-lg">
+      <button class="modal-close-btn" onclick="closeModal('modal-admin')">
+        <span class="svg-icon" style="width: 16px; height: 16px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </span>
+      </button>
+      
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+        <div>
+          <h2 style="font-size: 22px;">Almai Administration Center</h2>
+          <div style="font-size: 13px; color: var(--charcoal-muted);">Protected real-time verification and settlement console</div>
+        </div>
+        <span class="status-badge status-completed">Admin Role Active</span>
+      </div>
+
+      <div class="admin-nav">
+        <button class="admin-tab active" id="atab-tasks" onclick="switchAdminTab('tasks')">Task Submissions Queue</button>
+        <button class="admin-tab" id="atab-withdrawals" onclick="switchAdminTab('withdrawals')">Withdrawals Queue</button>
+        <button class="admin-tab" id="atab-stats" onclick="switchAdminTab('stats')">Platform Stats</button>
+        <button class="admin-tab" id="atab-audit" onclick="switchAdminTab('audit')">Audit Logs</button>
+      </div>
+
+      <!-- Tab: Tasks Review -->
+      <div id="asec-tasks">
+        <h4 style="margin-bottom: 12px; font-size: 15px;">Pending Task Proofs for Verification</h4>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Partner</th>
+                <th>Package Tier</th>
+                <th>Reported Views</th>
+                <th>Evidence Proof</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-admin-tasks">
+              <tr>
+                <td colspan="5" style="text-align: center; padding: 20px;">Loading pending task proofs...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab: Withdrawals Queue -->
+      <div id="asec-withdrawals" style="display: none;">
+        <h4 style="margin-bottom: 12px; font-size: 15px;">Pending M-Pesa Disbursements</h4>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Partner</th>
+                <th>Amount (KSh)</th>
+                <th>Target Phone</th>
+                <th>Requested At</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-admin-withdrawals">
+              <tr>
+                <td colspan="5" style="text-align: center; padding: 20px;">Loading pending withdrawals...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab: Stats -->
+      <div id="asec-stats" style="display: none;">
+        <div class="dash-metrics-grid" id="admin-stats-grid" style="margin-top: 10px;">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- Tab: Audit Logs -->
+      <div id="asec-audit" style="display: none;">
+        <h4 style="margin-bottom: 12px; font-size: 15px;">Recent System Audit Trail</h4>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Administrator</th>
+                <th>Action</th>
+                <th>Target ID</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-admin-audit">
+              <tr>
+                <td colspan="5" style="text-align: center; padding: 20px;">Loading audit logs...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Evidence Viewer Modal -->
+  <div class="modal-backdrop" id="modal-evidence-viewer">
+    <div class="modal-content" style="max-width: 600px; text-align: center;">
+      <button class="modal-close-btn" onclick="closeModal('modal-evidence-viewer')">
+        <span class="svg-icon" style="width: 16px; height: 16px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </span>
+      </button>
+      <h3 style="font-size: 19px; margin-bottom: 14px;">Screenshot Evidence Proof</h3>
+      <div style="background: #000; border-radius: 8px; padding: 8px; display: inline-block;">
+        <img id="evidence-viewer-img" src="" alt="Proof" style="max-width: 100%; max-height: 70vh; object-fit: contain;">
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       FOOTER
+       ==================================================================== -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="brand-logo" style="color: #fff; margin-bottom: 14px;">
+            <div class="brand-logo-icon">A</div>
+            <span>ALMAI ADS PRODUCTS</span>
+          </div>
+          <p style="color: #A8A29E; font-size: 13.5px; max-width: 400px; line-height: 1.6;">
+            Kenya's leading WhatsApp Status advertising network. Empowering Kenyan creators, students, and digital partners with guaranteed daily income backed by transparent Cloudflare technology.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="javascript:void(0)" onclick="switchView('home')">Home</a></li>
+            <li><a href="javascript:void(0)" onclick="switchView('products')">Packages & Pricing</a></li>
+            <li><a href="javascript:void(0)" onclick="scrollToCalculator()">Earnings Calculator</a></li>
+            <li><a href="javascript:void(0)" onclick="showAuthModal('register')">Get Started</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Security & Payments</h4>
+          <ul class="footer-links">
+            <li style="color: #A8A29E; font-size: 13.5px;">Safaricom M-Pesa Disbursements</li>
+            <li style="color: #A8A29E; font-size: 13.5px;">HttpOnly Session Cookies</li>
+            <li style="color: #A8A29E; font-size: 13.5px;">Cloudflare D1 Persistent Ledger</li>
+            <li style="color: #A8A29E; font-size: 13.5px;">Anti-Fraud Evidence Auditing</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; <span id="cur-year">2026</span> Almai Ads Products. All rights reserved.</div>
+        <div style="display: flex; gap: 16px;">
+          <a href="javascript:void(0)" onclick="openInquiryModal()">Advertise With Us</a>
+          <a href="javascript:void(0)" onclick="showAuthModal('login')">Partner Portal</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ====================================================================
+       VANILLA JAVASCRIPT FRONTEND CONTROLLER
+       ==================================================================== -->
+  <script>
+    // Global Application State
+    const AppState = {
+      user: null,
+      wallet: null,
+      activePackage: null,
+      cooldown: null,
+      packages: [],
+      currentView: 'home',
+      calculatorTierRate: 50,
+      evidenceBase64: null,
+      evidenceFileMeta: null
+    };
+
+    document.getElementById('cur-year').textContent = new Date().getFullYear();
+
+    // ====================================================================
+    // INITIALIZATION & SESSION CHECK
+    // ====================================================================
+    window.addEventListener('DOMContentLoaded', async () => {
+      await checkAuthSession();
+      await fetchPackages();
+      updateCalculator();
+    });
+
+    async function checkAuthSession() {
+      try {
+        const res = await fetch('/api/auth/me', {
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data.authenticated && data.user) {
+            AppState.user = data.user;
+            AppState.wallet = data.wallet;
+            AppState.activePackage = data.activePackage;
+            AppState.cooldown = data.cooldown;
+            AppState.stats = data.stats;
+            renderAuthenticatedUI();
+            return true;
+          }
+        }
+      } catch (err) {
+        console.warn('Session check failed or user is guest:', err);
+      }
+
+      AppState.user = null;
+      renderGuestUI();
+      return false;
+    }
+
+    function renderAuthenticatedUI() {
+      // Desktop nav
+      document.getElementById('nav-guest-actions').style.display = 'none';
+      document.getElementById('nav-auth-actions').style.display = 'flex';
+      document.getElementById('nav-dashboard-link').style.display = 'block';
+      document.getElementById('nav-user-name').textContent = AppState.user.name.split(' ')[0] || 'Dashboard';
+
+      // Mobile drawer nav
+      document.getElementById('mob-guest-actions').style.display = 'none';
+      document.getElementById('mob-auth-actions').style.display = 'flex';
+      document.getElementById('mob-nav-dash').style.display = 'flex';
+
+      if (AppState.user.role === 'admin') {
+        document.getElementById('btn-admin-panel').style.display = 'inline-flex';
+        document.getElementById('mob-nav-admin').style.display = 'flex';
+      } else {
+        document.getElementById('btn-admin-panel').style.display = 'none';
+        document.getElementById('mob-nav-admin').style.display = 'none';
+      }
+
+      // Populate dashboard values
+      document.getElementById('dash-user-name').textContent = AppState.user.name;
+      document.getElementById('dash-user-email').textContent = AppState.user.email;
+      
+      const pkgName = AppState.activePackage ? AppState.activePackage.name : 'No Active Package';
+      document.getElementById('dash-pkg-tag').textContent = pkgName;
+
+      const avail = AppState.wallet?.available_balance_ksh || 0;
+      const reserved = AppState.wallet?.reserved_balance_ksh || 0;
+      const earned = AppState.wallet?.lifetime_earnings_ksh || 0;
+      const withdrawn = AppState.wallet?.lifetime_withdrawn_ksh || 0;
+
+      document.getElementById('dash-val-avail').textContent = `KSh ${avail.toLocaleString()}`;
+      document.getElementById('dash-val-reserved').textContent = `KSh ${reserved.toLocaleString()}`;
+      document.getElementById('dash-val-earned').textContent = `KSh ${earned.toLocaleString()}`;
+      document.getElementById('dash-val-withdrawn').textContent = `KSh ${withdrawn.toLocaleString()}`;
+      document.getElementById('withdraw-modal-avail').textContent = `KSh ${avail.toLocaleString()}`;
+
+      // View counts
+      document.getElementById('dash-views-reported').textContent = (AppState.stats?.reportedViews || 0).toLocaleString();
+      document.getElementById('dash-views-pending').textContent = (AppState.stats?.pendingViews || 0).toLocaleString();
+      document.getElementById('dash-views-approved').textContent = (AppState.stats?.approvedViews || 0).toLocaleString();
+      
+      const ratePerView = AppState.activePackage?.reward_per_view_ksh || 20;
+      document.getElementById('dash-rate-per-view').textContent = `KSh ${ratePerView}`;
+
+      renderCooldownState();
+    }
+
+    function renderGuestUI() {
+      // Desktop nav
+      document.getElementById('nav-guest-actions').style.display = 'flex';
+      document.getElementById('nav-auth-actions').style.display = 'none';
+      document.getElementById('nav-dashboard-link').style.display = 'none';
+      document.getElementById('btn-admin-panel').style.display = 'none';
+
+      // Mobile drawer nav
+      document.getElementById('mob-guest-actions').style.display = 'flex';
+      document.getElementById('mob-auth-actions').style.display = 'none';
+      document.getElementById('mob-nav-dash').style.display = 'none';
+      document.getElementById('mob-nav-admin').style.display = 'none';
+    }
+
+    function renderCooldownState() {
+      const cooldown = AppState.cooldown;
+      const badge = document.getElementById('cooldown-badge');
+      const badgeText = document.getElementById('cooldown-badge-text');
+      const triggerBtn = document.getElementById('btn-submit-task-trigger');
+      const title = document.getElementById('cooldown-title');
+      const desc = document.getElementById('cooldown-desc');
+
+      if (cooldown && !cooldown.canSubmitTask && cooldown.secondsRemaining > 0) {
+        badge.style.display = 'inline-flex';
+        const hours = Math.floor(cooldown.secondsRemaining / 3600);
+        const mins = Math.floor((cooldown.secondsRemaining % 3600) / 60);
+        badgeText.textContent = `Cooldown: ${hours}h ${mins}m left`;
+
+        title.textContent = '24h Task Cooldown in Progress';
+        desc.textContent = `You can submit your next WhatsApp Status proof in ${hours} hours and ${mins} minutes.`;
+        triggerBtn.disabled = true;
+        triggerBtn.style.opacity = '0.6';
+        triggerBtn.textContent = 'Submission Locked';
+      } else {
+        badge.style.display = 'none';
+        title.textContent = 'Daily WhatsApp Campaign Ready';
+        desc.textContent = 'Post the live Almai campaign to your WhatsApp Status for 24 hours to earn rewards.';
+        triggerBtn.disabled = false;
+        triggerBtn.style.opacity = '1';
+        triggerBtn.innerHTML = `
+          <span class="svg-icon" style="width: 16px; height: 16px; margin-right: 4px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+          </span>
+          Submit 24h WhatsApp Proof
+        `;
+      }
+    }
+
+    // ====================================================================
+    // VIEW SWITCHER & MOBILE NAVIGATION
+    // ====================================================================
+    function switchView(viewName) {
+      if (viewName === 'dashboard' && !AppState.user) {
+        showAuthModal('login');
+        return;
+      }
+
+      const views = ['home', 'products', 'auth', 'dashboard'];
+      views.forEach(v => {
+        const el = document.getElementById(`view-${v}`);
+        if (el) el.classList.remove('active-view');
+        
+        const navEl = document.getElementById(`nav-${v}`);
+        if (navEl) navEl.classList.remove('active');
+      });
+
+      const targetEl = document.getElementById(`view-${viewName}`);
+      if (targetEl) targetEl.classList.add('active-view');
+
+      const targetNav = document.getElementById(`nav-${viewName}`);
+      if (targetNav) targetNav.classList.add('active');
+
+      AppState.currentView = viewName;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (viewName === 'dashboard') {
+        loadDashboardData();
+      }
+    }
+
+    function toggleMobileNav() {
+      const drawer = document.getElementById('mobile-drawer');
+      const backdrop = document.getElementById('mobile-backdrop');
+      const isOpen = drawer.classList.contains('open');
+
+      if (isOpen) {
+        closeMobileNav();
+      } else {
+        drawer.classList.add('open');
+        backdrop.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeMobileNav() {
+      const drawer = document.getElementById('mobile-drawer');
+      const backdrop = document.getElementById('mobile-backdrop');
+      drawer.classList.remove('open');
+      backdrop.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function mobileNavAction(action) {
+      closeMobileNav();
+      if (action === 'calc') {
+        scrollToCalculator();
+      } else {
+        switchView(action);
+      }
+    }
+
+    function scrollToCalculator() {
+      switchView('home');
+      setTimeout(() => {
+        const calc = document.getElementById('calculator-section');
+        if (calc) calc.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+
+    // ====================================================================
+    // PACKAGES & CALCULATOR
+    // ====================================================================
+    async function fetchPackages() {
+      try {
+        const res = await fetch('/api/packages');
+        if (res.ok) {
+          const data = await res.json();
+          AppState.packages = data.packages || [];
+          renderPackagesList(AppState.packages);
+        }
+      } catch (err) {
+        console.error('Error fetching packages:', err);
+      }
+    }
+
+    function renderPackagesList(packages) {
+      const container = document.getElementById('packages-list-container');
+      if (!container) return;
+
+      if (!packages.length) {
+        container.innerHTML = '<div style="text-align: center; grid-column: 1 / -1;">No active packages available at the moment.</div>';
+        return;
+      }
+
+      container.innerHTML = packages.map(pkg => {
+        const isFeatured = pkg.slug === 'exclusive' || pkg.slug === 'growth';
+        return `
+          <div class="pkg-card ${isFeatured ? 'featured' : ''}">
+            ${pkg.badge ? `<span class="pkg-badge">${escapeHTML(pkg.badge)}</span>` : ''}
+            <h3 class="pkg-name">${escapeHTML(pkg.name)}</h3>
+            <div class="pkg-cost-headline">KSh ${pkg.reward_per_view_ksh}/view — Pay KSh ${pkg.price_ksh.toLocaleString()}</div>
+            
+            <div class="pkg-price-row">
+              <span class="pkg-currency">KSh</span>
+              <span class="pkg-price">${pkg.price_ksh.toLocaleString()}</span>
+              <span style="font-size: 13.5px; color: var(--charcoal-muted); margin-left: 4px;">one-time activation</span>
+            </div>
+
+            <div class="pkg-reward-callout">
+              <span class="svg-icon" style="width: 20px; height: 20px; color: var(--primary-purple);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              </span>
+              <div class="pkg-reward-text">
+                KSh ${pkg.reward_per_view_ksh} per approved view
+                <div style="font-size: 12px; font-weight: 500; color: var(--charcoal-muted);">Up to ${pkg.max_views_per_task} views per 24h task</div>
+              </div>
+            </div>
+
+            <ul class="pkg-feature-list">
+              ${(pkg.features || []).map(feat => `
+                <li class="pkg-feature-item">
+                  <span class="svg-icon check-icon" style="width: 16px; height: 16px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </span>
+                  <span>${escapeHTML(feat)}</span>
+                </li>
+              `).join('')}
+            </ul>
+
+            <button class="btn ${isFeatured ? 'btn-primary' : 'btn-secondary'} btn-block btn-lg" onclick="triggerPackageActivation('${pkg.id}', '${escapeHTML(pkg.name)}', ${pkg.price_ksh})">
+              Activate ${escapeHTML(pkg.name)} (KSh ${pkg.price_ksh.toLocaleString()})
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function setCalcTier(slug, rate) {
+      AppState.calculatorTierRate = rate;
+      ['starter', 'exclusive', 'premium'].forEach(t => {
+        const b = document.getElementById(`calc-btn-${t}`);
+        if (b) {
+          if (t === slug) {
+            b.classList.add('active');
+          } else {
+            b.classList.remove('active');
+          }
+        }
+      });
+      const names = { starter: 'Starter Z', exclusive: 'Exclusive', premium: 'Premium' };
+      const name = names[slug] || 'Tier';
+      document.getElementById('calc-tier-label').textContent = `${name} (KSh ${rate}/view)`;
+      updateCalculator();
+    }
+
+    function updateCalculator() {
+      const slider = document.getElementById('calc-views-slider');
+      const views = parseInt(slider.value, 10);
+      document.getElementById('calc-views-display').textContent = `${views} Views`;
+
+      const daily = views * AppState.calculatorTierRate;
+      const monthly = daily * 30;
+
+      document.getElementById('calc-daily-res').textContent = `KSh ${daily.toLocaleString()}`;
+      document.getElementById('calc-monthly-res').textContent = `KSh ${monthly.toLocaleString()}`;
+    }
+
+    // ====================================================================
+    // AUTHENTICATION MODAL & LOGIC
+    // ====================================================================
+    function showAuthModal(mode = 'login') {
+      switchView('auth');
+      switchAuthTab(mode);
+    }
+
+    function switchAuthTab(mode) {
+      const tabLogin = document.getElementById('tab-login');
+      const tabReg = document.getElementById('tab-register');
+      const formLogin = document.getElementById('form-login');
+      const formReg = document.getElementById('form-register');
+      const alert = document.getElementById('auth-alert');
+      alert.style.display = 'none';
+
+      if (mode === 'login') {
+        tabLogin.classList.add('active');
+        tabReg.classList.remove('active');
+        formLogin.style.display = 'block';
+        formReg.style.display = 'none';
+      } else {
+        tabReg.classList.add('active');
+        tabLogin.classList.remove('active');
+        formReg.style.display = 'block';
+        formLogin.style.display = 'none';
+      }
+    }
+
+    async function handleLoginSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      const alert = document.getElementById('auth-alert');
+      const btn = document.getElementById('btn-login-submit');
+
+      btn.disabled = true;
+      btn.textContent = 'Signing in...';
+      alert.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          await checkAuthSession();
+          switchView('dashboard');
+        } else {
+          alert.className = 'alert alert-error';
+          alert.textContent = data.error || 'Invalid email or password';
+          alert.style.display = 'flex';
+        }
+      } catch (err) {
+        alert.className = 'alert alert-error';
+        alert.textContent = 'Connection error. Please try again.';
+        alert.style.display = 'flex';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Sign In to Account';
+      }
+    }
+
+    async function handleRegisterSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('reg-name').value;
+      const email = document.getElementById('reg-email').value;
+      const phone = document.getElementById('reg-phone').value;
+      const password = document.getElementById('reg-password').value;
+      const alert = document.getElementById('auth-alert');
+      const btn = document.getElementById('btn-register-submit');
+
+      btn.disabled = true;
+      btn.textContent = 'Creating Account...';
+      alert.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, phone, password })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          await checkAuthSession();
+          switchView('dashboard');
+        } else {
+          alert.className = 'alert alert-error';
+          alert.textContent = data.error || 'Registration failed';
+          alert.style.display = 'flex';
+        }
+      } catch (err) {
+        alert.className = 'alert alert-error';
+        alert.textContent = 'Connection error. Please try again.';
+        alert.style.display = 'flex';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Create Free Account';
+      }
+    }
+
+    async function handleLogout() {
+      try {
+        await fetch('/api/auth/logout', { method: 'POST' });
+      } catch (err) {
+        console.error('Logout error:', err);
+      }
+      AppState.user = null;
+      renderGuestUI();
+      switchView('home');
+    }
+
+    // ====================================================================
+    // DASHBOARD & DATA LOADING
+    // ====================================================================
+    async function loadDashboardData() {
+      await checkAuthSession();
+      await fetchUserTasks();
+      await fetchUserWithdrawals();
+    }
+
+    async function fetchUserTasks() {
+      try {
+        const res = await fetch('/api/tasks');
+        if (res.ok) {
+          const data = await res.json();
+          renderUserTasks(data.submissions || []);
+          if (data.cooldown) {
+            AppState.cooldown = data.cooldown;
+            renderCooldownState();
+          }
+        }
+      } catch (err) {
+        console.error('Fetch user tasks error:', err);
+      }
+    }
+
+    function renderUserTasks(tasks) {
+      const tbody = document.getElementById('tbody-user-tasks');
+      if (!tbody) return;
+
+      if (!tasks.length) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align: center; color: var(--charcoal-muted); padding: 26px;">
+              No task submissions yet. Complete your first WhatsApp task above!
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = tasks.map(t => {
+        const dateStr = new Date(t.created_at * 1000).toLocaleDateString('en-KE', {
+          month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+        const statusClass = `status-${t.status}`;
+        return `
+          <tr>
+            <td><strong>${dateStr}</strong></td>
+            <td>${t.reported_views} views</td>
+            <td>${t.approved_views ? `${t.approved_views} views` : '—'}</td>
+            <td>KSh ${t.reward_rate_ksh}</td>
+            <td style="font-weight: 700; color: var(--primary-purple);">
+              ${t.reward_amount_ksh > 0 ? `KSh ${t.reward_amount_ksh.toLocaleString()}` : '—'}
+            </td>
+            <td><span class="status-badge ${statusClass}">${escapeHTML(t.status)}</span></td>
+            <td style="font-size: 12.5px; color: var(--charcoal-muted);">${escapeHTML(t.admin_notes || '—')}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function fetchUserWithdrawals() {
+      try {
+        const res = await fetch('/api/withdrawals');
+        if (res.ok) {
+          const data = await res.json();
+          renderUserWithdrawals(data.withdrawals || []);
+        }
+      } catch (err) {
+        console.error('Fetch withdrawals error:', err);
+      }
+    }
+
+    function renderUserWithdrawals(withdrawals) {
+      const tbody = document.getElementById('tbody-user-withdrawals');
+      if (!tbody) return;
+
+      if (!withdrawals.length) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align: center; color: var(--charcoal-muted); padding: 26px;">
+              No withdrawals requested yet. Accumulate KSh 100 or more to request a payout.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = withdrawals.map(w => {
+        const dateStr = new Date(w.created_at * 1000).toLocaleDateString('en-KE', {
+          month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+        const statusClass = `status-${w.status}`;
+        const refInfo = w.mpesa_receipt_number ? `M-Pesa Ref: <strong>${escapeHTML(w.mpesa_receipt_number)}</strong>` : (w.rejection_reason ? escapeHTML(w.rejection_reason) : 'In Queue');
+
+        return `
+          <tr>
+            <td><strong>${dateStr}</strong></td>
+            <td style="font-weight: 700; color: var(--deep-purple-heading);">KSh ${w.amount_ksh.toLocaleString()}</td>
+            <td>${escapeHTML(w.phone_number)}</td>
+            <td><span class="status-badge ${statusClass}">${escapeHTML(w.status)}</span></td>
+            <td style="font-size: 13px;">${refInfo}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // ====================================================================
+    // TASK SUBMISSION MODAL & LOGIC
+    // ====================================================================
+    function openTaskModal() {
+      if (!AppState.user) {
+        showAuthModal('login');
+        return;
+      }
+      if (!AppState.activePackage) {
+        alert('Please activate an advertising partner package first to start submitting tasks.');
+        switchView('products');
+        return;
+      }
+      document.getElementById('task-submit-alert').style.display = 'none';
+      document.getElementById('form-submit-task').reset();
+      document.getElementById('screenshot-preview-container').style.display = 'none';
+      AppState.evidenceBase64 = null;
+      openModal('modal-task');
+    }
+
+    function previewScreenshot(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      if (file.size > 3.5 * 1024 * 1024) {
+        alert('File size exceeds 3.5MB limit. Please compress or choose a smaller image.');
+        event.target.value = '';
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        AppState.evidenceBase64 = e.target.result;
+        AppState.evidenceFileMeta = { name: file.name, type: file.type };
+        document.getElementById('screenshot-preview-img').src = e.target.result;
+        document.getElementById('screenshot-preview-container').style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function handleTaskSubmit(e) {
+      e.preventDefault();
+      const reportedViews = document.getElementById('task-reported-views').value;
+      const note = document.getElementById('task-note').value;
+      const alert = document.getElementById('task-submit-alert');
+      const btn = document.getElementById('btn-task-submit');
+
+      if (!AppState.evidenceBase64) {
+        alert.className = 'alert alert-error';
+        alert.textContent = 'Please choose a screenshot image evidence file.';
+        alert.style.display = 'flex';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Uploading Evidence...';
+      alert.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/tasks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            reportedViews,
+            evidenceBase64: AppState.evidenceBase64,
+            fileName: AppState.evidenceFileMeta?.name,
+            fileType: AppState.evidenceFileMeta?.type,
+            evidenceNote: note
+          })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert.className = 'alert alert-success';
+          alert.textContent = data.message;
+          alert.style.display = 'flex';
+          setTimeout(() => {
+            closeModal('modal-task');
+            loadDashboardData();
+          }, 1500);
+        } else {
+          alert.className = 'alert alert-error';
+          alert.textContent = data.error || 'Submission failed';
+          alert.style.display = 'flex';
+        }
+      } catch (err) {
+        alert.className = 'alert alert-error';
+        alert.textContent = 'Connection error. Please try again.';
+        alert.style.display = 'flex';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Submit for Review';
+      }
+    }
+
+    // ====================================================================
+    // WITHDRAWAL MODAL & LOGIC
+    // ====================================================================
+    function openWithdrawalModal() {
+      if (!AppState.user) {
+        showAuthModal('login');
+        return;
+      }
+      const avail = AppState.wallet?.available_balance_ksh || 0;
+      document.getElementById('withdraw-modal-avail').textContent = `KSh ${avail.toLocaleString()}`;
+      document.getElementById('withdraw-phone').value = AppState.user.phone || '';
+      document.getElementById('withdraw-alert').style.display = 'none';
+      document.getElementById('form-withdraw').reset();
+      document.getElementById('withdraw-phone').value = AppState.user.phone || '';
+      openModal('modal-withdraw');
+    }
+
+    async function handleWithdrawalSubmit(e) {
+      e.preventDefault();
+      const amountKsh = document.getElementById('withdraw-amount').value;
+      const phoneNumber = document.getElementById('withdraw-phone').value;
+      const alert = document.getElementById('withdraw-alert');
+      const btn = document.getElementById('btn-withdraw-submit');
+
+      btn.disabled = true;
+      btn.textContent = 'Reserving Funds...';
+      alert.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/withdrawals', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ amountKsh, phoneNumber })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert.className = 'alert alert-success';
+          alert.textContent = data.message;
+          alert.style.display = 'flex';
+          setTimeout(() => {
+            closeModal('modal-withdraw');
+            loadDashboardData();
+          }, 1500);
+        } else {
+          alert.className = 'alert alert-error';
+          alert.textContent = data.error || 'Withdrawal request failed';
+          alert.style.display = 'flex';
+        }
+      } catch (err) {
+        alert.className = 'alert alert-error';
+        alert.textContent = 'Connection error. Please try again.';
+        alert.style.display = 'flex';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Confirm Withdrawal Request';
+      }
+    }
+
+    // ====================================================================
+    // PACKAGE ACTIVATION MODAL & LOGIC
+    // ====================================================================
+    function triggerPackageActivation(packageId, name, price) {
+      if (!AppState.user) {
+        showAuthModal('login');
+        return;
+      }
+      document.getElementById('activate-pkg-id').value = packageId;
+      document.getElementById('modal-pkg-subtitle').textContent = `${name} — Pay KSh ${price.toLocaleString()} Activation`;
+      document.getElementById('modal-pkg-amount').textContent = `KSh ${price.toLocaleString()}`;
+      document.getElementById('activate-phone').value = AppState.user.phone || '';
+      document.getElementById('activate-pkg-alert').style.display = 'none';
+      document.getElementById('activate-ref-code').value = '';
+      openModal('modal-activate-pkg');
+    }
+
+    async function handlePackageActivationSubmit(e) {
+      e.preventDefault();
+      const packageId = document.getElementById('activate-pkg-id').value;
+      const paymentReference = document.getElementById('activate-ref-code').value;
+      const phoneNumber = document.getElementById('activate-phone').value;
+      const alert = document.getElementById('activate-pkg-alert');
+      const btn = document.getElementById('btn-activate-submit');
+
+      btn.disabled = true;
+      btn.textContent = 'Verifying Reference...';
+      alert.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/packages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ packageId, paymentReference, phoneNumber })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert.className = 'alert alert-success';
+          alert.textContent = data.message;
+          alert.style.display = 'flex';
+          setTimeout(() => {
+            closeModal('modal-activate-pkg');
+            loadDashboardData();
+            switchView('dashboard');
+          }, 1500);
+        } else {
+          alert.className = 'alert alert-error';
+          alert.textContent = data.error || 'Activation failed';
+          alert.style.display = 'flex';
+        }
+      } catch (err) {
+        alert.className = 'alert alert-error';
+        alert.textContent = 'Connection error. Please try again.';
+        alert.style.display = 'flex';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Verify Payment & Activate';
+      }
+    }
+
+    // ====================================================================
+    // SERVICE INQUIRY (CORPORATE BRANDS)
+    // ====================================================================
+    function openInquiryModal(serviceName = 'WhatsApp Status Network Blast') {
+      document.getElementById('form-inquiry').reset();
+      document.getElementById('inq-service').value = serviceName;
+      document.getElementById('inq-alert').style.display = 'none';
+      if (AppState.user) {
+        document.getElementById('inq-name').value = AppState.user.name;
+        document.getElementById('inq-email').value = AppState.user.email;
+        document.getElementById('inq-phone').value = AppState.user.phone;
+      }
+      openModal('modal-inquiry');
+    }
+
+    async function handleInquirySubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('inq-name').value;
+      const businessName = document.getElementById('inq-biz').value;
+      const email = document.getElementById('inq-email').value;
+      const phone = document.getElementById('inq-phone').value;
+      const serviceType = document.getElementById('inq-service').value;
+      const message = document.getElementById('inq-message').value;
+      const alert = document.getElementById('inq-alert');
+      const btn = document.getElementById('btn-inq-submit');
+
+      btn.disabled = true;
+      btn.textContent = 'Sending Inquiry...';
+      alert.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/inquiries', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, businessName, email, phone, serviceType, message })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert.className = 'alert alert-success';
+          alert.textContent = data.message;
+          alert.style.display = 'flex';
+          setTimeout(() => {
+            closeModal('modal-inquiry');
+          }, 2000);
+        } else {
+          alert.className = 'alert alert-error';
+          alert.textContent = data.error || 'Failed to submit inquiry';
+          alert.style.display = 'flex';
+        }
+      } catch (err) {
+        alert.className = 'alert alert-error';
+        alert.textContent = 'Connection error. Please try again.';
+        alert.style.display = 'flex';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Send Campaign Inquiry';
+      }
+    }
+
+    function copyCaptionText() {
+      const caption = 'Discover verified digital advertising and daily earnings with Almai Ads! Visit: https://almai.pages.dev';
+      navigator.clipboard.writeText(caption).then(() => {
+        alert('Campaign caption copied to clipboard!');
+      });
+    }
+
+    // ====================================================================
+    // ADMINISTRATOR CONSOLE LOGIC
+    // ====================================================================
+    function openAdminModal() {
+      if (!AppState.user || AppState.user.role !== 'admin') {
+        alert('Administrator access required.');
+        return;
+      }
+      openModal('modal-admin');
+      switchAdminTab('tasks');
+    }
+
+    function switchAdminTab(tab) {
+      const tabs = ['tasks', 'withdrawals', 'stats', 'audit'];
+      tabs.forEach(t => {
+        document.getElementById(`atab-${t}`).classList.remove('active');
+        document.getElementById(`asec-${t}`).style.display = 'none';
+      });
+
+      document.getElementById(`atab-${tab}`).classList.add('active');
+      document.getElementById(`asec-${tab}`).style.display = 'block';
+
+      if (tab === 'tasks') loadAdminTasks();
+      if (tab === 'withdrawals') loadAdminWithdrawals();
+      if (tab === 'stats') loadAdminStats();
+      if (tab === 'audit') loadAdminAudit();
+    }
+
+    async function loadAdminTasks() {
+      const tbody = document.getElementById('tbody-admin-tasks');
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">Loading pending task proofs...</td></tr>';
+
+      try {
+        const res = await fetch('/api/admin/tasks?status=pending');
+        const data = await res.json();
+        if (res.ok && data.submissions) {
+          if (!data.submissions.length) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 26px; color: var(--charcoal-muted);">No pending task submissions in queue. Clean inbox!</td></tr>';
+            return;
+          }
+
+          tbody.innerHTML = data.submissions.map(ts => `
+            <tr>
+              <td>
+                <strong>${escapeHTML(ts.user_name)}</strong><br>
+                <span style="font-size: 12px; color: var(--charcoal-muted);">${escapeHTML(ts.user_email)} | ${escapeHTML(ts.user_phone)}</span>
+              </td>
+              <td>${escapeHTML(ts.package_name || 'Starter Z')}<br><span style="font-size: 12px; color: var(--primary-purple);">Rate: KSh ${ts.reward_rate_ksh}/view</span></td>
+              <td><strong>${ts.reported_views} views</strong></td>
+              <td>
+                <button class="btn btn-secondary btn-sm" onclick="viewEvidenceModal('${ts.evidence_id}')">
+                  <span class="svg-icon" style="width: 14px; height: 14px; margin-right: 4px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                  </span>
+                  View Proof
+                </button>
+              </td>
+              <td>
+                <div style="display: flex; gap: 6px;">
+                  <button class="btn btn-success btn-sm" onclick="adminReviewTask('${ts.id}', 'approve', ${ts.reported_views})">
+                    Approve
+                  </button>
+                  <button class="btn btn-danger btn-sm" onclick="adminReviewTask('${ts.id}', 'reject')">
+                    Reject
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `).join('');
+        }
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--warning-red);">Failed to load task queue.</td></tr>';
+      }
+    }
+
+    async function adminReviewTask(submissionId, action, defaultViews = 0) {
+      let approvedViews = defaultViews;
+      let notes = '';
+
+      if (action === 'approve') {
+        const val = prompt('Enter verified approved views:', defaultViews);
+        if (val === null) return;
+        approvedViews = parseInt(val, 10);
+        if (isNaN(approvedViews) || approvedViews <= 0) {
+          alert('Invalid view count entered');
+          return;
+        }
+        notes = prompt('Audit notes (optional):', 'Screenshot verified matching 24h count') || '';
+      } else {
+        notes = prompt('Reason for rejection:', 'Screenshot blurred or does not show 24h elapsed timestamp');
+        if (notes === null) return;
+      }
+
+      try {
+        const res = await fetch('/api/admin/tasks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ submissionId, action, approvedViews, notes })
+        });
+        const data = await res.json();
+        alert(data.message || (data.success ? 'Task updated!' : data.error));
+        loadAdminTasks();
+      } catch (err) {
+        alert('Action failed due to connection error.');
+      }
+    }
+
+    async function loadAdminWithdrawals() {
+      const tbody = document.getElementById('tbody-admin-withdrawals');
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">Loading pending withdrawals...</td></tr>';
+
+      try {
+        const res = await fetch('/api/admin/withdrawals?status=pending');
+        const data = await res.json();
+        if (res.ok && data.withdrawals) {
+          if (!data.withdrawals.length) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 26px; color: var(--charcoal-muted);">No pending withdrawals in queue. All disbursements up to date!</td></tr>';
+            return;
+          }
+
+          tbody.innerHTML = data.withdrawals.map(w => {
+            const dateStr = new Date(w.created_at * 1000).toLocaleString('en-KE');
+            return `
+              <tr>
+                <td><strong>${escapeHTML(w.user_name)}</strong><br><span style="font-size: 12px; color: var(--charcoal-muted);">${escapeHTML(w.user_email)}</span></td>
+                <td style="font-size: 15px; font-weight: 800; color: var(--deep-purple-heading);">KSh ${w.amount_ksh.toLocaleString()}</td>
+                <td><strong>${escapeHTML(w.phone_number)}</strong></td>
+                <td style="font-size: 12px;">${dateStr}</td>
+                <td>
+                  <div style="display: flex; gap: 6px;">
+                    <button class="btn btn-success btn-sm" onclick="adminProcessWithdrawal('${w.id}', 'complete', '${w.phone_number}', ${w.amount_ksh})">
+                      Mark Paid
+                    </button>
+                    <button class="btn btn-danger btn-sm" onclick="adminProcessWithdrawal('${w.id}', 'reject')">
+                      Reject & Refund
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            `;
+          }).join('');
+        }
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--warning-red);">Failed to load withdrawals.</td></tr>';
+      }
+    }
+
+    async function adminProcessWithdrawal(withdrawalId, action, phone = '', amount = 0) {
+      if (action === 'complete') {
+        const receipt = prompt(`Send KSh ${amount} to ${phone} via M-Pesa. Then enter M-Pesa confirmation code:`);
+        if (!receipt) return;
+
+        try {
+          const res = await fetch('/api/admin/withdrawals', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ withdrawalId, action: 'complete', mpesaReceipt: receipt.trim() })
+          });
+          const data = await res.json();
+          alert(data.message || (data.success ? 'Marked complete!' : data.error));
+          loadAdminWithdrawals();
+        } catch (err) {
+          alert('Action failed');
+        }
+      } else {
+        const reason = prompt('Reason for rejection & refund:', 'M-Pesa number unreachable or invalid');
+        if (reason === null) return;
+
+        try {
+          const res = await fetch('/api/admin/withdrawals', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ withdrawalId, action: 'reject', reason })
+          });
+          const data = await res.json();
+          alert(data.message || (data.success ? 'Withdrawal rejected and refunded!' : data.error));
+          loadAdminWithdrawals();
+        } catch (err) {
+          alert('Action failed');
+        }
+      }
+    }
+
+    async function loadAdminStats() {
+      const grid = document.getElementById('admin-stats-grid');
+      grid.innerHTML = '<div>Loading stats...</div>';
+
+      try {
+        const res = await fetch('/api/admin/stats');
+        const data = await res.json();
+        if (res.ok && data.metrics) {
+          const m = data.metrics;
+          grid.innerHTML = `
+            <div class="dash-metric-card">
+              <div class="dash-metric-lbl">Total Registered Users</div>
+              <div class="dash-metric-val">${m.totalUsers.toLocaleString()}</div>
+            </div>
+            <div class="dash-metric-card">
+              <div class="dash-metric-lbl">Pending Review Tasks</div>
+              <div class="dash-metric-val">${m.pendingTasksCount.toLocaleString()}</div>
+            </div>
+            <div class="dash-metric-card">
+              <div class="dash-metric-lbl">Pending Withdrawals Queue</div>
+              <div class="dash-metric-val">KSh ${m.pendingWithdrawalsAmountKsh.toLocaleString()}</div>
+              <div class="dash-metric-sub">${m.pendingWithdrawalsCount} requests awaiting payout</div>
+            </div>
+            <div class="dash-metric-card">
+              <div class="dash-metric-lbl">Total Disbursed M-Pesa</div>
+              <div class="dash-metric-val">KSh ${m.totalDisbursedKsh.toLocaleString()}</div>
+              <div class="dash-metric-sub">${m.completedWithdrawalsCount} successful payouts</div>
+            </div>
+            <div class="dash-metric-card">
+              <div class="dash-metric-lbl">Total Approved Views</div>
+              <div class="dash-metric-val">${m.totalApprovedViews.toLocaleString()}</div>
+            </div>
+            <div class="dash-metric-card">
+              <div class="dash-metric-lbl">System Available Liability</div>
+              <div class="dash-metric-val">KSh ${m.totalAvailableInSystemKsh.toLocaleString()}</div>
+            </div>
+          `;
+        }
+      } catch (err) {
+        grid.innerHTML = '<div>Failed to load stats</div>';
+      }
+    }
+
+    async function loadAdminAudit() {
+      const tbody = document.getElementById('tbody-admin-audit');
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">Loading audit logs...</td></tr>';
+
+      try {
+        const res = await fetch('/api/admin/audit-logs');
+        const data = await res.json();
+        if (res.ok && data.auditLogs) {
+          if (!data.auditLogs.length) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">No audit events logged yet.</td></tr>';
+            return;
+          }
+
+          tbody.innerHTML = data.auditLogs.map(a => {
+            const dateStr = new Date(a.created_at * 1000).toLocaleString('en-KE');
+            return `
+              <tr>
+                <td style="font-size: 12px;">${dateStr}</td>
+                <td><strong>${escapeHTML(a.admin_name || 'Admin')}</strong></td>
+                <td><span class="status-badge status-pending">${escapeHTML(a.action)}</span></td>
+                <td><code>${escapeHTML(a.target_id || '')}</code></td>
+                <td style="font-size: 12px;"><code>${escapeHTML(JSON.stringify(a.details || {}))}</code></td>
+              </tr>
+            `;
+          }).join('');
+        }
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--warning-red);">Failed to load audit logs.</td></tr>';
+      }
+    }
+
+    function viewEvidenceModal(evidenceId) {
+      if (!evidenceId) {
+        alert('No evidence record ID found');
+        return;
+      }
+      const img = document.getElementById('evidence-viewer-img');
+      img.src = `/api/evidence/${evidenceId}`;
+      openModal('modal-evidence-viewer');
+    }
+
+    // ====================================================================
+    // GENERAL MODAL HELPERS
+    // ====================================================================
+    function openModal(modalId) {
+      const el = document.getElementById(modalId);
+      if (el) el.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(modalId) {
+      const el = document.getElementById(modalId);
+      if (el) el.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    window.addEventListener('click', (e) => {
+      if (e.target.classList.contains('modal-backdrop')) {
+        e.target.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    });
+
+    function escapeHTML(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+  </script>
+</body>
+</html>

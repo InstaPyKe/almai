@@ -1,0 +1,11 @@
+name = "almai"
+compatibility_date = "2024-04-01"
+pages_build_output_dir = "."
+
+# Cloudflare D1 Database Binding
+# In Cloudflare Pages Dashboard: Settings -> Functions -> D1 Database Bindings -> Variable: DB
+[[d1_databases]]
+binding = "DB"
+database_name = "almai-db"
+database_id = "local-DB"
+migrations_dir = "./migrations"
