@@ -1,6 +1,9 @@
 name = "almai"
 compatibility_date = "2024-04-01"
-pages_build_output_dir = "."
+main = "index.js"
+
+[assets]
+directory = "."
 
 # Cloudflare D1 Database Binding
 # In Cloudflare Pages Dashboard: Settings -> Functions -> D1 Database Bindings -> Variable: DB
