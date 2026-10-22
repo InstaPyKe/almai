@@ -10,5 +10,5 @@ directory = "."
 [[d1_databases]]
 binding = "DB"
 database_name = "almai-db"
-database_id = "local-DB"
+database_id = "f0d3ac6f-a777-4215-8476-c5d6ca3b8b56"
 migrations_dir = "./migrations"
