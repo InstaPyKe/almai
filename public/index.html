@@ -1447,17 +1447,207 @@
     }
     .admin-products-grid {
       display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
+      grid-template-columns: 1.1fr 0.9fr;
       gap: 24px;
       align-items: start;
     }
+    .admin-prod-form-card {
+      background: var(--bg-cream);
+      border: 1.5px solid var(--beige-border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .admin-prod-file-dropzone {
+      position: relative;
+      border: 2px dashed rgba(109, 40, 217, 0.35);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      text-align: center;
+      background: #FFFFFF;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    .admin-prod-file-dropzone:hover {
+      border-color: var(--primary-purple);
+      background: #FAF8FE;
+    }
+    .admin-prods-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .admin-prods-list-container {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      max-height: 640px;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+    .admin-prod-item {
+      display: flex;
+      gap: 14px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--beige-border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(45, 21, 55, 0.05);
+      transition: all 0.2s ease;
+    }
+    .admin-prod-item:hover {
+      border-color: rgba(147, 51, 234, 0.4);
+      box-shadow: 0 4px 12px rgba(109, 40, 217, 0.08);
+    }
+    .admin-prod-item-thumb {
+      width: 78px;
+      height: 78px;
+      border-radius: 10px;
+      border: 1.5px solid var(--beige-border);
+      background: #1C0A22;
+      flex-shrink: 0;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+    }
+    .admin-prod-item-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+    .admin-prod-item-thumb:hover img {
+      transform: scale(1.08);
+    }
+    .admin-prod-item-thumb-zoom {
+      position: absolute;
+      bottom: 3px;
+      right: 3px;
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 5px;
+      border-radius: 4px;
+      backdrop-filter: blur(2px);
+    }
+    .admin-prod-item-content {
+      flex: 1;
+      min-width: 0;
+    }
+    .admin-prod-item-title {
+      font-weight: 800;
+      font-size: 15px;
+      color: var(--deep-purple-heading);
+      line-height: 1.3;
+      margin-bottom: 2px;
+      word-break: break-word;
+    }
+    .admin-prod-item-brand {
+      display: inline-block;
+      font-size: 11.5px;
+      font-weight: 750;
+      color: var(--primary-purple);
+      background: rgba(147, 51, 234, 0.09);
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 5px;
+    }
+    .admin-prod-item-caption {
+      font-size: 12.5px;
+      color: var(--charcoal-muted);
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+    .admin-prod-item-meta {
+      font-size: 12px;
+      color: var(--charcoal-muted);
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .admin-prod-item-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .admin-prod-item-main-row {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex: 1;
+      min-width: 0;
+    }
+
     @media (max-width: 900px) {
       .admin-products-grid {
         grid-template-columns: 1fr;
+        gap: 20px;
       }
       .admin-header-card {
         flex-direction: column;
         align-items: stretch;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .admin-prod-form-card {
+        padding: 16px 14px;
+      }
+      .admin-prods-list-container {
+        max-height: none;
+        overflow-y: visible;
+      }
+      .admin-prod-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 12px;
+      }
+      .admin-prod-item-main-row {
+        gap: 12px;
+        align-items: flex-start;
+      }
+      .admin-prod-item-thumb {
+        width: 68px;
+        height: 68px;
+      }
+      .admin-prod-item-actions {
+        flex-direction: row;
+        width: 100%;
+        gap: 8px;
+        border-top: 1px solid var(--beige-border);
+        padding-top: 10px;
+      }
+      .admin-prod-item-actions .btn {
+        flex: 1;
+        justify-content: center;
+      }
+      .admin-prods-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+      .admin-prods-header .btn {
+        width: 100%;
+        justify-content: center;
+      }
+      .products-posts-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      .product-post-img-wrap {
+        height: 190px;
       }
     }
 
@@ -3539,7 +3729,7 @@
       <div id="asec-products" class="admin-content-section" style="display: none;">
         <div class="admin-products-grid">
           <!-- Form to post product picture -->
-          <div style="background: var(--bg-cream); border: 1.5px solid var(--beige-border); border-radius: var(--radius-md); padding: 24px;">
+          <div class="admin-prod-form-card">
             <h3 style="font-size: 18.5px; margin-bottom: 6px; color: var(--deep-purple-heading);">Upload New Product Picture for WhatsApp Posts</h3>
             <p style="font-size: 14px; color: var(--charcoal-muted); margin-bottom: 18px;">
               Publish brand product pictures that partners can download to their devices and post to their WhatsApp Status.
@@ -3564,9 +3754,19 @@
 
               <div class="form-group">
                 <label class="form-label" for="prod-image-file">Product Picture (PNG, JPG, SVG - Max 3.5MB)</label>
-                <input type="file" id="prod-image-file" accept="image/*" required onchange="previewAdminProductImage(event)">
-                <div id="admin-prod-preview-wrap" style="display: none; margin-top: 12px; text-align: center;">
-                  <img id="admin-prod-preview-img" src="" alt="Product Preview" style="max-height: 180px; border-radius: 8px; border: 1.5px solid var(--beige-border); background: #000;">
+                <div class="admin-prod-file-dropzone" onclick="document.getElementById('prod-image-file').click()">
+                  <input type="file" id="prod-image-file" accept="image/*" required onchange="previewAdminProductImage(event)" style="display: none;">
+                  <div id="admin-file-drop-prompt">
+                    <span class="svg-icon" style="width: 28px; height: 28px; color: var(--primary-purple); margin-bottom: 6px;">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    </span>
+                    <div style="font-size: 14.5px; font-weight: 750; color: var(--deep-purple-heading);">Tap to Choose Product Creative</div>
+                    <div style="font-size: 12px; color: var(--charcoal-muted); margin-top: 3px;">JPEG, PNG, WebP up to 3.5MB</div>
+                  </div>
+                  <div id="admin-prod-preview-wrap" style="display: none; margin-top: 10px; text-align: center;">
+                    <img id="admin-prod-preview-img" src="" alt="Product Preview" style="max-height: 160px; max-width: 100%; border-radius: 8px; border: 1.5px solid var(--beige-border); background: #000; object-fit: contain;">
+                    <div id="admin-file-name-tag" style="font-size: 12px; color: var(--primary-purple); font-weight: 750; margin-top: 6px;"></div>
+                  </div>
                 </div>
               </div>
 
@@ -3583,7 +3783,7 @@
 
           <!-- Existing products list -->
           <div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+            <div class="admin-prods-header">
               <h3 style="font-size: 18.5px; margin: 0; color: var(--deep-purple-heading);">Live Products on Platform (<span id="admin-prod-count">0</span>)</h3>
               <button class="btn btn-secondary btn-sm" id="btn-admin-clear-prods" onclick="adminClearAllProducts()" style="color: var(--warning-red); border-color: rgba(220, 38, 38, 0.4); font-weight: 750;" title="Delete and clear all existing posted product creatives">
                 <span class="svg-icon" style="width: 14px; height: 14px; margin-right: 4px;">
@@ -3592,7 +3792,7 @@
                 Clear All Products
               </button>
             </div>
-            <div id="admin-products-list" style="display: flex; flex-direction: column; gap: 14px; max-height: 600px; overflow-y: auto;">
+            <div id="admin-products-list" class="admin-prods-list-container">
               <div style="text-align: center; padding: 24px; color: var(--charcoal-muted);">Loading products...</div>
             </div>
           </div>
@@ -5507,6 +5707,11 @@
         AppState.adminProductFileName = file.name;
         document.getElementById('admin-prod-preview-img').src = e.target.result;
         document.getElementById('admin-prod-preview-wrap').style.display = 'block';
+        const nameTag = document.getElementById('admin-file-name-tag');
+        if (nameTag) {
+          const sizeKb = (file.size / 1024).toFixed(0);
+          nameTag.textContent = `✓ ${file.name} (${sizeKb} KB)`;
+        }
       };
       reader.readAsDataURL(file);
     }
@@ -5551,6 +5756,8 @@
 
           document.getElementById('form-admin-post-product').reset();
           document.getElementById('admin-prod-preview-wrap').style.display = 'none';
+          const nameTag = document.getElementById('admin-file-name-tag');
+          if (nameTag) nameTag.textContent = '';
           AppState.adminProductBase64 = null;
           AppState.adminProductFileName = null;
 
@@ -5598,21 +5805,40 @@
 
           container.innerHTML = posts.map(p => {
             const imgSource = p.image_base64 || p.image_url || '';
-            const dateStr = p.created_at ? new Date(p.created_at * 1000).toLocaleDateString('en-KE', { month: 'short', day: 'numeric' }) : '';
+            const dateStr = p.created_at ? new Date(p.created_at * 1000).toLocaleDateString('en-KE', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+            const safeCaption = escapeHTML(p.caption || '');
+            const safeTitle = escapeHTML(p.title || '');
+            const safeBrand = escapeHTML(p.brand_name || 'Almai Verified Partner');
+
             return `
-              <div style="display: flex; gap: 14px; background: #fff; border: 1.5px solid var(--beige-border); border-radius: var(--radius-sm); padding: 14px; align-items: center; box-shadow: var(--shadow-sm);">
-                <img src="${imgSource}" alt="${escapeHTML(p.title)}" style="width: 72px; height: 72px; object-fit: cover; border-radius: 8px; border: 1.5px solid var(--beige-border); background: #2D1537; flex-shrink: 0;">
-                <div style="flex: 1; min-width: 0;">
-                  <div style="font-weight: 800; font-size: 14.5px; color: var(--deep-purple-heading); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHTML(p.title)}</div>
-                  <div style="font-size: 12px; color: var(--primary-purple); font-weight: 700; margin-top: 2px;">${escapeHTML(p.brand_name || 'Almai Verified')}</div>
-                  <div style="font-size: 12px; color: var(--charcoal-muted); margin-top: 4px; display: flex; gap: 12px; flex-wrap: wrap;">
-                    <span>Downloads: <strong>${p.downloads_count || 0}</strong></span>
-                    ${dateStr ? `<span>Posted: <strong>${dateStr}</strong></span>` : ''}
-                    <span style="color: var(--success-green); font-weight: 700;">✓ Live on user feeds</span>
+              <div class="admin-prod-item">
+                <div class="admin-prod-item-main-row">
+                  <div class="admin-prod-item-thumb" onclick="previewImageModal('${imgSource}', '${safeTitle}')" title="Tap to preview high-res image">
+                    <img src="${imgSource}" alt="${safeTitle}" loading="lazy">
+                    <span class="admin-prod-item-thumb-zoom">🔍 Zoom</span>
+                  </div>
+                  <div class="admin-prod-item-content">
+                    <div class="admin-prod-item-title">${safeTitle}</div>
+                    <span class="admin-prod-item-brand">${safeBrand}</span>
+                    ${safeCaption ? `<div class="admin-prod-item-caption" title="${safeCaption}">${safeCaption}</div>` : ''}
+                    <div class="admin-prod-item-meta">
+                      <span>Downloads: <strong style="color: var(--primary-purple);">${p.downloads_count || 0}</strong></span>
+                      ${dateStr ? `<span>Posted: <strong>${dateStr}</strong></span>` : ''}
+                      <span style="color: var(--success-green); font-weight: 700;">✓ Live on feeds</span>
+                    </div>
                   </div>
                 </div>
-                <div style="display: flex; flex-direction: column; gap: 6px;">
-                  <button class="btn btn-danger btn-sm" onclick="adminDeleteProduct('${p.id}', '${escapeHTML(p.title)}')">
+                <div class="admin-prod-item-actions">
+                  <button class="btn btn-secondary btn-sm" onclick="copySuggestedCaption('${safeCaption}')" title="Copy suggested WhatsApp Status caption">
+                    <span class="svg-icon" style="width: 14px; height: 14px; margin-right: 4px;">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </span>
+                    Copy Caption
+                  </button>
+                  <button class="btn btn-danger btn-sm" onclick="adminDeleteProduct('${p.id}', '${safeTitle}')" title="Delete product creative">
+                    <span class="svg-icon" style="width: 14px; height: 14px; margin-right: 4px;">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </span>
                     Delete
                   </button>
                 </div>
@@ -5943,6 +6169,22 @@
       const img = document.getElementById('evidence-viewer-img');
       img.src = `/api/evidence/${evidenceId}`;
       openModal('modal-evidence-viewer');
+    }
+
+    function previewImageModal(src, title) {
+      if (!src) return;
+      const img = document.getElementById('evidence-viewer-img');
+      if (img) img.src = src;
+      openModal('modal-evidence-viewer');
+    }
+
+    function copySuggestedCaption(text) {
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('✓ Suggested WhatsApp caption copied to clipboard!');
+      }).catch(() => {
+        prompt('Copy suggested WhatsApp caption:', text);
+      });
     }
 
     // ====================================================================
