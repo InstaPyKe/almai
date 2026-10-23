@@ -159,28 +159,42 @@ export async function onRequestDelete(context) {
   const admin = auth.user;
 
   const url = new URL(request.url);
+  const isClearAll = url.searchParams.get('clearAll') === 'true' || url.searchParams.get('action') === 'clear_all';
   let postId = url.searchParams.get('id') || url.searchParams.get('postId');
 
-  if (!postId) {
+  if (!postId && !isClearAll) {
     try {
       const body = await request.json();
       postId = body?.postId || body?.id;
+      if (body?.action === 'clear_all' || body?.clearAll === true) {
+        // clear all requested via body
+        return await handleClearAll(env, admin, request);
+      }
     } catch (e) {
-      // Body is optional if query parameter was supplied
+      // Body is optional
     }
   }
 
+  if (isClearAll) {
+    return await handleClearAll(env, admin, request);
+  }
+
   if (!postId) {
-    return jsonError('postId is required', 400);
+    return jsonError('Product ID or clearAll parameter is required', 400);
   }
 
   try {
     const existing = await env.DB.prepare('SELECT id, title FROM product_posts WHERE id = ?').bind(postId).first();
     if (!existing) {
-      return jsonError('Product post not found', 404);
+      return jsonError('Product post not found or already deleted', 404);
     }
 
+    // Delete the product post
     await env.DB.prepare('DELETE FROM product_posts WHERE id = ?').bind(postId).run();
+
+    // Also remove any linked campaigns
+    const campaignId = `camp_${postId}`;
+    await env.DB.prepare('DELETE FROM campaigns WHERE id = ?').bind(campaignId).run();
 
     // Audit log
     const ip = request.headers.get('cf-connecting-ip') || '';
@@ -194,11 +208,42 @@ export async function onRequestDelete(context) {
     });
 
     return jsonSuccess({
-      message: `Product creative "${existing.title}" has been deleted.`
+      message: `Product creative "${existing.title}" has been deleted successfully.`
     });
 
   } catch (err) {
     console.error('Delete product post error:', err);
     return jsonError('Failed to delete product post', 500);
+  }
+}
+
+/**
+ * Helper to delete and clear all existing posted products
+ */
+async function handleClearAll(env, admin, request) {
+  try {
+    const countRow = await env.DB.prepare('SELECT count(*) as total FROM product_posts').first();
+    const count = countRow?.total || 0;
+
+    await env.DB.prepare('DELETE FROM product_posts').run();
+    await env.DB.prepare("DELETE FROM campaigns WHERE id LIKE 'camp_%'").run();
+
+    const ip = request.headers.get('cf-connecting-ip') || '';
+    await createAuditLog(env, {
+      adminId: admin.id,
+      action: 'CLEAR_ALL_PRODUCTS',
+      targetType: 'product_posts',
+      targetId: 'all',
+      details: { clearedCount: count },
+      ip
+    });
+
+    return jsonSuccess({
+      message: `All ${count} existing product creatives have been cleared successfully.`,
+      clearedCount: count
+    });
+  } catch (err) {
+    console.error('Clear all products error:', err);
+    return jsonError('Failed to clear product posts', 500);
   }
 }

@@ -1590,8 +1590,8 @@ async function onRequestGet12(context) {
         paymentMode: isMpesaConfigured ? "automated_stk" : "manual_till",
         paybill: env.MPESA_PAYBILL_NUMBER || "522533",
         accountNumber: env.MPESA_ACCOUNT_NUMBER || "8106675",
-        paybillOrTill: `Paybill: ${env.MPESA_PAYBILL_NUMBER || "522533"} (Account: ${env.MPESA_ACCOUNT_NUMBER || "8106675"})`,
-        businessName: "Almai Ads Products Network"
+        paybillOrTill: `Paybill: ${env.MPESA_PAYBILL_NUMBER || "522533"} (Account: ${env.MPESA_ACCOUNT_NUMBER || "8106675"}, Name: ${env.MPESA_BUSINESS_NAME || "JASPER MARKETS"})`,
+        businessName: env.MPESA_BUSINESS_NAME || "JASPER MARKETS"
       }
     });
   } catch (err) {

@@ -438,6 +438,180 @@
       margin: 0 auto 36px;
       line-height: 1.65;
     }
+
+    /* Super Animated Hero Products Showcase Carousel */
+    .hero-showcase-wrapper {
+      max-width: 980px;
+      margin: 20px auto 38px;
+      position: relative;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 240, 226, 0.9) 100%);
+      border: 2px solid rgba(147, 51, 234, 0.28);
+      border-radius: var(--radius-lg);
+      padding: 16px 14px 18px;
+      box-shadow: 0 14px 34px -8px rgba(45, 21, 55, 0.15), 0 0 0 1px rgba(216, 180, 254, 0.35);
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+    }
+    .hero-showcase-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding: 0 6px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .hero-showcase-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: linear-gradient(135deg, #1C0A22, #4A1D54);
+      color: #F8F0E2;
+      font-size: 11.5px;
+      font-weight: 850;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 5px 13px;
+      border-radius: var(--radius-full);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+    }
+    .showcase-pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10B981;
+      box-shadow: 0 0 8px #10B981;
+      animation: pulseGreen 1.5s infinite ease-in-out;
+    }
+    .hero-showcase-hint {
+      font-size: 13px;
+      font-weight: 750;
+      color: var(--primary-purple);
+    }
+    .hero-showcase-track-container {
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+      border-radius: var(--radius-md);
+      cursor: grab;
+      mask-image: linear-gradient(to right, transparent, black 3%, black 97%, transparent);
+      -webkit-mask-image: linear-gradient(to right, transparent, black 3%, black 97%, transparent);
+    }
+    .hero-showcase-track {
+      display: flex;
+      gap: 16px;
+      width: max-content;
+      animation: showcaseMarquee 24s linear infinite;
+      will-change: transform;
+    }
+    .hero-showcase-track.paused {
+      animation-play-state: paused;
+    }
+    @keyframes showcaseMarquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .showcase-card {
+      flex: 0 0 220px;
+      width: 220px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--beige-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(45, 21, 55, 0.08);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .showcase-card:hover {
+      transform: translateY(-5px) scale(1.03);
+      box-shadow: 0 14px 28px rgba(109, 40, 217, 0.22);
+      border-color: #9333EA;
+    }
+    .showcase-card-img-wrap {
+      width: 100%;
+      height: 130px;
+      position: relative;
+      background: #1C0A22;
+      overflow: hidden;
+    }
+    .showcase-card-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+    .showcase-card:hover .showcase-card-img-wrap img {
+      transform: scale(1.08);
+    }
+    .showcase-card-brand-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(28, 10, 34, 0.88);
+      color: #F8F0E2;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 4px;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      max-width: 85%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .showcase-card-body {
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+      justify-content: space-between;
+      background: #fff;
+    }
+    .showcase-card-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--deep-purple-heading);
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .showcase-card-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+      font-size: 11px;
+      font-weight: 750;
+      color: var(--primary-purple);
+    }
+    .showcase-dl-pill {
+      background: var(--primary-purple-light);
+      padding: 2px 7px;
+      border-radius: 12px;
+    }
+    @media (max-width: 640px) {
+      .hero-showcase-wrapper {
+        margin: 14px auto 26px;
+        padding: 12px 8px 14px;
+      }
+      .showcase-card {
+        flex: 0 0 175px;
+        width: 175px;
+      }
+      .showcase-card-img-wrap {
+        height: 105px;
+      }
+      .hero-showcase-hint {
+        display: none;
+      }
+    }
+
     .hero-cta-group {
       display: flex;
       align-items: center;
@@ -2290,9 +2464,22 @@
         <h1 class="hero-title">
           Turn Your WhatsApp Status Views Into <span>Guaranteed Daily Cash</span>
         </h1>
-        <p class="hero-subtitle">
-          Monetize your genuine Kenyan viewers with high-demand corporate ads. Post our verified brand banners, report your 18h view count, and receive instant payouts directly into your M-Pesa.
-        </p>
+        <!-- Live Admin-Posted WhatsApp Product Showcase Carousel -->
+        <div class="hero-showcase-wrapper" id="hero-showcase-wrapper">
+          <div class="hero-showcase-header">
+            <div class="hero-showcase-badge">
+              <span class="showcase-pulse-dot"></span>
+              <span>LIVE WHATSAPP ADS TO POST TODAY</span>
+            </div>
+            <span class="hero-showcase-hint">Auto-scrolling brand creatives &bull; Hover to pause</span>
+          </div>
+
+          <div class="hero-showcase-track-container" id="hero-showcase-track-container" onmouseenter="pauseShowcaseScroll()" onmouseleave="resumeShowcaseScroll()">
+            <div class="hero-showcase-track" id="hero-showcase-track">
+              <!-- Dynamically populated with admin product posts via renderHeroShowcase() -->
+            </div>
+          </div>
+        </div>
 
         <div class="hero-cta-group">
           <button class="btn btn-primary btn-lg" onclick="showAuthModal('register')">
@@ -2624,7 +2811,7 @@
             <span class="faq-arrow">▼</span>
           </div>
           <div class="faq-answer">
-            <p>You can activate via Safaricom M-Pesa Lipa na M-Pesa using <strong>Paybill 522533</strong> and <strong>Account 8106675</strong>. After sending the exact fee (KSh 250 for Starter Pro, KSh 500 for Exclusive, or KSh 1,200 for Premium), paste your M-Pesa confirmation code in your dashboard to activate immediately.</p>
+            <p>You can activate via Safaricom M-Pesa Lipa na M-Pesa using <strong>Paybill 522533</strong> (Business Name: <strong>JASPER MARKETS</strong>) and <strong>Account 8106675</strong>. After sending the exact fee (KSh 250 for Starter Pro, KSh 500 for Exclusive, or KSh 1,200 for Premium), paste your M-Pesa confirmation code in your dashboard to activate immediately.</p>
           </div>
         </div>
 
@@ -3117,6 +3304,7 @@
           <li>Select <strong>Lipa na M-Pesa</strong> &gt; <strong>Paybill</strong></li>
           <li>Enter Business Number: <strong id="modal-paybill-num" style="color: var(--primary-purple); font-size: 16px;">522533</strong></li>
           <li>Enter Account Number: <strong id="modal-acc-num" style="color: var(--primary-purple); font-size: 16px;">8106675</strong></li>
+          <li>Confirm Business Name: <strong id="modal-biz-name" style="color: #166534; font-size: 15.5px; background: #DCFCE7; padding: 2px 8px; border-radius: 4px; display: inline-block;">JASPER MARKETS</strong></li>
           <li>Enter Package Amount: <strong id="modal-pkg-amount" style="color: var(--deep-purple-heading); font-size: 16px;">KSh 250</strong></li>
           <li>Enter your M-Pesa PIN and press OK to send</li>
           <li>Copy the 10-character confirmation code received via SMS (e.g. <code>SLK94HJ12X</code>) and enter it below</li>
@@ -3408,7 +3596,15 @@
 
           <!-- Existing products list -->
           <div>
-            <h3 style="font-size: 18.5px; margin-bottom: 14px; color: var(--deep-purple-heading);">Live Products on Platform (<span id="admin-prod-count">0</span>)</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+              <h3 style="font-size: 18.5px; margin: 0; color: var(--deep-purple-heading);">Live Products on Platform (<span id="admin-prod-count">0</span>)</h3>
+              <button class="btn btn-secondary btn-sm" id="btn-admin-clear-prods" onclick="adminClearAllProducts()" style="color: var(--warning-red); border-color: rgba(220, 38, 38, 0.4); font-weight: 750;" title="Delete and clear all existing posted product creatives">
+                <span class="svg-icon" style="width: 14px; height: 14px; margin-right: 4px;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </span>
+                Clear All Products
+              </button>
+            </div>
             <div id="admin-products-list" style="display: flex; flex-direction: column; gap: 14px; max-height: 600px; overflow-y: auto;">
               <div style="text-align: center; padding: 24px; color: var(--charcoal-muted);">Loading products...</div>
             </div>
@@ -3710,6 +3906,7 @@
     // ====================================================================
     window.addEventListener('DOMContentLoaded', async () => {
       initInactivityTracker();
+      renderHeroShowcase([]);
       await checkAuthSession();
       await fetchPackages();
       await fetchProductsPosts();
@@ -4204,6 +4401,9 @@
       const homeContainer = document.getElementById('home-products-container');
       const dashContainer = document.getElementById('dash-products-container');
 
+      // Update hero sideways animated marquee showcase with admin posted creatives
+      renderHeroShowcase(posts);
+
       if (!posts || !posts.length) {
         const emptyHTML = `
           <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--charcoal-muted); background: var(--bg-cream); border-radius: var(--radius-md); border: 1px dashed var(--beige-border);">
@@ -4323,6 +4523,104 @@
       }).catch(() => {
         prompt('Copy this WhatsApp Status caption:', text);
       });
+    }
+
+    // ====================================================================
+    // SUPER ANIMATED HERO PRODUCTS SHOWCASE (SIDEWAYS INFINITE MARQUEE)
+    // ====================================================================
+    function pauseShowcaseScroll() {
+      const track = document.getElementById('hero-showcase-track');
+      if (track) track.classList.add('paused');
+    }
+
+    function resumeShowcaseScroll() {
+      const track = document.getElementById('hero-showcase-track');
+      if (track) track.classList.remove('paused');
+    }
+
+    function renderHeroShowcase(posts) {
+      const track = document.getElementById('hero-showcase-track');
+      if (!track) return;
+
+      const fallbackPosts = [
+        {
+          id: 'demo_1',
+          title: 'Safaricom 5G Business Solutions',
+          brand_name: 'Safaricom PLC',
+          downloads_count: 1420,
+          image_base64: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="240" viewBox="0 0 400 240"%3E%3Cdefs%3E%3ClinearGradient id="g1" x1="0" y1="0" x2="1" y2="1"%3E%3Cstop offset="0%25" stop-color="%23047857"/%3E%3Cstop offset="100%25" stop-color="%23064E3B"/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="400" height="240" fill="url(%23g1)"/%3E%3Ccircle cx="340" cy="50" r="80" fill="%2310B981" opacity="0.2"/%3E%3Ctext x="30" y="80" fill="%23A7F3D0" font-family="system-ui,sans-serif" font-size="14" font-weight="bold"%3ESAFARICOM PARTNER%3C/text%3E%3Ctext x="30" y="125" fill="%23FFFFFF" font-family="system-ui,sans-serif" font-size="24" font-weight="900"%3ESuperfast 5G Home%3C/text%3E%3Ctext x="30" y="160" fill="%23E6FFFA" font-family="system-ui,sans-serif" font-size="15" font-weight="600"%3EPost on WhatsApp • Earn KSh 100/view%3C/text%3E%3Crect x="30" y="185" width="130" height="30" rx="6" fill="%2310B981"/%3E%3Ctext x="95" y="205" fill="%23FFFFFF" font-family="system-ui,sans-serif" font-size="12" font-weight="bold" text-anchor="middle"%3EACTIVE AD%3C/text%3E%3C/svg%3E'
+        },
+        {
+          id: 'demo_2',
+          title: 'M-Pesa Merchant Cash Flow',
+          brand_name: 'Lipa Na M-Pesa',
+          downloads_count: 2150,
+          image_base64: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="240" viewBox="0 0 400 240"%3E%3Cdefs%3E%3ClinearGradient id="g2" x1="0" y1="0" x2="1" y2="1"%3E%3Cstop offset="0%25" stop-color="%23DC2626"/%3E%3Cstop offset="100%25" stop-color="%237F1D1D"/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="400" height="240" fill="url(%23g2)"/%3E%3Ccircle cx="50" cy="200" r="90" fill="%23EF4444" opacity="0.25"/%3E%3Ctext x="30" y="80" fill="%23FECACA" font-family="system-ui,sans-serif" font-size="14" font-weight="bold"%3ELIPA NA M-PESA%3C/text%3E%3Ctext x="30" y="125" fill="%23FFFFFF" font-family="system-ui,sans-serif" font-size="23" font-weight="900"%3EZero Fee Till Payments%3C/text%3E%3Ctext x="30" y="160" fill="%23FEE2E2" font-family="system-ui,sans-serif" font-size="15" font-weight="600"%3EHigh Conversion Kenyan Campaign%3C/text%3E%3Crect x="30" y="185" width="130" height="30" rx="6" fill="%23EF4444"/%3E%3Ctext x="95" y="205" fill="%23FFFFFF" font-family="system-ui,sans-serif" font-size="12" font-weight="bold" text-anchor="middle"%3EHIGH DEMAND%3C/text%3E%3C/svg%3E'
+        },
+        {
+          id: 'demo_3',
+          title: 'Nairobi Smart Tech Hub Expo',
+          brand_name: 'Tech Nairobi',
+          downloads_count: 1870,
+          image_base64: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="240" viewBox="0 0 400 240"%3E%3Cdefs%3E%3ClinearGradient id="g3" x1="0" y1="0" x2="1" y2="1"%3E%3Cstop offset="0%25" stop-color="%234F46E5"/%3E%3Cstop offset="100%25" stop-color="%231E1B4B"/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="400" height="240" fill="url(%23g3)"/%3E%3Ctext x="30" y="80" fill="%23C7D2FE" font-family="system-ui,sans-serif" font-size="14" font-weight="bold"%3ETECH EXPO 2026%3C/text%3E%3Ctext x="30" y="125" fill="%23FFFFFF" font-family="system-ui,sans-serif" font-size="23" font-weight="900"%3EGadgets & Laptops Sale%3C/text%3E%3Ctext x="30" y="160" fill="%23E0E7FF" font-family="system-ui,sans-serif" font-size="15" font-weight="600"%3EApproved Almai Brand Creative%3C/text%3E%3Crect x="30" y="185" width="130" height="30" rx="6" fill="%236366F1"/%3E%3Ctext x="95" y="205" fill="%23FFFFFF" font-family="system-ui,sans-serif" font-size="12" font-weight="bold" text-anchor="middle"%3EVERIFIED%3C/text%3E%3C/svg%3E'
+        },
+        {
+          id: 'demo_4',
+          title: 'Jambo Air Express Deals',
+          brand_name: 'Jambo Travel',
+          downloads_count: 980,
+          image_base64: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="240" viewBox="0 0 400 240"%3E%3Cdefs%3E%3ClinearGradient id="g4" x1="0" y1="0" x2="1" y2="1"%3E%3Cstop offset="0%25" stop-color="%237C3AED"/%3E%3Cstop offset="100%25" stop-color="%232D1537"/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="400" height="240" fill="url(%23g4)"/%3E%3Ctext x="30" y="80" fill="%23DDD6FE" font-family="system-ui,sans-serif" font-size="14" font-weight="bold"%3EKENYA FLIGHTS%3C/text%3E%3Ctext x="30" y="125" fill="%23FFFFFF" font-family="system-ui,sans-serif" font-size="23" font-weight="900"%3EMombasa & Kisumu Offers%3C/text%3E%3Ctext x="30" y="160" fill="%23EDE9FE" font-family="system-ui,sans-serif" font-size="15" font-weight="600"%3EVerified Corporate Banner%3C/text%3E%3Crect x="30" y="185" width="130" height="30" rx="6" fill="%239333EA"/%3E%3Ctext x="95" y="205" fill="%23FFFFFF" font-family="system-ui,sans-serif" font-size="12" font-weight="bold" text-anchor="middle"%3ETRENDING%3C/text%3E%3C/svg%3E'
+        }
+      ];
+
+      const rawItems = (posts && posts.length) ? posts : fallbackPosts;
+
+      // Duplicate items to ensure smooth infinite marquee scroll
+      let displayItems = [...rawItems];
+      while (displayItems.length < 8) {
+        displayItems = displayItems.concat(rawItems);
+      }
+      // Double the entire set for seamless 50% translation loop
+      const marqueeList = [...displayItems, ...displayItems];
+
+      track.innerHTML = marqueeList.map(item => {
+        const imgSource = item.image_base64 || item.image_url || '';
+        const title = escapeHTML(item.title || 'Brand Creative');
+        const brand = escapeHTML(item.brand_name || 'Almai Verified Partner');
+        const dls = (item.downloads_count || 0).toLocaleString();
+        const filename = (item.image_name || (item.title ? item.title.toLowerCase().replace(/[^a-z0-9]/g, '_') : 'whatsapp_ad') + '.jpg');
+
+        return `
+          <div class="showcase-card" onclick="handleShowcaseCardClick('${item.id}', '${imgSource}', '${escapeHTML(filename)}')">
+            <div class="showcase-card-img-wrap">
+              <img src="${imgSource}" alt="${title}" loading="lazy">
+              <span class="showcase-card-brand-badge">${brand}</span>
+            </div>
+            <div class="showcase-card-body">
+              <div class="showcase-card-title" title="${title}">${title}</div>
+              <div class="showcase-card-foot">
+                <span class="showcase-dl-pill">
+                  <span class="svg-icon" style="width: 12px; height: 12px; margin-right: 2px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                  </span>
+                  <span>${dls} dl</span>
+                </span>
+                <span style="display: inline-flex; align-items: center; gap: 3px; font-weight: 800; color: #16A34A;">
+                  <span>Post &amp; Earn</span> &rarr;
+                </span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function handleShowcaseCardClick(id, source, filename) {
+      if (AppState.user) {
+        downloadProductImage(id, source, filename);
+      } else {
+        showAuthModal('register');
+      }
     }
 
     // ====================================================================
@@ -4756,6 +5054,8 @@
       if (paybillEl) paybillEl.textContent = '522533';
       const accEl = document.getElementById('modal-acc-num');
       if (accEl) accEl.textContent = '8106675';
+      const bizEl = document.getElementById('modal-biz-name');
+      if (bizEl) bizEl.textContent = 'JASPER MARKETS';
 
       document.getElementById('activate-phone').value = AppState.user.phone || '';
       document.getElementById('activate-pkg-alert').style.display = 'none';
@@ -5355,6 +5655,50 @@
         }
       } catch (err) {
         alert('Network error while deleting product.');
+      }
+    }
+
+    async function adminClearAllProducts() {
+      if (!confirm('⚠️ Are you sure you want to delete and clear ALL posted products and creatives?\\n\\nThis will remove all live creatives from the landing page showcase and user download portal.')) return;
+
+      const confirmation = prompt('To confirm permanent deletion of all products, type CLEAR:');
+      if (confirmation !== 'CLEAR') {
+        alert('Action canceled. Nothing was deleted.');
+        return;
+      }
+
+      try {
+        const btn = document.getElementById('btn-admin-clear-prods');
+        if (btn) {
+          btn.disabled = true;
+          btn.textContent = 'Clearing...';
+        }
+
+        const res = await fetch('/api/admin/products-posts?clearAll=true', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert(`✓ Successfully deleted and cleared ${data.deleted || 0} product creative(s).`);
+          loadAdminProducts();
+          fetchProductsPosts();
+        } else {
+          alert(data.error || 'Failed to clear products');
+        }
+      } catch (err) {
+        alert('Network error while clearing products.');
+      } finally {
+        const btn = document.getElementById('btn-admin-clear-prods');
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = `
+            <span class="svg-icon" style="width: 14px; height: 14px; margin-right: 4px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            </span>
+            Clear All Products
+          `;
+        }
       }
     }
 

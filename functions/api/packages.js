@@ -44,8 +44,8 @@ export async function onRequestGet(context) {
         paymentMode: isMpesaConfigured ? 'automated_stk' : 'manual_till',
         paybill: env.MPESA_PAYBILL_NUMBER || '522533',
         accountNumber: env.MPESA_ACCOUNT_NUMBER || '8106675',
-        paybillOrTill: `Paybill: ${env.MPESA_PAYBILL_NUMBER || '522533'} (Account: ${env.MPESA_ACCOUNT_NUMBER || '8106675'})`,
-        businessName: 'Almai Products Network'
+        paybillOrTill: `Paybill: ${env.MPESA_PAYBILL_NUMBER || '522533'} (Account: ${env.MPESA_ACCOUNT_NUMBER || '8106675'}, Name: ${env.MPESA_BUSINESS_NAME || 'JASPER MARKETS'})`,
+        businessName: env.MPESA_BUSINESS_NAME || 'JASPER MARKETS'
       }
     });
 
