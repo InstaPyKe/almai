@@ -3,13 +3,21 @@
 // Route: POST /api/auth/register
 // ====================================================================
 
-import { jsonError, jsonSuccess, hashPassword, generateId, generateToken } from '../_utils.js';
+import { jsonError, jsonSuccess, hashPassword, generateId, generateToken, checkRateLimit, recordFailedAttempt } from '../_utils.js';
 
 export async function onRequestPost(context) {
   const { request, env } = context;
 
   if (!env.DB) {
     return jsonError('Database configuration missing', 500);
+  }
+
+  const ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for') || 'default_ip';
+
+  // Rate Limiting Check (Maximum 3 attempts)
+  const regCheck = await checkRateLimit(env, `reg:ip:${ip}`);
+  if (!regCheck.allowed) {
+    return jsonError(`Too many registration attempts (3 attempts reached). For security, please wait ${regCheck.waitMinutes || 10} minute(s) before trying again.`, 429);
   }
 
   let body;
@@ -50,8 +58,12 @@ export async function onRequestPost(context) {
     ).bind(cleanEmail).first();
 
     if (existing) {
+      await recordFailedAttempt(env, `reg:ip:${ip}`, 600);
       return jsonError('An account with this email address already exists. Please log in.', 409);
     }
+
+    // Record registration attempt for rate-limiting (max 3 accounts per IP per 10 mins)
+    await recordFailedAttempt(env, `reg:ip:${ip}`, 600);
 
     // 3. Hash password with PBKDF2-SHA256
     const { hash, salt } = await hashPassword(password);

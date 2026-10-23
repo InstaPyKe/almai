@@ -1,15 +1,15 @@
 {
-  "name": "almai-ads-products",
+  "name": "almai-products",
   "version": "1.0.0",
-  "description": "Almai Ads Products — Production Cloudflare Pages, D1 Database & Pages Functions",
+  "description": "Almai Products — Production Cloudflare Pages, D1 Database & Pages Functions",
   "type": "module",
   "scripts": {
-    "build": "wrangler pages functions build --outdir=.",
+    "build": "node -e \"require('fs').mkdirSync('public', {recursive:true}); require('fs').cpSync('index.html', 'public/index.html')\"",
     "dev": "wrangler pages dev . --d1 DB=almai-db --compatibility-date=2024-04-01",
     "d1:create": "wrangler d1 create almai-db",
     "d1:migrate:local": "wrangler d1 execute almai-db --local --file=./migrations/0001_initial_schema.sql",
     "d1:migrate:remote": "wrangler d1 execute almai-db --remote --file=./migrations/0001_initial_schema.sql",
-    "deploy": "wrangler pages deploy ."
+    "deploy": "wrangler pages deploy public"
   },
   "keywords": [
     "cloudflare-pages",

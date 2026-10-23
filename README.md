@@ -1,4 +1,4 @@
-# ALMAI ADS PRODUCTS — Cloudflare Pages & D1 Production Application
+# ALMAI PRODUCTS — Cloudflare Pages & D1 Production Application
 
 A real, production-ready WhatsApp advertising and monetization platform built specifically for Cloudflare Pages with native Cloudflare D1 database and Cloudflare Pages Functions.
 
@@ -193,7 +193,7 @@ Once logged in as an administrator:
    - Confirm session cookie `almai_session` is set with `HttpOnly` and `SameSite=Lax`.
    - Verify `/api/auth/me` returns the authenticated profile.
 2. **Package Activation:**
-   - Go to "Packages & Pricing", select Starter Z (KSh 250), Exclusive (KSh 500), or Premium (KSh 1,200).
+   - Go to "Packages & Pricing", select Starter Pro (KSh 250), Exclusive (KSh 500), or Premium (KSh 1,200).
    - Send payment to Safaricom Lipa na M-Pesa: **Paybill 522533**, **Account 8106675**.
    - Enter payment phone and M-Pesa confirmation code.
    - Verify package becomes active in dashboard immediately.

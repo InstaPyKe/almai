@@ -25,6 +25,7 @@ export async function onRequestGet(context) {
     `).all();
 
     return jsonSuccess({
+      posts: results || [],
       productPosts: results || []
     });
 
@@ -157,14 +158,17 @@ export async function onRequestDelete(context) {
 
   const admin = auth.user;
 
-  let body;
-  try {
-    body = await request.json();
-  } catch (e) {
-    return jsonError('Invalid JSON request body', 400);
-  }
+  const url = new URL(request.url);
+  let postId = url.searchParams.get('id') || url.searchParams.get('postId');
 
-  const { postId } = body;
+  if (!postId) {
+    try {
+      const body = await request.json();
+      postId = body?.postId || body?.id;
+    } catch (e) {
+      // Body is optional if query parameter was supplied
+    }
+  }
 
   if (!postId) {
     return jsonError('postId is required', 400);

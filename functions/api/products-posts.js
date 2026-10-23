@@ -27,6 +27,7 @@ export async function onRequestGet(context) {
     `).all();
 
     return jsonSuccess({
+      posts: results || [],
       productPosts: results || []
     });
 
@@ -54,24 +55,20 @@ export async function onRequestPost(context) {
     return jsonError('Invalid JSON request body', 400);
   }
 
-  const { postId, action } = body;
+  const targetId = body?.id || body?.postId;
 
-  if (!postId) {
-    return jsonError('postId is required', 400);
+  if (!targetId) {
+    return jsonError('Product ID is required', 400);
   }
 
   try {
-    if (action === 'download') {
-      await env.DB.prepare(`
-        UPDATE product_posts
-        SET downloads_count = downloads_count + 1
-        WHERE id = ?
-      `).bind(postId).run();
+    await env.DB.prepare(`
+      UPDATE product_posts
+      SET downloads_count = downloads_count + 1
+      WHERE id = ?
+    `).bind(targetId).run();
 
-      return jsonSuccess({ message: 'Download tracked' });
-    }
-
-    return jsonSuccess({ message: 'OK' });
+    return jsonSuccess({ message: 'Download tracked successfully' });
   } catch (err) {
     return jsonError('Failed to track download event', 500);
   }

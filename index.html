@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Almai Ads Products — Kenya's Premier WhatsApp Monetization & Advertising Network</title>
-  <meta name="description" content="Turn your genuine WhatsApp Status views into daily guaranteed income. Partner with Almai Ads Products for verified brand campaigns paid directly via M-Pesa.">
+  <title>Almai Products — Kenya's Premier WhatsApp Monetization Network</title>
+  <meta name="description" content="Turn your genuine WhatsApp Status views into daily guaranteed income. Partner with Almai Products for verified brand campaigns paid directly via M-Pesa.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
@@ -155,37 +155,52 @@
     .brand-logo {
       display: flex;
       align-items: center;
-      gap: 10px;
-      font-weight: 900;
-      font-size: 22px;
-      color: var(--deep-purple-heading);
-      letter-spacing: -0.035em;
+      gap: 12px;
+      font-weight: 950;
+      font-size: clamp(26px, 3.2vw, 34px);
+      letter-spacing: -0.04em;
       user-select: none;
+      line-height: 1.1;
+    }
+    .brand-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand-title-main {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 950;
+      background: linear-gradient(135deg, var(--deep-purple-heading), var(--primary-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.035em;
     }
     .brand-logo-icon {
-      width: 40px;
-      height: 40px;
+      width: 48px;
+      height: 48px;
       background: linear-gradient(135deg, var(--deep-purple-heading), var(--primary-purple));
-      border-radius: var(--radius-sm);
+      border-radius: var(--radius-md);
       display: flex;
       align-items: center;
       justify-content: center;
       color: #fff;
-      font-weight: 900;
-      font-size: 20px;
-      box-shadow: 0 4px 10px rgba(109, 40, 217, 0.25);
+      font-weight: 950;
+      font-size: 24px;
+      box-shadow: 0 4px 14px rgba(109, 40, 217, 0.35);
+      flex-shrink: 0;
     }
     .brand-tag {
       display: inline-block;
       background: var(--primary-purple-light);
       color: var(--primary-purple);
-      font-size: 12px;
-      font-weight: 800;
+      font-size: 12.5px;
+      font-weight: 850;
       padding: 4px 10px;
       border-radius: var(--radius-full);
-      border: 1px solid rgba(109, 40, 217, 0.2);
-      margin-left: 6px;
+      border: 1.5px solid rgba(109, 40, 217, 0.25);
+      margin-left: 4px;
       letter-spacing: 0.04em;
+      vertical-align: middle;
     }
 
     /* Desktop Navigation Links */
@@ -1142,6 +1157,71 @@
       border-color: var(--primary-purple);
       box-shadow: 0 4px 12px rgba(109, 40, 217, 0.28);
     }
+    .tab-badge {
+      background: rgba(255, 255, 255, 0.25);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 850;
+      padding: 1px 7px;
+      border-radius: var(--radius-full);
+      line-height: 1.3;
+      margin-left: 4px;
+      transition: var(--transition);
+    }
+    .admin-tab:not(.active) .tab-badge {
+      background: var(--primary-purple-light);
+      color: var(--primary-purple);
+    }
+    .tab-badge.badge-alert {
+      background: var(--warning-orange) !important;
+      color: #fff !important;
+      animation: alertPulse 2s infinite ease-in-out;
+    }
+    @keyframes alertPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.08); }
+    }
+    .admin-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .admin-kpi-card {
+      background: #fff;
+      border: 1.5px solid var(--beige-border);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .admin-kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: #D8B4FE;
+    }
+    .admin-kpi-lbl {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--charcoal-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .admin-kpi-val {
+      font-size: 28px;
+      font-weight: 900;
+      font-family: 'Space Grotesk', sans-serif;
+      color: var(--deep-purple-heading);
+      margin: 6px 0 2px;
+    }
+    .admin-kpi-sub {
+      font-size: 12px;
+      color: var(--charcoal-muted);
+      font-weight: 600;
+    }
     .admin-content-section {
       background: var(--white-card);
       border: 1.5px solid var(--beige-border);
@@ -2074,8 +2154,8 @@
     <div class="container nav-inner">
       <div class="brand-logo" onclick="switchView('home')" style="cursor: pointer;">
         <div class="brand-logo-icon">A</div>
-        <div>
-          <span>ALMAI ADS</span>
+        <div class="brand-title-wrap">
+          <span class="brand-title-main">ALMAI PRODUCTS</span>
           <span class="brand-tag">KENYA</span>
         </div>
       </div>
@@ -2137,9 +2217,9 @@
   <div class="mobile-menu-backdrop" id="mobile-backdrop" onclick="closeMobileNav()"></div>
   <aside class="mobile-drawer" id="mobile-drawer">
     <div class="mobile-drawer-header">
-      <div class="brand-logo" style="font-size: 18px;">
-        <div class="brand-logo-icon" style="width: 32px; height: 32px; font-size: 16px;">A</div>
-        <span>ALMAI ADS</span>
+      <div class="brand-logo" style="font-size: 24px;">
+        <div class="brand-logo-icon" style="width: 38px; height: 38px; font-size: 19px;">A</div>
+        <span class="brand-title-main">ALMAI PRODUCTS</span>
       </div>
       <button class="modal-close-btn" style="position: static;" onclick="closeMobileNav()" aria-label="Close Mobile Menu">
         <span class="svg-icon" style="width: 16px; height: 16px;">
@@ -2157,7 +2237,7 @@
       </li>
       <li class="mobile-nav-item" onclick="mobileNavAction('products')">
         <span class="svg-icon" style="width: 18px; height: 18px;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
         </span>
         Packages & Pricing
       </li>
@@ -2206,13 +2286,6 @@
   <main id="view-home" class="view-container active-view">
     <section class="hero-section">
       <div class="container">
-        <!-- Hero Kicker Pill with Live Radar Pulse -->
-        <div class="hero-kicker-pill">
-          <span class="kicker-pulse-dot"></span>
-          <span class="kicker-flag">🇰🇪</span>
-          <span class="kicker-text">KENYA'S #1 VERIFIED WHATSAPP AD NETWORK</span>
-          <span class="kicker-badge">LIVE PAYOUTS</span>
-        </div>
 
         <h1 class="hero-title">
           Turn Your WhatsApp Status Views Into <span>Guaranteed Daily Cash</span>
@@ -2231,14 +2304,6 @@
           <button class="btn btn-secondary btn-lg" onclick="switchView('products')">
             Explore Packages
           </button>
-        </div>
-
-        <!-- Hero Trust Bar -->
-        <div class="hero-trust-bar">
-          <div class="trust-item"><span class="trust-icon">⚡</span><span>Instant M-Pesa Disbursements</span></div>
-          <div class="trust-item"><span class="trust-icon">🛡️</span><span>Cloudflare Secured Ledger</span></div>
-          <div class="trust-item"><span class="trust-icon">⏱️</span><span>18-Hour Verified Cooldown</span></div>
-          <div class="trust-item"><span class="trust-icon">👥</span><span>14,200+ Active Kenyan Earners</span></div>
         </div>
 
         <!-- Live Platform Stats -->
@@ -2305,7 +2370,7 @@
               </div>
               <div class="tier-switcher-grid">
                 <button class="tier-btn" id="calc-btn-starter" onclick="setCalcTier('starter', 20)">
-                  Starter Z<br><small style="font-weight: 500; opacity: 0.85;">KSh 20 / view</small>
+                  Starter Pro<br><small style="font-weight: 500; opacity: 0.85;">KSh 20 / view</small>
                 </button>
                 <button class="tier-btn active" id="calc-btn-exclusive" onclick="setCalcTier('exclusive', 50)">
                   Exclusive<br><small style="font-weight: 500; opacity: 0.85;">KSh 50 / view</small>
@@ -2364,7 +2429,7 @@
             </span>
           </div>
           <h3>1. Choose Your Tier</h3>
-          <p>Pick Starter Z (Pay 250), Exclusive (Pay 500), or Premium (Pay 1200) to lock in your guaranteed rate per verified status view.</p>
+          <p>Pick Starter Pro (Pay 250), Exclusive (Pay 500), or Premium (Pay 1200) to lock in your guaranteed rate per verified status view.</p>
         </div>
 
         <div class="step-card">
@@ -2451,7 +2516,7 @@
             <span class="feature-tag">Scale Your Income</span>
           </div>
           <h3>Tier Multipliers (Up to KSh 100/View)</h3>
-          <p>Choose the tier that matches your network size. Start on Starter Z at KSh 20 per view, upgrade to Exclusive at KSh 50 per view, or maximize with Premium at KSh 100 per view.</p>
+          <p>Choose the tier that matches your network size. Start on Starter Pro at KSh 20 per view, upgrade to Exclusive at KSh 50 per view, or maximize with Premium at KSh 100 per view.</p>
           <div class="feature-meta">
             <span class="meta-bullet">✓ Lifetime Tier Access</span>
             <span class="meta-bullet">✓ Unlimited Daily Potential</span>
@@ -2465,7 +2530,7 @@
       <div class="section-header">
         <div class="section-pill">VERIFIED CREATOR STORIES</div>
         <h2 class="section-title">Trusted By Over 14,000+ Kenyan Partners</h2>
-        <p class="section-desc">See how students, digital creators, and young professionals are funding their daily goals with Almai Ads.</p>
+        <p class="section-desc">See how students, digital creators, and young professionals are funding their daily goals with Almai Products.</p>
       </div>
 
       <div class="testimonials-grid">
@@ -2559,13 +2624,13 @@
             <span class="faq-arrow">▼</span>
           </div>
           <div class="faq-answer">
-            <p>You can activate via Safaricom M-Pesa Lipa na M-Pesa using <strong>Paybill 522533</strong> and <strong>Account 8106675</strong>. After sending the exact fee (KSh 250 for Starter Z, KSh 500 for Exclusive, or KSh 1,200 for Premium), paste your M-Pesa confirmation code in your dashboard to activate immediately.</p>
+            <p>You can activate via Safaricom M-Pesa Lipa na M-Pesa using <strong>Paybill 522533</strong> and <strong>Account 8106675</strong>. After sending the exact fee (KSh 250 for Starter Pro, KSh 500 for Exclusive, or KSh 1,200 for Premium), paste your M-Pesa confirmation code in your dashboard to activate immediately.</p>
           </div>
         </div>
 
         <div class="faq-item" onclick="toggleFaq(this)">
           <div class="faq-question">
-            <span>Can I upgrade from Starter Z to Exclusive or Premium later?</span>
+            <span>Can I upgrade from Starter Pro to Exclusive or Premium later?</span>
             <span class="faq-arrow">▼</span>
           </div>
           <div class="faq-answer">
@@ -2575,7 +2640,7 @@
 
         <div class="faq-item" onclick="toggleFaq(this)">
           <div class="faq-question">
-            <span>How do businesses book ads on Almai Ads?</span>
+            <span>How do businesses book ads on Almai Products?</span>
             <span class="faq-arrow">▼</span>
           </div>
           <div class="faq-answer">
@@ -2590,7 +2655,7 @@
       <div class="brand-solutions-box">
         <div>
           <h2>Need Massive Kenyan WhatsApp Reach for Your Business?</h2>
-          <p>Almai Ads connects verified brands, e-commerce stores, and events with over 500,000+ targeted Kenyan WhatsApp status viewers across Nairobi, Mombasa, and beyond.</p>
+          <p>Almai Products connects verified brands, e-commerce stores, and events with over 500,000+ targeted Kenyan WhatsApp status viewers across Nairobi, Mombasa, and beyond.</p>
           <button class="btn btn-primary" onclick="openInquiryModal()">
             <span class="svg-icon" style="width: 18px; height: 18px; margin-right: 4px;">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
@@ -2613,7 +2678,7 @@
   <main id="view-products" class="view-container">
     <div class="container" style="padding: 40px 20px;">
       <div class="section-header">
-        <h1 class="section-title">Almai Ads Partner Packages</h1>
+        <h1 class="section-title">Almai Products Partner Packages</h1>
         <p class="section-desc">Select your preferred partner tier. Pay your one-time activation and unlock guaranteed payouts per view.</p>
       </div>
 
@@ -2739,7 +2804,7 @@
         <div class="user-greeting">
           <h2>Welcome back, <span id="dash-user-name">Partner</span>!</h2>
           <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
-            <span class="user-pkg-tag" id="dash-pkg-tag">Starter Z</span>
+            <span class="user-pkg-tag" id="dash-pkg-tag">Starter Pro</span>
             <span style="font-size: 13px; color: var(--charcoal-muted);" id="dash-user-email">user@almai.co.ke</span>
           </div>
         </div>
@@ -3040,7 +3105,7 @@
       </button>
       <h3 style="font-size: 21px; margin-bottom: 6px;">Activate Partner Package</h3>
       <p style="color: var(--charcoal-muted); font-size: 13.5px; margin-bottom: 18px;" id="modal-pkg-subtitle">
-        Starter Z — KSh 250 Activation
+        Starter Pro — KSh 250 Activation
       </p>
 
       <div style="background: #F3E8FF; border: 1.5px solid #D8B4FE; border-radius: var(--radius-sm); padding: 18px; margin-bottom: 20px;">
@@ -3171,25 +3236,54 @@
         </div>
       </div>
 
+      <!-- Executive Operational Metrics (Live Overview) -->
+      <div class="admin-kpi-grid">
+        <div class="admin-kpi-card" style="border-left: 4px solid var(--warning-orange);">
+          <div class="admin-kpi-lbl">Pending Payments</div>
+          <div class="admin-kpi-val" id="kpi-pending-payments">0</div>
+          <div class="admin-kpi-sub">M-Pesa codes awaiting audit</div>
+        </div>
+        <div class="admin-kpi-card" style="border-left: 4px solid var(--primary-purple);">
+          <div class="admin-kpi-lbl">Total Partners</div>
+          <div class="admin-kpi-val" id="kpi-total-users">0</div>
+          <div class="admin-kpi-sub">Registered Kenyan earners</div>
+        </div>
+        <div class="admin-kpi-card" style="border-left: 4px solid #06B6D4;">
+          <div class="admin-kpi-lbl">Active Creatives</div>
+          <div class="admin-kpi-val" id="kpi-live-products">0</div>
+          <div class="admin-kpi-sub">WhatsApp product downloads</div>
+        </div>
+        <div class="admin-kpi-card" style="border-left: 4px solid #8B5CF6;">
+          <div class="admin-kpi-lbl">Pending Task Proofs</div>
+          <div class="admin-kpi-val" id="kpi-pending-tasks">0</div>
+          <div class="admin-kpi-sub">18h Status screenshots</div>
+        </div>
+        <div class="admin-kpi-card" style="border-left: 4px solid var(--success-green);">
+          <div class="admin-kpi-lbl">Pending Cashouts</div>
+          <div class="admin-kpi-val" id="kpi-pending-withdrawals">0</div>
+          <div class="admin-kpi-sub">M-Pesa cashouts queued</div>
+        </div>
+      </div>
+
       <!-- Navigation Tabs Bar -->
       <div class="admin-nav-bar">
         <button class="admin-tab active" id="atab-payments" onclick="switchAdminTab('payments')">
-          <span>💳</span> M-Pesa Verification Codes
+          <span>💳</span> M-Pesa Codes <span class="tab-badge" id="tab-badge-payments" style="display: none;">0</span>
         </button>
         <button class="admin-tab" id="atab-users" onclick="switchAdminTab('users')">
-          <span>👥</span> User Accounts Directory
+          <span>👥</span> Partner Directory
         </button>
         <button class="admin-tab" id="atab-products" onclick="switchAdminTab('products')">
-          <span>📢</span> Post WhatsApp Products
+          <span>📢</span> WhatsApp Products <span class="tab-badge" id="tab-badge-products" style="display: none;">0</span>
         </button>
         <button class="admin-tab" id="atab-tasks" onclick="switchAdminTab('tasks')">
-          <span>📋</span> Task Proofs Queue
+          <span>📋</span> Task Proofs <span class="tab-badge" id="tab-badge-tasks" style="display: none;">0</span>
         </button>
         <button class="admin-tab" id="atab-withdrawals" onclick="switchAdminTab('withdrawals')">
-          <span>💸</span> Withdrawals Queue
+          <span>💸</span> Withdrawals <span class="tab-badge" id="tab-badge-withdrawals" style="display: none;">0</span>
         </button>
         <button class="admin-tab" id="atab-stats" onclick="switchAdminTab('stats')">
-          <span>📊</span> Platform Stats
+          <span>📊</span> Financial Stats
         </button>
         <button class="admin-tab" id="atab-audit" onclick="switchAdminTab('audit')">
           <span>🛡️</span> Audit Logs
@@ -3428,7 +3522,7 @@
         <div class="footer-col">
           <div class="brand-logo" style="color: #fff; margin-bottom: 14px; font-size: 24px; font-weight: 900;">
             <div class="brand-logo-icon">A</div>
-            <span>ALMAI ADS PRODUCTS</span>
+            <span>ALMAI PRODUCTS</span>
           </div>
           <p style="color: #D6D3D1; font-size: 15.5px; font-weight: 600; max-width: 440px; line-height: 1.68;">
             Kenya's leading WhatsApp Status advertising network. Empowering Kenyan creators, students, and digital partners with guaranteed daily income backed by transparent Cloudflare technology.
@@ -3457,7 +3551,7 @@
       </div>
 
       <div class="footer-bottom">
-        <div id="footer-copyright" class="copyright-trigger" onclick="handleCopyrightTap()" title="Almai Ads Products">&copy; <span id="cur-year">2026</span> Almai Ads Products. All rights reserved.</div>
+        <div id="footer-copyright" class="copyright-trigger" onclick="handleCopyrightTap()" title="Almai Products">&copy; <span id="cur-year">2026</span> Almai Products. All rights reserved.</div>
         <div style="display: flex; gap: 20px; font-size: 16px; font-weight: 750;">
           <a href="javascript:void(0)" onclick="openInquiryModal()">Advertise With Us</a>
           <a href="javascript:void(0)" onclick="showAuthModal('login')">Partner Portal</a>
@@ -3537,7 +3631,7 @@
             alertEl.innerHTML = `
               <div style="font-size: 15px; font-weight: 700; line-height: 1.5;">
                 👑 <strong>Administrator Gateway Unlocked</strong><br>
-                Enter your admin password (<code>almai12345</code>) to access the Administration Center.
+                Enter your authorized administrator credentials to access the Administration Center.
               </div>
             `;
           }
@@ -3546,9 +3640,76 @@
     }
 
     // ====================================================================
+    // INACTIVITY TRACKER & AUTO-LOGOUT (STRICT 2-MINUTE LIMIT)
+    // ====================================================================
+    let lastUserActivityTime = Date.now();
+    let keepAliveTimer = null;
+    let inactivityTimer = null;
+
+    function resetUserActivity() {
+      lastUserActivityTime = Date.now();
+    }
+
+    function initInactivityTracker() {
+      const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click'];
+      events.forEach(evt => window.addEventListener(evt, resetUserActivity, { passive: true }));
+
+      // Check every 2 seconds if logged-in user has been inactive for 2 minutes (120,000 ms)
+      if (inactivityTimer) clearInterval(inactivityTimer);
+      inactivityTimer = setInterval(async () => {
+        if (!AppState.user) return; // only for logged in users
+        const inactiveMs = Date.now() - lastUserActivityTime;
+        if (inactiveMs >= 120000) { // 2 minutes (120 seconds)
+          console.warn('User inactive for 2 minutes. Auto logging out...');
+          await handleInactivityLogout();
+        }
+      }, 2000);
+
+      // Keepalive ping every 45s while user is actively using the site to renew sliding server session
+      if (keepAliveTimer) clearInterval(keepAliveTimer);
+      keepAliveTimer = setInterval(async () => {
+        if (!AppState.user) return;
+        const inactiveMs = Date.now() - lastUserActivityTime;
+        if (inactiveMs < 90000) { // active within last 90 seconds
+          try {
+            await fetch('/api/auth/me', { headers: { 'Accept': 'application/json' } });
+          } catch (e) {}
+        }
+      }, 45000);
+    }
+
+    async function handleInactivityLogout() {
+      try {
+        await fetch('/api/auth/logout', { method: 'POST' });
+      } catch (err) {}
+
+      AppState.user = null;
+      AppState.wallet = null;
+      AppState.activePackage = null;
+      AppState.pendingPackage = null;
+      AppState.hasActivePackage = false;
+      renderGuestUI();
+      renderPackageGatingBanner();
+      showAuthModal('login');
+
+      const alertEl = document.getElementById('auth-alert');
+      if (alertEl) {
+        alertEl.className = 'alert alert-error';
+        alertEl.innerHTML = `
+          <div>
+            🔒 <strong>Session Expired (2-Minute Inactivity)</strong><br>
+            You were automatically signed out for your account security due to 2 minutes of inactivity. Please sign in again to continue.
+          </div>
+        `;
+        alertEl.style.display = 'flex';
+      }
+    }
+
+    // ====================================================================
     // INITIALIZATION & SESSION CHECK
     // ====================================================================
     window.addEventListener('DOMContentLoaded', async () => {
+      initInactivityTracker();
       await checkAuthSession();
       await fetchPackages();
       await fetchProductsPosts();
@@ -3564,6 +3725,7 @@
         if (res.ok) {
           const data = await res.json();
           if (data.authenticated && data.user) {
+            lastUserActivityTime = Date.now();
             AppState.user = data.user;
             AppState.wallet = data.wallet;
             AppState.activePackage = data.activePackage;
@@ -4004,7 +4166,7 @@
           }
         }
       });
-      const names = { starter: 'Starter Z', exclusive: 'Exclusive', premium: 'Premium' };
+      const names = { starter: 'Starter Pro', exclusive: 'Exclusive', premium: 'Premium' };
       const name = names[slug] || 'Tier';
       document.getElementById('calc-tier-label').textContent = `${name} (KSh ${rate}/view)`;
       updateCalculator();
@@ -4030,7 +4192,7 @@
         const res = await fetch('/api/products-posts');
         if (res.ok) {
           const data = await res.json();
-          AppState.productsPosts = data.posts || [];
+          AppState.productsPosts = (data && (data.posts || data.productPosts)) || [];
           renderProductsPosts(AppState.productsPosts);
         }
       } catch (err) {
@@ -4106,26 +4268,49 @@
         fetch('/api/products-posts', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id })
+          body: JSON.stringify({ id, postId: id })
         }).catch(() => {});
 
-        // Optimistically update counter in UI
-        const counter = document.getElementById(`prod-dl-count-${id}`);
-        if (counter) {
-          const cur = parseInt(counter.textContent, 10) || 0;
-          counter.textContent = cur + 1;
+        // Optimistically update counter in UI across all matching elements
+        const counters = document.querySelectorAll(`[id="prod-dl-count-${id}"]`);
+        counters.forEach(c => {
+          const cur = parseInt(c.textContent, 10) || 0;
+          c.textContent = cur + 1;
+        });
+
+        if (AppState.productsPosts) {
+          const item = AppState.productsPosts.find(p => p.id === id);
+          if (item) item.downloads_count = (item.downloads_count || 0) + 1;
         }
 
-        // Trigger browser download
-        const a = document.createElement('a');
-        a.href = source;
-        a.download = filename || 'almai_whatsapp_product.jpg';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+        const safeFilename = filename || 'almai_whatsapp_product.jpg';
+
+        if (source.startsWith('data:')) {
+          const a = document.createElement('a');
+          a.href = source;
+          a.download = safeFilename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        } else {
+          try {
+            const resp = await fetch(source);
+            const blob = await resp.blob();
+            const blobUrl = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = blobUrl;
+            a.download = safeFilename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
+          } catch (e) {
+            window.open(source, '_blank');
+          }
+        }
       } catch (err) {
         console.error('Download error:', err);
-        alert('Failed to initiate download. Please try again.');
+        window.open(source, '_blank');
       }
     }
 
@@ -4686,7 +4871,7 @@
     }
 
     function copyCaptionText() {
-      const caption = 'Discover verified digital advertising and daily earnings with Almai Ads! Visit: https://almai.pages.dev';
+      const caption = 'Discover verified digital advertising and daily earnings with Almai Products! Visit: https://almai.pages.dev';
       navigator.clipboard.writeText(caption).then(() => {
         alert('Campaign caption copied to clipboard!');
       });
@@ -4717,6 +4902,8 @@
       if (activeBtn) activeBtn.classList.add('active');
       if (activeSec) activeSec.style.display = 'block';
 
+      refreshAdminKpis();
+
       if (tab === 'payments') loadAdminPayments(AppState.activePayFilter || 'pending');
       if (tab === 'users') loadAdminUsers();
       if (tab === 'products') loadAdminProducts();
@@ -4724,6 +4911,50 @@
       if (tab === 'withdrawals') loadAdminWithdrawals();
       if (tab === 'stats') loadAdminStats();
       if (tab === 'audit') loadAdminAudit();
+    }
+
+    async function refreshAdminKpis() {
+      try {
+        const res = await fetch('/api/admin/stats');
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!data.metrics) return;
+        const m = data.metrics;
+
+        const elPay = document.getElementById('kpi-pending-payments');
+        if (elPay) elPay.textContent = (m.pendingPaymentsCount || 0).toLocaleString();
+        const elUsers = document.getElementById('kpi-total-users');
+        if (elUsers) elUsers.textContent = (m.totalUsers || 0).toLocaleString();
+        const elProds = document.getElementById('kpi-live-products');
+        if (elProds) elProds.textContent = (m.totalProductsCount || 0).toLocaleString();
+        const elTasks = document.getElementById('kpi-pending-tasks');
+        if (elTasks) elTasks.textContent = (m.pendingTasksCount || 0).toLocaleString();
+        const elWd = document.getElementById('kpi-pending-withdrawals');
+        if (elWd) elWd.textContent = (m.pendingWithdrawalsCount || 0).toLocaleString();
+
+        updateTabBadge('tab-badge-payments', m.pendingPaymentsCount, true);
+        updateTabBadge('tab-badge-products', m.totalProductsCount, false);
+        updateTabBadge('tab-badge-tasks', m.pendingTasksCount, true);
+        updateTabBadge('tab-badge-withdrawals', m.pendingWithdrawalsCount, true);
+      } catch (e) {
+        console.warn('KPI fetch error:', e);
+      }
+    }
+
+    function updateTabBadge(badgeId, count, isAlert = false) {
+      const el = document.getElementById(badgeId);
+      if (!el) return;
+      if (count && count > 0) {
+        el.textContent = count > 99 ? '99+' : count;
+        el.style.display = 'inline-block';
+        if (isAlert) {
+          el.classList.add('badge-alert');
+        } else {
+          el.classList.remove('badge-alert');
+        }
+      } else {
+        el.style.display = 'none';
+      }
     }
 
     // --- TAB 1: M-PESA VERIFICATION CODES ---
@@ -4918,7 +5149,7 @@
     }
 
     async function adminAssignPackage(userId, userName) {
-      const selection = prompt(`Assign package to ${userName}:\n1 = Starter Z (KSh 20/view)\n2 = Exclusive (KSh 50/view)\n3 = Premium (KSh 100/view)\n\nEnter 1, 2, or 3:`, '2');
+      const selection = prompt(`Assign package to ${userName}:\n1 = Starter Pro (KSh 20/view)\n2 = Exclusive (KSh 50/view)\n3 = Premium (KSh 100/view)\n\nEnter 1, 2, or 3:`, '2');
       if (!selection) return;
 
       const mapping = {
@@ -5061,30 +5292,43 @@
       try {
         const res = await fetch('/api/admin/products-posts');
         const data = await res.json();
+        const posts = (data && (data.posts || data.productPosts)) || [];
 
-        if (res.ok && data.posts) {
-          countEl.textContent = data.posts.length;
+        if (res.ok) {
+          if (countEl) countEl.textContent = posts.length;
+          const kpi = document.getElementById('kpi-live-products');
+          if (kpi) kpi.textContent = posts.length;
+          const badge = document.getElementById('tab-badge-products');
+          if (badge) {
+            badge.textContent = posts.length;
+            badge.style.display = posts.length ? 'inline-block' : 'none';
+          }
 
-          if (!data.posts.length) {
-            container.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--charcoal-muted);">No products posted yet. Upload the first product creative on the left!</div>';
+          if (!posts.length) {
+            container.innerHTML = '<div style="text-align: center; padding: 24px; color: var(--charcoal-muted); background: #fff; border-radius: var(--radius-sm); border: 1.5px dashed var(--beige-border);">No products posted yet. Upload the first product creative on the left!</div>';
             return;
           }
 
-          container.innerHTML = data.posts.map(p => {
+          container.innerHTML = posts.map(p => {
             const imgSource = p.image_base64 || p.image_url || '';
+            const dateStr = p.created_at ? new Date(p.created_at * 1000).toLocaleDateString('en-KE', { month: 'short', day: 'numeric' }) : '';
             return `
-              <div style="display: flex; gap: 12px; background: #fff; border: 1px solid var(--beige-border); border-radius: var(--radius-sm); padding: 12px; align-items: center;">
-                <img src="${imgSource}" alt="${escapeHTML(p.title)}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px; border: 1px solid var(--beige-border); background: #2D1537;">
+              <div style="display: flex; gap: 14px; background: #fff; border: 1.5px solid var(--beige-border); border-radius: var(--radius-sm); padding: 14px; align-items: center; box-shadow: var(--shadow-sm);">
+                <img src="${imgSource}" alt="${escapeHTML(p.title)}" style="width: 72px; height: 72px; object-fit: cover; border-radius: 8px; border: 1.5px solid var(--beige-border); background: #2D1537; flex-shrink: 0;">
                 <div style="flex: 1; min-width: 0;">
-                  <div style="font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHTML(p.title)}</div>
-                  <div style="font-size: 12px; color: var(--primary-purple);">${escapeHTML(p.brand_name || 'Almai Brand')}</div>
-                  <div style="font-size: 11.5px; color: var(--charcoal-muted); margin-top: 2px;">
-                    Downloads: <strong>${p.downloads_count || 0}</strong>
+                  <div style="font-weight: 800; font-size: 14.5px; color: var(--deep-purple-heading); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHTML(p.title)}</div>
+                  <div style="font-size: 12px; color: var(--primary-purple); font-weight: 700; margin-top: 2px;">${escapeHTML(p.brand_name || 'Almai Verified')}</div>
+                  <div style="font-size: 12px; color: var(--charcoal-muted); margin-top: 4px; display: flex; gap: 12px; flex-wrap: wrap;">
+                    <span>Downloads: <strong>${p.downloads_count || 0}</strong></span>
+                    ${dateStr ? `<span>Posted: <strong>${dateStr}</strong></span>` : ''}
+                    <span style="color: var(--success-green); font-weight: 700;">✓ Live on user feeds</span>
                   </div>
                 </div>
-                <button class="btn btn-danger btn-sm" onclick="adminDeleteProduct('${p.id}', '${escapeHTML(p.title)}')">
-                  Delete
-                </button>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                  <button class="btn btn-danger btn-sm" onclick="adminDeleteProduct('${p.id}', '${escapeHTML(p.title)}')">
+                    Delete
+                  </button>
+                </div>
               </div>
             `;
           }).join('');
@@ -5134,7 +5378,7 @@
                 <strong>${escapeHTML(ts.user_name)}</strong><br>
                 <span style="font-size: 12px; color: var(--charcoal-muted);">${escapeHTML(ts.user_email)} | ${escapeHTML(ts.user_phone)}</span>
               </td>
-              <td>${escapeHTML(ts.package_name || 'Starter Z')}<br><span style="font-size: 12px; color: var(--primary-purple);">Rate: KSh ${ts.reward_rate_ksh}/view</span></td>
+              <td>${escapeHTML(ts.package_name || 'Starter Pro')}<br><span style="font-size: 12px; color: var(--primary-purple);">Rate: KSh ${ts.reward_rate_ksh}/view</span></td>
               <td><strong>${ts.reported_views} views</strong></td>
               <td>
                 <button class="btn btn-secondary btn-sm" onclick="viewEvidenceModal('${ts.evidence_id}')">

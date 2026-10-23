@@ -152,6 +152,10 @@ export async function authenticate(request, env) {
 
   if (!session) return null;
 
+  // Enforce sliding 2-minute session inactivity expiration (now + 120s)
+  const refreshedExpiresAt = now + 120;
+  env.DB.prepare('UPDATE sessions SET expires_at = ? WHERE id = ?').bind(refreshedExpiresAt, token).run().catch(() => {});
+
   return {
     token,
     id: session.user_id,
@@ -169,7 +173,7 @@ export async function authenticate(request, env) {
 export async function requireAuth(request, env) {
   const user = await authenticate(request, env);
   if (!user) {
-    return { errorResponse: jsonError('Authentication required. Please sign in.', 401) };
+    return { errorResponse: jsonError('Session expired or authentication required. Please sign in.', 401) };
   }
   return { user };
 }
@@ -182,6 +186,98 @@ export async function requireAdmin(request, env) {
     return { errorResponse: jsonError('Forbidden: Administrator privileges required.', 403) };
   }
   return { user: auth.user };
+}
+
+/**
+ * Rate Limiting for Authentication (3 attempts limit)
+ */
+export async function checkRateLimit(env, key) {
+  if (!env || !env.DB) return { allowed: true, remaining: 3 };
+  try {
+    const now = Math.floor(Date.now() / 1000);
+    const row = await env.DB.prepare(`
+      SELECT attempts, last_attempt, blocked_until 
+      FROM rate_limits 
+      WHERE key = ? 
+      LIMIT 1
+    `).bind(key).first();
+
+    if (!row) return { allowed: true, remaining: 3, attempts: 0 };
+
+    if (row.blocked_until && row.blocked_until > now) {
+      const waitSeconds = row.blocked_until - now;
+      return {
+        allowed: false,
+        remaining: 0,
+        attempts: row.attempts,
+        waitSeconds,
+        waitMinutes: Math.ceil(waitSeconds / 60)
+      };
+    }
+
+    // Reset if window of 10 minutes has passed
+    if (now - row.last_attempt > 600) {
+      await env.DB.prepare('DELETE FROM rate_limits WHERE key = ?').bind(key).run().catch(() => {});
+      return { allowed: true, remaining: 3, attempts: 0 };
+    }
+
+    const remaining = Math.max(0, 3 - row.attempts);
+    return {
+      allowed: row.attempts < 3,
+      remaining,
+      attempts: row.attempts
+    };
+  } catch (err) {
+    // Auto-create table if missing
+    try {
+      await env.DB.prepare(`
+        CREATE TABLE IF NOT EXISTS rate_limits (
+          key TEXT PRIMARY KEY,
+          attempts INTEGER NOT NULL DEFAULT 1,
+          last_attempt INTEGER NOT NULL,
+          blocked_until INTEGER NOT NULL DEFAULT 0
+        )
+      `).run();
+    } catch (e) {}
+    return { allowed: true, remaining: 3, attempts: 0 };
+  }
+}
+
+export async function recordFailedAttempt(env, key, lockoutSeconds = 300) {
+  if (!env || !env.DB) return { attempts: 1, remaining: 2, locked: false };
+  try {
+    const now = Math.floor(Date.now() / 1000);
+    const row = await env.DB.prepare('SELECT attempts FROM rate_limits WHERE key = ?').bind(key).first();
+    const currentAttempts = (row?.attempts || 0) + 1;
+    const isLocked = currentAttempts >= 3;
+    const blockedUntil = isLocked ? now + lockoutSeconds : 0;
+
+    await env.DB.prepare(`
+      INSERT INTO rate_limits (key, attempts, last_attempt, blocked_until)
+      VALUES (?, ?, ?, ?)
+      ON CONFLICT(key) DO UPDATE SET
+        attempts = excluded.attempts,
+        last_attempt = excluded.last_attempt,
+        blocked_until = CASE WHEN excluded.attempts >= 3 THEN ? ELSE rate_limits.blocked_until END
+    `).bind(key, currentAttempts, now, blockedUntil, blockedUntil).run();
+
+    return {
+      attempts: currentAttempts,
+      remaining: Math.max(0, 3 - currentAttempts),
+      locked: isLocked,
+      waitSeconds: lockoutSeconds,
+      waitMinutes: Math.ceil(lockoutSeconds / 60)
+    };
+  } catch (err) {
+    return { attempts: 1, remaining: 2, locked: false };
+  }
+}
+
+export async function clearRateLimit(env, key) {
+  if (!env || !env.DB) return;
+  try {
+    await env.DB.prepare('DELETE FROM rate_limits WHERE key = ?').bind(key).run();
+  } catch (err) {}
 }
 
 /**
