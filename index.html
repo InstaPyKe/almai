@@ -1081,17 +1081,43 @@
       color: var(--charcoal-text);
     }
 
-    /* Admin Navigation */
-    .admin-nav {
+    /* ====================================================================
+       ADMIN FULL-PAGE VIEW & RESPONSIVE NON-OVERLAPPING TABLES
+       ==================================================================== */
+    .admin-header-card {
+      background: var(--white-card);
+      border: 1.5px solid var(--beige-border);
+      border-radius: var(--radius-md);
+      padding: 24px 28px;
+      margin: 24px 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .admin-nav-bar {
       display: flex;
       gap: 8px;
-      border-bottom: 2px solid var(--beige-border);
-      margin-bottom: 20px;
+      background: var(--white-card);
+      border: 1.5px solid var(--beige-border);
+      border-radius: var(--radius-md);
+      padding: 8px;
+      margin-bottom: 24px;
       overflow-x: auto;
-      padding-bottom: 6px;
+      -webkit-overflow-scrolling: touch;
+      box-shadow: var(--shadow-sm);
+    }
+    .admin-nav-bar::-webkit-scrollbar {
+      height: 6px;
+    }
+    .admin-nav-bar::-webkit-scrollbar-thumb {
+      background: #D8B4FE;
+      border-radius: 4px;
     }
     .admin-tab {
-      padding: 10px 16px;
+      padding: 10px 18px;
       border-radius: var(--radius-sm);
       font-weight: 800;
       font-size: 15px;
@@ -1099,10 +1125,86 @@
       background: none;
       white-space: nowrap;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition);
+      border: 1.5px solid transparent;
+    }
+    .admin-tab:hover {
+      background: var(--primary-purple-light);
+      color: var(--primary-purple);
+      border-color: rgba(109, 40, 217, 0.2);
     }
     .admin-tab.active {
       background: var(--primary-purple);
       color: #fff;
+      border-color: var(--primary-purple);
+      box-shadow: 0 4px 12px rgba(109, 40, 217, 0.28);
+    }
+    .admin-content-section {
+      background: var(--white-card);
+      border: 1.5px solid var(--beige-border);
+      border-radius: var(--radius-md);
+      padding: 26px 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .table-responsive-clean {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border: 1.5px solid var(--beige-border);
+      border-radius: var(--radius-sm);
+      background: var(--white-card);
+      margin-top: 14px;
+    }
+    .table-responsive-clean table {
+      width: 100%;
+      min-width: 820px;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .table-responsive-clean th {
+      background: #F5F3FF;
+      color: var(--deep-purple-heading);
+      font-weight: 850;
+      font-size: 14.5px;
+      padding: 14px 18px;
+      border-bottom: 2px solid #DDD6FE;
+      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .table-responsive-clean td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--beige-border);
+      color: var(--charcoal-text);
+      font-size: 15px;
+      vertical-align: middle;
+    }
+    .table-responsive-clean tr:last-child td {
+      border-bottom: none;
+    }
+    .table-responsive-clean tr:hover td {
+      background: #FAF8FE;
+    }
+    .admin-products-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .admin-products-grid {
+        grid-template-columns: 1fr;
+      }
+      .admin-header-card {
+        flex-direction: column;
+        align-items: stretch;
+      }
     }
 
     /* WhatsApp Products Showcase */
@@ -1394,6 +1496,7 @@
           <li class="nav-link-item" id="nav-products" onclick="switchView('products')">Packages & Pricing</li>
           <li class="nav-link-item" id="nav-calc" onclick="scrollToCalculator()">Calculator</li>
           <li class="nav-link-item" id="nav-dashboard-link" style="display: none;" onclick="switchView('dashboard')">Dashboard</li>
+          <li class="nav-link-item" id="nav-admin-link" style="display: none;" onclick="switchView('admin')">Admin Center</li>
         </ul>
       </nav>
 
@@ -1412,6 +1515,10 @@
 
         <!-- Authenticated Actions -->
         <div id="nav-auth-actions" style="display: none; align-items: center; gap: 10px;">
+          <button class="btn btn-secondary btn-sm" id="btn-admin-nav" style="display: none;" onclick="switchView('admin')">
+            <span style="margin-right: 4px;">👑</span>
+            Admin Center
+          </button>
           <button class="btn btn-primary btn-sm" onclick="switchView('dashboard')">
             <span class="svg-icon" style="width: 16px; height: 16px; margin-right: 4px;">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
@@ -1475,6 +1582,10 @@
         </span>
         Partner Dashboard
       </li>
+      <li class="mobile-nav-item" id="mob-nav-admin" style="display: none;" onclick="mobileNavAction('admin')">
+        <span class="svg-icon" style="width: 18px; height: 18px;">👑</span>
+        Admin Center
+      </li>
     </ul>
 
     <div class="mobile-drawer-footer">
@@ -1508,7 +1619,7 @@
           Turn Your WhatsApp Status Views Into <span>Guaranteed Daily Cash</span>
         </h1>
         <p class="hero-subtitle">
-          Monetize your genuine Kenyan viewers with high-demand corporate ads. Post our verified brand banners, report your 24h view count, and receive instant payouts directly into your M-Pesa.
+          Monetize your genuine Kenyan viewers with high-demand corporate ads. Post our verified brand banners, report your 18h view count, and receive instant payouts directly into your M-Pesa.
         </p>
 
         <div class="hero-cta-group">
@@ -1591,7 +1702,7 @@
           <div class="calc-result-card">
             <div class="calc-res-title">Estimated Daily Payout</div>
             <div class="calc-res-amount" id="calc-daily-res">KSh 2,250</div>
-            <div class="calc-res-sub">Credited per approved 24h task</div>
+            <div class="calc-res-sub">Credited per approved 18h task</div>
             
             <div style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 14px; margin-top: 14px;">
               <div class="calc-res-title">Estimated Monthly Income</div>
@@ -1631,7 +1742,7 @@
             </span>
           </div>
           <h3>2. Post Daily Campaigns</h3>
-          <p>Download active corporate banners from your dashboard and post them directly to your WhatsApp Status for 24 hours.</p>
+          <p>Download active corporate banners from your dashboard and post them directly to your WhatsApp Status for 18 hours.</p>
         </div>
 
         <div class="step-card">
@@ -1640,7 +1751,7 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>
             </span>
           </div>
-          <h3>3. Upload Proof & Withdraw</h3>
+          <h3>3. Upload Proof &amp; Withdraw</h3>
           <p>Submit your unedited view screenshot. Once verified, withdraw your funds immediately into your Safaricom M-Pesa account.</p>
         </div>
       </div>
@@ -1650,7 +1761,7 @@
     <section class="container" style="padding: 20px 0 50px;">
       <div class="section-header">
         <h2 class="section-title">Daily WhatsApp Products to Post &amp; Earn</h2>
-        <p class="section-desc">Download verified brand product pictures, copy the suggested caption, post on your WhatsApp Status for 24 hours, and earn guaranteed M-Pesa payouts.</p>
+        <p class="section-desc">Download verified brand product pictures, copy the suggested caption, post on your WhatsApp Status for 18 hours, and earn guaranteed M-Pesa payouts.</p>
       </div>
       <div class="products-posts-grid" id="home-products-container">
         <!-- Rendered dynamically via fetchProductsPosts() -->
@@ -1883,11 +1994,11 @@
         </div>
       </div>
 
-      <!-- 24-Hour Task Cooldown & Submission Card -->
+      <!-- 18-Hour Task Cooldown & Submission Card -->
       <div class="cooldown-banner">
         <div class="cooldown-info">
           <h3 id="cooldown-title">Daily WhatsApp Campaign Available</h3>
-          <p id="cooldown-desc">Post the live Almai campaign to your WhatsApp Status for 24 hours to earn rewards.</p>
+          <p id="cooldown-desc">Post the live Almai campaign to your WhatsApp Status for 18 hours to earn rewards.</p>
         </div>
         <div>
           <span class="timer-badge" id="cooldown-badge" style="display: none;">
@@ -1900,7 +2011,7 @@
             <span class="svg-icon" style="width: 16px; height: 16px; margin-right: 4px;">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
             </span>
-            Submit 24h WhatsApp Proof
+            Submit 18h WhatsApp Proof
           </button>
         </div>
       </div>
@@ -1914,7 +2025,7 @@
         <div style="background: var(--bg-cream); border: 1px solid var(--beige-border); border-radius: var(--radius-sm); padding: 18px;">
           <h4 id="camp-title" style="font-size: 16.5px; margin-bottom: 6px;">Almai Digital Growth & Mobile Brand Blast</h4>
           <p id="camp-guidelines" style="color: var(--charcoal-muted); font-size: 14px; margin-bottom: 14px;">
-            1. Post the official Almai banner on your WhatsApp Status. 2. Caption: "Discover verified digital advertising solutions with Almai!". 3. Keep for 24 hours, take full-screen view count screenshot, and submit proof.
+            1. Post the official Almai banner on your WhatsApp Status. 2. Caption: "Discover verified digital advertising solutions with Almai!". 3. Keep for 18 hours, take full-screen view count screenshot, and submit proof.
           </p>
           <div style="display: flex; gap: 10px; flex-wrap: wrap;">
             <a href="https://almai.pages.dev" target="_blank" class="btn btn-secondary btn-sm">
@@ -1940,7 +2051,7 @@
           <span style="font-size: 13px; color: var(--charcoal-muted);">Direct picture download &amp; 1-click caption copy</span>
         </div>
         <p style="font-size: 13.5px; color: var(--charcoal-muted); margin-bottom: 16px;">
-          Download any of our verified brand product pictures below to your phone. Copy the caption, post it on your WhatsApp Status, and keep it up for 24 hours to earn your approved view payouts!
+          Download any of our verified brand product pictures below to your phone. Copy the caption, post it on your WhatsApp Status, and keep it up for 18 hours to earn your approved view payouts!
         </p>
         <div class="products-posts-grid" id="dash-products-container">
           <!-- Rendered dynamically via fetchProductsPosts() -->
@@ -2019,9 +2130,9 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </span>
       </button>
-      <h3 style="font-size: 21px; margin-bottom: 8px;">Submit 24h WhatsApp Proof</h3>
+      <h3 style="font-size: 21px; margin-bottom: 8px;">Submit 18h WhatsApp Proof</h3>
       <p style="color: var(--charcoal-muted); font-size: 13.5px; margin-bottom: 20px;">
-        Upload an unedited screenshot clearly displaying your WhatsApp Status view count.
+        Upload an unedited screenshot clearly displaying your WhatsApp Status view count (allowed after every 18 hours).
       </p>
 
       <form id="form-submit-task" onsubmit="handleTaskSubmit(event)">
@@ -2115,17 +2226,18 @@
         Starter Z — KSh 250 Activation
       </p>
 
-      <div style="background: #F3E8FF; border: 1px solid #D8B4FE; border-radius: var(--radius-sm); padding: 16px; margin-bottom: 18px;">
-        <div style="font-weight: 800; color: var(--deep-purple-heading); font-size: 14.5px; margin-bottom: 6px;">
-          M-Pesa Payment Instructions:
+      <div style="background: #F3E8FF; border: 1.5px solid #D8B4FE; border-radius: var(--radius-sm); padding: 18px; margin-bottom: 20px;">
+        <div style="font-weight: 850; color: var(--deep-purple-heading); font-size: 15.5px; margin-bottom: 8px;">
+          Lipa na M-Pesa Payment Steps:
         </div>
-        <ol style="padding-left: 18px; font-size: 13px; color: var(--charcoal-text); line-height: 1.6;">
-          <li>Go to M-Pesa on your phone</li>
-          <li>Select Lipa na M-Pesa &gt; Paybill or Buy Goods</li>
-          <li>Paybill: <strong id="modal-paybill-num">522522 (Account: ALMAI)</strong></li>
-          <li>Enter Package Amount: <strong id="modal-pkg-amount">KSh 250</strong></li>
-          <li>Enter your M-Pesa PIN and complete transaction</li>
-          <li>Copy the 10-character M-Pesa transaction reference code received via SMS</li>
+        <ol style="padding-left: 20px; font-size: 14.5px; color: var(--charcoal-text); line-height: 1.65; font-weight: 600;">
+          <li>Open Safaricom M-Pesa on your mobile phone</li>
+          <li>Select <strong>Lipa na M-Pesa</strong> &gt; <strong>Paybill</strong></li>
+          <li>Enter Business Number: <strong id="modal-paybill-num" style="color: var(--primary-purple); font-size: 16px;">522533</strong></li>
+          <li>Enter Account Number: <strong id="modal-acc-num" style="color: var(--primary-purple); font-size: 16px;">8106675</strong></li>
+          <li>Enter Package Amount: <strong id="modal-pkg-amount" style="color: var(--deep-purple-heading); font-size: 16px;">KSh 250</strong></li>
+          <li>Enter your M-Pesa PIN and press OK to send</li>
+          <li>Copy the 10-character confirmation code received via SMS (e.g. <code>SLK94HJ12X</code>) and enter it below</li>
         </ol>
       </div>
 
@@ -2214,49 +2326,74 @@
   </div>
 
   <!-- ====================================================================
-       MODAL 5: PROTECTED ADMINISTRATOR PANEL
+       VIEW 5: ADMINISTRATOR CONSOLE (STANDARD FULL-PAGE VIEW)
        ==================================================================== -->
-  <!-- ====================================================================
-       MODAL 5: PROTECTED ADMINISTRATOR PANEL
-       ==================================================================== -->
-  <div class="modal-backdrop" id="modal-admin">
-    <div class="modal-content modal-xl">
-      <button class="modal-close-btn" onclick="closeModal('modal-admin')">
-        <span class="svg-icon" style="width: 16px; height: 16px;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        </span>
-      </button>
-      
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+  <main id="view-admin" class="view-container">
+    <div class="container" style="padding-bottom: 60px;">
+      <!-- Admin Top Card -->
+      <div class="admin-header-card">
         <div>
-          <h2 style="font-size: 22px;">Almai Administration Center</h2>
-          <div style="font-size: 13px; color: var(--charcoal-muted);">Logged in as: <strong>almai@admin.co.ke</strong> (Super Administrator)</div>
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 6px; flex-wrap: wrap;">
+            <h2 style="font-size: 26px; color: var(--deep-purple-heading); margin: 0;">Almai Administration Center</h2>
+            <span class="status-badge status-completed" style="font-size: 13.5px; padding: 4px 14px;">Super Administrator</span>
+          </div>
+          <p style="margin: 0; font-size: 15px; color: var(--charcoal-muted); font-weight: 600;">
+            Logged in as <strong>almai@admin.co.ke</strong> &bull; Complete platform financial ledger, user directory &amp; marketing distribution
+          </p>
         </div>
-        <span class="status-badge status-completed">Admin Role Active</span>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button class="btn btn-secondary btn-sm" onclick="switchView('dashboard')">
+            <span class="svg-icon" style="width: 15px; height: 15px; margin-right: 4px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            </span>
+            Partner Dashboard
+          </button>
+          <button class="btn btn-secondary btn-sm" onclick="handleLogout()">
+            Sign Out
+          </button>
+        </div>
       </div>
 
-      <div class="admin-nav">
-        <button class="admin-tab active" id="atab-payments" onclick="switchAdminTab('payments')">M-Pesa Verification Codes</button>
-        <button class="admin-tab" id="atab-users" onclick="switchAdminTab('users')">User Accounts Directory</button>
-        <button class="admin-tab" id="atab-products" onclick="switchAdminTab('products')">Post WhatsApp Products</button>
-        <button class="admin-tab" id="atab-tasks" onclick="switchAdminTab('tasks')">Task Proofs Queue</button>
-        <button class="admin-tab" id="atab-withdrawals" onclick="switchAdminTab('withdrawals')">Withdrawals Queue</button>
-        <button class="admin-tab" id="atab-stats" onclick="switchAdminTab('stats')">Platform Stats</button>
-        <button class="admin-tab" id="atab-audit" onclick="switchAdminTab('audit')">Audit Logs</button>
+      <!-- Navigation Tabs Bar -->
+      <div class="admin-nav-bar">
+        <button class="admin-tab active" id="atab-payments" onclick="switchAdminTab('payments')">
+          <span>💳</span> M-Pesa Verification Codes
+        </button>
+        <button class="admin-tab" id="atab-users" onclick="switchAdminTab('users')">
+          <span>👥</span> User Accounts Directory
+        </button>
+        <button class="admin-tab" id="atab-products" onclick="switchAdminTab('products')">
+          <span>📢</span> Post WhatsApp Products
+        </button>
+        <button class="admin-tab" id="atab-tasks" onclick="switchAdminTab('tasks')">
+          <span>📋</span> Task Proofs Queue
+        </button>
+        <button class="admin-tab" id="atab-withdrawals" onclick="switchAdminTab('withdrawals')">
+          <span>💸</span> Withdrawals Queue
+        </button>
+        <button class="admin-tab" id="atab-stats" onclick="switchAdminTab('stats')">
+          <span>📊</span> Platform Stats
+        </button>
+        <button class="admin-tab" id="atab-audit" onclick="switchAdminTab('audit')">
+          <span>🛡️</span> Audit Logs
+        </button>
       </div>
 
       <!-- Tab 1: Payment Verification (M-Pesa Codes) -->
-      <div id="asec-payments">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
-          <h4 style="font-size: 15px;">User M-Pesa Transaction Codes for Package Activation</h4>
+      <div id="asec-payments" class="admin-content-section">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <h3 style="font-size: 19px; color: var(--deep-purple-heading); margin-bottom: 4px;">User Lipa na M-Pesa Transaction Verification</h3>
+            <p style="font-size: 14.5px; color: var(--charcoal-muted); margin: 0;">Audit user-submitted Safaricom reference codes to activate partner packages instantly.</p>
+          </div>
           <div style="display: flex; gap: 8px;">
-            <button class="btn btn-secondary btn-sm" id="btn-payfilter-pending" onclick="filterAdminPayments('pending')">Pending Only</button>
+            <button class="btn btn-primary btn-sm" id="btn-payfilter-pending" onclick="filterAdminPayments('pending')">Pending Only</button>
             <button class="btn btn-secondary btn-sm" id="btn-payfilter-completed" onclick="filterAdminPayments('completed')">Verified</button>
             <button class="btn btn-secondary btn-sm" id="btn-payfilter-all" onclick="filterAdminPayments('all')">All Codes</button>
           </div>
         </div>
 
-        <div class="table-responsive">
+        <div class="table-responsive-clean">
           <table>
             <thead>
               <tr>
@@ -2271,7 +2408,7 @@
             </thead>
             <tbody id="tbody-admin-payments">
               <tr>
-                <td colspan="7" style="text-align: center; padding: 20px;">Loading payment codes...</td>
+                <td colspan="7" style="text-align: center; padding: 24px;">Loading payment codes...</td>
               </tr>
             </tbody>
           </table>
@@ -2279,15 +2416,18 @@
       </div>
 
       <!-- Tab 2: User Accounts Directory -->
-      <div id="asec-users" style="display: none;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
-          <h4 style="font-size: 15px;">Registered Partner Users Directory</h4>
-          <div style="display: flex; gap: 8px; width: 300px; max-width: 100%;">
-            <input type="text" id="admin-user-search" placeholder="Search name, email, phone..." oninput="debounceUserSearch()" style="padding: 6px 12px; font-size: 13.5px;">
+      <div id="asec-users" class="admin-content-section" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <h3 style="font-size: 19px; color: var(--deep-purple-heading); margin-bottom: 4px;">Registered Partner Users Directory</h3>
+            <p style="font-size: 14.5px; color: var(--charcoal-muted); margin: 0;">Lookup partner accounts, assign or upgrade packages, and review wallet balances.</p>
+          </div>
+          <div style="width: 320px; max-width: 100%;">
+            <input type="text" id="admin-user-search" placeholder="Search name, email, phone..." oninput="debounceUserSearch()" style="padding: 10px 14px; font-size: 14px; width: 100%;">
           </div>
         </div>
 
-        <div class="table-responsive">
+        <div class="table-responsive-clean">
           <table>
             <thead>
               <tr>
@@ -2302,7 +2442,7 @@
             </thead>
             <tbody id="tbody-admin-users">
               <tr>
-                <td colspan="7" style="text-align: center; padding: 20px;">Loading users directory...</td>
+                <td colspan="7" style="text-align: center; padding: 24px;">Loading users directory...</td>
               </tr>
             </tbody>
           </table>
@@ -2310,13 +2450,13 @@
       </div>
 
       <!-- Tab 3: Post WhatsApp Products -->
-      <div id="asec-products" style="display: none;">
-        <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 24px; align-items: start;">
+      <div id="asec-products" class="admin-content-section" style="display: none;">
+        <div class="admin-products-grid">
           <!-- Form to post product picture -->
-          <div style="background: var(--bg-cream); border: 1px solid var(--beige-border); border-radius: var(--radius-md); padding: 20px;">
-            <h4 style="font-size: 16px; margin-bottom: 6px; color: var(--deep-purple-heading);">Upload New Product Picture for WhatsApp Posts</h4>
-            <p style="font-size: 13px; color: var(--charcoal-muted); margin-bottom: 16px;">
-              Publish product images that partners can download to their phones and post to their WhatsApp Status.
+          <div style="background: var(--bg-cream); border: 1.5px solid var(--beige-border); border-radius: var(--radius-md); padding: 24px;">
+            <h3 style="font-size: 18.5px; margin-bottom: 6px; color: var(--deep-purple-heading);">Upload New Product Picture for WhatsApp Posts</h3>
+            <p style="font-size: 14px; color: var(--charcoal-muted); margin-bottom: 18px;">
+              Publish brand product pictures that partners can download to their devices and post to their WhatsApp Status.
             </p>
 
             <form id="form-admin-post-product" onsubmit="handleAdminProductSubmit(event)">
@@ -2339,15 +2479,15 @@
               <div class="form-group">
                 <label class="form-label" for="prod-image-file">Product Picture (PNG, JPG, SVG - Max 3.5MB)</label>
                 <input type="file" id="prod-image-file" accept="image/*" required onchange="previewAdminProductImage(event)">
-                <div id="admin-prod-preview-wrap" style="display: none; margin-top: 10px; text-align: center;">
-                  <img id="admin-prod-preview-img" src="" alt="Product Preview" style="max-height: 160px; border-radius: 8px; border: 1px solid var(--beige-border); background: #000;">
+                <div id="admin-prod-preview-wrap" style="display: none; margin-top: 12px; text-align: center;">
+                  <img id="admin-prod-preview-img" src="" alt="Product Preview" style="max-height: 180px; border-radius: 8px; border: 1.5px solid var(--beige-border); background: #000;">
                 </div>
               </div>
 
               <div id="admin-prod-alert" style="display: none;" class="alert"></div>
 
-              <button type="submit" class="btn btn-primary btn-block" id="btn-admin-prod-submit">
-                <span class="svg-icon" style="width: 15px; height: 15px; margin-right: 4px;">
+              <button type="submit" class="btn btn-primary btn-block btn-lg" id="btn-admin-prod-submit">
+                <span class="svg-icon" style="width: 16px; height: 16px; margin-right: 6px;">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                 </span>
                 Publish Creative for Users
@@ -2357,18 +2497,19 @@
 
           <!-- Existing products list -->
           <div>
-            <h4 style="font-size: 15px; margin-bottom: 12px;">Live Products on Platform (<span id="admin-prod-count">0</span>)</h4>
-            <div id="admin-products-list" style="display: flex; flex-direction: column; gap: 12px; max-height: 520px; overflow-y: auto;">
-              <div style="text-align: center; padding: 20px; color: var(--charcoal-muted);">Loading products...</div>
+            <h3 style="font-size: 18.5px; margin-bottom: 14px; color: var(--deep-purple-heading);">Live Products on Platform (<span id="admin-prod-count">0</span>)</h3>
+            <div id="admin-products-list" style="display: flex; flex-direction: column; gap: 14px; max-height: 600px; overflow-y: auto;">
+              <div style="text-align: center; padding: 24px; color: var(--charcoal-muted);">Loading products...</div>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Tab 4: Tasks Review -->
-      <div id="asec-tasks" style="display: none;">
-        <h4 style="margin-bottom: 12px; font-size: 15px;">Pending Task Proofs for Verification</h4>
-        <div class="table-responsive">
+      <div id="asec-tasks" class="admin-content-section" style="display: none;">
+        <h3 style="margin-bottom: 8px; font-size: 19px; color: var(--deep-purple-heading);">Pending Task Proofs for Verification</h3>
+        <p style="font-size: 14.5px; color: var(--charcoal-muted); margin-bottom: 18px;">Inspect submitted status screenshots and view counts.</p>
+        <div class="table-responsive-clean">
           <table>
             <thead>
               <tr>
@@ -2381,7 +2522,7 @@
             </thead>
             <tbody id="tbody-admin-tasks">
               <tr>
-                <td colspan="5" style="text-align: center; padding: 20px;">Loading pending task proofs...</td>
+                <td colspan="5" style="text-align: center; padding: 24px;">Loading pending task proofs...</td>
               </tr>
             </tbody>
           </table>
@@ -2389,9 +2530,10 @@
       </div>
 
       <!-- Tab 5: Withdrawals Queue -->
-      <div id="asec-withdrawals" style="display: none;">
-        <h4 style="margin-bottom: 12px; font-size: 15px;">Pending M-Pesa Disbursements</h4>
-        <div class="table-responsive">
+      <div id="asec-withdrawals" class="admin-content-section" style="display: none;">
+        <h3 style="margin-bottom: 8px; font-size: 19px; color: var(--deep-purple-heading);">Pending M-Pesa Disbursements Queue</h3>
+        <p style="font-size: 14.5px; color: var(--charcoal-muted); margin-bottom: 18px;">Send funds to the partner M-Pesa number and record receipt reference.</p>
+        <div class="table-responsive-clean">
           <table>
             <thead>
               <tr>
@@ -2404,7 +2546,7 @@
             </thead>
             <tbody id="tbody-admin-withdrawals">
               <tr>
-                <td colspan="5" style="text-align: center; padding: 20px;">Loading pending withdrawals...</td>
+                <td colspan="5" style="text-align: center; padding: 24px;">Loading pending withdrawals...</td>
               </tr>
             </tbody>
           </table>
@@ -2412,16 +2554,18 @@
       </div>
 
       <!-- Tab 6: Stats -->
-      <div id="asec-stats" style="display: none;">
-        <div class="dash-metrics-grid" id="admin-stats-grid" style="margin-top: 10px;">
+      <div id="asec-stats" class="admin-content-section" style="display: none;">
+        <h3 style="margin-bottom: 16px; font-size: 19px; color: var(--deep-purple-heading);">System Financial &amp; Performance Metrics</h3>
+        <div class="dash-metrics-grid" id="admin-stats-grid">
           <!-- Populated dynamically -->
         </div>
       </div>
 
       <!-- Tab 7: Audit Logs -->
-      <div id="asec-audit" style="display: none;">
-        <h4 style="margin-bottom: 12px; font-size: 15px;">Recent System Audit Trail</h4>
-        <div class="table-responsive">
+      <div id="asec-audit" class="admin-content-section" style="display: none;">
+        <h3 style="margin-bottom: 8px; font-size: 19px; color: var(--deep-purple-heading);">Recent System Audit Trail</h3>
+        <p style="font-size: 14.5px; color: var(--charcoal-muted); margin-bottom: 18px;">All administrative actions, verification stamps, and ledger adjustments are logged here.</p>
+        <div class="table-responsive-clean">
           <table>
             <thead>
               <tr>
@@ -2434,14 +2578,14 @@
             </thead>
             <tbody id="tbody-admin-audit">
               <tr>
-                <td colspan="5" style="text-align: center; padding: 20px;">Loading audit logs...</td>
+                <td colspan="5" style="text-align: center; padding: 24px;">Loading audit logs...</td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
-  </div>
+  </main>
 
   <!-- Evidence Viewer Modal -->
   <div class="modal-backdrop" id="modal-evidence-viewer">
@@ -2555,7 +2699,7 @@
         clearTimeout(copyrightTapTimer);
 
         if (AppState.user && AppState.user.role === 'admin') {
-          openAdminModal();
+          switchView('admin');
         } else {
           // If not currently logged in as admin, route to auth login and pre-fill credentials
           switchView('auth');
@@ -2641,10 +2785,20 @@
       document.getElementById('mob-auth-actions').style.display = 'flex';
       document.getElementById('mob-nav-dash').style.display = 'flex';
 
-      const btnAdmin = document.getElementById('btn-admin-panel');
-      if (btnAdmin) btnAdmin.style.display = 'none';
+      // Toggle Admin navigation for admin role
+      const btnAdmin = document.getElementById('btn-admin-nav');
+      const navAdmin = document.getElementById('nav-admin-link');
       const mobAdmin = document.getElementById('mob-nav-admin');
-      if (mobAdmin) mobAdmin.style.display = 'none';
+
+      if (AppState.user && AppState.user.role === 'admin') {
+        if (btnAdmin) btnAdmin.style.display = 'inline-flex';
+        if (navAdmin) navAdmin.style.display = 'block';
+        if (mobAdmin) mobAdmin.style.display = 'flex';
+      } else {
+        if (btnAdmin) btnAdmin.style.display = 'none';
+        if (navAdmin) navAdmin.style.display = 'none';
+        if (mobAdmin) mobAdmin.style.display = 'none';
+      }
 
       // Populate dashboard values
       document.getElementById('dash-user-name').textContent = AppState.user.name;
@@ -2680,8 +2834,10 @@
       document.getElementById('nav-guest-actions').style.display = 'flex';
       document.getElementById('nav-auth-actions').style.display = 'none';
       document.getElementById('nav-dashboard-link').style.display = 'none';
-      const btnAdmin = document.getElementById('btn-admin-panel');
+      const btnAdmin = document.getElementById('btn-admin-nav');
       if (btnAdmin) btnAdmin.style.display = 'none';
+      const navAdmin = document.getElementById('nav-admin-link');
+      if (navAdmin) navAdmin.style.display = 'none';
 
       // Mobile drawer nav
       document.getElementById('mob-guest-actions').style.display = 'flex';
@@ -2712,9 +2868,12 @@
             <div class="gating-content">
               <div class="gating-title" style="color: #4C1D95; font-size: 17.5px; font-weight: 850;">Administrator Mode Active</div>
               <p style="margin: 0; font-size: 14.5px; color: #2D1152; font-weight: 600;">
-                Logged in as <strong>almai@admin.co.ke</strong>. Full system oversight active. To access the Administration Portal at any time, tap the copyright section in the footer 7 times.
+                Logged in as <strong>almai@admin.co.ke</strong>. Full system oversight active. To access the Administration Center, click the button below or tap the copyright section in the footer 7 times.
               </p>
             </div>
+            <button class="btn btn-primary btn-sm" onclick="switchView('admin')">
+              Open Admin Center
+            </button>
           </div>
         `;
         pkgBanner.style.display = 'block';
@@ -2763,7 +2922,7 @@
               </h4>
               <p style="margin: 0; font-size: 13.5px; color: #581C87; line-height: 1.5;">
                 You submitted M-Pesa transaction code <span class="mpesa-code-tag">${escapeHTML(pend.mpesa_receipt_number || pend.payment_reference || 'PENDING')}</span>.
-                Our admin audit team is verifying your payment. Once approved, the home page and partner tasks will unlock automatically.
+                Our admin audit team is verifying your payment. Once approved, full task payouts will be automatically credited.
               </p>
             </div>
             <button class="btn btn-secondary btn-sm" onclick="refreshPackageStatus()">
@@ -2788,10 +2947,10 @@
         <div class="gating-banner required">
           <div>
             <h4 style="margin: 0 0 4px 0; color: #9A3412; font-size: 15px; font-weight: 800;">
-              ⚠️ Package Activation Required Before Accessing Home &amp; Dashboard
+              ⚠️ Package Activation Required Before Submitting Tasks
             </h4>
             <p style="margin: 0; font-size: 13.5px; color: #7C2D12; line-height: 1.5;">
-              Welcome to Almai! To activate your partner account and unlock tasks and home page access, please choose a package below and submit your M-Pesa transaction reference code.
+              Welcome to Almai! To activate your partner account and unlock tasks and daily payouts, please choose an advertising package below and submit your M-Pesa transaction reference code.
             </p>
           </div>
           <button class="btn btn-primary btn-sm" onclick="scrollToPackages()">
@@ -2811,7 +2970,7 @@
       await checkAuthSession();
       if (AppState.hasActivePackage) {
         alert('🎉 Congratulations! Your payment has been verified by the administrator. Full access is now unlocked!');
-        switchView('home');
+        switchView('dashboard');
       } else if (AppState.pendingPackage) {
         alert('ℹ️ Your payment code is still awaiting admin review. Admin verifies codes within a few minutes.');
       } else {
@@ -2839,22 +2998,22 @@
         const mins = Math.floor((cooldown.secondsRemaining % 3600) / 60);
         badgeText.textContent = `Cooldown: ${hours}h ${mins}m left`;
 
-        title.textContent = '24h Task Cooldown in Progress';
-        desc.textContent = `You can submit your next WhatsApp Status proof in ${hours} hours and ${mins} minutes.`;
+        title.textContent = '18h Task Cooldown in Progress';
+        desc.textContent = `You can submit your next WhatsApp Status proof in ${hours} hours and ${mins} minutes (submissions allowed every 18 hours).`;
         triggerBtn.disabled = true;
         triggerBtn.style.opacity = '0.6';
         triggerBtn.textContent = 'Submission Locked';
       } else {
         badge.style.display = 'none';
         title.textContent = 'Daily WhatsApp Campaign Ready';
-        desc.textContent = 'Post the live Almai campaign to your WhatsApp Status for 24 hours to earn rewards.';
+        desc.textContent = 'Post the live Almai campaign to your WhatsApp Status for 18 hours to earn rewards.';
         triggerBtn.disabled = false;
         triggerBtn.style.opacity = '1';
         triggerBtn.innerHTML = `
           <span class="svg-icon" style="width: 16px; height: 16px; margin-right: 4px;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
           </span>
-          Submit 24h WhatsApp Proof
+          Submit 18h WhatsApp Proof
         `;
       }
     }
@@ -2863,29 +3022,28 @@
     // VIEW SWITCHER & MOBILE NAVIGATION
     // ====================================================================
     function switchView(viewName) {
-      // Protected dashboard requires login
+      // Protected dashboard and admin views require login
       if (viewName === 'dashboard' && !AppState.user) {
         showAuthModal('login');
         return;
       }
 
-      // Enforce package gating:
-      // If user is logged in, NOT admin, and does not have an active package:
-      // Redirect home and dashboard views to packages page!
-      if (AppState.user && AppState.user.role !== 'admin' && !AppState.hasActivePackage) {
-        if (viewName === 'home' || viewName === 'dashboard') {
-          viewName = 'products';
-          renderPackageGatingBanner();
+      if (viewName === 'admin') {
+        if (!AppState.user || AppState.user.role !== 'admin') {
+          showAuthModal('login');
+          return;
         }
       }
 
-      const views = ['home', 'products', 'auth', 'dashboard'];
+      const views = ['home', 'products', 'auth', 'dashboard', 'admin'];
       views.forEach(v => {
         const el = document.getElementById(`view-${v}`);
         if (el) el.classList.remove('active-view');
         
         const navEl = document.getElementById(`nav-${v}`);
         if (navEl) navEl.classList.remove('active');
+        const mobEl = document.getElementById(`mob-nav-${v}`);
+        if (mobEl) mobEl.classList.remove('active');
       });
 
       const targetEl = document.getElementById(`view-${viewName}`);
@@ -2893,14 +3051,20 @@
 
       const targetNav = document.getElementById(`nav-${viewName}`);
       if (targetNav) targetNav.classList.add('active');
+      const targetMob = document.getElementById(`mob-nav-${viewName}`);
+      if (targetMob) targetMob.classList.add('active');
 
       AppState.currentView = viewName;
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
       if (viewName === 'dashboard') {
         loadDashboardData();
+      } else if (viewName === 'admin') {
+        switchAdminTab('payments');
       } else if (viewName === 'products') {
         renderPackageGatingBanner();
+      } else if (viewName === 'home') {
+        fetchProductsPosts();
       }
     }
 
@@ -2988,7 +3152,7 @@
               </span>
               <div class="pkg-reward-text">
                 KSh ${pkg.reward_per_view_ksh} per approved view
-                <div style="font-size: 12px; font-weight: 500; color: var(--charcoal-muted);">Up to ${pkg.max_views_per_task} views per 24h task</div>
+                <div style="font-size: 12px; font-weight: 500; color: var(--charcoal-muted);">Up to ${pkg.max_views_per_task} views per 18h task</div>
               </div>
             </div>
 
@@ -3212,19 +3376,13 @@
 
           // Administrator login flow:
           if (AppState.user && AppState.user.role === 'admin') {
-            switchView('home');
-            openAdminModal();
+            switchView('admin');
             return;
           }
 
           // User login flow:
-          // Must pay for active package before access to home/dashboard!
-          if (!AppState.hasActivePackage) {
-            switchView('products');
-            renderPackageGatingBanner();
-          } else {
-            switchView('home');
-          }
+          // Landing page -> Sign up -> Sign in -> Land on Partner Dashboard!
+          switchView('dashboard');
         } else {
           alert.className = 'alert alert-error';
           alert.textContent = data.error || 'Invalid email or password';
@@ -3262,18 +3420,22 @@
 
         const data = await res.json();
         if (res.ok && data.success) {
-          // After registration: DO NOT auto-login.
-          // User must login first, then gets redirected to packages page!
+          // Flow: Landing page -> Sign up -> Sign in -> Land on Dashboard
           switchAuthTab('login');
-          document.getElementById('login-email').value = email;
-          document.getElementById('login-password').value = '';
+          const emailInput = document.getElementById('login-email');
+          const passInput = document.getElementById('login-password');
+          if (emailInput) emailInput.value = email;
+          if (passInput) {
+            passInput.value = '';
+            setTimeout(() => passInput.focus(), 250);
+          }
           document.getElementById('form-register').reset();
 
           alert.className = 'alert alert-success';
           alert.innerHTML = `
             <div>
-              <strong>Registration successful!</strong><br>
-              Please sign in with your password below to activate your partner package and start earning.
+              <strong>✓ Account created successfully!</strong><br>
+              Please enter your password below to sign in and access your partner dashboard.
             </div>
           `;
           alert.style.display = 'flex';
@@ -3315,6 +3477,7 @@
       await checkAuthSession();
       await fetchUserTasks();
       await fetchUserWithdrawals();
+      await fetchProductsPosts();
     }
 
     async function fetchUserTasks() {
@@ -3489,12 +3652,18 @@
         const data = await res.json();
         if (res.ok && data.success) {
           alert.className = 'alert alert-success';
-          alert.textContent = data.message;
+          alert.innerHTML = `
+            <div>
+              <strong>✓ Task Approved &amp; Balance Calculated!</strong><br>
+              ${escapeHTML(data.message)}
+            </div>
+          `;
           alert.style.display = 'flex';
+          await checkAuthSession();
+          await loadDashboardData();
           setTimeout(() => {
             closeModal('modal-task');
-            loadDashboardData();
-          }, 1500);
+          }, 1800);
         } else {
           alert.className = 'alert alert-error';
           alert.textContent = data.error || 'Submission failed';
@@ -3506,7 +3675,7 @@
         alert.style.display = 'flex';
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Submit for Review';
+        btn.textContent = 'Submit 18h WhatsApp Proof';
       }
     }
 
@@ -3580,6 +3749,12 @@
       document.getElementById('activate-pkg-id').value = packageId;
       document.getElementById('modal-pkg-subtitle').textContent = `${name} — Pay KSh ${price.toLocaleString()} Activation`;
       document.getElementById('modal-pkg-amount').textContent = `KSh ${price.toLocaleString()}`;
+      
+      const paybillEl = document.getElementById('modal-paybill-num');
+      if (paybillEl) paybillEl.textContent = '522533';
+      const accEl = document.getElementById('modal-acc-num');
+      if (accEl) accEl.textContent = '8106675';
+
       document.getElementById('activate-phone').value = AppState.user.phone || '';
       document.getElementById('activate-pkg-alert').style.display = 'none';
       document.getElementById('activate-ref-code').value = '';
@@ -3708,8 +3883,7 @@
         alert('Administrator access required.');
         return;
       }
-      openModal('modal-admin');
-      switchAdminTab('payments');
+      switchView('admin');
     }
 
     function switchAdminTab(tab) {
@@ -4183,9 +4357,9 @@
           alert('Invalid view count entered');
           return;
         }
-        notes = prompt('Audit notes (optional):', 'Screenshot verified matching 24h count') || '';
+        notes = prompt('Audit notes (optional):', 'Screenshot verified matching 18h count') || '';
       } else {
-        notes = prompt('Reason for rejection:', 'Screenshot blurred or does not show 24h elapsed timestamp');
+        notes = prompt('Reason for rejection:', 'Screenshot blurred or does not show 18h elapsed timestamp');
         if (notes === null) return;
       }
 

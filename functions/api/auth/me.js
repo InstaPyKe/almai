@@ -54,7 +54,7 @@ export async function onRequestGet(context) {
       LIMIT 1
     `).bind(user.id).first();
 
-    // 3. Check 24h task submission cooldown
+    // 3. Check 18h task submission cooldown
     const latestTask = await env.DB.prepare(`
       SELECT created_at, status
       FROM task_submissions
@@ -69,7 +69,7 @@ export async function onRequestGet(context) {
     let secondsRemaining = 0;
 
     if (latestTask) {
-      const cooldownPeriod = 24 * 60 * 60; // 24 hours
+      const cooldownPeriod = 18 * 60 * 60; // 18 hours
       const nextTime = latestTask.created_at + cooldownPeriod;
       if (now < nextTime) {
         canSubmitTask = false;

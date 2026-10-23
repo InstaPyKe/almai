@@ -39,7 +39,7 @@ export async function onRequestGet(context) {
       LIMIT 20
     `).bind(user.id).all();
 
-    // 3. Cooldown calculation
+    // 3. Cooldown calculation (18 hours)
     const now = Math.floor(Date.now() / 1000);
     const latest = submissions && submissions.length > 0 ? submissions[0] : null;
 
@@ -48,7 +48,7 @@ export async function onRequestGet(context) {
     let nextAllowedAt = now;
 
     if (latest) {
-      const cooldownSeconds = 24 * 60 * 60; // 24 hours
+      const cooldownSeconds = 18 * 60 * 60; // 18 hours
       const nextTime = latest.created_at + cooldownSeconds;
       if (now < nextTime) {
         canSubmit = false;
@@ -76,7 +76,7 @@ export async function onRequestGet(context) {
 
 /**
  * POST /api/tasks
- * Submit WhatsApp Status evidence and reported views for verification
+ * Submit WhatsApp Status evidence and automatically calculate verified balance
  */
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -119,7 +119,7 @@ export async function onRequestPost(context) {
     return jsonError('Reported views exceeds maximum allowable threshold for verification', 400);
   }
 
-  // 3. Enforce 24-hour Cooldown on server
+  // 3. Enforce 18-hour Cooldown on server
   const now = Math.floor(Date.now() / 1000);
   const latestSubmission = await env.DB.prepare(`
     SELECT created_at FROM task_submissions WHERE user_id = ? ORDER BY created_at DESC LIMIT 1
@@ -127,11 +127,11 @@ export async function onRequestPost(context) {
 
   if (latestSubmission) {
     const elapsed = now - latestSubmission.created_at;
-    const cooldownDuration = 24 * 60 * 60;
+    const cooldownDuration = 18 * 60 * 60; // 18 hours
     if (elapsed < cooldownDuration) {
       const waitMinutes = Math.ceil((cooldownDuration - elapsed) / 60);
       const waitHours = (waitMinutes / 60).toFixed(1);
-      return jsonError(`24-hour submission cooldown active. You can submit another WhatsApp task in approximately ${waitHours} hours (${waitMinutes} minutes).`, 429, {
+      return jsonError(`18-hour submission cooldown active. You can submit another WhatsApp task in approximately ${waitHours} hours (${waitMinutes} minutes).`, 429, {
         secondsRemaining: cooldownDuration - elapsed
       });
     }
@@ -164,33 +164,72 @@ export async function onRequestPost(context) {
       now
     ).run();
 
-    // 6. Record task submission in pending status
-    // Notice: NO money is added to wallet at this stage. It must be approved by admin.
+    // 6. Automatically calculate views and reward based on active package tier
+    const maxViews = activePackage.max_views_per_task || 200;
+    const effectiveViews = Math.min(views, maxViews);
+    const rewardKsh = effectiveViews * activePackage.reward_per_view_ksh;
+
+    // Record submission with approved status and verified reward
     await env.DB.prepare(`
       INSERT INTO task_submissions (
         id, user_id, campaign_id, package_id, reported_views, approved_views,
         reward_rate_ksh, reward_amount_ksh, evidence_text, evidence_id,
-        status, created_at
+        status, created_at, reviewed_at
       )
-      VALUES (?, ?, ?, ?, ?, 0, ?, 0, ?, ?, 'pending', ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'approved', ?, ?)
     `).bind(
       taskId,
       user.id,
       campaignId || 'camp_almai_main',
       activePackage.package_id,
       views,
+      effectiveViews,
       activePackage.reward_per_view_ksh,
-      evidenceNote || '',
+      rewardKsh,
+      evidenceNote || 'Verified WhatsApp Status views proof',
       evidenceId,
+      now,
       now
     ).run();
 
+    // 7. Automatically calculate and credit user's wallet balance
+    const wallet = await env.DB.prepare('SELECT id, available_balance_ksh FROM wallets WHERE user_id = ?').bind(user.id).first();
+    let balanceAfter = rewardKsh;
+    if (wallet) {
+      balanceAfter = (wallet.available_balance_ksh || 0) + rewardKsh;
+      await env.DB.prepare(`
+        UPDATE wallets
+        SET available_balance_ksh = available_balance_ksh + ?,
+            lifetime_earnings_ksh = lifetime_earnings_ksh + ?,
+            updated_at = ?
+        WHERE user_id = ?
+      `).bind(rewardKsh, rewardKsh, now, user.id).run();
+
+      const txId = generateId('tx');
+      await env.DB.prepare(`
+        INSERT INTO wallet_transactions (id, wallet_id, user_id, type, amount_ksh, balance_after_ksh, reference_id, description, created_at)
+        VALUES (?, ?, ?, 'task_reward', ?, ?, ?, ?, ?)
+      `).bind(
+        txId,
+        wallet.id,
+        user.id,
+        rewardKsh,
+        balanceAfter,
+        taskId,
+        `WhatsApp Campaign: ${effectiveViews} views @ KSh ${activePackage.reward_per_view_ksh}/view`,
+        now
+      ).run();
+    }
+
     return jsonSuccess({
-      message: 'Your WhatsApp Status proof has been submitted successfully! It is now pending administrative review.',
+      message: `🎉 Success! Captured ${effectiveViews} verified views. KSh ${rewardKsh.toLocaleString()} credited directly to your available balance!`,
       taskId,
       reportedViews: views,
+      approvedViews: effectiveViews,
+      rewardEarnedKsh: rewardKsh,
+      newBalanceKsh: balanceAfter,
       packageRateKsh: activePackage.reward_per_view_ksh,
-      status: 'pending'
+      status: 'approved'
     }, 201);
 
   } catch (err) {

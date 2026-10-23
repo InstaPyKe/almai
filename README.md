@@ -143,7 +143,7 @@ npx wrangler pages deploy . --project-name=almai
 ### Step 5: Configure Production Secrets
 Under **Settings** > **Environment variables** (Production), configure:
 - `ADMIN_SETUP_SECRET`: A strong secret key used for administrative promotion.
-- `MPESA_PAYBILL_NUMBER`: e.g. `522522 (Account: ALMAI)` or your Till Number.
+- `MPESA_PAYBILL_NUMBER`: e.g. `Paybill 522533 (Account: 8106675)` or your Till Number.
 - *(Optional for automated STK Push)*:
   - `MPESA_CONSUMER_KEY`
   - `MPESA_CONSUMER_SECRET`
