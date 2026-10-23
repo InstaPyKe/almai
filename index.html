@@ -5630,11 +5630,13 @@
 
       try {
         const res = await fetch(`/api/admin/products-posts?id=${encodeURIComponent(postId)}`, {
-          method: 'DELETE'
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ postId, id: postId })
         });
         const data = await res.json();
         if (res.ok && data.success) {
-          alert('Product creative deleted.');
+          alert('✓ Product creative deleted.');
           loadAdminProducts();
           fetchProductsPosts();
         } else {
@@ -5646,7 +5648,7 @@
     }
 
     async function adminClearAllProducts() {
-      if (!confirm('⚠️ Are you sure you want to delete and clear ALL posted products and creatives?\\n\\nThis will remove all live creatives from the landing page showcase and user download portal.')) return;
+      if (!confirm('⚠️ Are you sure you want to delete and clear ALL posted products and creatives?\n\nThis will remove all live creatives from the landing page showcase and user download portal.')) return;
 
       const confirmation = prompt('To confirm permanent deletion of all products, type CLEAR:');
       if (confirmation !== 'CLEAR') {
@@ -5663,11 +5665,12 @@
 
         const res = await fetch('/api/admin/products-posts?clearAll=true', {
           method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'clear_all', clearAll: true })
         });
         const data = await res.json();
         if (res.ok && data.success) {
-          alert(`✓ Successfully deleted and cleared ${data.deleted || 0} product creative(s).`);
+          alert(`✓ Successfully deleted and cleared ${data.deleted ?? data.clearedCount ?? 0} product creative(s).`);
           loadAdminProducts();
           fetchProductsPosts();
         } else {

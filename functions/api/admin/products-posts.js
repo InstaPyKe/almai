@@ -164,11 +164,13 @@ export async function onRequestDelete(context) {
 
   if (!postId && !isClearAll) {
     try {
-      const body = await request.json();
-      postId = body?.postId || body?.id;
-      if (body?.action === 'clear_all' || body?.clearAll === true) {
-        // clear all requested via body
-        return await handleClearAll(env, admin, request);
+      const text = await request.text();
+      if (text && text.trim().length > 0) {
+        const body = JSON.parse(text);
+        postId = body?.postId || body?.id;
+        if (body?.action === 'clear_all' || body?.clearAll === true) {
+          isClearAll = true;
+        }
       }
     } catch (e) {
       // Body is optional
@@ -240,7 +242,8 @@ async function handleClearAll(env, admin, request) {
 
     return jsonSuccess({
       message: `All ${count} existing product creatives have been cleared successfully.`,
-      clearedCount: count
+      clearedCount: count,
+      deleted: count
     });
   } catch (err) {
     console.error('Clear all products error:', err);

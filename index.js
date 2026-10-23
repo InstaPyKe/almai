@@ -533,22 +533,69 @@ async function onRequestDelete(context) {
   const auth = await requireAdmin(request, env);
   if (auth.errorResponse) return auth.errorResponse;
   const admin = auth.user;
-  let body;
-  try {
-    body = await request.json();
-  } catch (e) {
-    return jsonError("Invalid JSON request body", 400);
+
+  const url = new URL(request.url);
+  let isClearAll = url.searchParams.get("clearAll") === "true" || url.searchParams.get("action") === "clear_all";
+  let postId = url.searchParams.get("id") || url.searchParams.get("postId");
+
+  if (!postId && !isClearAll) {
+    try {
+      const text = await request.text();
+      if (text && text.trim().length > 0) {
+        const body = JSON.parse(text);
+        postId = body?.postId || body?.id;
+        if (body?.action === "clear_all" || body?.clearAll === true) {
+          isClearAll = true;
+        }
+      }
+    } catch (e) {
+      // Body is optional
+    }
   }
-  const { postId } = body;
+
+  if (isClearAll) {
+    try {
+      const countRow = await env.DB.prepare("SELECT count(*) as total FROM product_posts").first();
+      const count = countRow?.total || 0;
+
+      await env.DB.prepare("DELETE FROM product_posts").run();
+      await env.DB.prepare("DELETE FROM campaigns WHERE id LIKE 'camp_%'").run();
+
+      const ip = request.headers.get("cf-connecting-ip") || "";
+      await createAuditLog(env, {
+        adminId: admin.id,
+        action: "CLEAR_ALL_PRODUCTS",
+        targetType: "product_posts",
+        targetId: "all",
+        details: { clearedCount: count },
+        ip
+      });
+
+      return jsonSuccess({
+        message: `All ${count} product creatives have been cleared successfully.`,
+        deleted: count,
+        clearedCount: count
+      });
+    } catch (err) {
+      console.error("Clear all products error:", err);
+      return jsonError("Failed to clear product posts", 500);
+    }
+  }
+
   if (!postId) {
-    return jsonError("postId is required", 400);
+    return jsonError("postId or clearAll parameter is required", 400);
   }
+
   try {
     const existing = await env.DB.prepare("SELECT id, title FROM product_posts WHERE id = ?").bind(postId).first();
     if (!existing) {
-      return jsonError("Product post not found", 404);
+      return jsonError("Product post not found or already deleted", 404);
     }
+
     await env.DB.prepare("DELETE FROM product_posts WHERE id = ?").bind(postId).run();
+    const campaignId = `camp_${postId}`;
+    await env.DB.prepare("DELETE FROM campaigns WHERE id = ?").bind(campaignId).run();
+
     const ip = request.headers.get("cf-connecting-ip") || "";
     await createAuditLog(env, {
       adminId: admin.id,
@@ -558,6 +605,7 @@ async function onRequestDelete(context) {
       details: { title: existing.title },
       ip
     });
+
     return jsonSuccess({
       message: `Product creative "${existing.title}" has been deleted.`
     });
