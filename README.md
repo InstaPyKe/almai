@@ -167,30 +167,41 @@ curl -X POST https://your-project.pages.dev/api/setup-admin \
 ```
 
 Once logged in as an administrator:
-1. An **"🛡️ Admin"** button will appear in the top navigation bar.
-2. The Admin Center enables:
+1. An **"🛡️ Admin"** button will appear in the top navigation bar (or via the secret 7-tap trigger on the landing page copyright footer).
+2. The Full-Page Admin Center enables:
    - **Task Review Queue:** View full screenshots uploaded by partners, enter verified views, and approve (which atomically calculates rewards and credits partner wallets) or reject with feedback.
    - **Withdrawals Queue:** View requested M-Pesa payouts, disburse funds, enter the official Safaricom M-Pesa receipt code, and mark complete. Alternatively, reject to automatically refund reserved funds back into the partner's available balance.
+   - **Products / Banners Manager:** Upload new high-resolution product creative banners with captions for partners to download and share.
    - **Audit Logs:** View all administrative actions with IP addresses and timestamps.
    - **Platform Stats:** Monitor total registered partners, view liabilities, and disbursed payouts.
 
 ---
 
+## 💬 24/7 WhatsApp Support & Lively Landing Page
+
+- **Floating WhatsApp Support Widget:** Available on all pages in the bottom-right corner linked directly to WhatsApp number `+447455909204`.
+- **Live Kenyan Disbursements Stream:** Continuous marquee ticker highlighting real-time M-Pesa payouts across Nairobi, Mombasa, Kisumu, Eldoret, Nakuru, and other towns.
+- **Hero Trust Bar & Verification Highlights:** Instant M-Pesa, Cloudflare D1 persistent ledger, 18-hour cooldown, and 14,000+ active partner badges.
+- **Interactive FAQ Accordion:** Fast collapsible answers covering payouts, package activations (Paybill 522533 / Acc 8106675), cooldown rules, and business advertising inquiries.
+
+---
+
 ## 🧪 Testing Checklist
 
-1. **Registration & Login:**
-   - Register a user at `/` by clicking "Get Started".
+1. **Registration & Login Sequence:**
+   - User signs up on `/` -> auto redirected to Login tab -> user logs in -> redirected to Packages (if unactivated) or Dashboard.
    - Confirm session cookie `almai_session` is set with `HttpOnly` and `SameSite=Lax`.
    - Verify `/api/auth/me` returns the authenticated profile.
 2. **Package Activation:**
-   - Go to "Products & Services", select Starter (KSh 200) or Growth (KSh 500).
+   - Go to "Packages & Pricing", select Starter Z (KSh 250), Exclusive (KSh 500), or Premium (KSh 1,200).
+   - Send payment to Safaricom Lipa na M-Pesa: **Paybill 522533**, **Account 8106675**.
    - Enter payment phone and M-Pesa confirmation code.
-   - Verify package becomes active in dashboard.
-3. **Task Cooldown & Submission:**
-   - Click "Submit 24h WhatsApp Proof".
+   - Verify package becomes active in dashboard immediately.
+3. **Task Cooldown & Submission (18-Hour Rule):**
+   - Click "Submit 18h WhatsApp Proof".
    - Upload screenshot proof and enter views.
    - Confirm submission appears in "Task Submissions" table as `pending`.
-   - Verify that trying to submit again immediately triggers the 24-hour cooldown lock on both frontend and server.
+   - Verify that trying to submit again immediately triggers the 18-hour cooldown lock on both frontend and server.
 4. **Administrative Review:**
    - Open Admin Panel -> "Task Submissions Queue".
    - Inspect evidence image proof.
@@ -201,3 +212,4 @@ Once logged in as an administrator:
    - Verify KSh 500 moves from "Available Balance" to "Reserved Balance".
    - In Admin Panel -> "Withdrawals Queue", enter Safaricom M-Pesa receipt code (e.g. `QWE78TY90K`) and mark completed.
    - Verify Reserved Balance clears and Lifetime Withdrawn increments.
+

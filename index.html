@@ -1472,6 +1472,597 @@
         align-items: stretch;
       }
     }
+
+    /* ====================================================================
+       SUPERCHARGED LIVELY LANDING PAGE FEATURES & FLOATING WHATSAPP
+       ==================================================================== */
+    /* Hero Kicker Pill */
+    .hero-kicker-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--beige-border);
+      padding: 8px 18px;
+      border-radius: var(--radius-full);
+      box-shadow: 0 4px 14px rgba(76, 29, 149, 0.08);
+      margin-bottom: 24px;
+      font-size: 13.5px;
+      font-weight: 850;
+      letter-spacing: 0.04em;
+      color: var(--deep-purple-heading);
+      transition: var(--transition);
+      user-select: none;
+    }
+    .hero-kicker-pill:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(76, 29, 149, 0.14);
+      border-color: var(--light-purple-accent);
+    }
+    .kicker-pulse-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #10B981;
+      position: relative;
+    }
+    .kicker-pulse-dot::after {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      right: -3px;
+      bottom: -3px;
+      border-radius: 50%;
+      border: 2px solid #10B981;
+      animation: kickerPulse 1.8s infinite;
+    }
+    @keyframes kickerPulse {
+      0% { transform: scale(0.9); opacity: 0.9; }
+      70% { transform: scale(1.8); opacity: 0; }
+      100% { transform: scale(1.8); opacity: 0; }
+    }
+    .kicker-badge {
+      background: linear-gradient(135deg, var(--deep-purple-heading), var(--primary-purple));
+      color: #FFFFFF;
+      padding: 3px 9px;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.03em;
+    }
+
+    /* Hero Trust Bar */
+    .hero-trust-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      flex-wrap: wrap;
+      margin: -20px auto 44px;
+      padding: 12px 24px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1.5px solid var(--beige-border);
+      border-radius: var(--radius-full);
+      max-width: 960px;
+      box-shadow: var(--shadow-sm);
+    }
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14.5px;
+      font-weight: 750;
+      color: var(--charcoal-muted);
+    }
+    .trust-icon {
+      font-size: 17px;
+    }
+
+    /* Live Activity Stream (Marquee Ticker) */
+    .live-activity-stream {
+      margin: 10px auto 46px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--beige-border);
+      border-radius: var(--radius-full);
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      max-width: 1080px;
+    }
+    .live-ticker-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--deep-purple-heading);
+      color: #FFFFFF;
+      font-size: 12px;
+      font-weight: 900;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      white-space: nowrap;
+      flex-shrink: 0;
+      letter-spacing: 0.05em;
+    }
+    .ticker-live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10B981;
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.4);
+      animation: kickerPulse 1.6s infinite;
+    }
+    .live-ticker-container {
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+      flex: 1;
+    }
+    .live-ticker-track {
+      display: inline-flex;
+      align-items: center;
+      gap: 36px;
+      animation: tickerScroll 42s linear infinite;
+    }
+    .live-ticker-track:hover {
+      animation-play-state: paused;
+    }
+    @keyframes tickerScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .ticker-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--charcoal-text);
+      white-space: nowrap;
+    }
+    .ticker-amount {
+      color: #047857;
+      font-weight: 900;
+    }
+    .ticker-tier {
+      color: var(--primary-purple);
+      font-weight: 850;
+    }
+    .ticker-time {
+      font-size: 12px;
+      color: var(--charcoal-muted);
+      opacity: 0.85;
+      background: var(--bg-cream);
+      padding: 2px 7px;
+      border-radius: 6px;
+    }
+
+    /* Section Pill Tag */
+    .section-pill {
+      display: inline-block;
+      background: var(--primary-purple-light);
+      color: var(--primary-purple);
+      border: 1px solid rgba(109, 40, 217, 0.2);
+      padding: 5px 14px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+    }
+
+    /* Features Showcase Section */
+    .features-showcase-section {
+      padding: 50px 20px 40px;
+    }
+    .features-showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 24px;
+      margin-top: 36px;
+    }
+    .feature-card {
+      background: var(--white-card);
+      border: 2px solid var(--beige-border);
+      border-radius: var(--radius-lg);
+      padding: 32px 26px;
+      transition: var(--transition);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-sm);
+    }
+    .feature-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--light-purple-accent);
+    }
+    .feature-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .feature-icon-box {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    .feature-icon-box svg {
+      width: 26px;
+      height: 26px;
+    }
+    .highlight-purple .feature-icon-box {
+      background: var(--primary-purple-light);
+      color: var(--primary-purple);
+      border: 1.5px solid rgba(109, 40, 217, 0.25);
+    }
+    .highlight-gold .feature-icon-box {
+      background: #FEF3C7;
+      color: #D97706;
+      border: 1.5px solid rgba(217, 119, 6, 0.25);
+    }
+    .highlight-blue .feature-icon-box {
+      background: #EFF6FF;
+      color: #2563EB;
+      border: 1.5px solid rgba(37, 99, 235, 0.25);
+    }
+    .highlight-green .feature-icon-box {
+      background: #ECFDF5;
+      color: #047857;
+      border: 1.5px solid rgba(4, 120, 87, 0.25);
+    }
+    .feature-tag {
+      font-size: 11.5px;
+      font-weight: 850;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      background: var(--bg-cream);
+      color: var(--charcoal-muted);
+      border: 1px solid var(--beige-border);
+    }
+    .feature-card h3 {
+      font-size: 21px;
+      font-weight: 900;
+      margin-bottom: 12px;
+      color: var(--deep-purple-heading);
+    }
+    .feature-card p {
+      color: var(--charcoal-muted);
+      font-size: 15.5px;
+      font-weight: 600;
+      line-height: 1.62;
+      margin-bottom: 22px;
+      flex-grow: 1;
+    }
+    .feature-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      border-top: 1.5px dashed var(--beige-border);
+      padding-top: 16px;
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--charcoal-text);
+    }
+    .meta-bullet {
+      color: #047857;
+    }
+
+    /* Testimonials Section */
+    .testimonials-section {
+      padding: 50px 20px 40px;
+    }
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 24px;
+      margin-top: 36px;
+    }
+    .testimonial-card {
+      background: var(--white-card);
+      border: 1.5px solid var(--beige-border);
+      border-radius: var(--radius-lg);
+      padding: 30px 26px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition);
+      position: relative;
+    }
+    .testimonial-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary-purple);
+    }
+    .testimonial-stars {
+      color: #F59E0B;
+      font-size: 19px;
+      margin-bottom: 14px;
+      letter-spacing: 2px;
+    }
+    .testimonial-quote {
+      font-size: 16px;
+      font-weight: 650;
+      color: var(--charcoal-text);
+      line-height: 1.65;
+      margin-bottom: 22px;
+      flex-grow: 1;
+      font-style: italic;
+    }
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .author-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--deep-purple-heading), var(--primary-purple));
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 15px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 10px rgba(109, 40, 217, 0.2);
+    }
+    .author-info h4 {
+      font-size: 16px;
+      font-weight: 850;
+      color: var(--deep-purple-heading);
+      margin-bottom: 2px;
+    }
+    .author-info p {
+      font-size: 12.5px;
+      font-weight: 650;
+      color: var(--charcoal-muted);
+      margin: 0;
+    }
+    .verified-badge {
+      margin-left: auto;
+      font-size: 11px;
+      font-weight: 850;
+      color: #047857;
+      background: #ECFDF5;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(4, 120, 87, 0.2);
+      white-space: nowrap;
+    }
+    .payout-pill {
+      background: var(--bg-cream);
+      border: 1px solid var(--beige-border);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-size: 13.5px;
+      color: var(--charcoal-muted);
+      font-weight: 700;
+    }
+    .payout-pill strong {
+      color: #047857;
+    }
+
+    /* FAQ Section */
+    .faq-section {
+      padding: 50px 20px 60px;
+    }
+    .faq-accordion {
+      max-width: 860px;
+      margin: 36px auto 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .faq-item {
+      background: var(--white-card);
+      border: 1.5px solid var(--beige-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    .faq-item:hover {
+      border-color: var(--primary-purple);
+      box-shadow: var(--shadow-sm);
+    }
+    .faq-item.active {
+      border-color: var(--primary-purple);
+      box-shadow: 0 4px 14px rgba(109, 40, 217, 0.12);
+    }
+    .faq-question {
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      font-size: 17.5px;
+      font-weight: 850;
+      color: var(--deep-purple-heading);
+      user-select: none;
+    }
+    .faq-arrow {
+      font-size: 12px;
+      color: var(--primary-purple);
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+    }
+    .faq-item.active .faq-arrow {
+      transform: rotate(180deg);
+    }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1), padding 0.3s ease;
+      padding: 0 24px;
+      background: #FAFAF9;
+      border-top: 1px solid transparent;
+    }
+    .faq-item.active .faq-answer {
+      max-height: 300px;
+      padding: 16px 24px 22px;
+      border-top-color: var(--beige-border);
+    }
+    .faq-answer p {
+      font-size: 15.5px;
+      font-weight: 600;
+      color: var(--charcoal-muted);
+      line-height: 1.68;
+      margin: 0;
+    }
+
+    /* Floating WhatsApp Button */
+    .floating-whatsapp-btn {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 99999;
+      background: #25D366;
+      color: #FFFFFF;
+      border-radius: var(--radius-full);
+      padding: 6px 18px 6px 8px;
+      box-shadow: 0 10px 30px rgba(37, 211, 102, 0.45), 0 4px 12px rgba(0, 0, 0, 0.15);
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      border: 2px solid rgba(255, 255, 255, 0.6);
+      cursor: pointer;
+      user-select: none;
+    }
+    .floating-whatsapp-btn:hover {
+      transform: translateY(-4px) scale(1.04);
+      background: #20BA5A;
+      box-shadow: 0 14px 38px rgba(37, 211, 102, 0.55), 0 6px 18px rgba(0, 0, 0, 0.2);
+      color: #FFFFFF;
+    }
+    .wa-btn-inner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .wa-icon-bubble {
+      width: 44px;
+      height: 44px;
+      background: #FFFFFF;
+      color: #25D366;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    }
+    .wa-svg {
+      width: 27px;
+      height: 27px;
+    }
+    .wa-pulse-ring {
+      position: absolute;
+      top: -4px;
+      left: -4px;
+      right: -4px;
+      bottom: -4px;
+      border-radius: 50%;
+      border: 2px solid #25D366;
+      animation: waPulse 2s infinite cubic-bezier(0.24, 0, 0.38, 1);
+      pointer-events: none;
+    }
+    @keyframes waPulse {
+      0% { transform: scale(0.92); opacity: 0.9; }
+      70% { transform: scale(1.4); opacity: 0; }
+      100% { transform: scale(1.4); opacity: 0; }
+    }
+    .wa-content-pill {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      line-height: 1.15;
+    }
+    .wa-status-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 2px;
+    }
+    .wa-online-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      box-shadow: 0 0 6px #FFFFFF;
+      display: inline-block;
+    }
+    .wa-status-text {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      opacity: 0.95;
+      color: #FFFFFF;
+    }
+    .wa-title-text {
+      font-size: 15px;
+      font-weight: 900;
+      font-family: 'Space Grotesk', sans-serif;
+      color: #FFFFFF;
+      letter-spacing: -0.01em;
+    }
+
+    @media (max-width: 640px) {
+      .floating-whatsapp-btn {
+        bottom: 18px;
+        right: 14px;
+        padding: 5px 14px 5px 6px;
+      }
+      .wa-icon-bubble {
+        width: 38px;
+        height: 38px;
+      }
+      .wa-svg {
+        width: 22px;
+        height: 22px;
+      }
+      .wa-status-text {
+        font-size: 10px;
+      }
+      .wa-title-text {
+        font-size: 13.5px;
+      }
+      .hero-trust-bar {
+        border-radius: var(--radius-md);
+        gap: 12px;
+        padding: 10px 14px;
+      }
+      .trust-item {
+        font-size: 12.5px;
+      }
+      .features-showcase-grid,
+      .testimonials-grid {
+        grid-template-columns: 1fr;
+      }
+      .live-activity-stream {
+        border-radius: var(--radius-md);
+        padding: 8px 10px;
+        gap: 10px;
+      }
+      .live-ticker-badge {
+        font-size: 11px;
+        padding: 5px 10px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1615,6 +2206,14 @@
   <main id="view-home" class="view-container active-view">
     <section class="hero-section">
       <div class="container">
+        <!-- Hero Kicker Pill with Live Radar Pulse -->
+        <div class="hero-kicker-pill">
+          <span class="kicker-pulse-dot"></span>
+          <span class="kicker-flag">🇰🇪</span>
+          <span class="kicker-text">KENYA'S #1 VERIFIED WHATSAPP AD NETWORK</span>
+          <span class="kicker-badge">LIVE PAYOUTS</span>
+        </div>
+
         <h1 class="hero-title">
           Turn Your WhatsApp Status Views Into <span>Guaranteed Daily Cash</span>
         </h1>
@@ -1634,6 +2233,14 @@
           </button>
         </div>
 
+        <!-- Hero Trust Bar -->
+        <div class="hero-trust-bar">
+          <div class="trust-item"><span class="trust-icon">⚡</span><span>Instant M-Pesa Disbursements</span></div>
+          <div class="trust-item"><span class="trust-icon">🛡️</span><span>Cloudflare Secured Ledger</span></div>
+          <div class="trust-item"><span class="trust-icon">⏱️</span><span>18-Hour Verified Cooldown</span></div>
+          <div class="trust-item"><span class="trust-icon">👥</span><span>14,200+ Active Kenyan Earners</span></div>
+        </div>
+
         <!-- Live Platform Stats -->
         <div class="stats-grid">
           <div class="stat-card">
@@ -1650,7 +2257,32 @@
           </div>
           <div class="stat-card">
             <div class="stat-val">&lt; 2 Hours</div>
-            <div class="stat-lbl">Average Review & Approval</div>
+            <div class="stat-lbl">Average Review &amp; Approval</div>
+          </div>
+        </div>
+
+        <!-- Live Partner Activity Ticker Marquee -->
+        <div class="live-activity-stream">
+          <div class="live-ticker-badge">
+            <span class="ticker-live-dot"></span>
+            <span>LIVE DISBURSEMENTS</span>
+          </div>
+          <div class="live-ticker-container">
+            <div class="live-ticker-track">
+              <div class="ticker-item"><span class="ticker-flag">🇰🇪</span> <strong>Brian O. (Nairobi)</strong> withdrew <span class="ticker-amount">KSh 3,250</span> to M-Pesa <span class="ticker-time">2m ago</span></div>
+              <div class="ticker-item"><span class="ticker-flag">🇰🇪</span> <strong>Faith W. (Mombasa)</strong> verified 48 views (<span class="ticker-amount">KSh 2,400</span>) <span class="ticker-time">4m ago</span></div>
+              <div class="ticker-item"><span class="ticker-flag">🇰🇪</span> <strong>Kevin K. (Eldoret)</strong> withdrew <span class="ticker-amount">KSh 4,800</span> to M-Pesa <span class="ticker-time">7m ago</span></div>
+              <div class="ticker-item"><span class="ticker-flag">🇰🇪</span> <strong>Grace M. (Nakuru)</strong> upgraded to <span class="ticker-tier">Exclusive Tier</span> <span class="ticker-time">11m ago</span></div>
+              <div class="ticker-item"><span class="ticker-flag">🇰🇪</span> <strong>Denis O. (Kisumu)</strong> withdrew <span class="ticker-amount">KSh 1,950</span> to M-Pesa <span class="ticker-time">14m ago</span></div>
+              <div class="ticker-item"><span class="ticker-flag">🇰🇪</span> <strong>Sharon C. (Thika)</strong> verified 65 views (<span class="ticker-amount">KSh 3,250</span>) <span class="ticker-time">18m ago</span></div>
+              <div class="ticker-item"><span class="ticker-flag">🇰🇪</span> <strong>Samuel N. (Machakos)</strong> withdrew <span class="ticker-amount">KSh 6,100</span> to M-Pesa <span class="ticker-time">22m ago</span></div>
+              <!-- Looped duplicate for continuous seamless marquee -->
+              <div class="ticker-item"><span class="ticker-flag">🇰🇪</span> <strong>Brian O. (Nairobi)</strong> withdrew <span class="ticker-amount">KSh 3,250</span> to M-Pesa <span class="ticker-time">2m ago</span></div>
+              <div class="ticker-item"><span class="ticker-flag">🇰🇪</span> <strong>Faith W. (Mombasa)</strong> verified 48 views (<span class="ticker-amount">KSh 2,400</span>) <span class="ticker-time">4m ago</span></div>
+              <div class="ticker-item"><span class="ticker-flag">🇰🇪</span> <strong>Kevin K. (Eldoret)</strong> withdrew <span class="ticker-amount">KSh 4,800</span> to M-Pesa <span class="ticker-time">7m ago</span></div>
+              <div class="ticker-item"><span class="ticker-flag">🇰🇪</span> <strong>Grace M. (Nakuru)</strong> upgraded to <span class="ticker-tier">Exclusive Tier</span> <span class="ticker-time">11m ago</span></div>
+              <div class="ticker-item"><span class="ticker-flag">🇰🇪</span> <strong>Denis O. (Kisumu)</strong> withdrew <span class="ticker-amount">KSh 1,950</span> to M-Pesa <span class="ticker-time">14m ago</span></div>
+            </div>
           </div>
         </div>
       </div>
@@ -1660,7 +2292,7 @@
     <section class="container" id="calculator-section">
       <div class="calc-box">
         <div class="calc-header">
-          <h2 class="section-title">Calculate Your Daily & Monthly Payouts</h2>
+          <h2 class="section-title">Calculate Your Daily &amp; Monthly Payouts</h2>
           <p class="section-desc">Estimate your potential earnings based on your average WhatsApp Status view count and partner package tier.</p>
         </div>
 
@@ -1757,6 +2389,130 @@
       </div>
     </section>
 
+    <!-- Supercharged Platform Features Showcase Section -->
+    <section class="container features-showcase-section">
+      <div class="section-header">
+        <div class="section-pill">UNMATCHED ADVANTAGES</div>
+        <h2 class="section-title">Built For Seamless Daily Income &amp; Maximum Reach</h2>
+        <p class="section-desc">Experience Kenya's most advanced WhatsApp monetization engine engineered with Cloudflare precision and instant M-Pesa delivery.</p>
+      </div>
+      
+      <div class="features-showcase-grid">
+        <div class="feature-card highlight-purple">
+          <div class="feature-card-header">
+            <div class="feature-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            </div>
+            <span class="feature-tag">Instant B2C</span>
+          </div>
+          <h3>Automated Safaricom M-Pesa Payouts</h3>
+          <p>No waiting days for payouts. Once your 18-hour status screenshot is verified, request a withdrawal and receive your cash straight to your registered Safaricom number.</p>
+          <div class="feature-meta">
+            <span class="meta-bullet">✓ Min. Withdrawal KSh 100</span>
+            <span class="meta-bullet">✓ 24/7 Availability</span>
+          </div>
+        </div>
+
+        <div class="feature-card highlight-gold">
+          <div class="feature-card-header">
+            <div class="feature-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            </div>
+            <span class="feature-tag">100% Transparent</span>
+          </div>
+          <h3>Fair 18-Hour Proof Verification</h3>
+          <p>Our smart verification captures the exact view count from your status screenshot. Cooldown rules prevent duplicates, ensuring authentic views and guaranteed earnings for every post.</p>
+          <div class="feature-meta">
+            <span class="meta-bullet">✓ High-res Image Audits</span>
+            <span class="meta-bullet">✓ Accurate View-to-Cash Ledger</span>
+          </div>
+        </div>
+
+        <div class="feature-card highlight-blue">
+          <div class="feature-card-header">
+            <div class="feature-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </div>
+            <span class="feature-tag">Top Tier Brands</span>
+          </div>
+          <h3>Premium Corporate Campaigns</h3>
+          <p>Access ready-to-post high-definition banners from Kenya's leading e-commerce companies, real estate agencies, events, and trending brands with pre-written catchy captions.</p>
+          <div class="feature-meta">
+            <span class="meta-bullet">✓ 1-Click Banner Download</span>
+            <span class="meta-bullet">✓ Ready Captions Included</span>
+          </div>
+        </div>
+
+        <div class="feature-card highlight-green">
+          <div class="feature-card-header">
+            <div class="feature-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+            </div>
+            <span class="feature-tag">Scale Your Income</span>
+          </div>
+          <h3>Tier Multipliers (Up to KSh 100/View)</h3>
+          <p>Choose the tier that matches your network size. Start on Starter Z at KSh 20 per view, upgrade to Exclusive at KSh 50 per view, or maximize with Premium at KSh 100 per view.</p>
+          <div class="feature-meta">
+            <span class="meta-bullet">✓ Lifetime Tier Access</span>
+            <span class="meta-bullet">✓ Unlimited Daily Potential</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials & Social Proof -->
+    <section class="container testimonials-section">
+      <div class="section-header">
+        <div class="section-pill">VERIFIED CREATOR STORIES</div>
+        <h2 class="section-title">Trusted By Over 14,000+ Kenyan Partners</h2>
+        <p class="section-desc">See how students, digital creators, and young professionals are funding their daily goals with Almai Ads.</p>
+      </div>
+
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-quote">"I was skeptical until my first KSh 2,450 arrived directly into my M-Pesa. Now I post every morning at 7:00 AM before classes at KU, and withdraw every evening."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">MA</div>
+            <div class="author-info">
+              <h4>Mercy A.</h4>
+              <p>Kenyatta University • Exclusive Tier</p>
+            </div>
+            <div class="verified-badge" title="Verified M-Pesa Recipient">✓ Verified</div>
+          </div>
+          <div class="payout-pill">Total Earned: <strong>KSh 48,200</strong></div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-quote">"The 18-hour timer is fair and simple. With around 80 status views on my phone, Premium tier gets me KSh 8,000 per post. Almai has completely replaced my freelance side gigs."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar" style="background: linear-gradient(135deg, #047857, #10B981);">VK</div>
+            <div class="author-info">
+              <h4>Victor K.</h4>
+              <p>Digital Creator, Mombasa • Premium Tier</p>
+            </div>
+            <div class="verified-badge" title="Verified M-Pesa Recipient">✓ Verified</div>
+          </div>
+          <div class="payout-pill">Total Earned: <strong>KSh 96,000</strong></div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-quote">"As an SME boutique owner in Nairobi CBD, we also booked Almai's business campaign. We reached over 40,000 local WhatsApp users and sold out our weekend stock in 2 days!"</p>
+          <div class="testimonial-author">
+            <div class="author-avatar" style="background: linear-gradient(135deg, #D97706, #F59E0B);">DN</div>
+            <div class="author-info">
+              <h4>Dennis N.</h4>
+              <p>Merchant &amp; Partner, Nairobi</p>
+            </div>
+            <div class="verified-badge" title="Verified Business Client">✓ Verified</div>
+          </div>
+          <div class="payout-pill">Business ROI: <strong>4.8x Ad Spend</strong></div>
+        </div>
+      </div>
+    </section>
+
     <!-- WhatsApp Status Products Showcase -->
     <section class="container" style="padding: 20px 0 50px;">
       <div class="section-header">
@@ -1765,6 +2521,67 @@
       </div>
       <div class="products-posts-grid" id="home-products-container">
         <!-- Rendered dynamically via fetchProductsPosts() -->
+      </div>
+    </section>
+
+    <!-- Frequently Asked Questions Accordion -->
+    <section class="container faq-section">
+      <div class="section-header">
+        <div class="section-pill">FREQUENTLY ASKED QUESTIONS</div>
+        <h2 class="section-title">Everything You Need To Know</h2>
+        <p class="section-desc">Got questions about how status payouts, M-Pesa verification, and packages work? We've got answers.</p>
+      </div>
+
+      <div class="faq-accordion">
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">
+            <span>How do I receive my earnings after posting?</span>
+            <span class="faq-arrow">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p>Once you download and post an active product banner to your WhatsApp Status, leave it active for 18 hours. Take a clear screenshot of your viewer count and upload it in your Dashboard. Our automated system calculates your earnings (Views × Tier Rate) and credits your balance instantly for M-Pesa withdrawal.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">
+            <span>Why is there an 18-hour cooldown between submissions?</span>
+            <span class="faq-arrow">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p>Corporate advertisers pay for genuine impressions that remain visible on your status for a substantial portion of the 24-hour cycle. The 18-hour cooldown ensures maximum brand exposure and protects the high payout rates our partners enjoy.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">
+            <span>How do I pay and activate my package?</span>
+            <span class="faq-arrow">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p>You can activate via Safaricom M-Pesa Lipa na M-Pesa using <strong>Paybill 522533</strong> and <strong>Account 8106675</strong>. After sending the exact fee (KSh 250 for Starter Z, KSh 500 for Exclusive, or KSh 1,200 for Premium), paste your M-Pesa confirmation code in your dashboard to activate immediately.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">
+            <span>Can I upgrade from Starter Z to Exclusive or Premium later?</span>
+            <span class="faq-arrow">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p>Yes, absolutely! You can upgrade your tier at any time directly from the Packages page. Your earnings per view will immediately reflect the higher payout multiplier on your next task.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">
+            <span>How do businesses book ads on Almai Ads?</span>
+            <span class="faq-arrow">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p>Business owners and agencies can click "Book a Business Campaign" or tap the green "Chat with Us" WhatsApp button at the bottom right to speak directly with our advertising team and customize a targeted Kenyan campaign.</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -4581,6 +5398,43 @@
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
     }
+
+    // ====================================================================
+    // FAQ INTERACTIVE ACCORDION
+    // ====================================================================
+    function toggleFaq(item) {
+      if (!item) return;
+      const wasActive = item.classList.contains('active');
+      document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('active'));
+      if (!wasActive) {
+        item.classList.add('active');
+      }
+    }
   </script>
+
+  <!-- Floating WhatsApp "Chat with Us" Widget (+447455909204) -->
+  <a href="https://wa.me/447455909204?text=Hello%20Almai%20Ads%2C%20I%20would%20like%20to%20inquire%20about%20partner%20earnings%20and%20campaigns." 
+     target="_blank" 
+     rel="noopener noreferrer" 
+     class="floating-whatsapp-btn" 
+     id="floating-whatsapp-widget"
+     title="Chat with Us on WhatsApp (+447455909204)"
+     aria-label="Chat with Us on WhatsApp">
+    <div class="wa-btn-inner">
+      <div class="wa-icon-bubble">
+        <span class="wa-pulse-ring"></span>
+        <svg viewBox="0 0 32 32" fill="currentColor" class="wa-svg">
+          <path d="M16 2.5C8.544 2.5 2.5 8.544 2.5 16c0 2.656.772 5.131 2.106 7.219L2.5 29.5l6.5-2.062A13.438 13.438 0 0016 29.5c7.456 0 13.5-6.044 13.5-13.5S23.456 2.5 16 2.5zm0 24.688c-2.319 0-4.475-.681-6.281-1.856l-.45-.294-4.138 1.312 1.331-4.019-.306-.475A11.106 11.106 0 014.812 16c0-6.169 5.019-11.188 11.188-11.188 6.169 0 11.188 5.019 11.188 11.188 0 6.169-5.019 11.188-11.188 11.188zm6.544-8.381c-.356-.181-2.106-1.038-2.431-1.156-.325-.119-.562-.181-.8.181-.238.356-.919 1.156-1.125 1.394-.206.238-.412.269-.769.088-.356-.181-1.506-.556-2.869-1.769-1.062-.944-1.781-2.112-1.988-2.469-.206-.356-.025-.55.156-.725.162-.162.356-.412.531-.619.181-.206.238-.356.356-.594.119-.238.056-.444-.025-.619s-.8-1.925-1.094-2.637c-.288-.694-.581-.6-.8-.613-.206-.006-.444-.012-.681-.012-.238 0-.625.088-.95.444-.325.356-1.25 1.225-1.25 2.988 0 1.762 1.281 3.469 1.462 3.712.181.238 2.519 3.844 6.1 5.394.85.369 1.512.588 2.031.75.856.275 1.637.238 2.25.144.688-.1 2.106-.862 2.4-1.694.294-.831.294-1.544.206-1.694-.088-.15-.325-.238-.681-.419z"/>
+        </svg>
+      </div>
+      <div class="wa-content-pill">
+        <span class="wa-status-row">
+          <span class="wa-online-dot"></span>
+          <span class="wa-status-text">Online • 24/7 Support</span>
+        </span>
+        <span class="wa-title-text">Chat with Us</span>
+      </div>
+    </div>
+  </a>
 </body>
 </html>
