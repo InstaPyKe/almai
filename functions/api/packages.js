@@ -137,27 +137,28 @@ export async function onRequestPost(context) {
       const paymentTxId = generateId('pmt');
       const userPackageId = generateId('upkg');
 
-      // 1. Record payment transaction
+      // 1. Record payment transaction in pending state for admin audit
       await env.DB.prepare(`
-        INSERT INTO payment_transactions (id, user_id, package_id, amount_ksh, phone_number, payment_method, mpesa_receipt_number, status, notes, verified_at, created_at)
-        VALUES (?, ?, ?, ?, ?, 'mpesa_manual', ?, 'completed', 'Verified Package Activation', ?, ?)
-      `).bind(paymentTxId, user.id, pkg.id, pkg.price_ksh, targetPhone, cleanRef, now, now).run();
+        INSERT INTO payment_transactions (id, user_id, package_id, amount_ksh, phone_number, payment_method, mpesa_receipt_number, status, notes, created_at)
+        VALUES (?, ?, ?, ?, ?, 'mpesa_manual', ?, 'pending', 'Submitted by user, awaiting admin audit', ?)
+      `).bind(paymentTxId, user.id, pkg.id, pkg.price_ksh, targetPhone, cleanRef, now).run();
 
-      // 2. Deactivate any previous active package
+      // 2. Remove any previous pending package requests for this user
       await env.DB.prepare(`
-        UPDATE user_packages SET status = 'expired' WHERE user_id = ? AND status = 'active'
+        DELETE FROM user_packages WHERE user_id = ? AND status = 'pending_verification'
       `).bind(user.id).run();
 
-      // 3. Activate new package
+      // 3. Insert user package in pending_verification status
       await env.DB.prepare(`
         INSERT INTO user_packages (id, user_id, package_id, status, activated_at)
-        VALUES (?, ?, ?, 'active', ?)
+        VALUES (?, ?, ?, 'pending_verification', ?)
       `).bind(userPackageId, user.id, pkg.id, now).run();
 
       return jsonSuccess({
-        message: `Congratulations! Your ${pkg.name} package has been successfully activated.`,
+        message: `M-Pesa reference ${cleanRef} submitted for ${pkg.name}! Our administrator will verify the payment code to activate your account.`,
         package: pkg,
-        reference: cleanRef
+        reference: cleanRef,
+        status: 'pending_verification'
       }, 201);
     }
 

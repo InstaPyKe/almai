@@ -31,13 +31,25 @@ export async function onRequestGet(context) {
       };
     }
 
-    // 2. Fetch active user package
+    // 2. Fetch active and pending user packages
     const activePackage = await env.DB.prepare(`
       SELECT up.id as user_package_id, up.status, up.activated_at,
              p.id as package_id, p.name, p.slug, p.price_ksh, p.reward_per_view_ksh, p.max_views_per_task, p.badge
       FROM user_packages up
       JOIN packages p ON up.package_id = p.id
       WHERE up.user_id = ? AND up.status = 'active'
+      ORDER BY up.activated_at DESC
+      LIMIT 1
+    `).bind(user.id).first();
+
+    const pendingPackage = await env.DB.prepare(`
+      SELECT up.id as user_package_id, up.status, up.activated_at,
+             p.id as package_id, p.name, p.slug, p.price_ksh, p.reward_per_view_ksh, p.max_views_per_task, p.badge,
+             pt.mpesa_receipt_number, pt.created_at as payment_submitted_at
+      FROM user_packages up
+      JOIN packages p ON up.package_id = p.id
+      LEFT JOIN payment_transactions pt ON pt.user_id = up.user_id AND pt.package_id = up.package_id AND pt.status = 'pending'
+      WHERE up.user_id = ? AND up.status = 'pending_verification'
       ORDER BY up.activated_at DESC
       LIMIT 1
     `).bind(user.id).first();
@@ -89,6 +101,8 @@ export async function onRequestGet(context) {
       },
       wallet,
       activePackage: activePackage || null,
+      pendingPackage: pendingPackage || null,
+      hasActivePackage: Boolean(activePackage),
       cooldown: {
         canSubmitTask,
         nextSubmissionAllowedAt,

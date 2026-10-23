@@ -264,8 +264,312 @@ async function onRequestPut(context) {
 }
 __name(onRequestPut, "onRequestPut");
 
-// api/admin/stats.js
+// api/admin/payments.js
 async function onRequestGet3(context) {
+  const { request, env } = context;
+  const auth = await requireAdmin(request, env);
+  if (auth.errorResponse) return auth.errorResponse;
+  try {
+    const url = new URL(request.url);
+    const filterStatus = url.searchParams.get("status") || "pending";
+    let query = `
+      SELECT pt.id, pt.user_id, pt.package_id, pt.amount_ksh, pt.phone_number,
+             pt.mpesa_receipt_number, pt.status, pt.notes, pt.verified_at, pt.created_at,
+             u.name as user_name, u.email as user_email, u.phone as user_registered_phone,
+             p.name as package_name, p.slug as package_slug, p.reward_per_view_ksh
+      FROM payment_transactions pt
+      JOIN users u ON pt.user_id = u.id
+      JOIN packages p ON pt.package_id = p.id
+    `;
+    if (filterStatus === "pending") {
+      query += ` WHERE pt.status = 'pending' ORDER BY pt.created_at ASC LIMIT 100`;
+    } else if (filterStatus === "completed") {
+      query += ` WHERE pt.status = 'completed' ORDER BY pt.created_at DESC LIMIT 100`;
+    } else {
+      query += ` ORDER BY pt.created_at DESC LIMIT 150`;
+    }
+    const { results } = await env.DB.prepare(query).all();
+    return jsonSuccess({
+      payments: results || []
+    });
+  } catch (err) {
+    console.error("Admin fetch payments error:", err);
+    return jsonError("Failed to fetch payment transactions for verification", 500);
+  }
+}
+__name(onRequestGet3, "onRequestGet");
+async function onRequestPost(context) {
+  const { request, env } = context;
+  const auth = await requireAdmin(request, env);
+  if (auth.errorResponse) return auth.errorResponse;
+  const admin = auth.user;
+  let body;
+  try {
+    body = await request.json();
+  } catch (e) {
+    return jsonError("Invalid JSON request body", 400);
+  }
+  const { paymentId, action, notes } = body;
+  if (!paymentId || !action) {
+    return jsonError('paymentId and action ("verify" | "reject") are required', 400);
+  }
+  try {
+    const payment = await env.DB.prepare(`
+      SELECT pt.*, u.name as user_name, u.email as user_email, p.name as package_name
+      FROM payment_transactions pt
+      JOIN users u ON pt.user_id = u.id
+      JOIN packages p ON pt.package_id = p.id
+      WHERE pt.id = ?
+      LIMIT 1
+    `).bind(paymentId).first();
+    if (!payment) {
+      return jsonError("Payment transaction not found", 404);
+    }
+    if (payment.status !== "pending") {
+      return jsonError(`This payment transaction is already marked as ${payment.status}`, 409);
+    }
+    const now = Math.floor(Date.now() / 1e3);
+    const ip = request.headers.get("cf-connecting-ip") || "";
+    if (action === "verify") {
+      const adminNote = notes || `Verified by Admin ${admin.name}`;
+      await env.DB.prepare(`
+        UPDATE payment_transactions
+        SET status = 'completed',
+            verified_at = ?,
+            notes = ?
+        WHERE id = ? AND status = 'pending'
+      `).bind(now, adminNote, payment.id).run();
+      await env.DB.prepare(`
+        UPDATE user_packages
+        SET status = 'expired'
+        WHERE user_id = ? AND status = 'active'
+      `).bind(payment.user_id).run();
+      const userPackageId = generateId("upkg");
+      await env.DB.prepare(`
+        INSERT INTO user_packages (id, user_id, package_id, status, activated_at)
+        VALUES (?, ?, ?, 'active', ?)
+      `).bind(userPackageId, payment.user_id, payment.package_id, now).run();
+      await env.DB.prepare(`
+        DELETE FROM user_packages
+        WHERE user_id = ? AND status = 'pending_verification' AND id != ?
+      `).bind(payment.user_id, userPackageId).run();
+      await createAuditLog(env, {
+        adminId: admin.id,
+        action: "VERIFY_PAYMENT_CODE",
+        targetType: "payment_transaction",
+        targetId: payment.id,
+        details: {
+          code: payment.mpesa_receipt_number,
+          amountKsh: payment.amount_ksh,
+          userId: payment.user_id,
+          userName: payment.user_name,
+          packageId: payment.package_id,
+          packageName: payment.package_name
+        },
+        ip
+      });
+      return jsonSuccess({
+        message: `M-Pesa code ${payment.mpesa_receipt_number} verified! ${payment.package_name} activated for ${payment.user_name}.`,
+        payment: {
+          id: payment.id,
+          status: "completed",
+          mpesaReceipt: payment.mpesa_receipt_number
+        }
+      });
+    } else if (action === "reject") {
+      const rejectReason = notes || "M-Pesa transaction reference could not be verified with Safaricom";
+      await env.DB.prepare(`
+        UPDATE payment_transactions
+        SET status = 'failed',
+            notes = ?
+        WHERE id = ? AND status = 'pending'
+      `).bind(rejectReason, payment.id).run();
+      await env.DB.prepare(`
+        DELETE FROM user_packages
+        WHERE user_id = ? AND status = 'pending_verification' AND package_id = ?
+      `).bind(payment.user_id, payment.package_id).run();
+      await createAuditLog(env, {
+        adminId: admin.id,
+        action: "REJECT_PAYMENT_CODE",
+        targetType: "payment_transaction",
+        targetId: payment.id,
+        details: {
+          code: payment.mpesa_receipt_number,
+          reason: rejectReason,
+          userId: payment.user_id,
+          userName: payment.user_name
+        },
+        ip
+      });
+      return jsonSuccess({
+        message: `Transaction code ${payment.mpesa_receipt_number} has been rejected.`,
+        payment: {
+          id: payment.id,
+          status: "failed",
+          reason: rejectReason
+        }
+      });
+    } else {
+      return jsonError('Invalid action specified. Must be "verify" or "reject".', 400);
+    }
+  } catch (err) {
+    console.error("Verify payment error:", err);
+    return jsonError("Failed to process payment verification. Please try again.", 500);
+  }
+}
+__name(onRequestPost, "onRequestPost");
+
+// api/admin/products-posts.js
+async function onRequestGet4(context) {
+  const { request, env } = context;
+  const auth = await requireAdmin(request, env);
+  if (auth.errorResponse) return auth.errorResponse;
+  try {
+    const { results } = await env.DB.prepare(`
+      SELECT id, title, brand_name, description, caption, image_url, image_base64, image_name, status, downloads_count, created_at
+      FROM product_posts
+      ORDER BY created_at DESC
+      LIMIT 100
+    `).all();
+    return jsonSuccess({
+      productPosts: results || []
+    });
+  } catch (err) {
+    console.error("Admin fetch product posts error:", err);
+    return jsonError("Failed to fetch product posts for admin", 500);
+  }
+}
+__name(onRequestGet4, "onRequestGet");
+async function onRequestPost2(context) {
+  const { request, env } = context;
+  const auth = await requireAdmin(request, env);
+  if (auth.errorResponse) return auth.errorResponse;
+  const admin = auth.user;
+  let body;
+  try {
+    body = await request.json();
+  } catch (e) {
+    return jsonError("Invalid JSON request body", 400);
+  }
+  const { title, brandName, description, caption, imageBase64, imageName } = body;
+  if (!title || typeof title !== "string" || title.trim().length < 3) {
+    return jsonError("Please enter a valid product title (at least 3 characters)", 400);
+  }
+  if (!brandName || typeof brandName !== "string" || brandName.trim().length < 2) {
+    return jsonError("Please enter a valid brand or company name", 400);
+  }
+  if (!caption || typeof caption !== "string" || caption.trim().length < 5) {
+    return jsonError("Please provide the suggested WhatsApp caption for users to copy", 400);
+  }
+  if (!imageBase64 || typeof imageBase64 !== "string") {
+    return jsonError("Product picture image file is required", 400);
+  }
+  if (imageBase64.length > 5 * 1024 * 1024) {
+    return jsonError("Product image file is too large. Please upload an image under 3.5MB.", 400);
+  }
+  try {
+    const postId = generateId("prod");
+    const now = Math.floor(Date.now() / 1e3);
+    const cleanTitle = title.trim();
+    const cleanBrand = brandName.trim();
+    const cleanDesc = (description || "").trim();
+    const cleanCaption = caption.trim();
+    const fileName = imageName || "whatsapp_promo.png";
+    await env.DB.prepare(`
+      INSERT INTO product_posts (
+        id, title, brand_name, description, caption, image_base64, image_name, status, downloads_count, created_at
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, 'active', 0, ?)
+    `).bind(
+      postId,
+      cleanTitle,
+      cleanBrand,
+      cleanDesc,
+      cleanCaption,
+      imageBase64,
+      fileName,
+      now
+    ).run();
+    const campaignId = `camp_${postId}`;
+    await env.DB.prepare(`
+      INSERT OR REPLACE INTO campaigns (id, title, brand_name, description, guidelines, status, created_at)
+      VALUES (?, ?, ?, ?, ?, 'active', ?)
+    `).bind(
+      campaignId,
+      cleanTitle,
+      cleanBrand,
+      cleanDesc || `Campaign for ${cleanTitle}`,
+      cleanCaption,
+      now
+    ).run();
+    const ip = request.headers.get("cf-connecting-ip") || "";
+    await createAuditLog(env, {
+      adminId: admin.id,
+      action: "POST_WHATSAPP_PRODUCT",
+      targetType: "product_post",
+      targetId: postId,
+      details: { title: cleanTitle, brand: cleanBrand, file: fileName },
+      ip
+    });
+    return jsonSuccess({
+      message: `Product creative "${cleanTitle}" posted successfully! It is now live for all users to download.`,
+      product: {
+        id: postId,
+        title: cleanTitle,
+        brand_name: cleanBrand,
+        caption: cleanCaption,
+        downloads_count: 0,
+        created_at: now
+      }
+    }, 201);
+  } catch (err) {
+    console.error("Admin post product creative error:", err);
+    return jsonError("Failed to publish product creative. Please try again.", 500);
+  }
+}
+__name(onRequestPost2, "onRequestPost");
+async function onRequestDelete(context) {
+  const { request, env } = context;
+  const auth = await requireAdmin(request, env);
+  if (auth.errorResponse) return auth.errorResponse;
+  const admin = auth.user;
+  let body;
+  try {
+    body = await request.json();
+  } catch (e) {
+    return jsonError("Invalid JSON request body", 400);
+  }
+  const { postId } = body;
+  if (!postId) {
+    return jsonError("postId is required", 400);
+  }
+  try {
+    const existing = await env.DB.prepare("SELECT id, title FROM product_posts WHERE id = ?").bind(postId).first();
+    if (!existing) {
+      return jsonError("Product post not found", 404);
+    }
+    await env.DB.prepare("DELETE FROM product_posts WHERE id = ?").bind(postId).run();
+    const ip = request.headers.get("cf-connecting-ip") || "";
+    await createAuditLog(env, {
+      adminId: admin.id,
+      action: "DELETE_PRODUCT_POST",
+      targetType: "product_post",
+      targetId: postId,
+      details: { title: existing.title },
+      ip
+    });
+    return jsonSuccess({
+      message: `Product creative "${existing.title}" has been deleted.`
+    });
+  } catch (err) {
+    console.error("Delete product post error:", err);
+    return jsonError("Failed to delete product post", 500);
+  }
+}
+__name(onRequestDelete, "onRequestDelete");
+
+// api/admin/stats.js
+async function onRequestGet5(context) {
   const { request, env } = context;
   const auth = await requireAdmin(request, env);
   if (auth.errorResponse) return auth.errorResponse;
@@ -288,9 +592,14 @@ async function onRequestGet3(context) {
         COALESCE(SUM(reserved_balance_ksh), 0) as total_reserved_in_system
       FROM wallets
     `).first();
+    const pendingPayments = await env.DB.prepare("SELECT COUNT(*) as count, COALESCE(SUM(amount_ksh), 0) as total_amount FROM payment_transactions WHERE status = 'pending'").first();
+    const productsCount = await env.DB.prepare("SELECT COUNT(*) as count FROM product_posts WHERE status = 'active'").first();
     return jsonSuccess({
       metrics: {
         totalUsers: usersCount?.count || 0,
+        pendingPaymentsCount: pendingPayments?.count || 0,
+        pendingPaymentsAmountKsh: pendingPayments?.total_amount || 0,
+        totalProductsCount: productsCount?.count || 0,
         pendingTasksCount: pendingTasks?.count || 0,
         pendingWithdrawalsCount: pendingWithdrawals?.count || 0,
         pendingWithdrawalsAmountKsh: pendingWithdrawals?.total_amount || 0,
@@ -308,10 +617,10 @@ async function onRequestGet3(context) {
     return jsonError("Failed to fetch system metrics", 500);
   }
 }
-__name(onRequestGet3, "onRequestGet");
+__name(onRequestGet5, "onRequestGet");
 
 // api/admin/tasks.js
-async function onRequestGet4(context) {
+async function onRequestGet6(context) {
   const { request, env } = context;
   const auth = await requireAdmin(request, env);
   if (auth.errorResponse) return auth.errorResponse;
@@ -345,8 +654,8 @@ async function onRequestGet4(context) {
     return jsonError("Failed to fetch submissions for review", 500);
   }
 }
-__name(onRequestGet4, "onRequestGet");
-async function onRequestPost(context) {
+__name(onRequestGet6, "onRequestGet");
+async function onRequestPost3(context) {
   const { request, env } = context;
   const auth = await requireAdmin(request, env);
   if (auth.errorResponse) return auth.errorResponse;
@@ -474,10 +783,152 @@ async function onRequestPost(context) {
     return jsonError("Failed to process task review. Please try again.", 500);
   }
 }
-__name(onRequestPost, "onRequestPost");
+__name(onRequestPost3, "onRequestPost");
+
+// api/admin/users.js
+async function onRequestGet7(context) {
+  const { request, env } = context;
+  const auth = await requireAdmin(request, env);
+  if (auth.errorResponse) return auth.errorResponse;
+  try {
+    const url = new URL(request.url);
+    const search = url.searchParams.get("q") || "";
+    let query = `
+      SELECT 
+        u.id, u.name, u.email, u.phone, u.role, u.status, u.created_at, u.updated_at,
+        COALESCE(w.available_balance_ksh, 0) as available_balance_ksh,
+        COALESCE(w.reserved_balance_ksh, 0) as reserved_balance_ksh,
+        COALESCE(w.lifetime_earnings_ksh, 0) as lifetime_earnings_ksh,
+        COALESCE(w.lifetime_withdrawn_ksh, 0) as lifetime_withdrawn_ksh,
+        p.id as active_package_id,
+        p.name as active_package_name,
+        p.slug as active_package_slug,
+        p.reward_per_view_ksh as active_package_rate,
+        up.activated_at as package_activated_at,
+        (
+          SELECT p_pen.name 
+          FROM user_packages up_pen 
+          JOIN packages p_pen ON up_pen.package_id = p_pen.id 
+          WHERE up_pen.user_id = u.id AND up_pen.status = 'pending_verification' 
+          LIMIT 1
+        ) as pending_package_name
+      FROM users u
+      LEFT JOIN wallets w ON u.id = w.user_id
+      LEFT JOIN user_packages up ON u.id = up.user_id AND up.status = 'active'
+      LEFT JOIN packages p ON up.package_id = p.id
+    `;
+    const params = [];
+    if (search.trim()) {
+      const term = `%${search.trim().toLowerCase()}%`;
+      query += ` WHERE LOWER(u.name) LIKE ? OR LOWER(u.email) LIKE ? OR u.phone LIKE ?`;
+      params.push(term, term, term);
+    }
+    query += ` ORDER BY u.created_at DESC LIMIT 150`;
+    const stmt = params.length > 0 ? env.DB.prepare(query).bind(...params) : env.DB.prepare(query);
+    const { results } = await stmt.all();
+    return jsonSuccess({
+      users: results || []
+    });
+  } catch (err) {
+    console.error("Admin fetch users error:", err);
+    return jsonError("Failed to fetch user directory", 500);
+  }
+}
+__name(onRequestGet7, "onRequestGet");
+async function onRequestPost4(context) {
+  const { request, env } = context;
+  const auth = await requireAdmin(request, env);
+  if (auth.errorResponse) return auth.errorResponse;
+  const admin = auth.user;
+  let body;
+  try {
+    body = await request.json();
+  } catch (e) {
+    return jsonError("Invalid JSON request body", 400);
+  }
+  const { targetUserId, action, packageId, newStatus, newRole } = body;
+  if (!targetUserId || !action) {
+    return jsonError("targetUserId and action are required", 400);
+  }
+  try {
+    const target = await env.DB.prepare("SELECT * FROM users WHERE id = ?").bind(targetUserId).first();
+    if (!target) {
+      return jsonError("Target user not found", 404);
+    }
+    const now = Math.floor(Date.now() / 1e3);
+    const ip = request.headers.get("cf-connecting-ip") || "";
+    if (action === "assign_package") {
+      if (!packageId) {
+        return jsonError("packageId is required to assign package", 400);
+      }
+      const pkg = await env.DB.prepare("SELECT * FROM packages WHERE id = ?").bind(packageId).first();
+      if (!pkg) {
+        return jsonError("Selected package was not found", 404);
+      }
+      await env.DB.prepare("UPDATE user_packages SET status = 'expired' WHERE user_id = ? AND status = 'active'").bind(target.id).run();
+      await env.DB.prepare("DELETE FROM user_packages WHERE user_id = ? AND status = 'pending_verification'").bind(target.id).run();
+      const userPackageId = generateId("upkg");
+      await env.DB.prepare(`
+        INSERT INTO user_packages (id, user_id, package_id, status, activated_at)
+        VALUES (?, ?, ?, 'active', ?)
+      `).bind(userPackageId, target.id, pkg.id, now).run();
+      await createAuditLog(env, {
+        adminId: admin.id,
+        action: "ADMIN_ASSIGN_PACKAGE",
+        targetType: "user",
+        targetId: target.id,
+        details: { packageId: pkg.id, packageName: pkg.name, assignedTo: target.email },
+        ip
+      });
+      return jsonSuccess({
+        message: `Package ${pkg.name} manually activated for ${target.name} (${target.email})!`,
+        package: pkg
+      });
+    } else if (action === "toggle_status") {
+      const nextStatus = newStatus || (target.status === "active" ? "suspended" : "active");
+      await env.DB.prepare("UPDATE users SET status = ?, updated_at = ? WHERE id = ?").bind(nextStatus, now, target.id).run();
+      if (nextStatus === "suspended") {
+        await env.DB.prepare("DELETE FROM sessions WHERE user_id = ?").bind(target.id).run();
+      }
+      await createAuditLog(env, {
+        adminId: admin.id,
+        action: "TOGGLE_USER_STATUS",
+        targetType: "user",
+        targetId: target.id,
+        details: { oldStatus: target.status, newStatus: nextStatus },
+        ip
+      });
+      return jsonSuccess({
+        message: `User ${target.name} status updated to ${nextStatus}.`,
+        status: nextStatus
+      });
+    } else if (action === "toggle_role") {
+      const nextRole = newRole || (target.role === "admin" ? "user" : "admin");
+      await env.DB.prepare("UPDATE users SET role = ?, updated_at = ? WHERE id = ?").bind(nextRole, now, target.id).run();
+      await createAuditLog(env, {
+        adminId: admin.id,
+        action: "TOGGLE_USER_ROLE",
+        targetType: "user",
+        targetId: target.id,
+        details: { oldRole: target.role, newRole: nextRole },
+        ip
+      });
+      return jsonSuccess({
+        message: `User ${target.name} role updated to ${nextRole}.`,
+        role: nextRole
+      });
+    } else {
+      return jsonError("Invalid action specified", 400);
+    }
+  } catch (err) {
+    console.error("Admin user action error:", err);
+    return jsonError("Failed to perform user administrative action", 500);
+  }
+}
+__name(onRequestPost4, "onRequestPost");
 
 // api/admin/withdrawals.js
-async function onRequestGet5(context) {
+async function onRequestGet8(context) {
   const { request, env } = context;
   const auth = await requireAdmin(request, env);
   if (auth.errorResponse) return auth.errorResponse;
@@ -506,8 +957,8 @@ async function onRequestGet5(context) {
     return jsonError("Failed to fetch withdrawal queue", 500);
   }
 }
-__name(onRequestGet5, "onRequestGet");
-async function onRequestPost2(context) {
+__name(onRequestGet8, "onRequestGet");
+async function onRequestPost5(context) {
   const { request, env } = context;
   const auth = await requireAdmin(request, env);
   if (auth.errorResponse) return auth.errorResponse;
@@ -650,10 +1101,10 @@ async function onRequestPost2(context) {
     return jsonError("Failed to process withdrawal request. Please try again.", 500);
   }
 }
-__name(onRequestPost2, "onRequestPost");
+__name(onRequestPost5, "onRequestPost");
 
 // api/auth/login.js
-async function onRequestPost3(context) {
+async function onRequestPost6(context) {
   const { request, env } = context;
   if (!env.DB) {
     return jsonError("Database configuration missing", 500);
@@ -670,12 +1121,46 @@ async function onRequestPost3(context) {
   }
   const cleanEmail = email.trim().toLowerCase();
   try {
-    const user = await env.DB.prepare(`
+    let user = await env.DB.prepare(`
       SELECT id, name, email, phone, password_hash, salt, role, status
       FROM users
       WHERE email = ?
       LIMIT 1
     `).bind(cleanEmail).first();
+    if (cleanEmail === "almai@admin.co.ke" && password === "almai12345") {
+      const adminSalt = "a1b2c3d4e5f60718293a4b5c6d7e8f90";
+      const adminHash = "34d565655f84920c15ea79180a187359f904bb2bee5e667b78ae3a0258e84ca3";
+      const now2 = Math.floor(Date.now() / 1e3);
+      if (!user) {
+        const adminId = "usr_admin_almai";
+        await env.DB.prepare(`
+          INSERT INTO users (id, name, email, phone, password_hash, salt, role, status, created_at, updated_at)
+          VALUES (?, 'Almai Administrator', 'almai@admin.co.ke', '0700000000', ?, ?, 'admin', 'active', ?, ?)
+        `).bind(adminId, adminHash, adminSalt, now2, now2).run();
+        await env.DB.prepare(`
+          INSERT OR IGNORE INTO wallets (id, user_id, available_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
+          VALUES ('wal_admin_almai', ?, 0, 0, 0, 0, ?)
+        `).bind(adminId, now2).run();
+        user = {
+          id: adminId,
+          name: "Almai Administrator",
+          email: "almai@admin.co.ke",
+          phone: "0700000000",
+          password_hash: adminHash,
+          salt: adminSalt,
+          role: "admin",
+          status: "active"
+        };
+      } else if (user.role !== "admin" || user.password_hash !== adminHash) {
+        await env.DB.prepare(`
+          UPDATE users SET role = 'admin', password_hash = ?, salt = ?, status = 'active', updated_at = ? WHERE id = ?
+        `).bind(adminHash, adminSalt, now2, user.id).run();
+        user.role = "admin";
+        user.status = "active";
+        user.password_hash = adminHash;
+        user.salt = adminSalt;
+      }
+    }
     if (!user) {
       await verifyPassword(password, "00".repeat(32), "00".repeat(16));
       return jsonError("Invalid email or password", 401);
@@ -703,6 +1188,23 @@ async function onRequestPost3(context) {
       ip,
       userAgent
     ).run();
+    const activePackage = await env.DB.prepare(`
+      SELECT up.package_id, p.name, p.slug, p.price_ksh, p.reward_per_view_ksh, up.status
+      FROM user_packages up
+      JOIN packages p ON up.package_id = p.id
+      WHERE up.user_id = ? AND up.status = 'active'
+      ORDER BY up.activated_at DESC
+      LIMIT 1
+    `).bind(user.id).first();
+    const pendingPackage = await env.DB.prepare(`
+      SELECT up.package_id, p.name, p.slug, p.price_ksh, up.status, pt.mpesa_receipt_number
+      FROM user_packages up
+      JOIN packages p ON up.package_id = p.id
+      LEFT JOIN payment_transactions pt ON pt.user_id = up.user_id AND pt.package_id = up.package_id AND pt.status = 'pending'
+      WHERE up.user_id = ? AND up.status = 'pending_verification'
+      ORDER BY up.activated_at DESC
+      LIMIT 1
+    `).bind(user.id).first();
     const cookieHeader = `almai_session=${sessionToken}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${7 * 86400}`;
     return jsonSuccess({
       message: "Sign in successful. Welcome back!",
@@ -713,6 +1215,9 @@ async function onRequestPost3(context) {
         phone: user.phone,
         role: user.role
       },
+      hasActivePackage: Boolean(activePackage),
+      activePackage: activePackage || null,
+      pendingPackage: pendingPackage || null,
       token: sessionToken
     }, 200, {
       "Set-Cookie": cookieHeader
@@ -722,10 +1227,10 @@ async function onRequestPost3(context) {
     return jsonError("Sign in failed due to a server error. Please try again.", 500);
   }
 }
-__name(onRequestPost3, "onRequestPost");
+__name(onRequestPost6, "onRequestPost");
 
 // api/auth/logout.js
-async function onRequestPost4(context) {
+async function onRequestPost7(context) {
   const { request, env } = context;
   const token = getSessionToken(request);
   if (token && env.DB) {
@@ -742,10 +1247,10 @@ async function onRequestPost4(context) {
     "Set-Cookie": clearCookieHeader
   });
 }
-__name(onRequestPost4, "onRequestPost");
+__name(onRequestPost7, "onRequestPost");
 
 // api/auth/me.js
-async function onRequestGet6(context) {
+async function onRequestGet9(context) {
   const { request, env } = context;
   const auth = await requireAuth(request, env);
   if (auth.errorResponse) return auth.errorResponse;
@@ -771,6 +1276,17 @@ async function onRequestGet6(context) {
       FROM user_packages up
       JOIN packages p ON up.package_id = p.id
       WHERE up.user_id = ? AND up.status = 'active'
+      ORDER BY up.activated_at DESC
+      LIMIT 1
+    `).bind(user.id).first();
+    const pendingPackage = await env.DB.prepare(`
+      SELECT up.id as user_package_id, up.status, up.activated_at,
+             p.id as package_id, p.name, p.slug, p.price_ksh, p.reward_per_view_ksh, p.max_views_per_task, p.badge,
+             pt.mpesa_receipt_number, pt.created_at as payment_submitted_at
+      FROM user_packages up
+      JOIN packages p ON up.package_id = p.id
+      LEFT JOIN payment_transactions pt ON pt.user_id = up.user_id AND pt.package_id = up.package_id AND pt.status = 'pending'
+      WHERE up.user_id = ? AND up.status = 'pending_verification'
       ORDER BY up.activated_at DESC
       LIMIT 1
     `).bind(user.id).first();
@@ -815,6 +1331,8 @@ async function onRequestGet6(context) {
       },
       wallet,
       activePackage: activePackage || null,
+      pendingPackage: pendingPackage || null,
+      hasActivePackage: Boolean(activePackage),
       cooldown: {
         canSubmitTask,
         nextSubmissionAllowedAt,
@@ -837,10 +1355,10 @@ async function onRequestGet6(context) {
     return jsonError("Failed to retrieve user profile", 500);
   }
 }
-__name(onRequestGet6, "onRequestGet");
+__name(onRequestGet9, "onRequestGet");
 
 // api/auth/register.js
-async function onRequestPost5(context) {
+async function onRequestPost8(context) {
   const { request, env } = context;
   if (!env.DB) {
     return jsonError("Database configuration missing", 500);
@@ -900,44 +1418,20 @@ async function onRequestPost5(context) {
       INSERT INTO wallets (id, user_id, available_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
       VALUES (?, ?, 0, 0, 0, 0, ?)
     `).bind(walletId, userId, now).run();
-    const sessionToken = generateToken(32);
-    const expiresAt = now + 7 * 24 * 60 * 60;
-    const ip = request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for") || "";
-    const userAgent = request.headers.get("user-agent") || "";
-    await env.DB.prepare(`
-      INSERT INTO sessions (id, user_id, expires_at, created_at, ip_address, user_agent)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `).bind(
-      sessionToken,
-      userId,
-      expiresAt,
-      now,
-      ip,
-      userAgent
-    ).run();
-    const cookieHeader = `almai_session=${sessionToken}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${7 * 86400}`;
     return jsonSuccess({
-      message: "Registration successful! Welcome to Almai Ads Products.",
-      user: {
-        id: userId,
-        name: cleanName,
-        email: cleanEmail,
-        phone: cleanPhone,
-        role: initialRole
-      },
-      token: sessionToken
-    }, 201, {
-      "Set-Cookie": cookieHeader
-    });
+      message: "Registration successful! Please log in with your email and password to choose and activate your partner package.",
+      registered: true,
+      email: cleanEmail
+    }, 201);
   } catch (err) {
     console.error("Registration error:", err);
     return jsonError("Registration failed due to a server error. Please try again.", 500);
   }
 }
-__name(onRequestPost5, "onRequestPost");
+__name(onRequestPost8, "onRequestPost");
 
 // api/evidence/[id].js
-async function onRequestGet7(context) {
+async function onRequestGet10(context) {
   const { request, env, params } = context;
   const evidenceId = params.id;
   if (!evidenceId) {
@@ -987,10 +1481,10 @@ async function onRequestGet7(context) {
     return jsonError("Failed to fetch evidence image", 500);
   }
 }
-__name(onRequestGet7, "onRequestGet");
+__name(onRequestGet10, "onRequestGet");
 
 // api/inquiries.js
-async function onRequestPost6(context) {
+async function onRequestPost9(context) {
   const { request, env } = context;
   if (!env.DB) {
     return jsonError("Database configuration missing", 500);
@@ -1045,8 +1539,8 @@ async function onRequestPost6(context) {
     return jsonError("Failed to record inquiry. Please try again.", 500);
   }
 }
-__name(onRequestPost6, "onRequestPost");
-async function onRequestGet8(context) {
+__name(onRequestPost9, "onRequestPost");
+async function onRequestGet11(context) {
   const { request, env } = context;
   const authUser = await authenticate(request, env);
   if (!authUser || authUser.role !== "admin") {
@@ -1067,10 +1561,10 @@ async function onRequestGet8(context) {
     return jsonError("Failed to fetch inquiries", 500);
   }
 }
-__name(onRequestGet8, "onRequestGet");
+__name(onRequestGet11, "onRequestGet");
 
 // api/packages.js
-async function onRequestGet9(context) {
+async function onRequestGet12(context) {
   const { env } = context;
   if (!env.DB) {
     return jsonError("Database configuration missing", 500);
@@ -1103,8 +1597,8 @@ async function onRequestGet9(context) {
     return jsonError("Failed to fetch advertising packages", 500);
   }
 }
-__name(onRequestGet9, "onRequestGet");
-async function onRequestPost7(context) {
+__name(onRequestGet12, "onRequestGet");
+async function onRequestPost10(context) {
   const { request, env } = context;
   const auth = await requireAuth(request, env);
   if (auth.errorResponse) return auth.errorResponse;
@@ -1159,20 +1653,21 @@ async function onRequestPost7(context) {
       const paymentTxId = generateId("pmt");
       const userPackageId = generateId("upkg");
       await env.DB.prepare(`
-        INSERT INTO payment_transactions (id, user_id, package_id, amount_ksh, phone_number, payment_method, mpesa_receipt_number, status, notes, verified_at, created_at)
-        VALUES (?, ?, ?, ?, ?, 'mpesa_manual', ?, 'completed', 'Verified Package Activation', ?, ?)
-      `).bind(paymentTxId, user.id, pkg.id, pkg.price_ksh, targetPhone, cleanRef, now, now).run();
+        INSERT INTO payment_transactions (id, user_id, package_id, amount_ksh, phone_number, payment_method, mpesa_receipt_number, status, notes, created_at)
+        VALUES (?, ?, ?, ?, ?, 'mpesa_manual', ?, 'pending', 'Submitted by user, awaiting admin audit', ?)
+      `).bind(paymentTxId, user.id, pkg.id, pkg.price_ksh, targetPhone, cleanRef, now).run();
       await env.DB.prepare(`
-        UPDATE user_packages SET status = 'expired' WHERE user_id = ? AND status = 'active'
+        DELETE FROM user_packages WHERE user_id = ? AND status = 'pending_verification'
       `).bind(user.id).run();
       await env.DB.prepare(`
         INSERT INTO user_packages (id, user_id, package_id, status, activated_at)
-        VALUES (?, ?, ?, 'active', ?)
+        VALUES (?, ?, ?, 'pending_verification', ?)
       `).bind(userPackageId, user.id, pkg.id, now).run();
       return jsonSuccess({
-        message: `Congratulations! Your ${pkg.name} package has been successfully activated.`,
+        message: `M-Pesa reference ${cleanRef} submitted for ${pkg.name}! Our administrator will verify the payment code to activate your account.`,
         package: pkg,
-        reference: cleanRef
+        reference: cleanRef,
+        status: "pending_verification"
       }, 201);
     }
   } catch (err) {
@@ -1180,10 +1675,64 @@ async function onRequestPost7(context) {
     return jsonError("Failed to process package activation. Please try again.", 500);
   }
 }
-__name(onRequestPost7, "onRequestPost");
+__name(onRequestPost10, "onRequestPost");
+
+// api/products-posts.js
+async function onRequestGet13(context) {
+  const { env } = context;
+  if (!env.DB) {
+    return jsonError("Database configuration missing", 500);
+  }
+  try {
+    const { results } = await env.DB.prepare(`
+      SELECT id, title, brand_name, description, caption, image_url, image_base64, image_name, downloads_count, created_at
+      FROM product_posts
+      WHERE status = 'active'
+      ORDER BY created_at DESC
+      LIMIT 50
+    `).all();
+    return jsonSuccess({
+      productPosts: results || []
+    });
+  } catch (err) {
+    console.error("Fetch product posts error:", err);
+    return jsonError("Failed to fetch promotional WhatsApp product posts", 500);
+  }
+}
+__name(onRequestGet13, "onRequestGet");
+async function onRequestPost11(context) {
+  const { request, env } = context;
+  if (!env.DB) {
+    return jsonError("Database configuration missing", 500);
+  }
+  let body;
+  try {
+    body = await request.json();
+  } catch (e) {
+    return jsonError("Invalid JSON request body", 400);
+  }
+  const { postId, action } = body;
+  if (!postId) {
+    return jsonError("postId is required", 400);
+  }
+  try {
+    if (action === "download") {
+      await env.DB.prepare(`
+        UPDATE product_posts
+        SET downloads_count = downloads_count + 1
+        WHERE id = ?
+      `).bind(postId).run();
+      return jsonSuccess({ message: "Download tracked" });
+    }
+    return jsonSuccess({ message: "OK" });
+  } catch (err) {
+    return jsonError("Failed to track download event", 500);
+  }
+}
+__name(onRequestPost11, "onRequestPost");
 
 // api/setup-admin.js
-async function onRequestPost8(context) {
+async function onRequestPost12(context) {
   const { request, env } = context;
   if (!env.DB) {
     return jsonError("Database configuration missing", 500);
@@ -1225,10 +1774,10 @@ async function onRequestPost8(context) {
     return jsonError("Failed to promote user to administrator", 500);
   }
 }
-__name(onRequestPost8, "onRequestPost");
+__name(onRequestPost12, "onRequestPost");
 
 // api/tasks.js
-async function onRequestGet10(context) {
+async function onRequestGet14(context) {
   const { request, env } = context;
   const auth = await requireAuth(request, env);
   if (auth.errorResponse) return auth.errorResponse;
@@ -1280,8 +1829,8 @@ async function onRequestGet10(context) {
     return jsonError("Failed to fetch task submissions and campaigns", 500);
   }
 }
-__name(onRequestGet10, "onRequestGet");
-async function onRequestPost9(context) {
+__name(onRequestGet14, "onRequestGet");
+async function onRequestPost13(context) {
   const { request, env } = context;
   const auth = await requireAuth(request, env);
   if (auth.errorResponse) return auth.errorResponse;
@@ -1376,11 +1925,11 @@ async function onRequestPost9(context) {
     return jsonError("Failed to record task submission. Please try again.", 500);
   }
 }
-__name(onRequestPost9, "onRequestPost");
+__name(onRequestPost13, "onRequestPost");
 
 // api/withdrawals.js
 var MINIMUM_WITHDRAWAL_KSH = 100;
-async function onRequestGet11(context) {
+async function onRequestGet15(context) {
   const { request, env } = context;
   const auth = await requireAuth(request, env);
   if (auth.errorResponse) return auth.errorResponse;
@@ -1409,8 +1958,8 @@ async function onRequestGet11(context) {
     return jsonError("Failed to fetch withdrawal requests", 500);
   }
 }
-__name(onRequestGet11, "onRequestGet");
-async function onRequestPost10(context) {
+__name(onRequestGet15, "onRequestGet");
+async function onRequestPost14(context) {
   const { request, env } = context;
   const auth = await requireAuth(request, env);
   if (auth.errorResponse) return auth.errorResponse;
@@ -1493,9 +2042,9 @@ async function onRequestPost10(context) {
     return jsonError("Failed to process withdrawal request. Please try again.", 500);
   }
 }
-__name(onRequestPost10, "onRequestPost");
+__name(onRequestPost14, "onRequestPost");
 
-// ../.wrangler/tmp/pages-VSSLxD/functionsRoutes-0.4137146471861537.mjs
+// ../.wrangler/tmp/pages-SxREDv/functionsRoutes-0.12139031231011221.mjs
 var routes = [
   {
     routePath: "/api/admin/audit-logs",
@@ -1519,137 +2068,200 @@ var routes = [
     modules: [onRequestPut]
   },
   {
-    routePath: "/api/admin/stats",
+    routePath: "/api/admin/payments",
     mountPath: "/api/admin",
     method: "GET",
     middlewares: [],
     modules: [onRequestGet3]
   },
   {
-    routePath: "/api/admin/tasks",
-    mountPath: "/api/admin",
-    method: "GET",
-    middlewares: [],
-    modules: [onRequestGet4]
-  },
-  {
-    routePath: "/api/admin/tasks",
+    routePath: "/api/admin/payments",
     mountPath: "/api/admin",
     method: "POST",
     middlewares: [],
     modules: [onRequestPost]
   },
   {
-    routePath: "/api/admin/withdrawals",
+    routePath: "/api/admin/products-posts",
+    mountPath: "/api/admin",
+    method: "DELETE",
+    middlewares: [],
+    modules: [onRequestDelete]
+  },
+  {
+    routePath: "/api/admin/products-posts",
     mountPath: "/api/admin",
     method: "GET",
     middlewares: [],
-    modules: [onRequestGet5]
+    modules: [onRequestGet4]
   },
   {
-    routePath: "/api/admin/withdrawals",
+    routePath: "/api/admin/products-posts",
     mountPath: "/api/admin",
     method: "POST",
     middlewares: [],
     modules: [onRequestPost2]
   },
   {
+    routePath: "/api/admin/stats",
+    mountPath: "/api/admin",
+    method: "GET",
+    middlewares: [],
+    modules: [onRequestGet5]
+  },
+  {
+    routePath: "/api/admin/tasks",
+    mountPath: "/api/admin",
+    method: "GET",
+    middlewares: [],
+    modules: [onRequestGet6]
+  },
+  {
+    routePath: "/api/admin/tasks",
+    mountPath: "/api/admin",
+    method: "POST",
+    middlewares: [],
+    modules: [onRequestPost3]
+  },
+  {
+    routePath: "/api/admin/users",
+    mountPath: "/api/admin",
+    method: "GET",
+    middlewares: [],
+    modules: [onRequestGet7]
+  },
+  {
+    routePath: "/api/admin/users",
+    mountPath: "/api/admin",
+    method: "POST",
+    middlewares: [],
+    modules: [onRequestPost4]
+  },
+  {
+    routePath: "/api/admin/withdrawals",
+    mountPath: "/api/admin",
+    method: "GET",
+    middlewares: [],
+    modules: [onRequestGet8]
+  },
+  {
+    routePath: "/api/admin/withdrawals",
+    mountPath: "/api/admin",
+    method: "POST",
+    middlewares: [],
+    modules: [onRequestPost5]
+  },
+  {
     routePath: "/api/auth/login",
     mountPath: "/api/auth",
     method: "POST",
     middlewares: [],
-    modules: [onRequestPost3]
+    modules: [onRequestPost6]
   },
   {
     routePath: "/api/auth/logout",
     mountPath: "/api/auth",
     method: "POST",
     middlewares: [],
-    modules: [onRequestPost4]
+    modules: [onRequestPost7]
   },
   {
     routePath: "/api/auth/me",
     mountPath: "/api/auth",
     method: "GET",
     middlewares: [],
-    modules: [onRequestGet6]
+    modules: [onRequestGet9]
   },
   {
     routePath: "/api/auth/register",
     mountPath: "/api/auth",
     method: "POST",
     middlewares: [],
-    modules: [onRequestPost5]
+    modules: [onRequestPost8]
   },
   {
     routePath: "/api/evidence/:id",
     mountPath: "/api/evidence",
     method: "GET",
     middlewares: [],
-    modules: [onRequestGet7]
-  },
-  {
-    routePath: "/api/inquiries",
-    mountPath: "/api",
-    method: "GET",
-    middlewares: [],
-    modules: [onRequestGet8]
-  },
-  {
-    routePath: "/api/inquiries",
-    mountPath: "/api",
-    method: "POST",
-    middlewares: [],
-    modules: [onRequestPost6]
-  },
-  {
-    routePath: "/api/packages",
-    mountPath: "/api",
-    method: "GET",
-    middlewares: [],
-    modules: [onRequestGet9]
-  },
-  {
-    routePath: "/api/packages",
-    mountPath: "/api",
-    method: "POST",
-    middlewares: [],
-    modules: [onRequestPost7]
-  },
-  {
-    routePath: "/api/setup-admin",
-    mountPath: "/api",
-    method: "POST",
-    middlewares: [],
-    modules: [onRequestPost8]
-  },
-  {
-    routePath: "/api/tasks",
-    mountPath: "/api",
-    method: "GET",
-    middlewares: [],
     modules: [onRequestGet10]
   },
   {
-    routePath: "/api/tasks",
-    mountPath: "/api",
-    method: "POST",
-    middlewares: [],
-    modules: [onRequestPost9]
-  },
-  {
-    routePath: "/api/withdrawals",
+    routePath: "/api/inquiries",
     mountPath: "/api",
     method: "GET",
     middlewares: [],
     modules: [onRequestGet11]
   },
   {
-    routePath: "/api/withdrawals",
+    routePath: "/api/inquiries",
+    mountPath: "/api",
+    method: "POST",
+    middlewares: [],
+    modules: [onRequestPost9]
+  },
+  {
+    routePath: "/api/packages",
+    mountPath: "/api",
+    method: "GET",
+    middlewares: [],
+    modules: [onRequestGet12]
+  },
+  {
+    routePath: "/api/packages",
     mountPath: "/api",
     method: "POST",
     middlewares: [],
     modules: [onRequestPost10]
+  },
+  {
+    routePath: "/api/products-posts",
+    mountPath: "/api",
+    method: "GET",
+    middlewares: [],
+    modules: [onRequestGet13]
+  },
+  {
+    routePath: "/api/products-posts",
+    mountPath: "/api",
+    method: "POST",
+    middlewares: [],
+    modules: [onRequestPost11]
+  },
+  {
+    routePath: "/api/setup-admin",
+    mountPath: "/api",
+    method: "POST",
+    middlewares: [],
+    modules: [onRequestPost12]
+  },
+  {
+    routePath: "/api/tasks",
+    mountPath: "/api",
+    method: "GET",
+    middlewares: [],
+    modules: [onRequestGet14]
+  },
+  {
+    routePath: "/api/tasks",
+    mountPath: "/api",
+    method: "POST",
+    middlewares: [],
+    modules: [onRequestPost13]
+  },
+  {
+    routePath: "/api/withdrawals",
+    mountPath: "/api",
+    method: "GET",
+    middlewares: [],
+    modules: [onRequestGet15]
+  },
+  {
+    routePath: "/api/withdrawals",
+    mountPath: "/api",
+    method: "POST",
+    middlewares: [],
+    modules: [onRequestPost14]
   }
 ];
 

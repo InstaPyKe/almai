@@ -43,9 +43,18 @@ export async function onRequestGet(context) {
       FROM wallets
     `).first();
 
+    // 7. Pending payment verification codes
+    const pendingPayments = await env.DB.prepare("SELECT COUNT(*) as count, COALESCE(SUM(amount_ksh), 0) as total_amount FROM payment_transactions WHERE status = 'pending'").first();
+
+    // 8. Products count
+    const productsCount = await env.DB.prepare("SELECT COUNT(*) as count FROM product_posts WHERE status = 'active'").first();
+
     return jsonSuccess({
       metrics: {
         totalUsers: usersCount?.count || 0,
+        pendingPaymentsCount: pendingPayments?.count || 0,
+        pendingPaymentsAmountKsh: pendingPayments?.total_amount || 0,
+        totalProductsCount: productsCount?.count || 0,
         pendingTasksCount: pendingTasks?.count || 0,
         pendingWithdrawalsCount: pendingWithdrawals?.count || 0,
         pendingWithdrawalsAmountKsh: pendingWithdrawals?.total_amount || 0,
