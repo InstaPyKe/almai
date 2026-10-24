@@ -374,23 +374,29 @@
       letter-spacing: -0.01em;
     }
     .btn-primary {
-      background-color: var(--primary-purple);
-      color: #ffffff;
-      box-shadow: 0 4px 12px rgba(109, 40, 217, 0.28);
+      background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);
+      color: #ffffff !important;
+      border: none;
+      box-shadow: 0 4px 14px rgba(109, 40, 217, 0.35);
     }
     .btn-primary:hover {
-      background-color: var(--primary-purple-hover);
-      transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(109, 40, 217, 0.38);
+      background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(109, 40, 217, 0.45);
+      color: #ffffff !important;
     }
     .btn-secondary {
-      background-color: var(--white-card);
-      color: var(--deep-purple-heading);
-      border: 1.5px solid var(--beige-border);
+      background-color: #FAF5FF;
+      color: #6D28D9 !important;
+      border: 2px solid #7C3AED;
+      box-shadow: 0 2px 8px rgba(109, 40, 217, 0.1);
     }
     .btn-secondary:hover {
-      background-color: var(--bg-cream-dark);
-      border-color: #d1c2b0;
+      background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);
+      color: #ffffff !important;
+      border-color: #6D28D9;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(109, 40, 217, 0.35);
     }
     .btn-danger {
       background-color: var(--warning-red);
@@ -845,25 +851,26 @@
       margin: 16px 0 24px;
     }
     .cat-filter-btn {
-      padding: 8px 16px;
+      padding: 9px 18px;
       font-size: 13.5px;
       font-weight: 800;
       border-radius: var(--radius-full);
-      border: 1.5px solid var(--beige-border);
-      background: #FFFFFF;
-      color: var(--charcoal-text);
+      border: 1.5px solid rgba(124, 58, 237, 0.25);
+      background: #FAF5FF;
+      color: #581C87;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.25s ease;
     }
     .cat-filter-btn:hover {
-      background: var(--bg-cream);
-      border-color: #D6C7B2;
+      background: #F3E8FF;
+      border-color: #7C3AED;
+      color: #4C1D95;
     }
     .cat-filter-btn.active {
-      background: #E60063;
-      color: #FFFFFF;
-      border-color: #E60063;
-      box-shadow: 0 3px 10px rgba(230, 0, 99, 0.28);
+      background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);
+      color: #FFFFFF !important;
+      border-color: #6D28D9;
+      box-shadow: 0 4px 14px rgba(109, 40, 217, 0.35);
     }
 
     /* Super Animated Hero Products Showcase Carousel */
@@ -1088,7 +1095,7 @@
     }
     .stat-card-purple .stat-top-accent { background: linear-gradient(90deg, #6D28D9, #9333EA); }
     .stat-card-green .stat-top-accent { background: linear-gradient(90deg, #047857, #10B981); }
-    .stat-card-indigo .stat-top-accent { background: linear-gradient(90deg, #4338CA, #6366F1); }
+    .stat-card-indigo .stat-top-accent { background: linear-gradient(90deg, #6D28D9, #9333EA); }
     .stat-card-amber .stat-top-accent { background: linear-gradient(90deg, #D97706, #F59E0B); }
 
     .stat-icon-badge {
@@ -1103,7 +1110,7 @@
     }
     .stat-card-purple .stat-icon-badge { background: #F5F3FF; color: #6D28D9; }
     .stat-card-green .stat-icon-badge { background: #ECFDF5; color: #047857; }
-    .stat-card-indigo .stat-icon-badge { background: #EEF2FF; color: #4338CA; }
+    .stat-card-indigo .stat-icon-badge { background: #FAF5FF; color: #7C3AED; }
     .stat-card-amber .stat-icon-badge { background: #FFFBEB; color: #D97706; }
     .stat-icon-badge svg { width: 22px; height: 22px; }
     .stat-card:hover .stat-icon-badge { transform: scale(1.15) rotate(6deg); }
@@ -1128,7 +1135,7 @@
       -webkit-text-fill-color: transparent;
     }
     .stat-card-indigo .stat-val {
-      background: linear-gradient(135deg, #1E1B4B 0%, #4F46E5 100%);
+      background: linear-gradient(135deg, #4C1D95 0%, #7C3AED 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -2775,9 +2782,9 @@
       border: 1.5px solid rgba(217, 119, 6, 0.25);
     }
     .highlight-blue .feature-icon-box {
-      background: #EFF6FF;
-      color: #2563EB;
-      border: 1.5px solid rgba(37, 99, 235, 0.25);
+      background: #FAF5FF;
+      color: #7C3AED;
+      border: 1.5px solid rgba(124, 58, 237, 0.25);
     }
     .highlight-green .feature-icon-box {
       background: #ECFDF5;
@@ -2856,7 +2863,7 @@
     .testimonial-quote {
       font-size: 16px;
       font-weight: 650;
-      color: var(--charcoal-text);
+      color: #3B0764;
       line-height: 1.65;
       margin-bottom: 22px;
       flex-grow: 1;
@@ -2890,8 +2897,8 @@
     }
     .author-info p {
       font-size: 12.5px;
-      font-weight: 650;
-      color: var(--charcoal-muted);
+      font-weight: 700;
+      color: #6B21A8;
       margin: 0;
     }
     .verified-badge {
@@ -2906,16 +2913,16 @@
       white-space: nowrap;
     }
     .payout-pill {
-      background: var(--bg-cream);
-      border: 1px solid var(--beige-border);
+      background: #FAF5FF;
+      border: 1.5px solid rgba(109, 40, 217, 0.25);
       border-radius: var(--radius-sm);
       padding: 8px 12px;
       font-size: 13.5px;
-      color: var(--charcoal-muted);
-      font-weight: 700;
+      color: #581C87;
+      font-weight: 750;
     }
     .payout-pill strong {
-      color: #047857;
+      color: #6D28D9;
     }
 
     /* FAQ Section */
@@ -2986,6 +2993,332 @@
       margin: 0;
     }
 
+    
+    /* ====================================================================
+       SUPERCHARGED STATS & TASKS SECTION STYLING
+       ==================================================================== */
+    .animated-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      margin: 36px 0 28px;
+    }
+    .stat-card {
+      background: #FFFFFF;
+      border: 2px solid rgba(220, 215, 230, 0.7);
+      border-radius: var(--radius-lg);
+      padding: 30px 20px 24px;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(76, 29, 149, 0.06);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .stat-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 42px -6px rgba(76, 29, 149, 0.16);
+      border-color: rgba(124, 58, 237, 0.4);
+    }
+    .stat-top-accent {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+    }
+    .stat-card-purple .stat-top-accent { background: linear-gradient(90deg, #6D28D9, #9333EA); }
+    .stat-card-green .stat-top-accent { background: linear-gradient(90deg, #047857, #10B981); }
+    .stat-card-indigo .stat-top-accent { background: linear-gradient(90deg, #4338CA, #6366F1); }
+    .stat-card-amber .stat-top-accent { background: linear-gradient(90deg, #D97706, #F59E0B); }
+
+    .stat-icon-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      transition: transform 0.35s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    }
+    .stat-card-purple .stat-icon-badge { background: #F5F3FF; color: #6D28D9; border: 1px solid rgba(109, 40, 217, 0.18); }
+    .stat-card-green .stat-icon-badge { background: #ECFDF5; color: #047857; border: 1px solid rgba(4, 120, 87, 0.18); }
+    .stat-card-indigo .stat-icon-badge { background: #FAF5FF; color: #7C3AED; border: 1.5px solid rgba(124, 58, 237, 0.2); }
+    .stat-card-amber .stat-icon-badge { background: #FFFBEB; color: #D97706; border: 1px solid rgba(217, 119, 6, 0.18); }
+    .stat-card:hover .stat-icon-badge { transform: scale(1.15) rotate(6deg); }
+
+    .stat-val {
+      font-size: clamp(38px, 4.6vw, 52px);
+      font-weight: 950;
+      font-family: 'Space Grotesk', sans-serif;
+      line-height: 1.05;
+      margin-bottom: 8px;
+      letter-spacing: -0.035em;
+    }
+    .stat-card-purple .stat-val {
+      color: #5B21B6;
+      background: linear-gradient(135deg, #4C1D95 0%, #7C3AED 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .stat-card-green .stat-val {
+      color: #065F46;
+      background: linear-gradient(135deg, #065F46 0%, #059669 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .stat-card-indigo .stat-val {
+      color: #4C1D95;
+      background: linear-gradient(135deg, #4C1D95 0%, #7C3AED 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .stat-card-amber .stat-val {
+      color: #78350F;
+      background: linear-gradient(135deg, #78350F 0%, #D97706 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .stat-lbl {
+      font-size: 14.5px;
+      font-weight: 850;
+      color: #581C87;
+      line-height: 1.35;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .stat-sub-pill {
+      font-size: 12px;
+      font-weight: 800;
+      padding: 5px 12px;
+      border-radius: var(--radius-full);
+      background: #FAF5FF;
+      color: #6D28D9;
+      border: 1px solid rgba(109, 40, 217, 0.25);
+      letter-spacing: 0.02em;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Tasks Section Layout */
+    .tasks-grid-wrapper {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+      gap: 28px;
+      margin-top: 24px;
+    }
+    .task-role-card {
+      background: #FFFFFF;
+      border: 2px solid var(--beige-border);
+      border-radius: var(--radius-lg);
+      padding: 34px 28px 28px;
+      box-shadow: 0 8px 26px rgba(76, 29, 149, 0.06);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .task-role-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 48px -8px rgba(76, 29, 149, 0.16);
+    }
+    .task-role-partner {
+      border-color: rgba(109, 40, 217, 0.22);
+    }
+    .task-role-partner:hover {
+      border-color: #7C3AED;
+    }
+    .task-role-advertiser {
+      border-color: rgba(124, 58, 237, 0.22);
+    }
+    .task-role-advertiser:hover {
+      border-color: #9333EA;
+    }
+    .task-role-top-stripe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+    }
+    .task-role-partner .task-role-top-stripe {
+      background: linear-gradient(90deg, #6D28D9, #9333EA, #10B981);
+    }
+    .task-role-advertiser .task-role-top-stripe {
+      background: linear-gradient(90deg, #7C3AED, #9333EA, #C084FC);
+    }
+    .task-role-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 22px;
+      padding-bottom: 18px;
+      border-bottom: 1.5px dashed var(--beige-border);
+    }
+    .task-role-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      transition: transform 0.35s ease;
+    }
+    .task-role-card:hover .task-role-icon {
+      transform: scale(1.1) rotate(5deg);
+    }
+    .task-role-partner .task-role-icon {
+      background: linear-gradient(135deg, #F5F3FF, #EDE9FE);
+      color: #6D28D9;
+      border: 1.5px solid rgba(109, 40, 217, 0.2);
+    }
+    .task-role-advertiser .task-role-icon {
+      background: linear-gradient(135deg, #FAF5FF, #F3E8FF);
+      color: #7C3AED;
+      border: 1.5px solid rgba(124, 58, 237, 0.25);
+    }
+    .task-role-title {
+      font-size: 24px;
+      font-weight: 950;
+      font-family: 'Space Grotesk', sans-serif;
+      margin: 0 0 4px;
+      letter-spacing: -0.02em;
+    }
+    .task-role-partner .task-role-title { color: #4C1D95; }
+    .task-role-advertiser .task-role-title { color: #4C1D95; }
+
+    .task-role-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+    }
+    .task-role-partner .task-role-badge {
+      background: #ECFDF5;
+      color: #047857;
+      border: 1px solid rgba(4, 120, 87, 0.25);
+    }
+    .task-role-advertiser .task-role-badge {
+      background: #FAF5FF;
+      color: #6D28D9;
+      border: 1px solid rgba(109, 40, 217, 0.3);
+    }
+    .task-steps-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 26px;
+      flex-grow: 1;
+    }
+    .task-step-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
+      background: #FAFAFA;
+      border: 1px solid transparent;
+      transition: all 0.28s ease;
+    }
+    .task-step-item:hover {
+      background: #FFFFFF;
+      border-color: var(--beige-border);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+      transform: translateX(5px);
+    }
+    .task-step-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      color: #FFFFFF;
+      font-weight: 950;
+      font-size: 14px;
+      font-family: 'Space Grotesk', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      margin-top: 2px;
+    }
+    .task-role-partner .step-1 .task-step-num { background: linear-gradient(135deg, #7C3AED, #9333EA); }
+    .task-role-partner .step-2 .task-step-num { background: linear-gradient(135deg, #6D28D9, #7C3AED); }
+    .task-role-partner .step-3 .task-step-num { background: linear-gradient(135deg, #059669, #10B981); }
+
+    .task-role-advertiser .step-1 .task-step-num { background: linear-gradient(135deg, #7C3AED, #9333EA); }
+    .task-role-advertiser .step-2 .task-step-num { background: linear-gradient(135deg, #6D28D9, #7C3AED); }
+    .task-role-advertiser .step-3 .task-step-num { background: linear-gradient(135deg, #581C87, #7C3AED); }
+
+    .task-step-content strong {
+      font-size: 16.5px;
+      font-weight: 900;
+      color: #3B0764;
+      display: block;
+      margin-bottom: 3px;
+      line-height: 1.3;
+    }
+    .task-step-content p {
+      font-size: 14px;
+      color: #581C87;
+      margin: 0;
+      line-height: 1.5;
+    }
+    .task-cta-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 850;
+      padding: 14px 24px;
+      border-radius: var(--radius-md);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      text-decoration: none;
+      width: 100%;
+    }
+    .task-cta-btn.btn-primary {
+      background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);
+      color: #FFFFFF !important;
+      box-shadow: 0 4px 16px rgba(109, 40, 217, 0.32);
+      border: none;
+    }
+    .task-cta-btn.btn-primary:hover {
+      background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+      box-shadow: 0 8px 24px rgba(109, 40, 217, 0.45);
+      color: #FFFFFF !important;
+    }
+    .task-cta-btn.btn-secondary {
+      background: #FAF5FF;
+      color: #6D28D9 !important;
+      border: 2px solid #7C3AED;
+      box-shadow: 0 4px 14px rgba(109, 40, 217, 0.12);
+    }
+    .task-cta-btn.btn-secondary:hover {
+      background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);
+      color: #FFFFFF !important;
+      border-color: #6D28D9;
+      box-shadow: 0 8px 24px rgba(109, 40, 217, 0.35);
+    }
+    .task-cta-btn .cta-arrow {
+      transition: transform 0.25s ease;
+    }
+    .task-cta-btn:hover .cta-arrow {
+      transform: translateX(5px);
+    }
+
     /* Floating WhatsApp Button */
     .floating-whatsapp-btn {
       position: fixed;
@@ -3051,9 +3384,8 @@
     }
     .wa-content-pill {
       display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      line-height: 1.15;
+      align-items: center;
+      justify-content: center;
     }
     .wa-status-row {
       display: flex;
@@ -3313,7 +3645,7 @@
             </div>
             <div class="stat-val"><span id="counter-views">1.8</span>M+</div>
             <div class="stat-lbl">Verified Views Delivered</div>
-            <div class="stat-sub-pill">Live Network Traffic</div>
+            <div class="stat-sub-pill"><span class="ticker-live-dot" style="display:inline-block;width:7px;height:7px;background:#10B981;box-shadow:0 0 8px #10B981;border-radius:50%;"></span>Live Network Traffic</div>
           </div>
 
           <div class="stat-card stat-card-green">
@@ -3323,7 +3655,7 @@
             </div>
             <div class="stat-val">KSh <span id="counter-disbursed">12.4</span>M+</div>
             <div class="stat-lbl">Disbursed to Kenyan Partners</div>
-            <div class="stat-sub-pill">Instant M-Pesa Payouts</div>
+            <div class="stat-sub-pill"><span class="ticker-live-dot" style="display:inline-block;width:7px;height:7px;background:#10B981;box-shadow:0 0 8px #10B981;border-radius:50%;"></span>Instant M-Pesa Payouts</div>
           </div>
 
           <div class="stat-card stat-card-indigo">
@@ -3341,7 +3673,7 @@
             <div class="stat-icon-badge">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
             </div>
-            <div class="stat-val stat-val-speed">&lt; 2 Hours</div>
+            <div class="stat-val stat-val-speed">&lt; <span id="counter-speed">2</span> Hours</div>
             <div class="stat-lbl">Average Review &amp; Approval</div>
             <div class="stat-sub-pill">Rapid Automated Clearance</div>
           </div>
@@ -3376,105 +3708,123 @@
 
     <!-- Interactive Earnings Calculator (100% Mobile Responsive) -->
     <!-- ====================================================================
-         TASKS FOR PARTNERS & ADVERTISERS (SIMPLE & INTERACTIVE)
+         TASKS FOR PARTNERS & ADVERTISERS (SIMPLE, RICH & INTERACTIVE)
          ==================================================================== -->
-    <section class="container" id="tasks-overview-section" style="padding: 40px 0 50px;">
+    <section class="container" id="tasks-overview-section" style="padding: 40px 0 60px;">
       <div class="section-header">
-        <h2 class="section-title">How It Works: Partner &amp; Advertiser Tasks</h2>
-        <p class="section-desc">Straightforward execution for daily partners earning cash and corporate brands reaching verified Kenyan viewers.</p>
+        <div class="section-pill" style="background: rgba(109, 40, 217, 0.08); color: var(--primary-purple); border-color: rgba(109, 40, 217, 0.2);">HOW IT WORKS</div>
+        <h2 class="section-title">Partner &amp; Advertiser Tasks</h2>
+        <p class="section-desc">Turn WhatsApp Status views into daily M-Pesa payouts or broadcast corporate brand ads across Kenya.</p>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 26px; margin-bottom: 30px;">
-        <!-- Card 1: For Partners -->
-        <div style="background: #FFFFFF; border: 2px solid var(--beige-border); border-radius: var(--radius-lg); padding: 32px 26px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden;">
-          <div style="position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, #6D28D9, #9333EA);"></div>
-          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-            <div style="width: 44px; height: 44px; border-radius: var(--radius-md); background: #F5F3FF; color: #6D28D9; display: flex; align-items: center; justify-content: center;">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+      <div class="tasks-grid-wrapper">
+        <!-- Card 1: Partner Tasks -->
+        <div class="task-role-card task-role-partner">
+          <div class="task-role-top-stripe"></div>
+          
+          <div class="task-role-header">
+            <div class="task-role-icon">
+              <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
             </div>
             <div>
-              <h3 style="font-size: 22px; font-weight: 950; margin: 0; color: #4C1D95;">Partner Tasks</h3>
-              <span style="font-size: 13px; font-weight: 750; color: #047857;">Daily WhatsApp Status Monetization</span>
+              <h3 class="task-role-title">Partner Tasks</h3>
+              <span class="task-role-badge">
+                <span class="ticker-live-dot" style="width: 6px; height: 6px;"></span>
+                Daily WhatsApp Status Monetization
+              </span>
             </div>
           </div>
           
-          <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 20px;">
-            <div style="display: flex; gap: 12px; align-items: flex-start;">
-              <div style="width: 28px; height: 28px; border-radius: 50%; background: #6D28D9; color: #fff; font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">1</div>
-              <div>
-                <strong style="font-size: 16px; color: var(--charcoal-text); display: block; font-weight: 850;">Pick &amp; Download Banner</strong>
-                <p style="font-size: 14px; color: var(--charcoal-muted); margin: 3px 0 0; line-height: 1.45;">Choose today's creative from the live product grid below and copy the ready-made caption.</p>
+          <div class="task-steps-list">
+            <div class="task-step-item step-1">
+              <div class="task-step-num">1</div>
+              <div class="task-step-content">
+                <strong>Pick &amp; Download Banner</strong>
+                <p>Choose today's creative from the live product grid below and copy the ready-made caption.</p>
               </div>
             </div>
 
-            <div style="display: flex; gap: 12px; align-items: flex-start;">
-              <div style="width: 28px; height: 28px; border-radius: 50%; background: #6D28D9; color: #fff; font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">2</div>
-              <div>
-                <strong style="font-size: 16px; color: var(--charcoal-text); display: block; font-weight: 850;">Post to Status for 18h</strong>
-                <p style="font-size: 14px; color: var(--charcoal-muted); margin: 3px 0 0; line-height: 1.45;">Publish to your WhatsApp Status. Keep it live to reach your authentic audience across Kenya.</p>
+            <div class="task-step-item step-2">
+              <div class="task-step-num">2</div>
+              <div class="task-step-content">
+                <strong>Post to Status for 18h</strong>
+                <p>Publish to your WhatsApp Status. Keep it live to reach your authentic audience across Kenya.</p>
               </div>
             </div>
 
-            <div style="display: flex; gap: 12px; align-items: flex-start;">
-              <div style="width: 28px; height: 28px; border-radius: 50%; background: #047857; color: #fff; font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">3</div>
-              <div>
-                <strong style="font-size: 16px; color: #047857; display: block; font-weight: 850;">Submit Screenshot &amp; Withdraw</strong>
-                <p style="font-size: 14px; color: var(--charcoal-muted); margin: 3px 0 0; line-height: 1.45;">Upload your 18h viewer count screenshot in your dashboard for instant M-Pesa clearance.</p>
+            <div class="task-step-item step-3">
+              <div class="task-step-num">3</div>
+              <div class="task-step-content">
+                <strong style="color: #047857;">Submit Screenshot &amp; Withdraw</strong>
+                <p>Upload your 18h viewer count screenshot in your dashboard for instant M-Pesa clearance.</p>
               </div>
             </div>
           </div>
 
-          <button class="btn btn-primary btn-block" style="margin-top: 24px;" onclick="scrollToProductsContainer()">
-            <span>Browse Today's Creatives</span> &rarr;
+          <button class="task-cta-btn btn btn-primary" onclick="scrollToProductsContainer()">
+            <span>Browse Today's Creatives</span>
+            <span class="cta-arrow">&rarr;</span>
           </button>
         </div>
 
-        <!-- Card 2: For Advertisers -->
-        <div style="background: #FFFFFF; border: 2px solid var(--beige-border); border-radius: var(--radius-lg); padding: 32px 26px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden;">
-          <div style="position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, #D97706, #E60063);"></div>
-          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-            <div style="width: 44px; height: 44px; border-radius: var(--radius-md); background: #FFFBEB; color: #D97706; display: flex; align-items: center; justify-content: center;">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        <!-- Card 2: Advertiser Tasks -->
+        <div class="task-role-card task-role-advertiser">
+          <div class="task-role-top-stripe"></div>
+          
+          <div class="task-role-header">
+            <div class="task-role-icon">
+              <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
             </div>
             <div>
-              <h3 style="font-size: 22px; font-weight: 950; margin: 0; color: #78350F;">Advertiser Tasks</h3>
-              <span style="font-size: 13px; font-weight: 750; color: #B45309;">Brand Reach &amp; Customer Acquisition</span>
+              <h3 class="task-role-title">Advertiser Tasks</h3>
+              <span class="task-role-badge">
+                <span class="ticker-live-dot" style="width: 6px; height: 6px; background: #7C3AED; box-shadow: 0 0 8px #7C3AED;"></span>
+                Brand Reach &amp; Customer Acquisition
+              </span>
             </div>
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 20px;">
-            <div style="display: flex; gap: 12px; align-items: flex-start;">
-              <div style="width: 28px; height: 28px; border-radius: 50%; background: #D97706; color: #fff; font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">1</div>
-              <div>
-                <strong style="font-size: 16px; color: var(--charcoal-text); display: block; font-weight: 850;">Provide Banner &amp; Pitch</strong>
-                <p style="font-size: 14px; color: var(--charcoal-muted); margin: 3px 0 0; line-height: 1.45;">Submit your product poster, discount offer, or campaign details to the Almai portal.</p>
+          <div class="task-steps-list">
+            <div class="task-step-item step-1">
+              <div class="task-step-num">1</div>
+              <div class="task-step-content">
+                <strong>Provide Banner &amp; Pitch</strong>
+                <p>Submit your product poster, discount offer, or campaign details to the Almai portal.</p>
               </div>
             </div>
 
-            <div style="display: flex; gap: 12px; align-items: flex-start;">
-              <div style="width: 28px; height: 28px; border-radius: 50%; background: #D97706; color: #fff; font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">2</div>
-              <div>
-                <strong style="font-size: 16px; color: var(--charcoal-text); display: block; font-weight: 850;">Target Kenyan Regions</strong>
-                <p style="font-size: 14px; color: var(--charcoal-muted); margin: 3px 0 0; line-height: 1.45;">Choose nationwide reach or target specific counties (Nairobi, Mombasa, Nakuru, Kisumu, Eldoret).</p>
+            <div class="task-step-item step-2">
+              <div class="task-step-num">2</div>
+              <div class="task-step-content">
+                <strong>Target Kenyan Regions</strong>
+                <p>Choose nationwide reach or target specific counties (Nairobi, Mombasa, Nakuru, Kisumu, Eldoret).</p>
               </div>
             </div>
 
-            <div style="display: flex; gap: 12px; align-items: flex-start;">
-              <div style="width: 28px; height: 28px; border-radius: 50%; background: #E60063; color: #fff; font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">3</div>
-              <div>
-                <strong style="font-size: 16px; color: #E60063; display: block; font-weight: 850;">Live Status Impressions</strong>
-                <p style="font-size: 14px; color: var(--charcoal-muted); margin: 3px 0 0; line-height: 1.45;">Your ad goes live on 1,000+ status feeds simultaneously, generating high-conversion sales.</p>
+            <div class="task-step-item step-3">
+              <div class="task-step-num">3</div>
+              <div class="task-step-content">
+                <strong style="color: #6D28D9;">Live Status Impressions</strong>
+                <p>Your ad goes live on 1,000+ status feeds simultaneously, generating high-conversion sales.</p>
               </div>
             </div>
           </div>
 
-          <button class="btn btn-secondary btn-block" style="margin-top: 24px;" onclick="openInquiryModal('Brand Campaign Inquiry')">
-            <span>Inquire Business Advertising</span> &rarr;
+          <button class="task-cta-btn btn btn-secondary" onclick="openInquiryModal('Brand Campaign Inquiry')">
+            <span>Inquire Business Advertising</span>
+            <span class="cta-arrow">&rarr;</span>
           </button>
         </div>
       </div>
     </section>
-
 
     <!-- Testimonials & Social Proof -->
     <section class="container testimonials-section">
@@ -4690,6 +5040,8 @@
     // INITIALIZATION & SESSION CHECK
     // ====================================================================
     window.addEventListener('DOMContentLoaded', async () => {
+      setupCountersObserver();
+      animateCounters(true);
       initInactivityTracker();
       renderHeroShowcase([]);
       await checkAuthSession();
@@ -4707,7 +5059,7 @@
         });
       }
 
-      animateCounters();
+      setupCountersObserver();
     });
 
     async function checkAuthSession() {
@@ -5248,59 +5600,8 @@
     // ====================================================================
     // WHATSAPP PRODUCT CREATIVES & DOWNLOADS
     // ====================================================================
-    // Curated Monday-to-Friday campaign creatives matching the weekly timetable
-    const defaultWeeklyCampaignPosts = [
-      {
-        id: 'prod_mon_beverages',
-        day: 'monday',
-        title: 'Del Monte Tropical & Coca-Cola Kenya Refreshment',
-        brand_name: 'Del Monte & Coca-Cola Kenya',
-        caption: 'Beat the Monday heat! 🥤 Stay energized with ice-cold Del Monte Mango & classic Kenyan Coca-Cola. Available at supermarkets and duka countrywide! 🥭✨ #MondayRefresh #KenyanFlavors',
-        image_name: 'delmonte_beverages_monday.svg',
-        downloads_count: 2430,
-        image_base64: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800"><defs><linearGradient id="bgMon" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%23064E3B"/><stop offset="50%" stop-color="%23047857"/><stop offset="100%" stop-color="%23065F46"/></linearGradient><linearGradient id="sunGold" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%23FBBF24"/><stop offset="100%" stop-color="%23F59E0B"/></linearGradient></defs><rect width="800" height="800" fill="url(%23bgMon)"/><circle cx="680" cy="140" r="160" fill="%2310B981" opacity="0.25"/><circle cx="120" cy="680" r="200" fill="%2334D399" opacity="0.12"/><rect x="70" y="70" width="660" height="660" rx="32" fill="none" stroke="%2334D399" stroke-width="2.5" stroke-dasharray="8 6" opacity="0.45"/><rect x="90" y="90" width="230" height="46" rx="23" fill="url(%23sunGold)"/><text x="205" y="120" font-family="Arial,sans-serif" font-size="16" font-weight="900" fill="%23064E3B" text-anchor="middle">MONDAY CAMPAIGN</text><text x="400" y="240" font-family="Arial,sans-serif" font-size="44" font-weight="900" fill="%23F8F0E2" text-anchor="middle">BEVERAGES &amp; SOFT DRINKS</text><text x="400" y="305" font-family="Arial,sans-serif" font-size="52" font-weight="900" fill="%23FBBF24" text-anchor="middle">DEL MONTE &amp; COKE</text><text x="400" y="365" font-family="Arial,sans-serif" font-size="24" fill="%23A7F3D0" text-anchor="middle">Ice-Cold Refreshment Across Kenya</text><rect x="120" y="420" width="560" height="150" rx="20" fill="%23064E3B" stroke="%2334D399" stroke-width="2"/><text x="400" y="475" font-family="Arial,sans-serif" font-size="32" font-weight="bold" fill="%23FBBF24" text-anchor="middle">Earn KSh 45 / Verified View</text><text x="400" y="525" font-family="Arial,sans-serif" font-size="20" fill="%23F8F0E2" text-anchor="middle">Peak WhatsApp Hours: 07:30 AM – 02:00 PM</text><rect x="220" y="620" width="360" height="56" rx="28" fill="%2310B981"/><text x="400" y="656" font-family="Arial,sans-serif" font-size="20" font-weight="bold" fill="%23FFFFFF" text-anchor="middle">Download Creative &amp; Post</text></svg>'
-      },
-      {
-        id: 'prod_tue_vehicles',
-        day: 'tuesday',
-        title: 'Brand New Toyota Prado TX & Isuzu D-Max Pickups',
-        brand_name: 'Kenya Auto Hub & CFAO Motors',
-        caption: 'Drive home your dream machine today! 🚗💨 Brand-new Toyota Land Cruiser Prado TX & Isuzu D-Max Commercial Pickups on showroom sale in Nairobi & Mombasa. Zero mileage, 3-year warranty, up to 90% bank asset financing approved in 48hrs! 📞 Call 0700-000-000 to book a test drive. #KenyanCars #ToyotaKenya #VehicleSale',
-        image_name: 'kenya_vehicles_sale_tuesday.svg',
-        downloads_count: 3890,
-        image_base64: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800"><defs><linearGradient id="bgTue" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%2318181B"/><stop offset="50%" stop-color="%2327272A"/><stop offset="100%" stop-color="%2309090B"/></linearGradient><linearGradient id="redBurn" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%23EF4444"/><stop offset="100%" stop-color="%23B91C1C"/></linearGradient></defs><rect width="800" height="800" fill="url(%23bgTue)"/><circle cx="700" cy="150" r="180" fill="%23EF4444" opacity="0.18"/><rect x="70" y="70" width="660" height="660" rx="32" fill="none" stroke="%23EF4444" stroke-width="2" opacity="0.4"/><rect x="90" y="90" width="220" height="46" rx="23" fill="url(%23redBurn)"/><text x="200" y="120" font-family="Arial,sans-serif" font-size="16" font-weight="900" fill="%23FFFFFF" text-anchor="middle">TUESDAY AUTO DEALS</text><text x="400" y="240" font-family="Arial,sans-serif" font-size="44" font-weight="900" fill="%23F4F4F5" text-anchor="middle">BRAND NEW KENYAN MARKET</text><text x="400" y="305" font-family="Arial,sans-serif" font-size="52" font-weight="900" fill="%23F87171" text-anchor="middle">VEHICLES ON SALE</text><text x="400" y="365" font-family="Arial,sans-serif" font-size="24" fill="%23D4D4D8" text-anchor="middle">Toyota Prado TX • Isuzu D-Max • Showroom Clearances</text><rect x="120" y="420" width="560" height="150" rx="20" fill="%2327272A" stroke="%23EF4444" stroke-width="1.8"/><text x="400" y="475" font-family="Arial,sans-serif" font-size="32" font-weight="bold" fill="%23FCD34D" text-anchor="middle">Earn KSh 95 / Verified View</text><text x="400" y="525" font-family="Arial,sans-serif" font-size="20" fill="%23FFFFFF" text-anchor="middle">Zero Mileage • Up to 90% Asset Financing</text><rect x="220" y="620" width="360" height="56" rx="28" fill="url(%23redBurn)"/><text x="400" y="656" font-family="Arial,sans-serif" font-size="20" font-weight="bold" fill="%23FFFFFF" text-anchor="middle">Book Test Drive Today</text></svg>'
-      },
-      {
-        id: 'prod_wed_tech',
-        day: 'wednesday',
-        title: 'Samsung Galaxy S24 & Ramtons Kitchen Tech',
-        brand_name: 'TechPoint Kenya & Ramtons',
-        caption: 'Midweek Flash Tech Sale! 📱⚡ Up to 30% OFF genuine Samsung Galaxy phones, Smart 4K TVs, and Ramtons double-door fridges. 1-year local warranty & pay on delivery countrywide! 💻✨ Check out: https://almai.pages.dev #NairobiTech #SmartLiving',
-        image_name: 'tech_gadgets_wednesday.svg',
-        downloads_count: 2780,
-        image_base64: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800"><defs><linearGradient id="bgWed" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%231E1B4B"/><stop offset="50%" stop-color="%23312E81"/><stop offset="100%" stop-color="%23172554"/></linearGradient><linearGradient id="neonCyan" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%2338BDF8"/><stop offset="100%" stop-color="%236366F1"/></linearGradient></defs><rect width="800" height="800" fill="url(%23bgWed)"/><circle cx="400" cy="400" r="300" fill="%2338BDF8" opacity="0.08"/><rect x="70" y="70" width="660" height="660" rx="32" fill="none" stroke="%236366F1" stroke-width="2" opacity="0.45"/><rect x="90" y="90" width="220" height="46" rx="23" fill="url(%23neonCyan)"/><text x="200" y="120" font-family="Arial,sans-serif" font-size="16" font-weight="900" fill="%23FFFFFF" text-anchor="middle">WEDNESDAY TECH</text><text x="400" y="240" font-family="Arial,sans-serif" font-size="44" font-weight="900" fill="%23FFFFFF" text-anchor="middle">SMART GADGETS &amp; TECH</text><text x="400" y="305" font-family="Arial,sans-serif" font-size="52" font-weight="900" fill="%2338BDF8" text-anchor="middle">SAMSUNG &amp; APPLIANCES</text><text x="400" y="365" font-family="Arial,sans-serif" font-size="24" fill="%23C7D2FE" text-anchor="middle">Smartphones • 4K TVs • Home Appliances</text><rect x="120" y="420" width="560" height="150" rx="20" fill="%231E1B4B" stroke="%2338BDF8" stroke-width="1.8"/><text x="400" y="475" font-family="Arial,sans-serif" font-size="32" font-weight="bold" fill="%2338BDF8" text-anchor="middle">Earn KSh 70 / Verified View</text><text x="400" y="525" font-family="Arial,sans-serif" font-size="20" fill="%23F8FAFC" text-anchor="middle">Official 1-Year Kenyan Warranty</text><rect x="220" y="620" width="360" height="56" rx="28" fill="url(%23neonCyan)"/><text x="400" y="656" font-family="Arial,sans-serif" font-size="20" font-weight="bold" fill="%23FFFFFF" text-anchor="middle">Shop Deals Online</text></svg>'
-      },
-      {
-        id: 'prod_thu_fashion',
-        day: 'thursday',
-        title: 'SuzieBeauty Kenyan Glow Kit & Boutique Sneaker Drops',
-        brand_name: 'SuzieBeauty & Nairobi Kicks',
-        caption: 'Glow Up Thursday! 👗💄 Step out in style this weekend with authentic sneakers, designer dresses, and SuzieBeauty mineral skincare & matte lipsticks. Limited pieces available. Free delivery within Nairobi CBD! ✨👠 #KenyanFashion #SuzieBeauty #NairobiBoutique',
-        image_name: 'kenyan_fashion_thursday.svg',
-        downloads_count: 3120,
-        image_base64: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800"><defs><linearGradient id="bgThu" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%23581C87"/><stop offset="50%" stop-color="%236B21A8"/><stop offset="100%" stop-color="%233B0764"/></linearGradient><linearGradient id="pinkGlow" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%23F472B6"/><stop offset="100%" stop-color="%23DB2777"/></linearGradient></defs><rect width="800" height="800" fill="url(%23bgThu)"/><circle cx="680" cy="120" r="170" fill="%23F472B6" opacity="0.2"/><rect x="70" y="70" width="660" height="660" rx="32" fill="none" stroke="%23F472B6" stroke-width="2" opacity="0.45"/><rect x="90" y="90" width="220" height="46" rx="23" fill="url(%23pinkGlow)"/><text x="200" y="120" font-family="Arial,sans-serif" font-size="16" font-weight="900" fill="%23FFFFFF" text-anchor="middle">THURSDAY GLOW-UP</text><text x="400" y="240" font-family="Arial,sans-serif" font-size="44" font-weight="900" fill="%23FAF5FF" text-anchor="middle">KENYAN FASHION &amp; GLAM</text><text x="400" y="305" font-family="Arial,sans-serif" font-size="52" font-weight="900" fill="%23F472B6" text-anchor="middle">SUZIEBEAUTY &amp; SNEAKERS</text><text x="400" y="365" font-family="Arial,sans-serif" font-size="24" fill="%23E9D5FF" text-anchor="middle">Designer Drops • Cosmetics • Streetwear</text><rect x="120" y="420" width="560" height="150" rx="20" fill="%233B0764" stroke="%23F472B6" stroke-width="1.8"/><text x="400" y="475" font-family="Arial,sans-serif" font-size="32" font-weight="bold" fill="%23FDE047" text-anchor="middle">Earn KSh 60 / Verified View</text><text x="400" y="525" font-family="Arial,sans-serif" font-size="20" fill="%23FFFFFF" text-anchor="middle">Boutique Drops &amp; Mineral Skincare</text><rect x="220" y="620" width="360" height="56" rx="28" fill="url(%23pinkGlow)"/><text x="400" y="656" font-family="Arial,sans-serif" font-size="20" font-weight="bold" fill="%23FFFFFF" text-anchor="middle">Order On WhatsApp</text></svg>'
-      },
-      {
-        id: 'prod_fri_desserts',
-        day: 'friday',
-        title: 'Creamy Artisan Strawberry Sundae & Gourmet Gelato Treats',
-        brand_name: 'Almai Creamery & Gourmet Gelato',
-        caption: 'Creamy. Fresh. Irresistible. 🍨🍓 Treat yourself this TGIF with artisan strawberry sundaes, Italian gelato scoops, and fresh dessert platters. Buy 1 waffle cone, get 1 free all weekend! Visit our Nairobi branch or order via Glovo/UberEats. #TGIF #CreamyDesserts #AlmaiAdvertising #WeekendTreats',
-        image_name: 'creamy_desserts_friday.svg',
-        downloads_count: 4210,
-        image_base64: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800"><defs><linearGradient id="bgFri" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%23831843"/><stop offset="50%" stop-color="%23BE185D"/><stop offset="100%" stop-color="%23E60063"/></linearGradient><linearGradient id="creamGold" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%23FEF08A"/><stop offset="100%" stop-color="%23FDE047"/></linearGradient></defs><rect width="800" height="800" fill="url(%23bgFri)"/><circle cx="680" cy="140" r="180" fill="%23FFFFFF" opacity="0.15"/><circle cx="120" cy="680" r="220" fill="%23FCE7F3" opacity="0.12"/><rect x="70" y="70" width="660" height="660" rx="32" fill="none" stroke="%23FCE7F3" stroke-width="2.5" opacity="0.5"/><rect x="90" y="90" width="240" height="46" rx="23" fill="url(%23creamGold)"/><text x="210" y="120" font-family="Arial,sans-serif" font-size="15" font-weight="900" fill="%23831843" text-anchor="middle">FRIDAY TGIF DESSERTS</text><text x="400" y="235" font-family="Arial,sans-serif" font-size="34" font-weight="900" fill="%23FEF08A" text-anchor="middle" letter-spacing="4">CREAMY. FRESH. IRRESISTIBLE.</text><text x="400" y="305" font-family="Arial,sans-serif" font-size="48" font-weight="900" fill="%23FFFFFF" text-anchor="middle">ARTISAN GELATO &amp; SUNDAES</text><text x="400" y="365" font-family="Arial,sans-serif" font-size="24" fill="%23FCE7F3" text-anchor="middle">Strawberry Swirls • Belgian Chocolate • Waffles</text><rect x="120" y="420" width="560" height="150" rx="20" fill="%23831843" stroke="%23FEF08A" stroke-width="2"/><text x="400" y="475" font-family="Arial,sans-serif" font-size="32" font-weight="bold" fill="%23FEF08A" text-anchor="middle">Earn KSh 85 / Verified View</text><text x="400" y="525" font-family="Arial,sans-serif" font-size="20" fill="%23FFFFFF" text-anchor="middle">Buy 1 Get 1 Free Weekend Scoop Special</text><rect x="220" y="620" width="360" height="56" rx="28" fill="%23FFFFFF"/><text x="400" y="656" font-family="Arial,sans-serif" font-size="20" font-weight="900" fill="%23E60063" text-anchor="middle">Order On Glovo &amp; UberEats</text></svg>'
-      }
-    ];
+    // Admin-posted products only - no mock posts
+    const defaultWeeklyCampaignPosts = [];
 
     async function fetchProductsPosts() {
       try {
@@ -5308,13 +5609,13 @@
         if (res.ok) {
           const data = await res.json();
           const remotePosts = (data && (data.posts || data.productPosts)) || [];
-          AppState.productsPosts = (remotePosts && remotePosts.length) ? remotePosts : defaultWeeklyCampaignPosts;
+          AppState.productsPosts = Array.isArray(remotePosts) ? remotePosts : [];
         } else {
-          AppState.productsPosts = defaultWeeklyCampaignPosts;
+          AppState.productsPosts = [];
         }
       } catch (err) {
-        console.error('Failed to fetch product creatives, using curated weekly timetable posts:', err);
-        AppState.productsPosts = defaultWeeklyCampaignPosts;
+        console.warn('Failed to fetch product creatives from server:', err);
+        AppState.productsPosts = [];
       }
       renderProductsPosts(AppState.productsPosts);
     }
@@ -5329,7 +5630,7 @@
 
       const allPosts = (AppState.productsPosts && AppState.productsPosts.length)
         ? AppState.productsPosts
-        : defaultWeeklyCampaignPosts;
+        : [];
 
       let filtered = allPosts;
       if (dayKey !== 'all') {
@@ -5389,15 +5690,19 @@
     }
 
     
-    function animateCounters() {
+        let hasAnimatedCounters = false;
+
+    function animateCounters(force = false) {
       const counters = [
-        { el: document.getElementById('counter-views'), target: 1.8, decimals: 1, duration: 1600 },
-        { el: document.getElementById('counter-disbursed'), target: 12.4, decimals: 1, duration: 1800 },
-        { el: document.getElementById('counter-partners'), target: 14200, decimals: 0, duration: 2000 }
+        { el: document.getElementById('counter-views'), target: 1.8, isDecimal: true },
+        { el: document.getElementById('counter-disbursed'), target: 12.4, isDecimal: true },
+        { el: document.getElementById('counter-partners'), target: 14200, isDecimal: false },
+        { el: document.getElementById('counter-speed'), target: 2, isDecimal: false }
       ];
 
-      counters.forEach(({ el, target, decimals, duration }) => {
+      counters.forEach(({ el, target, isDecimal }) => {
         if (!el) return;
+        const duration = 1400;
         const startTime = performance.now();
         const startVal = 0;
 
@@ -5407,18 +5712,46 @@
           const easeProgress = 1 - Math.pow(1 - progress, 3);
           const current = startVal + (target - startVal) * easeProgress;
 
-          if (decimals === 0) {
-            el.textContent = Math.floor(current).toLocaleString();
+          if (isDecimal) {
+            el.textContent = (progress < 1) ? current.toFixed(1) : target.toFixed(1);
           } else {
-            el.textContent = current.toFixed(decimals);
+            el.textContent = (progress < 1) ? Math.floor(current).toLocaleString() : target.toLocaleString();
           }
 
           if (progress < 1) {
             requestAnimationFrame(update);
+          } else {
+            el.textContent = isDecimal ? target.toFixed(1) : target.toLocaleString();
           }
         }
         requestAnimationFrame(update);
       });
+    }
+
+    function setupCountersObserver() {
+      const statsSection = document.getElementById('stats-grid-section');
+      if (!statsSection) {
+        animateCounters(true);
+        return;
+      }
+
+      if ('IntersectionObserver' in window) {
+        try {
+          const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                animateCounters(true);
+              }
+            });
+          }, { threshold: 0.1 });
+          observer.observe(statsSection);
+        } catch (e) {
+          animateCounters(true);
+        }
+      }
+      
+      // Also animate on load
+      setTimeout(() => animateCounters(true), 250);
     }
 
     function initWeeklyTimetable() {
@@ -5459,9 +5792,16 @@
 
       if (!posts || !posts.length) {
         homeContainer.innerHTML = `
-          <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--charcoal-muted); background: var(--bg-cream); border-radius: var(--radius-md); border: 1px dashed var(--beige-border);">
-            <p style="font-size: 15px; margin-bottom: 6px;">No campaign posts match this category filter.</p>
-            <button class="btn btn-secondary btn-sm" onclick="filterProductsByCategory('all', document.querySelector('.cat-filter-btn'))">View All Categories</button>
+          <div style="grid-column: 1 / -1; text-align: center; padding: 48px 24px; color: var(--charcoal-muted); background: var(--bg-cream); border-radius: var(--radius-md); border: 1.5px dashed var(--beige-border);">
+            <div style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: rgba(99, 102, 241, 0.1); color: var(--primary-purple); margin-bottom: 12px;">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+            </div>
+            <h3 style="font-size: 18px; font-weight: 850; color: var(--deep-purple-heading); margin-bottom: 6px;">No Active Brand Campaigns</h3>
+            <p style="font-size: 14.5px; margin: 0; max-width: 460px; margin: 0 auto; line-height: 1.5;">There are currently no live campaigns posted by administrators. Check back shortly!</p>
           </div>
         `;
         return;
@@ -5516,7 +5856,7 @@
 
     function renderProductsPosts(posts) {
       const dashContainer = document.getElementById('dash-products-container');
-      const allPosts = (posts && posts.length) ? posts : defaultWeeklyCampaignPosts;
+      const allPosts = (posts && posts.length) ? posts : [];
 
       // Update hero sideways animated marquee showcase with admin posted creatives
       renderHeroShowcase(allPosts);
@@ -5525,7 +5865,22 @@
       filterProductsByCategory(activeProductCategoryFilter, document.querySelector(`.cat-filter-btn[onclick*="${activeProductCategoryFilter}"]`));
 
       if (dashContainer) {
-        dashContainer.innerHTML = allPosts.map(p => {
+        if (!allPosts.length) {
+          dashContainer.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 44px 20px; color: var(--charcoal-muted); background: var(--bg-cream); border-radius: var(--radius-md); border: 1.5px dashed var(--beige-border);">
+              <div style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: rgba(16, 185, 129, 0.1); color: #059669; margin-bottom: 10px;">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="12" y1="8" x2="12" y2="16"></line>
+                  <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+              </div>
+              <h4 style="font-size: 16.5px; font-weight: 800; color: var(--deep-purple-heading); margin-bottom: 4px;">No Admin Products Live</h4>
+              <p style="font-size: 14px; margin: 0;">Administrators will publish new brand campaign pictures here for you to download, post, and earn.</p>
+            </div>
+          `;
+        } else {
+          dashContainer.innerHTML = allPosts.map(p => {
           const imgSource = p.image_base64 || p.image_url || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="200" fill="%232D1537"%3E%3Ctext x="50%25" y="50%25" fill="%23D8B4FE" font-size="16" text-anchor="middle" dominant-baseline="middle"%3EAlmai Creative%3C/text%3E%3C/svg%3E';
           const escapedCaption = escapeHTML(p.caption || '');
           const escapedTitle = escapeHTML(p.title || 'Brand Product Post');
@@ -5570,6 +5925,7 @@
             </div>
           `;
         }).join('');
+        }
       }
     }
 
@@ -5653,38 +6009,11 @@
       const track = document.getElementById('hero-showcase-track');
       if (!track) return;
 
-      const fallbackPosts = [
-        {
-          id: 'demo_1',
-          title: 'Safaricom 5G Business Solutions',
-          brand_name: 'Safaricom PLC',
-          downloads_count: 1420,
-          image_base64: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="240" viewBox="0 0 400 240"%3E%3Cdefs%3E%3ClinearGradient id="g1" x1="0" y1="0" x2="1" y2="1"%3E%3Cstop offset="0%25" stop-color="%23047857"/%3E%3Cstop offset="100%25" stop-color="%23064E3B"/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="400" height="240" fill="url(%23g1)"/%3E%3Ccircle cx="340" cy="50" r="80" fill="%2310B981" opacity="0.2"/%3E%3Ctext x="30" y="80" fill="%23A7F3D0" font-family="system-ui,sans-serif" font-size="14" font-weight="bold"%3ESAFARICOM PARTNER%3C/text%3E%3Ctext x="30" y="125" fill="%23FFFFFF" font-family="system-ui,sans-serif" font-size="24" font-weight="900"%3ESuperfast 5G Home%3C/text%3E%3Ctext x="30" y="160" fill="%23E6FFFA" font-family="system-ui,sans-serif" font-size="15" font-weight="600"%3EPost on WhatsApp • Earn KSh 100/view%3C/text%3E%3Crect x="30" y="185" width="130" height="30" rx="6" fill="%2310B981"/%3E%3Ctext x="95" y="205" fill="%23FFFFFF" font-family="system-ui,sans-serif" font-size="12" font-weight="bold" text-anchor="middle"%3EACTIVE AD%3C/text%3E%3C/svg%3E'
-        },
-        {
-          id: 'demo_2',
-          title: 'M-Pesa Merchant Cash Flow',
-          brand_name: 'Lipa Na M-Pesa',
-          downloads_count: 2150,
-          image_base64: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="240" viewBox="0 0 400 240"%3E%3Cdefs%3E%3ClinearGradient id="g2" x1="0" y1="0" x2="1" y2="1"%3E%3Cstop offset="0%25" stop-color="%23DC2626"/%3E%3Cstop offset="100%25" stop-color="%237F1D1D"/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="400" height="240" fill="url(%23g2)"/%3E%3Ccircle cx="50" cy="200" r="90" fill="%23EF4444" opacity="0.25"/%3E%3Ctext x="30" y="80" fill="%23FECACA" font-family="system-ui,sans-serif" font-size="14" font-weight="bold"%3ELIPA NA M-PESA%3C/text%3E%3Ctext x="30" y="125" fill="%23FFFFFF" font-family="system-ui,sans-serif" font-size="23" font-weight="900"%3EZero Fee Till Payments%3C/text%3E%3Ctext x="30" y="160" fill="%23FEE2E2" font-family="system-ui,sans-serif" font-size="15" font-weight="600"%3EHigh Conversion Kenyan Campaign%3C/text%3E%3Crect x="30" y="185" width="130" height="30" rx="6" fill="%23EF4444"/%3E%3Ctext x="95" y="205" fill="%23FFFFFF" font-family="system-ui,sans-serif" font-size="12" font-weight="bold" text-anchor="middle"%3EHIGH DEMAND%3C/text%3E%3C/svg%3E'
-        },
-        {
-          id: 'demo_3',
-          title: 'Nairobi Smart Tech Hub Expo',
-          brand_name: 'Tech Nairobi',
-          downloads_count: 1870,
-          image_base64: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="240" viewBox="0 0 400 240"%3E%3Cdefs%3E%3ClinearGradient id="g3" x1="0" y1="0" x2="1" y2="1"%3E%3Cstop offset="0%25" stop-color="%234F46E5"/%3E%3Cstop offset="100%25" stop-color="%231E1B4B"/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="400" height="240" fill="url(%23g3)"/%3E%3Ctext x="30" y="80" fill="%23C7D2FE" font-family="system-ui,sans-serif" font-size="14" font-weight="bold"%3ETECH EXPO 2026%3C/text%3E%3Ctext x="30" y="125" fill="%23FFFFFF" font-family="system-ui,sans-serif" font-size="23" font-weight="900"%3EGadgets & Laptops Sale%3C/text%3E%3Ctext x="30" y="160" fill="%23E0E7FF" font-family="system-ui,sans-serif" font-size="15" font-weight="600"%3EApproved Almai Brand Creative%3C/text%3E%3Crect x="30" y="185" width="130" height="30" rx="6" fill="%236366F1"/%3E%3Ctext x="95" y="205" fill="%23FFFFFF" font-family="system-ui,sans-serif" font-size="12" font-weight="bold" text-anchor="middle"%3EVERIFIED%3C/text%3E%3C/svg%3E'
-        },
-        {
-          id: 'demo_4',
-          title: 'Jambo Air Express Deals',
-          brand_name: 'Jambo Travel',
-          downloads_count: 980,
-          image_base64: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="240" viewBox="0 0 400 240"%3E%3Cdefs%3E%3ClinearGradient id="g4" x1="0" y1="0" x2="1" y2="1"%3E%3Cstop offset="0%25" stop-color="%237C3AED"/%3E%3Cstop offset="100%25" stop-color="%232D1537"/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="400" height="240" fill="url(%23g4)"/%3E%3Ctext x="30" y="80" fill="%23DDD6FE" font-family="system-ui,sans-serif" font-size="14" font-weight="bold"%3EKENYA FLIGHTS%3C/text%3E%3Ctext x="30" y="125" fill="%23FFFFFF" font-family="system-ui,sans-serif" font-size="23" font-weight="900"%3EMombasa & Kisumu Offers%3C/text%3E%3Ctext x="30" y="160" fill="%23EDE9FE" font-family="system-ui,sans-serif" font-size="15" font-weight="600"%3EVerified Corporate Banner%3C/text%3E%3Crect x="30" y="185" width="130" height="30" rx="6" fill="%239333EA"/%3E%3Ctext x="95" y="205" fill="%23FFFFFF" font-family="system-ui,sans-serif" font-size="12" font-weight="bold" text-anchor="middle"%3ETRENDING%3C/text%3E%3C/svg%3E'
-        }
-      ];
-
-      const rawItems = (posts && posts.length) ? posts : fallbackPosts;
+      const rawItems = (posts && posts.length) ? posts : [];
+      if (!rawItems.length) {
+        track.innerHTML = '';
+        return;
+      }
 
       // Duplicate items to ensure smooth infinite marquee scroll
       let displayItems = [...rawItems];
@@ -7172,11 +7501,7 @@
         </svg>
       </div>
       <div class="wa-content-pill">
-        <span class="wa-status-row">
-          <span class="wa-online-dot"></span>
-          <span class="wa-status-text">Online • 24/7 Support</span>
-        </span>
-        <span class="wa-title-text">Chat with Us</span>
+        <span class="wa-title-text">Chat With Us</span>
       </div>
     </div>
   </a>
