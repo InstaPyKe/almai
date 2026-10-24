@@ -243,6 +243,23 @@
     }
 
     /* Hamburger Menu Button */
+    
+    h1, h2, h3, h4, .section-title, .hero-title {
+      font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
+      font-weight: 950 !important;
+      letter-spacing: -0.03em;
+    }
+    .menu-toggle {
+      cursor: pointer !important;
+      z-index: 120 !important;
+      position: relative !important;
+      pointer-events: auto !important;
+      -webkit-tap-highlight-color: rgba(109, 40, 217, 0.2);
+    }
+    .menu-toggle:active {
+      transform: scale(0.94);
+    }
+
     .menu-toggle {
       display: none;
       background: var(--white-card);
@@ -429,11 +446,12 @@
     }
     .hero-title {
       font-size: clamp(38px, 6vw, 68px);
-      font-weight: 900;
+      font-weight: 950;
+      font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
       max-width: 980px;
       margin: 0 auto 20px;
       line-height: 1.15;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.035em;
     }
     .hero-title span {
       background: linear-gradient(135deg, var(--deep-purple-heading), var(--primary-purple));
@@ -555,11 +573,10 @@
       border: 1px solid #FBCFE8;
     }
     .timetable-title {
-      font-size: clamp(26px, 3.8vw, 38px);
-      font-weight: 900;
-      color: var(--deep-purple-heading);
-      margin-bottom: 10px;
-      line-height: 1.25;
+      font-size: clamp(26px, 3.6vw, 38px);
+      font-weight: 950;
+      font-family: 'Space Grotesk', sans-serif;
+      letter-spacing: -0.03em;
     }
     .timetable-desc {
       font-size: 16.5px;
@@ -1317,10 +1334,13 @@
       margin: 0 auto 44px;
     }
     .section-title {
-      font-size: clamp(30px, 4.5vw, 46px);
-      font-weight: 900;
+      font-size: clamp(32px, 4.8vw, 50px);
+      font-weight: 950;
+      font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
       margin-bottom: 12px;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.035em;
+      line-height: 1.2;
+      color: var(--deep-purple-heading);
     }
     .section-desc {
       font-size: 18.5px;
@@ -1700,8 +1720,11 @@
       gap: 10px;
     }
     .dash-section-title {
-      font-size: 19px;
-      font-weight: 800;
+      font-size: 20px;
+      font-weight: 950;
+      font-family: 'Space Grotesk', sans-serif;
+      color: var(--deep-purple-heading);
+      letter-spacing: -0.02em;
     }
 
     .table-responsive {
@@ -2195,7 +2218,55 @@
         grid-template-columns: 1fr;
         gap: 16px;
       }
-      .product-post-img-wrap {
+      
+    /* Adjustable Image Card Styling */
+    .product-post-img-wrap {
+      width: 100%;
+      height: 250px;
+      background: #09090b;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .product-post-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      background-color: #09090b;
+      transition: transform 0.3s ease, object-fit 0.2s ease;
+    }
+    .product-post-img-wrap.fit-cover img {
+      object-fit: cover;
+    }
+    .img-fit-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(4px);
+      color: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius-full);
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 750;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      z-index: 5;
+      transition: all 0.2s ease;
+    }
+    .img-fit-btn:hover {
+      background: var(--primary-purple);
+      border-color: var(--light-purple-accent);
+      transform: scale(1.05);
+    }
+
+    .product-post-img-wrap-legacy {
         height: 190px;
       }
     }
@@ -3077,7 +3148,7 @@
       <nav>
         <ul class="nav-links">
           <li class="nav-link-item active" id="nav-home" onclick="switchView('home')">Home</li>
-          <li class="nav-link-item" id="nav-timetable" onclick="scrollToTimetable()">Weekly Schedule</li>
+          <li class="nav-link-item" id="nav-timetable" onclick="scrollToTasks()">How It Works</li>
           <li class="nav-link-item" id="nav-products" onclick="switchView('products')">Packages & Pricing</li>
           <li class="nav-link-item" id="nav-calc" onclick="scrollToCalculator()">Calculator</li>
           <li class="nav-link-item" id="nav-dashboard-link" style="display: none;" onclick="switchView('dashboard')">Dashboard</li>
@@ -3149,11 +3220,11 @@
         </span>
         Home
       </li>
-      <li class="mobile-nav-item" onclick="mobileNavAction('timetable')">
+      <li class="mobile-nav-item" onclick="mobileNavAction('tasks')">
         <span class="svg-icon" style="width: 18px; height: 18px;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
         </span>
-        Weekly Timetable
+        How It Works
       </li>
       <li class="mobile-nav-item" onclick="mobileNavAction('products')">
         <span class="svg-icon" style="width: 18px; height: 18px;">
@@ -3303,446 +3374,107 @@
       </div>
     </section>
 
-    <!-- ====================================================================
-         WEEKLY STATUS POSTING TIMETABLE: MONDAY TO FRIDAY
-         ==================================================================== -->
-    <section class="container weekly-timetable-section" id="weekly-timetable-section">
-      <div class="timetable-container">
-        <div class="timetable-header">
-          <h2 class="timetable-title">Categorised Daily Brand Campaigns (Mon – Fri)</h2>
-          <p class="timetable-desc">High-demand corporate campaigns scheduled daily. Pick today's creative, post to status, and receive instant M-Pesa payouts.</p>
-        </div>
-
-        <!-- Day Selector Pill Navigation -->
-        <div class="timetable-days-nav" id="timetable-days-nav">
-          <button class="day-nav-btn active" onclick="selectTimetableDay('all', this)">
-            <span>All 5 Days</span>
-          </button>
-          <button class="day-nav-btn" id="day-nav-monday" onclick="selectTimetableDay('monday', this)">
-            <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M7 8h10l-1.5 12h-7L7 8z"></path><path d="M6 8h12"></path><path d="M14 2L11 8"></path></svg> Monday: Beverages</span>
-          </button>
-          <button class="day-nav-btn" id="day-nav-tuesday" onclick="selectTimetableDay('tuesday', this)">
-            <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9L2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle></svg> Tuesday: Vehicles</span>
-          </button>
-          <button class="day-nav-btn" id="day-nav-wednesday" onclick="selectTimetableDay('wednesday', this)">
-            <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg> Wednesday: Tech</span>
-          </button>
-          <button class="day-nav-btn" id="day-nav-thursday" onclick="selectTimetableDay('thursday', this)">
-            <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M9 3h6l1.5 5-2.5 2 4 11H6l4-11-2.5-2L9 3z"></path><path d="M9 3a3 3 0 0 0 6 0"></path></svg> Thursday: Fashion</span>
-          </button>
-          <button class="day-nav-btn" id="day-nav-friday" onclick="selectTimetableDay('friday', this)">
-            <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M4 14h16c0 4-3 7-8 7s-8-3-8-7z"></path><path d="M7 14a5 5 0 0 1 10 0"></path><path d="M12 9a3.5 3.5 0 0 1 7 0"></path><path d="M5 9a3.5 3.5 0 0 1 7 0"></path><circle cx="12" cy="4" r="1.5" fill="currentColor"></circle></svg> Friday: Desserts</span>
-          </button>
-        </div>
-
-        <!-- 5-Day Interactive Grid -->
-        <div class="timetable-grid" id="timetable-cards-grid">
-          
-          <!-- MONDAY -->
-          <div class="day-card" id="day-card-monday" data-day="monday">
-            <div class="day-card-header">
-              <div class="day-card-badge"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M7 8h10l-1.5 12h-7L7 8z"></path><path d="M6 8h12"></path><path d="M14 2L11 8"></path></svg> Monday</div>
-              <span class="day-card-category" style="background: #ECFDF5; color: #047857;">Beverages</span>
-            </div>
-            <div class="day-card-body">
-              <div class="day-card-title">Sodas, Juices &amp; Fruity Drinks</div>
-              <div class="day-card-chip-tags">
-                <span class="brand-chip">Del Monte</span>
-                <span class="brand-chip">Coca-Cola</span>
-                <span class="brand-chip">Stoney</span>
-                <span class="brand-chip">Bio Smoothies</span>
-                <span class="brand-chip">Kericho Gold</span>
-              </div>
-              <div class="day-card-meta">
-                <div class="meta-row">
-                  <span class="meta-label">Peak Hours:</span>
-                  <span class="time-slot-badge">07:30 AM – 02:00 PM</span>
-                </div>
-                <div class="meta-row">
-                  <span class="meta-label">Payout:</span>
-                  <span class="payout-rate-badge">KSh 30 – 60 / view</span>
-                </div>
-              </div>
-            </div>
-            <div class="day-card-footer">
-              <button class="day-card-btn" onclick="scrollToProductsAndFilter('monday')">
-                <span>View Monday Creatives</span> &rarr;
-              </button>
-            </div>
-          </div>
-
-          <!-- TUESDAY -->
-          <div class="day-card" id="day-card-tuesday" data-day="tuesday">
-            <div class="day-card-header">
-              <div class="day-card-badge"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9L2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle></svg> Tuesday</div>
-              <span class="day-card-category" style="background: #FEF2F2; color: #B91C1C;">Automotive</span>
-            </div>
-            <div class="day-card-body">
-              <div class="day-card-title">Kenyan Vehicles on Sale</div>
-              <div class="day-card-chip-tags">
-                <span class="brand-chip">Toyota Prado TX</span>
-                <span class="brand-chip">Isuzu D-Max</span>
-                <span class="brand-chip">BasiGo EVs</span>
-                <span class="brand-chip">Bank Car Loans</span>
-              </div>
-              <div class="day-card-meta">
-                <div class="meta-row">
-                  <span class="meta-label">Peak Hours:</span>
-                  <span class="time-slot-badge">09:00 AM – 08:30 PM</span>
-                </div>
-                <div class="meta-row">
-                  <span class="meta-label">Payout:</span>
-                  <span class="payout-rate-badge">KSh 50 – 120 / view</span>
-                </div>
-              </div>
-            </div>
-            <div class="day-card-footer">
-              <button class="day-card-btn" onclick="scrollToProductsAndFilter('tuesday')">
-                <span>View Tuesday Creatives</span> &rarr;
-              </button>
-            </div>
-          </div>
-
-          <!-- WEDNESDAY -->
-          <div class="day-card" id="day-card-wednesday" data-day="wednesday">
-            <div class="day-card-header">
-              <div class="day-card-badge"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg> Wednesday</div>
-              <span class="day-card-category" style="background: #EEF2FF; color: #4338CA;">Electronics</span>
-            </div>
-            <div class="day-card-body">
-              <div class="day-card-title">Smart Tech &amp; Home Appliances</div>
-              <div class="day-card-chip-tags">
-                <span class="brand-chip">Samsung Galaxy</span>
-                <span class="brand-chip">Apple iPhones</span>
-                <span class="brand-chip">5G Routers</span>
-                <span class="brand-chip">Ramtons Fridges</span>
-              </div>
-              <div class="day-card-meta">
-                <div class="meta-row">
-                  <span class="meta-label">Peak Hours:</span>
-                  <span class="time-slot-badge">10:00 AM – 09:30 PM</span>
-                </div>
-                <div class="meta-row">
-                  <span class="meta-label">Payout:</span>
-                  <span class="payout-rate-badge">KSh 40 – 90 / view</span>
-                </div>
-              </div>
-            </div>
-            <div class="day-card-footer">
-              <button class="day-card-btn" onclick="scrollToProductsAndFilter('wednesday')">
-                <span>View Wednesday Creatives</span> &rarr;
-              </button>
-            </div>
-          </div>
-
-          <!-- THURSDAY -->
-          <div class="day-card" id="day-card-thursday" data-day="thursday">
-            <div class="day-card-header">
-              <div class="day-card-badge"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M9 3h6l1.5 5-2.5 2 4 11H6l4-11-2.5-2L9 3z"></path><path d="M9 3a3 3 0 0 0 6 0"></path></svg> Thursday</div>
-              <span class="day-card-category" style="background: #FAF5FF; color: #7E22CE;">Fashion</span>
-            </div>
-            <div class="day-card-body">
-              <div class="day-card-title">Boutique Drops &amp; Beauty</div>
-              <div class="day-card-chip-tags">
-                <span class="brand-chip">CBD Thrift Fits</span>
-                <span class="brand-chip">SuzieBeauty</span>
-                <span class="brand-chip">Sneakers</span>
-                <span class="brand-chip">Organic Shea</span>
-              </div>
-              <div class="day-card-meta">
-                <div class="meta-row">
-                  <span class="meta-label">Peak Hours:</span>
-                  <span class="time-slot-badge">11:30 AM – 10:00 PM</span>
-                </div>
-                <div class="meta-row">
-                  <span class="meta-label">Payout:</span>
-                  <span class="payout-rate-badge">KSh 35 – 80 / view</span>
-                </div>
-              </div>
-            </div>
-            <div class="day-card-footer">
-              <button class="day-card-btn" onclick="scrollToProductsAndFilter('thursday')">
-                <span>View Thursday Creatives</span> &rarr;
-              </button>
-            </div>
-          </div>
-
-          <!-- FRIDAY -->
-          <div class="day-card" id="day-card-friday" data-day="friday">
-            <div class="day-card-header">
-              <div class="day-card-badge"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M4 14h16c0 4-3 7-8 7s-8-3-8-7z"></path><path d="M7 14a5 5 0 0 1 10 0"></path><path d="M12 9a3.5 3.5 0 0 1 7 0"></path><path d="M5 9a3.5 3.5 0 0 1 7 0"></path><circle cx="12" cy="4" r="1.5" fill="currentColor"></circle></svg> Friday</div>
-              <span class="day-card-category" style="background: #FDF2F8; color: #BE185D;">Desserts &amp; TGIF</span>
-            </div>
-            <div class="day-card-body">
-              <div class="day-card-title">Gourmet Desserts &amp; Weekend Treats</div>
-              <div class="day-card-chip-tags">
-                <span class="brand-chip">Artisan Gelato</span>
-                <span class="brand-chip">Strawberry Sundaes</span>
-                <span class="brand-chip">Pizza Deals</span>
-                <span class="brand-chip">TGIF Dining</span>
-              </div>
-              <div class="day-card-meta">
-                <div class="meta-row">
-                  <span class="meta-label">Peak Hours:</span>
-                  <span class="time-slot-badge">11:00 AM – 11:30 PM</span>
-                </div>
-                <div class="meta-row">
-                  <span class="meta-label">Payout:</span>
-                  <span class="payout-rate-badge">KSh 45 – 100 / view</span>
-                </div>
-              </div>
-            </div>
-            <div class="day-card-footer">
-              <button class="day-card-btn" onclick="scrollToProductsAndFilter('friday')">
-                <span>View Friday Creatives</span> &rarr;
-              </button>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Comprehensive Weekly Schedule Table -->
-        <div class="timetable-table-wrap">
-          <table class="timetable-table">
-            <thead>
-              <tr>
-                <th>Day</th>
-                <th>Theme &amp; Category</th>
-                <th>Top Featured Kenyan Products</th>
-                <th>Optimal WhatsApp Posting Window</th>
-                <th>Payout Per Verified View</th>
-                <th>Est. Earnings (100 Views)</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr id="row-monday">
-                <td><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M7 8h10l-1.5 12h-7L7 8z"></path><path d="M6 8h12"></path><path d="M14 2L11 8"></path></svg> Monday</td>
-                <td><span style="color: #047857; font-weight: 550;">Beverages &amp; Soft Drinks</span></td>
-                <td>Del Monte juices, Coca-Cola Kenya, Stoney, Kericho Gold iced tea, smoothies</td>
-                <td><span class="time-slot-badge">07:30 AM – 02:00 PM</span></td>
-                <td><span class="payout-rate-badge">KSh 30 – 60 / view</span></td>
-                <td><span style="color: #047857; font-weight: 550;">KSh 3,000 – 6,000</span></td>
-              </tr>
-              <tr id="row-tuesday">
-                <td><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9L2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle></svg> Tuesday</td>
-                <td><span style="color: #B91C1C; font-weight: 550;">Kenyan Market Vehicles</span></td>
-                <td>Toyota Prado TX, Isuzu D-Max pickups, BasiGo EVs, showroom clearances</td>
-                <td><span class="time-slot-badge">09:00 AM – 08:30 PM</span></td>
-                <td><span class="payout-rate-badge">KSh 50 – 120 / view</span></td>
-                <td><span style="color: #047857; font-weight: 550;">KSh 5,000 – 12,000</span></td>
-              </tr>
-              <tr id="row-wednesday">
-                <td><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg> Wednesday</td>
-                <td><span style="color: #4338CA; font-weight: 550;">Electronics &amp; Gadgets</span></td>
-                <td>Samsung Galaxy S24, iPhones, 5G Wi-Fi routers, Ramtons &amp; Von kitchen gear</td>
-                <td><span class="time-slot-badge">10:00 AM – 09:30 PM</span></td>
-                <td><span class="payout-rate-badge">KSh 40 – 90 / view</span></td>
-                <td><span style="color: #047857; font-weight: 550;">KSh 4,000 – 9,000</span></td>
-              </tr>
-              <tr id="row-thursday">
-                <td><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M9 3h6l1.5 5-2.5 2 4 11H6l4-11-2.5-2L9 3z"></path><path d="M9 3a3 3 0 0 0 6 0"></path></svg> Thursday</td>
-                <td><span style="color: #7E22CE; font-weight: 550;">Fashion &amp; Cosmetics</span></td>
-                <td>Kenyan boutique apparel, SuzieBeauty cosmetics, authentic sneakers, haircare</td>
-                <td><span class="time-slot-badge">11:30 AM – 10:00 PM</span></td>
-                <td><span class="payout-rate-badge">KSh 35 – 80 / view</span></td>
-                <td><span style="color: #047857; font-weight: 550;">KSh 3,500 – 8,000</span></td>
-              </tr>
-              <tr id="row-friday">
-                <td><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M4 14h16c0 4-3 7-8 7s-8-3-8-7z"></path><path d="M7 14a5 5 0 0 1 10 0"></path><path d="M12 9a3.5 3.5 0 0 1 7 0"></path><path d="M5 9a3.5 3.5 0 0 1 7 0"></path><circle cx="12" cy="4" r="1.5" fill="currentColor"></circle></svg> Friday</td>
-                <td><span style="color: #BE185D; font-weight: 550;">Gourmet Desserts &amp; TGIF</span></td>
-                <td>Artisan strawberry sundaes, Italian gelato, pizzas, dining &amp; weekend resort offers</td>
-                <td><span class="time-slot-badge">11:00 AM – 11:30 PM</span></td>
-                <td><span class="payout-rate-badge">KSh 45 – 100 / view</span></td>
-                <td><span style="color: #047857; font-weight: 550;">KSh 4,500 – 10,000</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Weekly Posting Guidance Footer Tip -->
-        <div style="margin-top: 24px; padding: 16px 20px; background: #F5F3FF; border-radius: var(--radius-md); border: 1px solid #DDD6FE; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
-          <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--deep-purple-heading);">
-            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"></path></svg>
-            <span><strong>Partner Pro Tip:</strong> Upload the day’s featured creative on your status, keep it active for 18 hours, and upload your verified viewer screenshot into your partner dashboard for automated same-day M-Pesa clearance.</span>
-          </div>
-          <button class="btn btn-primary btn-sm" onclick="showAuthModal('register')">
-            <span>Join Verified Network</span>
-          </button>
-        </div>
-      </div>
-    </section>
-
     <!-- Interactive Earnings Calculator (100% Mobile Responsive) -->
-    <section class="container" id="calculator-section">
-      <div class="calc-box">
-        <div class="calc-header">
-          <h2 class="section-title">Calculate Your Daily &amp; Monthly Payouts</h2>
-          <p class="section-desc">Estimate your potential earnings based on your average WhatsApp Status view count and partner package tier.</p>
-        </div>
-
-        <div class="calc-grid">
-          <div class="calc-controls">
-            <div class="range-group">
-              <div class="range-label-row">
-                <span>Select Your Package Tier</span>
-                <span id="calc-tier-label" style="color: var(--primary-purple); font-weight: 800;">Exclusive (KSh 50/view)</span>
-              </div>
-              <div class="tier-switcher-grid">
-                <button class="tier-btn" id="calc-btn-starter" onclick="setCalcTier('starter', 20)">
-                  Starter Pro<br><small style="font-weight: 500; opacity: 0.85;">KSh 20 / view</small>
-                </button>
-                <button class="tier-btn active" id="calc-btn-exclusive" onclick="setCalcTier('exclusive', 50)">
-                  Exclusive<br><small style="font-weight: 500; opacity: 0.85;">KSh 50 / view</small>
-                </button>
-                <button class="tier-btn" id="calc-btn-premium" onclick="setCalcTier('premium', 100)">
-                  Premium<br><small style="font-weight: 500; opacity: 0.85;">KSh 100 / view</small>
-                </button>
-              </div>
-            </div>
-
-            <div class="range-group">
-              <div class="range-label-row">
-                <span>Average Daily Status Views</span>
-                <span id="calc-views-display" style="font-weight: 800; font-size: 18px; color: var(--deep-purple-heading);">45 Views</span>
-              </div>
-              <input type="range" class="range-slider" id="calc-views-slider" min="5" max="150" value="45" oninput="updateCalculator()">
-              <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--charcoal-muted); margin-top: 6px;">
-                <span>5 views</span>
-                <span>50 views</span>
-                <span>100 views</span>
-                <span>150+ views</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="calc-result-card">
-            <div class="calc-res-title">Estimated Daily Payout</div>
-            <div class="calc-res-amount" id="calc-daily-res">KSh 2,250</div>
-            <div class="calc-res-sub">Credited per approved 18h task</div>
-            
-            <div style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 14px; margin-top: 14px;">
-              <div class="calc-res-title">Estimated Monthly Income</div>
-              <div style="font-size: 26px; font-weight: 800; color: #F8F0E2;" id="calc-monthly-res">KSh 67,500</div>
-            </div>
-
-            <button class="btn btn-secondary btn-block" style="margin-top: 18px; color: var(--deep-purple-heading);" onclick="showAuthModal('register')">
-              Activate This Earnings Rate
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- How It Works Section -->
-    <section class="steps-section container">
+    <!-- ====================================================================
+         TASKS FOR PARTNERS & ADVERTISERS (SIMPLE & INTERACTIVE)
+         ==================================================================== -->
+    <section class="container" id="tasks-overview-section" style="padding: 40px 0 50px;">
       <div class="section-header">
-        <h2 class="section-title">How It Works in 3 Simple Steps</h2>
-        <p class="section-desc">Join thousands of verified Kenyan creators and students earning genuine daily income with Almai.</p>
+        <h2 class="section-title">How It Works: Partner &amp; Advertiser Tasks</h2>
+        <p class="section-desc">Straightforward execution for daily partners earning cash and corporate brands reaching verified Kenyan viewers.</p>
       </div>
 
-      <div class="steps-grid">
-        <div class="step-card">
-          <div class="step-icon-wrap">
-            <span class="svg-icon" style="width: 22px; height: 22px;">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-            </span>
-          </div>
-          <h3>1. Choose Your Tier</h3>
-          <p>Pick Starter Pro (Pay 250), Exclusive (Pay 500), or Premium (Pay 1200) to lock in your guaranteed rate per verified status view.</p>
-        </div>
-
-        <div class="step-card">
-          <div class="step-icon-wrap">
-            <span class="svg-icon" style="width: 22px; height: 22px;">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-            </span>
-          </div>
-          <h3>2. Post Daily Campaigns</h3>
-          <p>Download active corporate banners from your dashboard and post them directly to your WhatsApp Status for 18 hours.</p>
-        </div>
-
-        <div class="step-card">
-          <div class="step-icon-wrap">
-            <span class="svg-icon" style="width: 22px; height: 22px;">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>
-            </span>
-          </div>
-          <h3>3. Upload Proof &amp; Withdraw</h3>
-          <p>Submit your unedited view screenshot. Once verified, withdraw your funds immediately into your Safaricom M-Pesa account.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Supercharged Platform Features Showcase Section -->
-    <section class="container features-showcase-section">
-      <div class="section-header">
-        <div class="section-pill">UNMATCHED ADVANTAGES</div>
-        <h2 class="section-title">Built For Seamless Daily Income &amp; Maximum Reach</h2>
-        <p class="section-desc">Experience Kenya's most advanced WhatsApp monetization engine engineered with Cloudflare precision and instant M-Pesa delivery.</p>
-      </div>
-      
-      <div class="features-showcase-grid">
-        <div class="feature-card highlight-purple">
-          <div class="feature-card-header">
-            <div class="feature-icon-box">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 26px; margin-bottom: 30px;">
+        <!-- Card 1: For Partners -->
+        <div style="background: #FFFFFF; border: 2px solid var(--beige-border); border-radius: var(--radius-lg); padding: 32px 26px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden;">
+          <div style="position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, #6D28D9, #9333EA);"></div>
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+            <div style="width: 44px; height: 44px; border-radius: var(--radius-md); background: #F5F3FF; color: #6D28D9; display: flex; align-items: center; justify-content: center;">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
             </div>
-            <span class="feature-tag">Instant B2C</span>
+            <div>
+              <h3 style="font-size: 22px; font-weight: 950; margin: 0; color: #4C1D95;">Partner Tasks</h3>
+              <span style="font-size: 13px; font-weight: 750; color: #047857;">Daily WhatsApp Status Monetization</span>
+            </div>
           </div>
-          <h3>Automated Safaricom M-Pesa Payouts</h3>
-          <p>No waiting days for payouts. Once your 18-hour status screenshot is verified, request a withdrawal and receive your cash straight to your registered Safaricom number.</p>
-          <div class="feature-meta">
-            <span class="meta-bullet"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg> Min. Withdrawal KSh 100</span>
-            <span class="meta-bullet"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg> 24/7 Availability</span>
+          
+          <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 20px;">
+            <div style="display: flex; gap: 12px; align-items: flex-start;">
+              <div style="width: 28px; height: 28px; border-radius: 50%; background: #6D28D9; color: #fff; font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">1</div>
+              <div>
+                <strong style="font-size: 16px; color: var(--charcoal-text); display: block; font-weight: 850;">Pick &amp; Download Banner</strong>
+                <p style="font-size: 14px; color: var(--charcoal-muted); margin: 3px 0 0; line-height: 1.45;">Choose today's creative from the live product grid below and copy the ready-made caption.</p>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 12px; align-items: flex-start;">
+              <div style="width: 28px; height: 28px; border-radius: 50%; background: #6D28D9; color: #fff; font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">2</div>
+              <div>
+                <strong style="font-size: 16px; color: var(--charcoal-text); display: block; font-weight: 850;">Post to Status for 18h</strong>
+                <p style="font-size: 14px; color: var(--charcoal-muted); margin: 3px 0 0; line-height: 1.45;">Publish to your WhatsApp Status. Keep it live to reach your authentic audience across Kenya.</p>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 12px; align-items: flex-start;">
+              <div style="width: 28px; height: 28px; border-radius: 50%; background: #047857; color: #fff; font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">3</div>
+              <div>
+                <strong style="font-size: 16px; color: #047857; display: block; font-weight: 850;">Submit Screenshot &amp; Withdraw</strong>
+                <p style="font-size: 14px; color: var(--charcoal-muted); margin: 3px 0 0; line-height: 1.45;">Upload your 18h viewer count screenshot in your dashboard for instant M-Pesa clearance.</p>
+              </div>
+            </div>
           </div>
+
+          <button class="btn btn-primary btn-block" style="margin-top: 24px;" onclick="scrollToProductsContainer()">
+            <span>Browse Today's Creatives</span> &rarr;
+          </button>
         </div>
 
-        <div class="feature-card highlight-gold">
-          <div class="feature-card-header">
-            <div class="feature-icon-box">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        <!-- Card 2: For Advertisers -->
+        <div style="background: #FFFFFF; border: 2px solid var(--beige-border); border-radius: var(--radius-lg); padding: 32px 26px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden;">
+          <div style="position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, #D97706, #E60063);"></div>
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+            <div style="width: 44px; height: 44px; border-radius: var(--radius-md); background: #FFFBEB; color: #D97706; display: flex; align-items: center; justify-content: center;">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
             </div>
-            <span class="feature-tag">100% Transparent</span>
+            <div>
+              <h3 style="font-size: 22px; font-weight: 950; margin: 0; color: #78350F;">Advertiser Tasks</h3>
+              <span style="font-size: 13px; font-weight: 750; color: #B45309;">Brand Reach &amp; Customer Acquisition</span>
+            </div>
           </div>
-          <h3>Fair 18-Hour Proof Verification</h3>
-          <p>Our smart verification captures the exact view count from your status screenshot. Cooldown rules prevent duplicates, ensuring authentic views and guaranteed earnings for every post.</p>
-          <div class="feature-meta">
-            <span class="meta-bullet"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg> High-res Image Audits</span>
-            <span class="meta-bullet"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg> Accurate View-to-Cash Ledger</span>
-          </div>
-        </div>
 
-        <div class="feature-card highlight-blue">
-          <div class="feature-card-header">
-            <div class="feature-icon-box">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 20px;">
+            <div style="display: flex; gap: 12px; align-items: flex-start;">
+              <div style="width: 28px; height: 28px; border-radius: 50%; background: #D97706; color: #fff; font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">1</div>
+              <div>
+                <strong style="font-size: 16px; color: var(--charcoal-text); display: block; font-weight: 850;">Provide Banner &amp; Pitch</strong>
+                <p style="font-size: 14px; color: var(--charcoal-muted); margin: 3px 0 0; line-height: 1.45;">Submit your product poster, discount offer, or campaign details to the Almai portal.</p>
+              </div>
             </div>
-            <span class="feature-tag">Top Tier Brands</span>
-          </div>
-          <h3>Premium Corporate Campaigns</h3>
-          <p>Access ready-to-post high-definition banners from Kenya's leading e-commerce companies, real estate agencies, events, and trending brands with pre-written catchy captions.</p>
-          <div class="feature-meta">
-            <span class="meta-bullet"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg> 1-Click Banner Download</span>
-            <span class="meta-bullet"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg> Ready Captions Included</span>
-          </div>
-        </div>
 
-        <div class="feature-card highlight-green">
-          <div class="feature-card-header">
-            <div class="feature-icon-box">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+            <div style="display: flex; gap: 12px; align-items: flex-start;">
+              <div style="width: 28px; height: 28px; border-radius: 50%; background: #D97706; color: #fff; font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">2</div>
+              <div>
+                <strong style="font-size: 16px; color: var(--charcoal-text); display: block; font-weight: 850;">Target Kenyan Regions</strong>
+                <p style="font-size: 14px; color: var(--charcoal-muted); margin: 3px 0 0; line-height: 1.45;">Choose nationwide reach or target specific counties (Nairobi, Mombasa, Nakuru, Kisumu, Eldoret).</p>
+              </div>
             </div>
-            <span class="feature-tag">Scale Your Income</span>
+
+            <div style="display: flex; gap: 12px; align-items: flex-start;">
+              <div style="width: 28px; height: 28px; border-radius: 50%; background: #E60063; color: #fff; font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">3</div>
+              <div>
+                <strong style="font-size: 16px; color: #E60063; display: block; font-weight: 850;">Live Status Impressions</strong>
+                <p style="font-size: 14px; color: var(--charcoal-muted); margin: 3px 0 0; line-height: 1.45;">Your ad goes live on 1,000+ status feeds simultaneously, generating high-conversion sales.</p>
+              </div>
+            </div>
           </div>
-          <h3>Tier Multipliers (Up to KSh 100/View)</h3>
-          <p>Choose the tier that matches your network size. Start on Starter Pro at KSh 20 per view, upgrade to Exclusive at KSh 50 per view, or maximize with Premium at KSh 100 per view.</p>
-          <div class="feature-meta">
-            <span class="meta-bullet"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg> Lifetime Tier Access</span>
-            <span class="meta-bullet"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg> Unlimited Daily Potential</span>
-          </div>
+
+          <button class="btn btn-secondary btn-block" style="margin-top: 24px;" onclick="openInquiryModal('Brand Campaign Inquiry')">
+            <span>Inquire Business Advertising</span> &rarr;
+          </button>
         </div>
       </div>
     </section>
+
 
     <!-- Testimonials & Social Proof -->
     <section class="container testimonials-section">
@@ -4965,6 +4697,16 @@
       await fetchProductsPosts();
       updateCalculator();
       initWeeklyTimetable();
+
+      // Ensure mobile toggle button click handler is solidly hooked
+      const toggleMenuBtn = document.querySelector('.menu-toggle');
+      if (toggleMenuBtn) {
+        toggleMenuBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          toggleMobileNav();
+        });
+      }
+
       animateCounters();
     });
 
@@ -5354,13 +5096,39 @@
 
     function mobileNavAction(action) {
       closeMobileNav();
-      if (action === 'calc') {
+      if (action === 'tasks' || action === 'timetable') { scrollToTasks(); } else if (action === 'calc') {
         scrollToCalculator();
       } else if (action === 'timetable') {
         scrollToTimetable();
       } else {
         switchView(action);
       }
+    }
+
+    
+    function scrollToTasks() {
+      switchView('home');
+      setTimeout(() => {
+        const el = document.getElementById('tasks-overview-section');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+
+    function scrollToProductsContainer() {
+      switchView('home');
+      setTimeout(() => {
+        const el = document.getElementById('home-products-container');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+
+    function toggleImgFit(btn) {
+      const wrap = btn.closest('.product-post-img-wrap');
+      if (!wrap) return;
+      const isCover = wrap.classList.toggle('fit-cover');
+      btn.innerHTML = isCover 
+        ? '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg> Fit' 
+        : '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6m0-6L14 10M9 21H3v-6m0 6l7-7"/></svg> Fill';
     }
 
     function scrollToTimetable() {
@@ -5709,6 +5477,10 @@
         return `
           <div class="product-post-card">
             <div class="product-post-img-wrap">
+              <button class="img-fit-btn" onclick="toggleImgFit(this)" title="Toggle banner Fit/Fill ratio">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6m0-6L14 10M9 21H3v-6m0 6l7-7"/></svg>
+                Fill
+              </button>
               <img src="${imgSource}" alt="${escapedTitle}" loading="lazy">
               <span class="product-post-badge">${escapedBrand}</span>
             </div>
@@ -5763,9 +5535,13 @@
           return `
             <div class="product-post-card">
               <div class="product-post-img-wrap">
-                <img src="${imgSource}" alt="${escapedTitle}" loading="lazy">
-                <span class="product-post-badge">${escapedBrand}</span>
-              </div>
+              <button class="img-fit-btn" onclick="toggleImgFit(this)" title="Toggle banner Fit/Fill ratio">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6m0-6L14 10M9 21H3v-6m0 6l7-7"/></svg>
+                Fill
+              </button>
+              <img src="${imgSource}" alt="${escapedTitle}" loading="lazy">
+              <span class="product-post-badge">${escapedBrand}</span>
+            </div>
               <div class="product-post-body">
                 <h3 class="product-post-title">${escapedTitle}</h3>
                 <p class="product-post-caption" id="caption-text-dash-${p.id}">${escapedCaption}</p>
@@ -5793,6 +5569,7 @@
               </div>
             </div>
           `;
+        }).join('');
       }
     }
 
