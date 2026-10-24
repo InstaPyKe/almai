@@ -7,7 +7,7 @@
   <meta name="description" content="Turn your genuine WhatsApp Status views into daily guaranteed income. Partner with Almai Products for verified brand campaigns paid directly via M-Pesa.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Space+Grotesk:wght@600;700;800&family=Pacifico&family=Kaushan+Script&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
   
   <style>
     /* ====================================================================
@@ -155,9 +155,9 @@
     .brand-logo {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
       font-weight: 950;
-      font-size: clamp(26px, 3.2vw, 34px);
+      font-size: clamp(30px, 4vw, 44px);
       letter-spacing: -0.04em;
       user-select: none;
       line-height: 1.1;
@@ -168,16 +168,20 @@
       gap: 8px;
     }
     .brand-title-main {
-      font-family: 'Space Grotesk', sans-serif;
-      font-weight: 950;
-      background: linear-gradient(135deg, var(--deep-purple-heading), var(--primary-purple));
+      font-family: 'Pacifico', 'Kaushan Script', 'Caveat', cursive, sans-serif;
+      font-weight: 900;
+      font-size: clamp(26px, 3.6vw, 38px);
+      background: linear-gradient(135deg, var(--deep-purple-heading) 0%, #E60063 60%, #BE185D 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      letter-spacing: -0.035em;
+      letter-spacing: -0.01em;
+      display: inline-block;
+      line-height: 1.15;
+      text-shadow: 0 1px 2px rgba(230, 0, 99, 0.12);
     }
     .brand-logo-icon {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
       background: linear-gradient(135deg, var(--deep-purple-heading), var(--primary-purple));
       border-radius: var(--radius-md);
       display: flex;
@@ -185,8 +189,8 @@
       justify-content: center;
       color: #fff;
       font-weight: 950;
-      font-size: 24px;
-      box-shadow: 0 4px 14px rgba(109, 40, 217, 0.35);
+      font-size: 26px;
+      box-shadow: 0 4px 16px rgba(109, 40, 217, 0.4);
       flex-shrink: 0;
     }
     .brand-tag {
@@ -257,40 +261,46 @@
 
     /* Mobile Drawer & Backdrop */
     .mobile-menu-backdrop {
-      display: none;
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(36, 33, 36, 0.55);
-      backdrop-filter: blur(5px);
-      z-index: 150;
+      background: rgba(28, 25, 23, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 250;
       opacity: 0;
-      transition: opacity 0.25s ease;
+      pointer-events: none;
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .mobile-menu-backdrop.open {
-      display: block;
       opacity: 1;
+      pointer-events: auto;
     }
 
     .mobile-drawer {
       position: fixed;
       top: 0;
-      right: -320px;
-      width: 310px;
+      right: 0;
+      width: min(330px, 86vw);
       height: 100%;
+      height: 100dvh;
       background: var(--white-card);
-      z-index: 200;
-      box-shadow: -6px 0 24px rgba(36, 33, 36, 0.18);
+      z-index: 300;
+      box-shadow: -8px 0 36px rgba(36, 33, 36, 0.25);
       padding: 24px 20px;
       display: flex;
       flex-direction: column;
-      transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
       overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
     }
     .mobile-drawer.open {
-      right: 0;
+      transform: translateX(0);
     }
 
     .mobile-drawer-header {
@@ -437,6 +447,406 @@
       max-width: 800px;
       margin: 0 auto 36px;
       line-height: 1.65;
+    }
+
+    /* ====================================================================
+       DESSERT-INSPIRED BRUSH SCRIPT & CREAMY BRANDING
+       ==================================================================== */
+    .almai-branding-showcase {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      margin: 14px auto 34px;
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0;
+      max-width: 960px;
+    }
+
+    .creamy-fresh-tagline {
+      font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
+      font-size: clamp(16px, 2.2vw, 23px);
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #9D174D;
+      background: transparent !important;
+      border: none !important;
+      margin: 0 0 12px 0;
+      padding: 0;
+      display: block;
+      opacity: 0.95;
+      line-height: 1.3;
+    }
+
+    .almai-brush-title {
+      font-family: 'Pacifico', 'Kaushan Script', 'Caveat', cursive, sans-serif;
+      font-weight: 700;
+      font-style: normal;
+      font-size: clamp(34px, 5.6vw, 64px);
+      line-height: 1.25;
+      color: #E60063; /* Bright strawberry pink / magenta */
+      letter-spacing: 0.01em;
+      text-align: center;
+      margin: 0;
+      padding: 0 8px;
+      background: transparent !important;
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+      display: inline-block;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    .almai-brush-underline-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      margin-top: 6px;
+      background: transparent !important;
+      border: none !important;
+    }
+
+    .almai-brush-underline {
+      width: clamp(210px, 48%, 340px);
+      height: 16px;
+      display: block;
+      overflow: visible;
+    }
+
+    /* ====================================================================
+       WEEKLY POSTING TIMETABLE: MONDAY TO FRIDAY
+       ==================================================================== */
+    .weekly-timetable-section {
+      padding: 20px 0 52px;
+    }
+    .timetable-container {
+      background: #FFFFFF;
+      border: 1.5px solid var(--beige-border);
+      border-radius: var(--radius-lg);
+      padding: 34px 28px;
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
+    .timetable-header {
+      text-align: center;
+      max-width: 840px;
+      margin: 0 auto 28px;
+    }
+    .timetable-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #FDF2F8;
+      color: #BE185D;
+      font-size: 12.5px;
+      font-weight: 850;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      margin-bottom: 12px;
+      border: 1px solid #FBCFE8;
+    }
+    .timetable-title {
+      font-size: clamp(26px, 3.8vw, 38px);
+      font-weight: 900;
+      color: var(--deep-purple-heading);
+      margin-bottom: 10px;
+      line-height: 1.25;
+    }
+    .timetable-desc {
+      font-size: 16.5px;
+      color: var(--charcoal-muted);
+      line-height: 1.6;
+    }
+
+    /* Day Navigation Switcher Pills */
+    .timetable-days-nav {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+    .day-nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: var(--radius-full);
+      border: 1.5px solid var(--beige-border);
+      background: var(--bg-cream);
+      color: var(--charcoal-text);
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .day-nav-btn:hover {
+      background: #EDE3D2;
+      border-color: #D6C7B2;
+      transform: translateY(-1px);
+    }
+    .day-nav-btn.active {
+      background: var(--deep-purple-heading);
+      color: #FFFFFF;
+      border-color: var(--deep-purple-heading);
+      box-shadow: 0 4px 12px rgba(76, 29, 149, 0.28);
+    }
+    .day-nav-btn .today-indicator {
+      background: #E60063;
+      color: #FFFFFF;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 2px 7px;
+      border-radius: 10px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      animation: pulsePink 1.8s infinite;
+    }
+    @keyframes pulsePink {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.05); }
+    }
+
+    /* Grid of 5 Days */
+    .timetable-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    @media (min-width: 1200px) {
+      .timetable-grid {
+        grid-template-columns: repeat(5, 1fr);
+      }
+    }
+    .day-card {
+      background: #FFFFFF;
+      border: 1.5px solid var(--beige-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+    .day-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 24px -4px rgba(76, 29, 149, 0.15);
+      border-color: #A855F7;
+    }
+    .day-card.is-today {
+      border: 2px solid #E60063;
+      box-shadow: 0 8px 24px rgba(230, 0, 99, 0.18);
+    }
+    .day-card-header {
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--beige-border);
+      background: #FAFAF9;
+    }
+    .day-card-badge {
+      font-size: 13.5px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .day-card-category {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+    .day-card-body {
+      padding: 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+    .day-card-title {
+      font-size: 16.5px;
+      font-weight: 850;
+      color: var(--deep-purple-heading);
+      line-height: 1.3;
+    }
+    .day-card-desc {
+      font-size: 13px;
+      color: var(--charcoal-muted);
+      line-height: 1.55;
+    }
+    .day-card-brands {
+      background: var(--bg-cream);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 12.5px;
+      color: var(--charcoal-text);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .day-card-brands strong {
+      font-size: 11px;
+      color: var(--deep-purple-heading);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .day-card-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--beige-border);
+      font-size: 12px;
+    }
+    .meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+    .meta-label {
+      color: var(--charcoal-muted);
+      font-weight: 600;
+    }
+    .meta-val {
+      font-weight: 800;
+      color: var(--deep-purple-heading);
+    }
+    .day-card-footer {
+      padding: 12px 16px;
+      background: #FAFAF9;
+      border-top: 1px solid var(--beige-border);
+    }
+    .day-card-btn {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 800;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--primary-purple);
+      background: var(--white-card);
+      color: var(--primary-purple);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .day-card-btn:hover {
+      background: var(--primary-purple);
+      color: #FFFFFF;
+    }
+
+    /* Timetable Comparison Table View */
+    .timetable-table-wrap {
+      overflow-x: auto;
+      margin-top: 26px;
+      border: 1.5px solid var(--beige-border);
+      border-radius: var(--radius-md);
+      -webkit-overflow-scrolling: touch;
+    }
+    .timetable-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13.5px;
+      min-width: 760px;
+    }
+    .timetable-table th {
+      background: var(--deep-purple-heading);
+      color: #FFFFFF;
+      padding: 13px 16px;
+      font-weight: 600;
+      font-size: 12.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .timetable-table td {
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--beige-border);
+      vertical-align: middle;
+      color: var(--charcoal-text);
+      line-height: 1.45;
+      font-weight: 400;
+    }
+    .timetable-table tr:nth-child(even) td {
+      background: #FAF7F2;
+    }
+    .timetable-table tr.is-today-row td {
+      background: #FDF2F8 !important;
+      font-weight: 550;
+    }
+    .timetable-table tr.is-today-row td:first-child {
+      border-left: 4px solid #E60063;
+    }
+    .timetable-table strong {
+      font-weight: 600;
+    }
+    .payout-rate-badge {
+      background: #ECFDF5;
+      color: #047857;
+      border: 1px solid #A7F3D0;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+      font-size: 12.5px;
+      white-space: nowrap;
+    }
+    .time-slot-badge {
+      background: #EFF6FF;
+      color: #1D4ED8;
+      border: 1px solid #BFDBFE;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 750;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    /* Category Filter Bar above Products Section */
+    .products-category-filter {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 16px 0 24px;
+    }
+    .cat-filter-btn {
+      padding: 8px 16px;
+      font-size: 13.5px;
+      font-weight: 800;
+      border-radius: var(--radius-full);
+      border: 1.5px solid var(--beige-border);
+      background: #FFFFFF;
+      color: var(--charcoal-text);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .cat-filter-btn:hover {
+      background: var(--bg-cream);
+      border-color: #D6C7B2;
+    }
+    .cat-filter-btn.active {
+      background: #E60063;
+      color: #FFFFFF;
+      border-color: #E60063;
+      box-shadow: 0 3px 10px rgba(230, 0, 99, 0.28);
     }
 
     /* Super Animated Hero Products Showcase Carousel */
@@ -622,6 +1032,145 @@
     }
 
     /* Stats Grid */
+    
+    /* ====================================================================
+       ANIMATED HIGH-IMPACT HERO STATS SECTION
+       ==================================================================== */
+    .animated-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 20px;
+      margin-bottom: 54px;
+      position: relative;
+    }
+    .stat-card {
+      background: #FFFFFF;
+      border: 1.5px solid var(--beige-border);
+      border-radius: var(--radius-lg);
+      padding: 28px 20px 22px;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(76, 29, 149, 0.06);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .stat-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 18px 36px -6px rgba(76, 29, 149, 0.18);
+    }
+    .stat-top-accent {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--deep-purple-heading), var(--primary-purple));
+    }
+    .stat-card-purple .stat-top-accent { background: linear-gradient(90deg, #6D28D9, #9333EA); }
+    .stat-card-green .stat-top-accent { background: linear-gradient(90deg, #047857, #10B981); }
+    .stat-card-indigo .stat-top-accent { background: linear-gradient(90deg, #4338CA, #6366F1); }
+    .stat-card-amber .stat-top-accent { background: linear-gradient(90deg, #D97706, #F59E0B); }
+
+    .stat-icon-badge {
+      width: 46px;
+      height: 46px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      transition: transform 0.3s ease;
+    }
+    .stat-card-purple .stat-icon-badge { background: #F5F3FF; color: #6D28D9; }
+    .stat-card-green .stat-icon-badge { background: #ECFDF5; color: #047857; }
+    .stat-card-indigo .stat-icon-badge { background: #EEF2FF; color: #4338CA; }
+    .stat-card-amber .stat-icon-badge { background: #FFFBEB; color: #D97706; }
+    .stat-icon-badge svg { width: 22px; height: 22px; }
+    .stat-card:hover .stat-icon-badge { transform: scale(1.15) rotate(6deg); }
+
+    /* Extra Thick Font Numbers */
+    .stat-val {
+      font-size: clamp(38px, 4.8vw, 54px);
+      font-weight: 950;
+      font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
+      line-height: 1.05;
+      margin-bottom: 6px;
+      letter-spacing: -0.035em;
+    }
+    .stat-card-purple .stat-val {
+      background: linear-gradient(135deg, #4C1D95 0%, #7C3AED 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .stat-card-green .stat-val {
+      background: linear-gradient(135deg, #065F46 0%, #059669 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .stat-card-indigo .stat-val {
+      background: linear-gradient(135deg, #1E1B4B 0%, #4F46E5 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .stat-card-amber .stat-val {
+      background: linear-gradient(135deg, #78350F 0%, #D97706 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .stat-val-speed {
+      animation: pulseGlow 2.5s infinite ease-in-out;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.9; transform: scale(1.03); }
+    }
+
+    .stat-lbl {
+      font-size: 14.5px;
+      font-weight: 850;
+      color: var(--charcoal-muted);
+      line-height: 1.35;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .stat-sub-pill {
+      font-size: 11.5px;
+      font-weight: 750;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      background: var(--bg-cream);
+      color: var(--charcoal-muted);
+      border: 1px solid var(--beige-border);
+      letter-spacing: 0.02em;
+    }
+
+    /* Streamlined Interactive Brand Chips */
+    .day-card-chip-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 8px 0 12px;
+    }
+    .brand-chip {
+      background: var(--bg-cream);
+      color: var(--deep-purple-heading);
+      border: 1px solid var(--beige-border);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 750;
+      padding: 3px 9px;
+      transition: all 0.2s ease;
+    }
+    .brand-chip:hover {
+      background: var(--primary-purple-light);
+      border-color: var(--light-purple-accent);
+      color: var(--primary-purple);
+    }
+
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -2519,7 +3068,7 @@
       <div class="brand-logo" onclick="switchView('home')" style="cursor: pointer;">
         <div class="brand-logo-icon">A</div>
         <div class="brand-title-wrap">
-          <span class="brand-title-main">ALMAI PRODUCTS</span>
+          <span class="brand-title-main">Almai Products Company</span>
           <span class="brand-tag">KENYA</span>
         </div>
       </div>
@@ -2528,6 +3077,7 @@
       <nav>
         <ul class="nav-links">
           <li class="nav-link-item active" id="nav-home" onclick="switchView('home')">Home</li>
+          <li class="nav-link-item" id="nav-timetable" onclick="scrollToTimetable()">Weekly Schedule</li>
           <li class="nav-link-item" id="nav-products" onclick="switchView('products')">Packages & Pricing</li>
           <li class="nav-link-item" id="nav-calc" onclick="scrollToCalculator()">Calculator</li>
           <li class="nav-link-item" id="nav-dashboard-link" style="display: none;" onclick="switchView('dashboard')">Dashboard</li>
@@ -2551,7 +3101,7 @@
         <!-- Authenticated Actions -->
         <div id="nav-auth-actions" style="display: none; align-items: center; gap: 10px;">
           <button class="btn btn-secondary btn-sm" id="btn-admin-nav" style="display: none;" onclick="switchView('admin')">
-            <span style="margin-right: 4px;">👑</span>
+            <span style="margin-right: 4px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="display:inline-block;vertical-align:-2px;color:#F59E0B;"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg></span>
             Admin Center
           </button>
           <button class="btn btn-primary btn-sm" onclick="switchView('dashboard')">
@@ -2583,7 +3133,7 @@
     <div class="mobile-drawer-header">
       <div class="brand-logo" style="font-size: 24px;">
         <div class="brand-logo-icon" style="width: 38px; height: 38px; font-size: 19px;">A</div>
-        <span class="brand-title-main">ALMAI PRODUCTS</span>
+        <span class="brand-title-main" style="font-size: 22px;">Almai Products Company</span>
       </div>
       <button class="modal-close-btn" style="position: static;" onclick="closeMobileNav()" aria-label="Close Mobile Menu">
         <span class="svg-icon" style="width: 16px; height: 16px;">
@@ -2598,6 +3148,12 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
         </span>
         Home
+      </li>
+      <li class="mobile-nav-item" onclick="mobileNavAction('timetable')">
+        <span class="svg-icon" style="width: 18px; height: 18px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        </span>
+        Weekly Timetable
       </li>
       <li class="mobile-nav-item" onclick="mobileNavAction('products')">
         <span class="svg-icon" style="width: 18px; height: 18px;">
@@ -2618,7 +3174,7 @@
         Partner Dashboard
       </li>
       <li class="mobile-nav-item" id="mob-nav-admin" style="display: none;" onclick="mobileNavAction('admin')">
-        <span class="svg-icon" style="width: 18px; height: 18px;">👑</span>
+        <span class="svg-icon" style="width: 18px; height: 18px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="display:inline-block;vertical-align:-2px;color:#F59E0B;"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg></span>
         Admin Center
       </li>
     </ul>
@@ -2654,9 +3210,16 @@
         <h1 class="hero-title">
           Turn Your WhatsApp Status Views Into <span>Guaranteed Daily Cash</span>
         </h1>
-        <p class="hero-subtitle">
-          Monetize your genuine Kenyan viewers with high-demand corporate ads. Post our verified brand banners, report your 18h view count, and receive instant payouts directly into your M-Pesa.
-        </p>
+        <div class="almai-branding-showcase">
+          <div class="creamy-fresh-tagline">Creamy. Fresh. Irresistible.</div>
+          <div class="almai-brush-title">Almai Products Advertisement Company</div>
+          <div class="almai-brush-underline-wrap">
+            <svg class="almai-brush-underline" viewBox="0 0 340 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M6 12C55 5 145 4 334 7.2C276 11.2 182 14.5 90 15.2C50 15.5 20 14.2 6 12Z" fill="#E60063"/>
+              <path d="M22 13.2C80 8.5 185 7.8 318 10" stroke="#E60063" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+            </svg>
+          </div>
+        </div>
 
         <div class="hero-cta-group">
           <button class="btn btn-primary btn-lg" onclick="showAuthModal('register')">
@@ -2670,23 +3233,46 @@
           </button>
         </div>
 
-        <!-- Live Platform Stats -->
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-val">1.8M+</div>
+        <!-- Live Platform Animated Stats -->
+        <div class="stats-grid animated-stats-grid" id="stats-grid-section">
+          <div class="stat-card stat-card-purple">
+            <div class="stat-top-accent"></div>
+            <div class="stat-icon-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </div>
+            <div class="stat-val"><span id="counter-views">1.8</span>M+</div>
             <div class="stat-lbl">Verified Views Delivered</div>
+            <div class="stat-sub-pill">Live Network Traffic</div>
           </div>
-          <div class="stat-card">
-            <div class="stat-val">KSh 12.4M+</div>
+
+          <div class="stat-card stat-card-green">
+            <div class="stat-top-accent"></div>
+            <div class="stat-icon-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+            </div>
+            <div class="stat-val">KSh <span id="counter-disbursed">12.4</span>M+</div>
             <div class="stat-lbl">Disbursed to Kenyan Partners</div>
+            <div class="stat-sub-pill">Instant M-Pesa Payouts</div>
           </div>
-          <div class="stat-card">
-            <div class="stat-val">14,200+</div>
+
+          <div class="stat-card stat-card-indigo">
+            <div class="stat-top-accent"></div>
+            <div class="stat-icon-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </div>
+            <div class="stat-val"><span id="counter-partners">14,200</span>+</div>
             <div class="stat-lbl">Active Verified Partners</div>
+            <div class="stat-sub-pill">47 Counties Covered</div>
           </div>
-          <div class="stat-card">
-            <div class="stat-val">&lt; 2 Hours</div>
+
+          <div class="stat-card stat-card-amber">
+            <div class="stat-top-accent"></div>
+            <div class="stat-icon-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </div>
+            <div class="stat-val stat-val-speed">&lt; 2 Hours</div>
             <div class="stat-lbl">Average Review &amp; Approval</div>
+            <div class="stat-sub-pill">Rapid Automated Clearance</div>
           </div>
         </div>
 
@@ -2698,21 +3284,290 @@
           </div>
           <div class="live-ticker-container">
             <div class="live-ticker-track">
-              <div class="ticker-item"><span class="ticker-flag">🇰🇪</span> <strong>Brian O. (Nairobi)</strong> withdrew <span class="ticker-amount">KSh 3,250</span> to M-Pesa <span class="ticker-time">2m ago</span></div>
-              <div class="ticker-item"><span class="ticker-flag">🇰🇪</span> <strong>Faith W. (Mombasa)</strong> verified 48 views (<span class="ticker-amount">KSh 2,400</span>) <span class="ticker-time">4m ago</span></div>
-              <div class="ticker-item"><span class="ticker-flag">🇰🇪</span> <strong>Kevin K. (Eldoret)</strong> withdrew <span class="ticker-amount">KSh 4,800</span> to M-Pesa <span class="ticker-time">7m ago</span></div>
-              <div class="ticker-item"><span class="ticker-flag">🇰🇪</span> <strong>Grace M. (Nakuru)</strong> upgraded to <span class="ticker-tier">Exclusive Tier</span> <span class="ticker-time">11m ago</span></div>
-              <div class="ticker-item"><span class="ticker-flag">🇰🇪</span> <strong>Denis O. (Kisumu)</strong> withdrew <span class="ticker-amount">KSh 1,950</span> to M-Pesa <span class="ticker-time">14m ago</span></div>
-              <div class="ticker-item"><span class="ticker-flag">🇰🇪</span> <strong>Sharon C. (Thika)</strong> verified 65 views (<span class="ticker-amount">KSh 3,250</span>) <span class="ticker-time">18m ago</span></div>
-              <div class="ticker-item"><span class="ticker-flag">🇰🇪</span> <strong>Samuel N. (Machakos)</strong> withdrew <span class="ticker-amount">KSh 6,100</span> to M-Pesa <span class="ticker-time">22m ago</span></div>
+              <div class="ticker-item"><span class="ticker-flag"><svg viewBox="0 0 36 24" width="18" height="12" style="display:inline-block;vertical-align:-1px;border-radius:2px;box-shadow:0 1px 2px rgba(0,0,0,0.18);" xmlns="http://www.w3.org/2000/svg"><rect width="36" height="24" fill="#000"/><rect y="7" width="36" height="10" fill="#FFF"/><rect y="8.5" width="36" height="7" fill="#BB0000"/><rect y="17" width="36" height="7" fill="#006600"/><ellipse cx="18" cy="12" rx="3.8" ry="6.8" fill="#8B0000" stroke="#FFF" stroke-width="0.8"/><ellipse cx="18" cy="12" rx="1.5" ry="4.2" fill="#FFF"/></svg></span> <strong>Brian O. (Nairobi)</strong> withdrew <span class="ticker-amount">KSh 3,250</span> to M-Pesa <span class="ticker-time">2m ago</span></div>
+              <div class="ticker-item"><span class="ticker-flag"><svg viewBox="0 0 36 24" width="18" height="12" style="display:inline-block;vertical-align:-1px;border-radius:2px;box-shadow:0 1px 2px rgba(0,0,0,0.18);" xmlns="http://www.w3.org/2000/svg"><rect width="36" height="24" fill="#000"/><rect y="7" width="36" height="10" fill="#FFF"/><rect y="8.5" width="36" height="7" fill="#BB0000"/><rect y="17" width="36" height="7" fill="#006600"/><ellipse cx="18" cy="12" rx="3.8" ry="6.8" fill="#8B0000" stroke="#FFF" stroke-width="0.8"/><ellipse cx="18" cy="12" rx="1.5" ry="4.2" fill="#FFF"/></svg></span> <strong>Faith W. (Mombasa)</strong> verified 48 views (<span class="ticker-amount">KSh 2,400</span>) <span class="ticker-time">4m ago</span></div>
+              <div class="ticker-item"><span class="ticker-flag"><svg viewBox="0 0 36 24" width="18" height="12" style="display:inline-block;vertical-align:-1px;border-radius:2px;box-shadow:0 1px 2px rgba(0,0,0,0.18);" xmlns="http://www.w3.org/2000/svg"><rect width="36" height="24" fill="#000"/><rect y="7" width="36" height="10" fill="#FFF"/><rect y="8.5" width="36" height="7" fill="#BB0000"/><rect y="17" width="36" height="7" fill="#006600"/><ellipse cx="18" cy="12" rx="3.8" ry="6.8" fill="#8B0000" stroke="#FFF" stroke-width="0.8"/><ellipse cx="18" cy="12" rx="1.5" ry="4.2" fill="#FFF"/></svg></span> <strong>Kevin K. (Eldoret)</strong> withdrew <span class="ticker-amount">KSh 4,800</span> to M-Pesa <span class="ticker-time">7m ago</span></div>
+              <div class="ticker-item"><span class="ticker-flag"><svg viewBox="0 0 36 24" width="18" height="12" style="display:inline-block;vertical-align:-1px;border-radius:2px;box-shadow:0 1px 2px rgba(0,0,0,0.18);" xmlns="http://www.w3.org/2000/svg"><rect width="36" height="24" fill="#000"/><rect y="7" width="36" height="10" fill="#FFF"/><rect y="8.5" width="36" height="7" fill="#BB0000"/><rect y="17" width="36" height="7" fill="#006600"/><ellipse cx="18" cy="12" rx="3.8" ry="6.8" fill="#8B0000" stroke="#FFF" stroke-width="0.8"/><ellipse cx="18" cy="12" rx="1.5" ry="4.2" fill="#FFF"/></svg></span> <strong>Grace M. (Nakuru)</strong> upgraded to <span class="ticker-tier">Exclusive Tier</span> <span class="ticker-time">11m ago</span></div>
+              <div class="ticker-item"><span class="ticker-flag"><svg viewBox="0 0 36 24" width="18" height="12" style="display:inline-block;vertical-align:-1px;border-radius:2px;box-shadow:0 1px 2px rgba(0,0,0,0.18);" xmlns="http://www.w3.org/2000/svg"><rect width="36" height="24" fill="#000"/><rect y="7" width="36" height="10" fill="#FFF"/><rect y="8.5" width="36" height="7" fill="#BB0000"/><rect y="17" width="36" height="7" fill="#006600"/><ellipse cx="18" cy="12" rx="3.8" ry="6.8" fill="#8B0000" stroke="#FFF" stroke-width="0.8"/><ellipse cx="18" cy="12" rx="1.5" ry="4.2" fill="#FFF"/></svg></span> <strong>Denis O. (Kisumu)</strong> withdrew <span class="ticker-amount">KSh 1,950</span> to M-Pesa <span class="ticker-time">14m ago</span></div>
+              <div class="ticker-item"><span class="ticker-flag"><svg viewBox="0 0 36 24" width="18" height="12" style="display:inline-block;vertical-align:-1px;border-radius:2px;box-shadow:0 1px 2px rgba(0,0,0,0.18);" xmlns="http://www.w3.org/2000/svg"><rect width="36" height="24" fill="#000"/><rect y="7" width="36" height="10" fill="#FFF"/><rect y="8.5" width="36" height="7" fill="#BB0000"/><rect y="17" width="36" height="7" fill="#006600"/><ellipse cx="18" cy="12" rx="3.8" ry="6.8" fill="#8B0000" stroke="#FFF" stroke-width="0.8"/><ellipse cx="18" cy="12" rx="1.5" ry="4.2" fill="#FFF"/></svg></span> <strong>Sharon C. (Thika)</strong> verified 65 views (<span class="ticker-amount">KSh 3,250</span>) <span class="ticker-time">18m ago</span></div>
+              <div class="ticker-item"><span class="ticker-flag"><svg viewBox="0 0 36 24" width="18" height="12" style="display:inline-block;vertical-align:-1px;border-radius:2px;box-shadow:0 1px 2px rgba(0,0,0,0.18);" xmlns="http://www.w3.org/2000/svg"><rect width="36" height="24" fill="#000"/><rect y="7" width="36" height="10" fill="#FFF"/><rect y="8.5" width="36" height="7" fill="#BB0000"/><rect y="17" width="36" height="7" fill="#006600"/><ellipse cx="18" cy="12" rx="3.8" ry="6.8" fill="#8B0000" stroke="#FFF" stroke-width="0.8"/><ellipse cx="18" cy="12" rx="1.5" ry="4.2" fill="#FFF"/></svg></span> <strong>Samuel N. (Machakos)</strong> withdrew <span class="ticker-amount">KSh 6,100</span> to M-Pesa <span class="ticker-time">22m ago</span></div>
               <!-- Looped duplicate for continuous seamless marquee -->
-              <div class="ticker-item"><span class="ticker-flag">🇰🇪</span> <strong>Brian O. (Nairobi)</strong> withdrew <span class="ticker-amount">KSh 3,250</span> to M-Pesa <span class="ticker-time">2m ago</span></div>
-              <div class="ticker-item"><span class="ticker-flag">🇰🇪</span> <strong>Faith W. (Mombasa)</strong> verified 48 views (<span class="ticker-amount">KSh 2,400</span>) <span class="ticker-time">4m ago</span></div>
-              <div class="ticker-item"><span class="ticker-flag">🇰🇪</span> <strong>Kevin K. (Eldoret)</strong> withdrew <span class="ticker-amount">KSh 4,800</span> to M-Pesa <span class="ticker-time">7m ago</span></div>
-              <div class="ticker-item"><span class="ticker-flag">🇰🇪</span> <strong>Grace M. (Nakuru)</strong> upgraded to <span class="ticker-tier">Exclusive Tier</span> <span class="ticker-time">11m ago</span></div>
-              <div class="ticker-item"><span class="ticker-flag">🇰🇪</span> <strong>Denis O. (Kisumu)</strong> withdrew <span class="ticker-amount">KSh 1,950</span> to M-Pesa <span class="ticker-time">14m ago</span></div>
+              <div class="ticker-item"><span class="ticker-flag"><svg viewBox="0 0 36 24" width="18" height="12" style="display:inline-block;vertical-align:-1px;border-radius:2px;box-shadow:0 1px 2px rgba(0,0,0,0.18);" xmlns="http://www.w3.org/2000/svg"><rect width="36" height="24" fill="#000"/><rect y="7" width="36" height="10" fill="#FFF"/><rect y="8.5" width="36" height="7" fill="#BB0000"/><rect y="17" width="36" height="7" fill="#006600"/><ellipse cx="18" cy="12" rx="3.8" ry="6.8" fill="#8B0000" stroke="#FFF" stroke-width="0.8"/><ellipse cx="18" cy="12" rx="1.5" ry="4.2" fill="#FFF"/></svg></span> <strong>Brian O. (Nairobi)</strong> withdrew <span class="ticker-amount">KSh 3,250</span> to M-Pesa <span class="ticker-time">2m ago</span></div>
+              <div class="ticker-item"><span class="ticker-flag"><svg viewBox="0 0 36 24" width="18" height="12" style="display:inline-block;vertical-align:-1px;border-radius:2px;box-shadow:0 1px 2px rgba(0,0,0,0.18);" xmlns="http://www.w3.org/2000/svg"><rect width="36" height="24" fill="#000"/><rect y="7" width="36" height="10" fill="#FFF"/><rect y="8.5" width="36" height="7" fill="#BB0000"/><rect y="17" width="36" height="7" fill="#006600"/><ellipse cx="18" cy="12" rx="3.8" ry="6.8" fill="#8B0000" stroke="#FFF" stroke-width="0.8"/><ellipse cx="18" cy="12" rx="1.5" ry="4.2" fill="#FFF"/></svg></span> <strong>Faith W. (Mombasa)</strong> verified 48 views (<span class="ticker-amount">KSh 2,400</span>) <span class="ticker-time">4m ago</span></div>
+              <div class="ticker-item"><span class="ticker-flag"><svg viewBox="0 0 36 24" width="18" height="12" style="display:inline-block;vertical-align:-1px;border-radius:2px;box-shadow:0 1px 2px rgba(0,0,0,0.18);" xmlns="http://www.w3.org/2000/svg"><rect width="36" height="24" fill="#000"/><rect y="7" width="36" height="10" fill="#FFF"/><rect y="8.5" width="36" height="7" fill="#BB0000"/><rect y="17" width="36" height="7" fill="#006600"/><ellipse cx="18" cy="12" rx="3.8" ry="6.8" fill="#8B0000" stroke="#FFF" stroke-width="0.8"/><ellipse cx="18" cy="12" rx="1.5" ry="4.2" fill="#FFF"/></svg></span> <strong>Kevin K. (Eldoret)</strong> withdrew <span class="ticker-amount">KSh 4,800</span> to M-Pesa <span class="ticker-time">7m ago</span></div>
+              <div class="ticker-item"><span class="ticker-flag"><svg viewBox="0 0 36 24" width="18" height="12" style="display:inline-block;vertical-align:-1px;border-radius:2px;box-shadow:0 1px 2px rgba(0,0,0,0.18);" xmlns="http://www.w3.org/2000/svg"><rect width="36" height="24" fill="#000"/><rect y="7" width="36" height="10" fill="#FFF"/><rect y="8.5" width="36" height="7" fill="#BB0000"/><rect y="17" width="36" height="7" fill="#006600"/><ellipse cx="18" cy="12" rx="3.8" ry="6.8" fill="#8B0000" stroke="#FFF" stroke-width="0.8"/><ellipse cx="18" cy="12" rx="1.5" ry="4.2" fill="#FFF"/></svg></span> <strong>Grace M. (Nakuru)</strong> upgraded to <span class="ticker-tier">Exclusive Tier</span> <span class="ticker-time">11m ago</span></div>
+              <div class="ticker-item"><span class="ticker-flag"><svg viewBox="0 0 36 24" width="18" height="12" style="display:inline-block;vertical-align:-1px;border-radius:2px;box-shadow:0 1px 2px rgba(0,0,0,0.18);" xmlns="http://www.w3.org/2000/svg"><rect width="36" height="24" fill="#000"/><rect y="7" width="36" height="10" fill="#FFF"/><rect y="8.5" width="36" height="7" fill="#BB0000"/><rect y="17" width="36" height="7" fill="#006600"/><ellipse cx="18" cy="12" rx="3.8" ry="6.8" fill="#8B0000" stroke="#FFF" stroke-width="0.8"/><ellipse cx="18" cy="12" rx="1.5" ry="4.2" fill="#FFF"/></svg></span> <strong>Denis O. (Kisumu)</strong> withdrew <span class="ticker-amount">KSh 1,950</span> to M-Pesa <span class="ticker-time">14m ago</span></div>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         WEEKLY STATUS POSTING TIMETABLE: MONDAY TO FRIDAY
+         ==================================================================== -->
+    <section class="container weekly-timetable-section" id="weekly-timetable-section">
+      <div class="timetable-container">
+        <div class="timetable-header">
+          <h2 class="timetable-title">Categorised Daily Brand Campaigns (Mon – Fri)</h2>
+          <p class="timetable-desc">High-demand corporate campaigns scheduled daily. Pick today's creative, post to status, and receive instant M-Pesa payouts.</p>
+        </div>
+
+        <!-- Day Selector Pill Navigation -->
+        <div class="timetable-days-nav" id="timetable-days-nav">
+          <button class="day-nav-btn active" onclick="selectTimetableDay('all', this)">
+            <span>All 5 Days</span>
+          </button>
+          <button class="day-nav-btn" id="day-nav-monday" onclick="selectTimetableDay('monday', this)">
+            <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M7 8h10l-1.5 12h-7L7 8z"></path><path d="M6 8h12"></path><path d="M14 2L11 8"></path></svg> Monday: Beverages</span>
+          </button>
+          <button class="day-nav-btn" id="day-nav-tuesday" onclick="selectTimetableDay('tuesday', this)">
+            <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9L2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle></svg> Tuesday: Vehicles</span>
+          </button>
+          <button class="day-nav-btn" id="day-nav-wednesday" onclick="selectTimetableDay('wednesday', this)">
+            <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg> Wednesday: Tech</span>
+          </button>
+          <button class="day-nav-btn" id="day-nav-thursday" onclick="selectTimetableDay('thursday', this)">
+            <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M9 3h6l1.5 5-2.5 2 4 11H6l4-11-2.5-2L9 3z"></path><path d="M9 3a3 3 0 0 0 6 0"></path></svg> Thursday: Fashion</span>
+          </button>
+          <button class="day-nav-btn" id="day-nav-friday" onclick="selectTimetableDay('friday', this)">
+            <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M4 14h16c0 4-3 7-8 7s-8-3-8-7z"></path><path d="M7 14a5 5 0 0 1 10 0"></path><path d="M12 9a3.5 3.5 0 0 1 7 0"></path><path d="M5 9a3.5 3.5 0 0 1 7 0"></path><circle cx="12" cy="4" r="1.5" fill="currentColor"></circle></svg> Friday: Desserts</span>
+          </button>
+        </div>
+
+        <!-- 5-Day Interactive Grid -->
+        <div class="timetable-grid" id="timetable-cards-grid">
+          
+          <!-- MONDAY -->
+          <div class="day-card" id="day-card-monday" data-day="monday">
+            <div class="day-card-header">
+              <div class="day-card-badge"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M7 8h10l-1.5 12h-7L7 8z"></path><path d="M6 8h12"></path><path d="M14 2L11 8"></path></svg> Monday</div>
+              <span class="day-card-category" style="background: #ECFDF5; color: #047857;">Beverages</span>
+            </div>
+            <div class="day-card-body">
+              <div class="day-card-title">Sodas, Juices &amp; Fruity Drinks</div>
+              <div class="day-card-chip-tags">
+                <span class="brand-chip">Del Monte</span>
+                <span class="brand-chip">Coca-Cola</span>
+                <span class="brand-chip">Stoney</span>
+                <span class="brand-chip">Bio Smoothies</span>
+                <span class="brand-chip">Kericho Gold</span>
+              </div>
+              <div class="day-card-meta">
+                <div class="meta-row">
+                  <span class="meta-label">Peak Hours:</span>
+                  <span class="time-slot-badge">07:30 AM – 02:00 PM</span>
+                </div>
+                <div class="meta-row">
+                  <span class="meta-label">Payout:</span>
+                  <span class="payout-rate-badge">KSh 30 – 60 / view</span>
+                </div>
+              </div>
+            </div>
+            <div class="day-card-footer">
+              <button class="day-card-btn" onclick="scrollToProductsAndFilter('monday')">
+                <span>View Monday Creatives</span> &rarr;
+              </button>
+            </div>
+          </div>
+
+          <!-- TUESDAY -->
+          <div class="day-card" id="day-card-tuesday" data-day="tuesday">
+            <div class="day-card-header">
+              <div class="day-card-badge"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9L2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle></svg> Tuesday</div>
+              <span class="day-card-category" style="background: #FEF2F2; color: #B91C1C;">Automotive</span>
+            </div>
+            <div class="day-card-body">
+              <div class="day-card-title">Kenyan Vehicles on Sale</div>
+              <div class="day-card-chip-tags">
+                <span class="brand-chip">Toyota Prado TX</span>
+                <span class="brand-chip">Isuzu D-Max</span>
+                <span class="brand-chip">BasiGo EVs</span>
+                <span class="brand-chip">Bank Car Loans</span>
+              </div>
+              <div class="day-card-meta">
+                <div class="meta-row">
+                  <span class="meta-label">Peak Hours:</span>
+                  <span class="time-slot-badge">09:00 AM – 08:30 PM</span>
+                </div>
+                <div class="meta-row">
+                  <span class="meta-label">Payout:</span>
+                  <span class="payout-rate-badge">KSh 50 – 120 / view</span>
+                </div>
+              </div>
+            </div>
+            <div class="day-card-footer">
+              <button class="day-card-btn" onclick="scrollToProductsAndFilter('tuesday')">
+                <span>View Tuesday Creatives</span> &rarr;
+              </button>
+            </div>
+          </div>
+
+          <!-- WEDNESDAY -->
+          <div class="day-card" id="day-card-wednesday" data-day="wednesday">
+            <div class="day-card-header">
+              <div class="day-card-badge"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg> Wednesday</div>
+              <span class="day-card-category" style="background: #EEF2FF; color: #4338CA;">Electronics</span>
+            </div>
+            <div class="day-card-body">
+              <div class="day-card-title">Smart Tech &amp; Home Appliances</div>
+              <div class="day-card-chip-tags">
+                <span class="brand-chip">Samsung Galaxy</span>
+                <span class="brand-chip">Apple iPhones</span>
+                <span class="brand-chip">5G Routers</span>
+                <span class="brand-chip">Ramtons Fridges</span>
+              </div>
+              <div class="day-card-meta">
+                <div class="meta-row">
+                  <span class="meta-label">Peak Hours:</span>
+                  <span class="time-slot-badge">10:00 AM – 09:30 PM</span>
+                </div>
+                <div class="meta-row">
+                  <span class="meta-label">Payout:</span>
+                  <span class="payout-rate-badge">KSh 40 – 90 / view</span>
+                </div>
+              </div>
+            </div>
+            <div class="day-card-footer">
+              <button class="day-card-btn" onclick="scrollToProductsAndFilter('wednesday')">
+                <span>View Wednesday Creatives</span> &rarr;
+              </button>
+            </div>
+          </div>
+
+          <!-- THURSDAY -->
+          <div class="day-card" id="day-card-thursday" data-day="thursday">
+            <div class="day-card-header">
+              <div class="day-card-badge"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M9 3h6l1.5 5-2.5 2 4 11H6l4-11-2.5-2L9 3z"></path><path d="M9 3a3 3 0 0 0 6 0"></path></svg> Thursday</div>
+              <span class="day-card-category" style="background: #FAF5FF; color: #7E22CE;">Fashion</span>
+            </div>
+            <div class="day-card-body">
+              <div class="day-card-title">Boutique Drops &amp; Beauty</div>
+              <div class="day-card-chip-tags">
+                <span class="brand-chip">CBD Thrift Fits</span>
+                <span class="brand-chip">SuzieBeauty</span>
+                <span class="brand-chip">Sneakers</span>
+                <span class="brand-chip">Organic Shea</span>
+              </div>
+              <div class="day-card-meta">
+                <div class="meta-row">
+                  <span class="meta-label">Peak Hours:</span>
+                  <span class="time-slot-badge">11:30 AM – 10:00 PM</span>
+                </div>
+                <div class="meta-row">
+                  <span class="meta-label">Payout:</span>
+                  <span class="payout-rate-badge">KSh 35 – 80 / view</span>
+                </div>
+              </div>
+            </div>
+            <div class="day-card-footer">
+              <button class="day-card-btn" onclick="scrollToProductsAndFilter('thursday')">
+                <span>View Thursday Creatives</span> &rarr;
+              </button>
+            </div>
+          </div>
+
+          <!-- FRIDAY -->
+          <div class="day-card" id="day-card-friday" data-day="friday">
+            <div class="day-card-header">
+              <div class="day-card-badge"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M4 14h16c0 4-3 7-8 7s-8-3-8-7z"></path><path d="M7 14a5 5 0 0 1 10 0"></path><path d="M12 9a3.5 3.5 0 0 1 7 0"></path><path d="M5 9a3.5 3.5 0 0 1 7 0"></path><circle cx="12" cy="4" r="1.5" fill="currentColor"></circle></svg> Friday</div>
+              <span class="day-card-category" style="background: #FDF2F8; color: #BE185D;">Desserts &amp; TGIF</span>
+            </div>
+            <div class="day-card-body">
+              <div class="day-card-title">Gourmet Desserts &amp; Weekend Treats</div>
+              <div class="day-card-chip-tags">
+                <span class="brand-chip">Artisan Gelato</span>
+                <span class="brand-chip">Strawberry Sundaes</span>
+                <span class="brand-chip">Pizza Deals</span>
+                <span class="brand-chip">TGIF Dining</span>
+              </div>
+              <div class="day-card-meta">
+                <div class="meta-row">
+                  <span class="meta-label">Peak Hours:</span>
+                  <span class="time-slot-badge">11:00 AM – 11:30 PM</span>
+                </div>
+                <div class="meta-row">
+                  <span class="meta-label">Payout:</span>
+                  <span class="payout-rate-badge">KSh 45 – 100 / view</span>
+                </div>
+              </div>
+            </div>
+            <div class="day-card-footer">
+              <button class="day-card-btn" onclick="scrollToProductsAndFilter('friday')">
+                <span>View Friday Creatives</span> &rarr;
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Comprehensive Weekly Schedule Table -->
+        <div class="timetable-table-wrap">
+          <table class="timetable-table">
+            <thead>
+              <tr>
+                <th>Day</th>
+                <th>Theme &amp; Category</th>
+                <th>Top Featured Kenyan Products</th>
+                <th>Optimal WhatsApp Posting Window</th>
+                <th>Payout Per Verified View</th>
+                <th>Est. Earnings (100 Views)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="row-monday">
+                <td><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M7 8h10l-1.5 12h-7L7 8z"></path><path d="M6 8h12"></path><path d="M14 2L11 8"></path></svg> Monday</td>
+                <td><span style="color: #047857; font-weight: 550;">Beverages &amp; Soft Drinks</span></td>
+                <td>Del Monte juices, Coca-Cola Kenya, Stoney, Kericho Gold iced tea, smoothies</td>
+                <td><span class="time-slot-badge">07:30 AM – 02:00 PM</span></td>
+                <td><span class="payout-rate-badge">KSh 30 – 60 / view</span></td>
+                <td><span style="color: #047857; font-weight: 550;">KSh 3,000 – 6,000</span></td>
+              </tr>
+              <tr id="row-tuesday">
+                <td><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9L2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle></svg> Tuesday</td>
+                <td><span style="color: #B91C1C; font-weight: 550;">Kenyan Market Vehicles</span></td>
+                <td>Toyota Prado TX, Isuzu D-Max pickups, BasiGo EVs, showroom clearances</td>
+                <td><span class="time-slot-badge">09:00 AM – 08:30 PM</span></td>
+                <td><span class="payout-rate-badge">KSh 50 – 120 / view</span></td>
+                <td><span style="color: #047857; font-weight: 550;">KSh 5,000 – 12,000</span></td>
+              </tr>
+              <tr id="row-wednesday">
+                <td><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg> Wednesday</td>
+                <td><span style="color: #4338CA; font-weight: 550;">Electronics &amp; Gadgets</span></td>
+                <td>Samsung Galaxy S24, iPhones, 5G Wi-Fi routers, Ramtons &amp; Von kitchen gear</td>
+                <td><span class="time-slot-badge">10:00 AM – 09:30 PM</span></td>
+                <td><span class="payout-rate-badge">KSh 40 – 90 / view</span></td>
+                <td><span style="color: #047857; font-weight: 550;">KSh 4,000 – 9,000</span></td>
+              </tr>
+              <tr id="row-thursday">
+                <td><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M9 3h6l1.5 5-2.5 2 4 11H6l4-11-2.5-2L9 3z"></path><path d="M9 3a3 3 0 0 0 6 0"></path></svg> Thursday</td>
+                <td><span style="color: #7E22CE; font-weight: 550;">Fashion &amp; Cosmetics</span></td>
+                <td>Kenyan boutique apparel, SuzieBeauty cosmetics, authentic sneakers, haircare</td>
+                <td><span class="time-slot-badge">11:30 AM – 10:00 PM</span></td>
+                <td><span class="payout-rate-badge">KSh 35 – 80 / view</span></td>
+                <td><span style="color: #047857; font-weight: 550;">KSh 3,500 – 8,000</span></td>
+              </tr>
+              <tr id="row-friday">
+                <td><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M4 14h16c0 4-3 7-8 7s-8-3-8-7z"></path><path d="M7 14a5 5 0 0 1 10 0"></path><path d="M12 9a3.5 3.5 0 0 1 7 0"></path><path d="M5 9a3.5 3.5 0 0 1 7 0"></path><circle cx="12" cy="4" r="1.5" fill="currentColor"></circle></svg> Friday</td>
+                <td><span style="color: #BE185D; font-weight: 550;">Gourmet Desserts &amp; TGIF</span></td>
+                <td>Artisan strawberry sundaes, Italian gelato, pizzas, dining &amp; weekend resort offers</td>
+                <td><span class="time-slot-badge">11:00 AM – 11:30 PM</span></td>
+                <td><span class="payout-rate-badge">KSh 45 – 100 / view</span></td>
+                <td><span style="color: #047857; font-weight: 550;">KSh 4,500 – 10,000</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Weekly Posting Guidance Footer Tip -->
+        <div style="margin-top: 24px; padding: 16px 20px; background: #F5F3FF; border-radius: var(--radius-md); border: 1px solid #DDD6FE; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--deep-purple-heading);">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"></path></svg>
+            <span><strong>Partner Pro Tip:</strong> Upload the day’s featured creative on your status, keep it active for 18 hours, and upload your verified viewer screenshot into your partner dashboard for automated same-day M-Pesa clearance.</span>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="showAuthModal('register')">
+            <span>Join Verified Network</span>
+          </button>
         </div>
       </div>
     </section>
@@ -2837,8 +3692,8 @@
           <h3>Automated Safaricom M-Pesa Payouts</h3>
           <p>No waiting days for payouts. Once your 18-hour status screenshot is verified, request a withdrawal and receive your cash straight to your registered Safaricom number.</p>
           <div class="feature-meta">
-            <span class="meta-bullet">✓ Min. Withdrawal KSh 100</span>
-            <span class="meta-bullet">✓ 24/7 Availability</span>
+            <span class="meta-bullet"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg> Min. Withdrawal KSh 100</span>
+            <span class="meta-bullet"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg> 24/7 Availability</span>
           </div>
         </div>
 
@@ -2852,8 +3707,8 @@
           <h3>Fair 18-Hour Proof Verification</h3>
           <p>Our smart verification captures the exact view count from your status screenshot. Cooldown rules prevent duplicates, ensuring authentic views and guaranteed earnings for every post.</p>
           <div class="feature-meta">
-            <span class="meta-bullet">✓ High-res Image Audits</span>
-            <span class="meta-bullet">✓ Accurate View-to-Cash Ledger</span>
+            <span class="meta-bullet"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg> High-res Image Audits</span>
+            <span class="meta-bullet"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg> Accurate View-to-Cash Ledger</span>
           </div>
         </div>
 
@@ -2867,8 +3722,8 @@
           <h3>Premium Corporate Campaigns</h3>
           <p>Access ready-to-post high-definition banners from Kenya's leading e-commerce companies, real estate agencies, events, and trending brands with pre-written catchy captions.</p>
           <div class="feature-meta">
-            <span class="meta-bullet">✓ 1-Click Banner Download</span>
-            <span class="meta-bullet">✓ Ready Captions Included</span>
+            <span class="meta-bullet"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg> 1-Click Banner Download</span>
+            <span class="meta-bullet"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg> Ready Captions Included</span>
           </div>
         </div>
 
@@ -2882,8 +3737,8 @@
           <h3>Tier Multipliers (Up to KSh 100/View)</h3>
           <p>Choose the tier that matches your network size. Start on Starter Pro at KSh 20 per view, upgrade to Exclusive at KSh 50 per view, or maximize with Premium at KSh 100 per view.</p>
           <div class="feature-meta">
-            <span class="meta-bullet">✓ Lifetime Tier Access</span>
-            <span class="meta-bullet">✓ Unlimited Daily Potential</span>
+            <span class="meta-bullet"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg> Lifetime Tier Access</span>
+            <span class="meta-bullet"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg> Unlimited Daily Potential</span>
           </div>
         </div>
       </div>
@@ -2907,7 +3762,7 @@
               <h4>Mercy A.</h4>
               <p>Kenyatta University • Exclusive Tier</p>
             </div>
-            <div class="verified-badge" title="Verified M-Pesa Recipient">✓ Verified</div>
+            <div class="verified-badge" title="Verified M-Pesa Recipient"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg> Verified</div>
           </div>
           <div class="payout-pill">Total Earned: <strong>KSh 48,200</strong></div>
         </div>
@@ -2921,7 +3776,7 @@
               <h4>Victor K.</h4>
               <p>Digital Creator, Mombasa • Premium Tier</p>
             </div>
-            <div class="verified-badge" title="Verified M-Pesa Recipient">✓ Verified</div>
+            <div class="verified-badge" title="Verified M-Pesa Recipient"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg> Verified</div>
           </div>
           <div class="payout-pill">Total Earned: <strong>KSh 96,000</strong></div>
         </div>
@@ -2935,7 +3790,7 @@
               <h4>Dennis N.</h4>
               <p>Merchant &amp; Partner, Nairobi</p>
             </div>
-            <div class="verified-badge" title="Verified Business Client">✓ Verified</div>
+            <div class="verified-badge" title="Verified Business Client"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg> Verified</div>
           </div>
           <div class="payout-pill">Business ROI: <strong>4.8x Ad Spend</strong></div>
         </div>
@@ -2946,8 +3801,19 @@
     <section class="container" style="padding: 20px 0 50px;">
       <div class="section-header">
         <h2 class="section-title">Daily WhatsApp Products to Post &amp; Earn</h2>
-        <p class="section-desc">Download verified brand product pictures, copy the suggested caption, post on your WhatsApp Status for 18 hours, and earn guaranteed M-Pesa payouts.</p>
+        <p class="section-desc">Download ready-to-post banners, copy pre-written captions, and earn cash per 18h verified view.</p>
       </div>
+
+      <!-- Category Filter Tabs Matching the Monday-Friday Timetable -->
+      <div class="products-category-filter" id="products-category-filter">
+        <button class="cat-filter-btn active" onclick="filterProductsByCategory('all', this)">All Categories</button>
+        <button class="cat-filter-btn" onclick="filterProductsByCategory('monday', this)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M7 8h10l-1.5 12h-7L7 8z"></path><path d="M6 8h12"></path><path d="M14 2L11 8"></path></svg> Monday: Beverages</button>
+        <button class="cat-filter-btn" onclick="filterProductsByCategory('tuesday', this)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9L2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle></svg> Tuesday: Vehicles on Sale</button>
+        <button class="cat-filter-btn" onclick="filterProductsByCategory('wednesday', this)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg> Wednesday: Tech &amp; Gadgets</button>
+        <button class="cat-filter-btn" onclick="filterProductsByCategory('thursday', this)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M9 3h6l1.5 5-2.5 2 4 11H6l4-11-2.5-2L9 3z"></path><path d="M9 3a3 3 0 0 0 6 0"></path></svg> Thursday: Fashion &amp; Beauty</button>
+        <button class="cat-filter-btn" onclick="filterProductsByCategory('friday', this)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M4 14h16c0 4-3 7-8 7s-8-3-8-7z"></path><path d="M7 14a5 5 0 0 1 10 0"></path><path d="M12 9a3.5 3.5 0 0 1 7 0"></path><path d="M5 9a3.5 3.5 0 0 1 7 0"></path><circle cx="12" cy="4" r="1.5" fill="currentColor"></circle></svg> Friday: Desserts &amp; Treats</button>
+      </div>
+
       <div class="products-posts-grid" id="home-products-container">
         <!-- Rendered dynamically via fetchProductsPosts() -->
       </div>
@@ -3633,25 +4499,25 @@
       <!-- Navigation Tabs Bar -->
       <div class="admin-nav-bar">
         <button class="admin-tab active" id="atab-payments" onclick="switchAdminTab('payments')">
-          <span>💳</span> M-Pesa Codes <span class="tab-badge" id="tab-badge-payments" style="display: none;">0</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-3px;margin-right:4px;"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg> M-Pesa Codes <span class="tab-badge" id="tab-badge-payments" style="display: none;">0</span>
         </button>
         <button class="admin-tab" id="atab-users" onclick="switchAdminTab('users')">
-          <span>👥</span> Partner Directory
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-3px;margin-right:4px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> Partner Directory
         </button>
         <button class="admin-tab" id="atab-products" onclick="switchAdminTab('products')">
-          <span>📢</span> WhatsApp Products <span class="tab-badge" id="tab-badge-products" style="display: none;">0</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-3px;margin-right:4px;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg> WhatsApp Products <span class="tab-badge" id="tab-badge-products" style="display: none;">0</span>
         </button>
         <button class="admin-tab" id="atab-tasks" onclick="switchAdminTab('tasks')">
-          <span>📋</span> Task Proofs <span class="tab-badge" id="tab-badge-tasks" style="display: none;">0</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-3px;margin-right:4px;"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect><path d="M9 14l2 2 4-4"></path></svg> Task Proofs <span class="tab-badge" id="tab-badge-tasks" style="display: none;">0</span>
         </button>
         <button class="admin-tab" id="atab-withdrawals" onclick="switchAdminTab('withdrawals')">
-          <span>💸</span> Withdrawals <span class="tab-badge" id="tab-badge-withdrawals" style="display: none;">0</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-3px;margin-right:4px;"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg> Withdrawals <span class="tab-badge" id="tab-badge-withdrawals" style="display: none;">0</span>
         </button>
         <button class="admin-tab" id="atab-stats" onclick="switchAdminTab('stats')">
-          <span>📊</span> Financial Stats
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-3px;margin-right:4px;"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg> Financial Stats
         </button>
         <button class="admin-tab" id="atab-audit" onclick="switchAdminTab('audit')">
-          <span>🛡️</span> Audit Logs
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-3px;margin-right:4px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Audit Logs
         </button>
       </div>
 
@@ -3748,7 +4614,7 @@
 
               <div class="form-group">
                 <label class="form-label" for="prod-caption">Suggested WhatsApp Status Caption</label>
-                <textarea id="prod-caption" rows="3" required placeholder="e.g. Big Flash Sale today! Get genuine Samsung Galaxy smartphones with countrywide delivery. DM me now to order! 📱🔥"></textarea>
+                <textarea id="prod-caption" rows="3" required placeholder="e.g. Big Flash Sale today! Get genuine Samsung Galaxy smartphones with countrywide delivery. DM me now to order! #AlmaiPartner"></textarea>
                 <div class="form-hint">Partners will be able to copy this exact text with one click.</div>
               </div>
 
@@ -3903,9 +4769,9 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-col">
-          <div class="brand-logo" style="color: #fff; margin-bottom: 14px; font-size: 24px; font-weight: 900;">
+          <div class="brand-logo" style="color: #fff; margin-bottom: 14px; font-size: 28px; font-weight: 950;">
             <div class="brand-logo-icon">A</div>
-            <span>ALMAI PRODUCTS</span>
+            <span class="brand-title-main" style="color: #fff; background: none; -webkit-text-fill-color: #fff; font-size: 28px; font-weight: 900;">Almai Products Company</span>
           </div>
           <p style="color: #D6D3D1; font-size: 15.5px; font-weight: 600; max-width: 440px; line-height: 1.68;">
             Kenya's leading WhatsApp Status advertising network. Empowering Kenyan creators, students, and digital partners with guaranteed daily income backed by transparent Cloudflare technology.
@@ -4013,7 +4879,7 @@
             alertEl.style.display = 'flex';
             alertEl.innerHTML = `
               <div style="font-size: 15px; font-weight: 700; line-height: 1.5;">
-                👑 <strong>Administrator Gateway Unlocked</strong><br>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="display:inline-block;vertical-align:-2px;color:#F59E0B;"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg> <strong>Administrator Gateway Unlocked</strong><br>
                 Enter your authorized administrator credentials to access the Administration Center.
               </div>
             `;
@@ -4080,7 +4946,7 @@
         alertEl.className = 'alert alert-error';
         alertEl.innerHTML = `
           <div>
-            🔒 <strong>Session Expired (2-Minute Inactivity)</strong><br>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> <strong>Session Expired (2-Minute Inactivity)</strong><br>
             You were automatically signed out for your account security due to 2 minutes of inactivity. Please sign in again to continue.
           </div>
         `;
@@ -4098,6 +4964,8 @@
       await fetchPackages();
       await fetchProductsPosts();
       updateCalculator();
+      initWeeklyTimetable();
+      animateCounters();
     });
 
     async function checkAuthSession() {
@@ -4225,9 +5093,7 @@
       if (AppState.user.role === 'admin') {
         const adminHTML = `
           <div class="gating-banner active">
-            <div class="gating-icon" style="background: #DDD6FE; color: #6D28D9; font-size: 20px;">
-              👑
-            </div>
+            <div class="gating-icon" style="background: #DDD6FE; color: #6D28D9; font-size: 20px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="display:inline-block;vertical-align:-2px;color:#F59E0B;"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg></div>
             <div class="gating-content">
               <div class="gating-title" style="color: #4C1D95; font-size: 17.5px; font-weight: 850;">Administrator Mode Active</div>
               <p style="margin: 0; font-size: 14.5px; color: #2D1152; font-weight: 600;">
@@ -4281,7 +5147,7 @@
           <div class="gating-banner pending">
             <div>
               <h4 style="margin: 0 0 4px 0; color: #6B21A8; font-size: 15px; font-weight: 800;">
-                ⏳ M-Pesa Verification in Progress: ${escapeHTML(pend.package_name || 'Partner Package')}
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> M-Pesa Verification in Progress: ${escapeHTML(pend.package_name || 'Partner Package')}
               </h4>
               <p style="margin: 0; font-size: 13.5px; color: #581C87; line-height: 1.5;">
                 You submitted M-Pesa transaction code <span class="mpesa-code-tag">${escapeHTML(pend.mpesa_receipt_number || pend.payment_reference || 'PENDING')}</span>.
@@ -4310,7 +5176,7 @@
         <div class="gating-banner required">
           <div>
             <h4 style="margin: 0 0 4px 0; color: #9A3412; font-size: 15px; font-weight: 800;">
-              ⚠️ Package Activation Required Before Submitting Tasks
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> Package Activation Required Before Submitting Tasks
             </h4>
             <p style="margin: 0; font-size: 13.5px; color: #7C2D12; line-height: 1.5;">
               Welcome to Almai! To activate your partner account and unlock tasks and daily payouts, please choose an advertising package below and submit your M-Pesa transaction reference code.
@@ -4332,10 +5198,10 @@
     async function refreshPackageStatus() {
       await checkAuthSession();
       if (AppState.hasActivePackage) {
-        alert('🎉 Congratulations! Your payment has been verified by the administrator. Full access is now unlocked!');
+        alert('Congratulations! Your payment has been verified by the administrator. Full access is now unlocked!');
         switchView('dashboard');
       } else if (AppState.pendingPackage) {
-        alert('ℹ️ Your payment code is still awaiting admin review. Admin verifies codes within a few minutes.');
+        alert('Notice: Your payment code is still awaiting admin review. Admin verifies codes within a few minutes.');
       } else {
         alert('No package activation found. Please select a package below.');
       }
@@ -4434,13 +5300,15 @@
     function toggleMobileNav() {
       const drawer = document.getElementById('mobile-drawer');
       const backdrop = document.getElementById('mobile-backdrop');
-      const isOpen = drawer.classList.contains('open');
+      const toggleBtn = document.querySelector('.menu-toggle');
+      const isOpen = drawer && drawer.classList.contains('open');
 
       if (isOpen) {
         closeMobileNav();
-      } else {
+      } else if (drawer && backdrop) {
         drawer.classList.add('open');
         backdrop.classList.add('open');
+        if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'true');
         document.body.style.overflow = 'hidden';
       }
     }
@@ -4448,18 +5316,59 @@
     function closeMobileNav() {
       const drawer = document.getElementById('mobile-drawer');
       const backdrop = document.getElementById('mobile-backdrop');
-      drawer.classList.remove('open');
-      backdrop.classList.remove('open');
+      const toggleBtn = document.querySelector('.menu-toggle');
+      if (drawer) drawer.classList.remove('open');
+      if (backdrop) backdrop.classList.remove('open');
+      if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
       document.body.style.overflow = '';
     }
+
+    // Keyboard and touch gesture support for sidebar
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeMobileNav();
+    });
+
+    // Touch swipe-to-close support on sidebar
+    (function initSidebarGestures() {
+      let touchStartX = 0;
+      let touchCurrentX = 0;
+      const drawer = document.getElementById('mobile-drawer');
+      if (!drawer) return;
+
+      drawer.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+      }, { passive: true });
+
+      drawer.addEventListener('touchmove', (e) => {
+        touchCurrentX = e.touches[0].clientX;
+      }, { passive: true });
+
+      drawer.addEventListener('touchend', () => {
+        if (touchCurrentX - touchStartX > 60) {
+          closeMobileNav();
+        }
+        touchStartX = 0;
+        touchCurrentX = 0;
+      });
+    })();
 
     function mobileNavAction(action) {
       closeMobileNav();
       if (action === 'calc') {
         scrollToCalculator();
+      } else if (action === 'timetable') {
+        scrollToTimetable();
       } else {
         switchView(action);
       }
+    }
+
+    function scrollToTimetable() {
+      switchView('home');
+      setTimeout(() => {
+        const tt = document.getElementById('weekly-timetable-section');
+        if (tt) tt.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
     }
 
     function scrollToCalculator() {
@@ -4571,39 +5480,226 @@
     // ====================================================================
     // WHATSAPP PRODUCT CREATIVES & DOWNLOADS
     // ====================================================================
+    // Curated Monday-to-Friday campaign creatives matching the weekly timetable
+    const defaultWeeklyCampaignPosts = [
+      {
+        id: 'prod_mon_beverages',
+        day: 'monday',
+        title: 'Del Monte Tropical & Coca-Cola Kenya Refreshment',
+        brand_name: 'Del Monte & Coca-Cola Kenya',
+        caption: 'Beat the Monday heat! 🥤 Stay energized with ice-cold Del Monte Mango & classic Kenyan Coca-Cola. Available at supermarkets and duka countrywide! 🥭✨ #MondayRefresh #KenyanFlavors',
+        image_name: 'delmonte_beverages_monday.svg',
+        downloads_count: 2430,
+        image_base64: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800"><defs><linearGradient id="bgMon" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%23064E3B"/><stop offset="50%" stop-color="%23047857"/><stop offset="100%" stop-color="%23065F46"/></linearGradient><linearGradient id="sunGold" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%23FBBF24"/><stop offset="100%" stop-color="%23F59E0B"/></linearGradient></defs><rect width="800" height="800" fill="url(%23bgMon)"/><circle cx="680" cy="140" r="160" fill="%2310B981" opacity="0.25"/><circle cx="120" cy="680" r="200" fill="%2334D399" opacity="0.12"/><rect x="70" y="70" width="660" height="660" rx="32" fill="none" stroke="%2334D399" stroke-width="2.5" stroke-dasharray="8 6" opacity="0.45"/><rect x="90" y="90" width="230" height="46" rx="23" fill="url(%23sunGold)"/><text x="205" y="120" font-family="Arial,sans-serif" font-size="16" font-weight="900" fill="%23064E3B" text-anchor="middle">MONDAY CAMPAIGN</text><text x="400" y="240" font-family="Arial,sans-serif" font-size="44" font-weight="900" fill="%23F8F0E2" text-anchor="middle">BEVERAGES &amp; SOFT DRINKS</text><text x="400" y="305" font-family="Arial,sans-serif" font-size="52" font-weight="900" fill="%23FBBF24" text-anchor="middle">DEL MONTE &amp; COKE</text><text x="400" y="365" font-family="Arial,sans-serif" font-size="24" fill="%23A7F3D0" text-anchor="middle">Ice-Cold Refreshment Across Kenya</text><rect x="120" y="420" width="560" height="150" rx="20" fill="%23064E3B" stroke="%2334D399" stroke-width="2"/><text x="400" y="475" font-family="Arial,sans-serif" font-size="32" font-weight="bold" fill="%23FBBF24" text-anchor="middle">Earn KSh 45 / Verified View</text><text x="400" y="525" font-family="Arial,sans-serif" font-size="20" fill="%23F8F0E2" text-anchor="middle">Peak WhatsApp Hours: 07:30 AM – 02:00 PM</text><rect x="220" y="620" width="360" height="56" rx="28" fill="%2310B981"/><text x="400" y="656" font-family="Arial,sans-serif" font-size="20" font-weight="bold" fill="%23FFFFFF" text-anchor="middle">Download Creative &amp; Post</text></svg>'
+      },
+      {
+        id: 'prod_tue_vehicles',
+        day: 'tuesday',
+        title: 'Brand New Toyota Prado TX & Isuzu D-Max Pickups',
+        brand_name: 'Kenya Auto Hub & CFAO Motors',
+        caption: 'Drive home your dream machine today! 🚗💨 Brand-new Toyota Land Cruiser Prado TX & Isuzu D-Max Commercial Pickups on showroom sale in Nairobi & Mombasa. Zero mileage, 3-year warranty, up to 90% bank asset financing approved in 48hrs! 📞 Call 0700-000-000 to book a test drive. #KenyanCars #ToyotaKenya #VehicleSale',
+        image_name: 'kenya_vehicles_sale_tuesday.svg',
+        downloads_count: 3890,
+        image_base64: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800"><defs><linearGradient id="bgTue" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%2318181B"/><stop offset="50%" stop-color="%2327272A"/><stop offset="100%" stop-color="%2309090B"/></linearGradient><linearGradient id="redBurn" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%23EF4444"/><stop offset="100%" stop-color="%23B91C1C"/></linearGradient></defs><rect width="800" height="800" fill="url(%23bgTue)"/><circle cx="700" cy="150" r="180" fill="%23EF4444" opacity="0.18"/><rect x="70" y="70" width="660" height="660" rx="32" fill="none" stroke="%23EF4444" stroke-width="2" opacity="0.4"/><rect x="90" y="90" width="220" height="46" rx="23" fill="url(%23redBurn)"/><text x="200" y="120" font-family="Arial,sans-serif" font-size="16" font-weight="900" fill="%23FFFFFF" text-anchor="middle">TUESDAY AUTO DEALS</text><text x="400" y="240" font-family="Arial,sans-serif" font-size="44" font-weight="900" fill="%23F4F4F5" text-anchor="middle">BRAND NEW KENYAN MARKET</text><text x="400" y="305" font-family="Arial,sans-serif" font-size="52" font-weight="900" fill="%23F87171" text-anchor="middle">VEHICLES ON SALE</text><text x="400" y="365" font-family="Arial,sans-serif" font-size="24" fill="%23D4D4D8" text-anchor="middle">Toyota Prado TX • Isuzu D-Max • Showroom Clearances</text><rect x="120" y="420" width="560" height="150" rx="20" fill="%2327272A" stroke="%23EF4444" stroke-width="1.8"/><text x="400" y="475" font-family="Arial,sans-serif" font-size="32" font-weight="bold" fill="%23FCD34D" text-anchor="middle">Earn KSh 95 / Verified View</text><text x="400" y="525" font-family="Arial,sans-serif" font-size="20" fill="%23FFFFFF" text-anchor="middle">Zero Mileage • Up to 90% Asset Financing</text><rect x="220" y="620" width="360" height="56" rx="28" fill="url(%23redBurn)"/><text x="400" y="656" font-family="Arial,sans-serif" font-size="20" font-weight="bold" fill="%23FFFFFF" text-anchor="middle">Book Test Drive Today</text></svg>'
+      },
+      {
+        id: 'prod_wed_tech',
+        day: 'wednesday',
+        title: 'Samsung Galaxy S24 & Ramtons Kitchen Tech',
+        brand_name: 'TechPoint Kenya & Ramtons',
+        caption: 'Midweek Flash Tech Sale! 📱⚡ Up to 30% OFF genuine Samsung Galaxy phones, Smart 4K TVs, and Ramtons double-door fridges. 1-year local warranty & pay on delivery countrywide! 💻✨ Check out: https://almai.pages.dev #NairobiTech #SmartLiving',
+        image_name: 'tech_gadgets_wednesday.svg',
+        downloads_count: 2780,
+        image_base64: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800"><defs><linearGradient id="bgWed" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%231E1B4B"/><stop offset="50%" stop-color="%23312E81"/><stop offset="100%" stop-color="%23172554"/></linearGradient><linearGradient id="neonCyan" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%2338BDF8"/><stop offset="100%" stop-color="%236366F1"/></linearGradient></defs><rect width="800" height="800" fill="url(%23bgWed)"/><circle cx="400" cy="400" r="300" fill="%2338BDF8" opacity="0.08"/><rect x="70" y="70" width="660" height="660" rx="32" fill="none" stroke="%236366F1" stroke-width="2" opacity="0.45"/><rect x="90" y="90" width="220" height="46" rx="23" fill="url(%23neonCyan)"/><text x="200" y="120" font-family="Arial,sans-serif" font-size="16" font-weight="900" fill="%23FFFFFF" text-anchor="middle">WEDNESDAY TECH</text><text x="400" y="240" font-family="Arial,sans-serif" font-size="44" font-weight="900" fill="%23FFFFFF" text-anchor="middle">SMART GADGETS &amp; TECH</text><text x="400" y="305" font-family="Arial,sans-serif" font-size="52" font-weight="900" fill="%2338BDF8" text-anchor="middle">SAMSUNG &amp; APPLIANCES</text><text x="400" y="365" font-family="Arial,sans-serif" font-size="24" fill="%23C7D2FE" text-anchor="middle">Smartphones • 4K TVs • Home Appliances</text><rect x="120" y="420" width="560" height="150" rx="20" fill="%231E1B4B" stroke="%2338BDF8" stroke-width="1.8"/><text x="400" y="475" font-family="Arial,sans-serif" font-size="32" font-weight="bold" fill="%2338BDF8" text-anchor="middle">Earn KSh 70 / Verified View</text><text x="400" y="525" font-family="Arial,sans-serif" font-size="20" fill="%23F8FAFC" text-anchor="middle">Official 1-Year Kenyan Warranty</text><rect x="220" y="620" width="360" height="56" rx="28" fill="url(%23neonCyan)"/><text x="400" y="656" font-family="Arial,sans-serif" font-size="20" font-weight="bold" fill="%23FFFFFF" text-anchor="middle">Shop Deals Online</text></svg>'
+      },
+      {
+        id: 'prod_thu_fashion',
+        day: 'thursday',
+        title: 'SuzieBeauty Kenyan Glow Kit & Boutique Sneaker Drops',
+        brand_name: 'SuzieBeauty & Nairobi Kicks',
+        caption: 'Glow Up Thursday! 👗💄 Step out in style this weekend with authentic sneakers, designer dresses, and SuzieBeauty mineral skincare & matte lipsticks. Limited pieces available. Free delivery within Nairobi CBD! ✨👠 #KenyanFashion #SuzieBeauty #NairobiBoutique',
+        image_name: 'kenyan_fashion_thursday.svg',
+        downloads_count: 3120,
+        image_base64: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800"><defs><linearGradient id="bgThu" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%23581C87"/><stop offset="50%" stop-color="%236B21A8"/><stop offset="100%" stop-color="%233B0764"/></linearGradient><linearGradient id="pinkGlow" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%23F472B6"/><stop offset="100%" stop-color="%23DB2777"/></linearGradient></defs><rect width="800" height="800" fill="url(%23bgThu)"/><circle cx="680" cy="120" r="170" fill="%23F472B6" opacity="0.2"/><rect x="70" y="70" width="660" height="660" rx="32" fill="none" stroke="%23F472B6" stroke-width="2" opacity="0.45"/><rect x="90" y="90" width="220" height="46" rx="23" fill="url(%23pinkGlow)"/><text x="200" y="120" font-family="Arial,sans-serif" font-size="16" font-weight="900" fill="%23FFFFFF" text-anchor="middle">THURSDAY GLOW-UP</text><text x="400" y="240" font-family="Arial,sans-serif" font-size="44" font-weight="900" fill="%23FAF5FF" text-anchor="middle">KENYAN FASHION &amp; GLAM</text><text x="400" y="305" font-family="Arial,sans-serif" font-size="52" font-weight="900" fill="%23F472B6" text-anchor="middle">SUZIEBEAUTY &amp; SNEAKERS</text><text x="400" y="365" font-family="Arial,sans-serif" font-size="24" fill="%23E9D5FF" text-anchor="middle">Designer Drops • Cosmetics • Streetwear</text><rect x="120" y="420" width="560" height="150" rx="20" fill="%233B0764" stroke="%23F472B6" stroke-width="1.8"/><text x="400" y="475" font-family="Arial,sans-serif" font-size="32" font-weight="bold" fill="%23FDE047" text-anchor="middle">Earn KSh 60 / Verified View</text><text x="400" y="525" font-family="Arial,sans-serif" font-size="20" fill="%23FFFFFF" text-anchor="middle">Boutique Drops &amp; Mineral Skincare</text><rect x="220" y="620" width="360" height="56" rx="28" fill="url(%23pinkGlow)"/><text x="400" y="656" font-family="Arial,sans-serif" font-size="20" font-weight="bold" fill="%23FFFFFF" text-anchor="middle">Order On WhatsApp</text></svg>'
+      },
+      {
+        id: 'prod_fri_desserts',
+        day: 'friday',
+        title: 'Creamy Artisan Strawberry Sundae & Gourmet Gelato Treats',
+        brand_name: 'Almai Creamery & Gourmet Gelato',
+        caption: 'Creamy. Fresh. Irresistible. 🍨🍓 Treat yourself this TGIF with artisan strawberry sundaes, Italian gelato scoops, and fresh dessert platters. Buy 1 waffle cone, get 1 free all weekend! Visit our Nairobi branch or order via Glovo/UberEats. #TGIF #CreamyDesserts #AlmaiAdvertising #WeekendTreats',
+        image_name: 'creamy_desserts_friday.svg',
+        downloads_count: 4210,
+        image_base64: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800"><defs><linearGradient id="bgFri" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%23831843"/><stop offset="50%" stop-color="%23BE185D"/><stop offset="100%" stop-color="%23E60063"/></linearGradient><linearGradient id="creamGold" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%23FEF08A"/><stop offset="100%" stop-color="%23FDE047"/></linearGradient></defs><rect width="800" height="800" fill="url(%23bgFri)"/><circle cx="680" cy="140" r="180" fill="%23FFFFFF" opacity="0.15"/><circle cx="120" cy="680" r="220" fill="%23FCE7F3" opacity="0.12"/><rect x="70" y="70" width="660" height="660" rx="32" fill="none" stroke="%23FCE7F3" stroke-width="2.5" opacity="0.5"/><rect x="90" y="90" width="240" height="46" rx="23" fill="url(%23creamGold)"/><text x="210" y="120" font-family="Arial,sans-serif" font-size="15" font-weight="900" fill="%23831843" text-anchor="middle">FRIDAY TGIF DESSERTS</text><text x="400" y="235" font-family="Arial,sans-serif" font-size="34" font-weight="900" fill="%23FEF08A" text-anchor="middle" letter-spacing="4">CREAMY. FRESH. IRRESISTIBLE.</text><text x="400" y="305" font-family="Arial,sans-serif" font-size="48" font-weight="900" fill="%23FFFFFF" text-anchor="middle">ARTISAN GELATO &amp; SUNDAES</text><text x="400" y="365" font-family="Arial,sans-serif" font-size="24" fill="%23FCE7F3" text-anchor="middle">Strawberry Swirls • Belgian Chocolate • Waffles</text><rect x="120" y="420" width="560" height="150" rx="20" fill="%23831843" stroke="%23FEF08A" stroke-width="2"/><text x="400" y="475" font-family="Arial,sans-serif" font-size="32" font-weight="bold" fill="%23FEF08A" text-anchor="middle">Earn KSh 85 / Verified View</text><text x="400" y="525" font-family="Arial,sans-serif" font-size="20" fill="%23FFFFFF" text-anchor="middle">Buy 1 Get 1 Free Weekend Scoop Special</text><rect x="220" y="620" width="360" height="56" rx="28" fill="%23FFFFFF"/><text x="400" y="656" font-family="Arial,sans-serif" font-size="20" font-weight="900" fill="%23E60063" text-anchor="middle">Order On Glovo &amp; UberEats</text></svg>'
+      }
+    ];
+
     async function fetchProductsPosts() {
       try {
         const res = await fetch('/api/products-posts');
         if (res.ok) {
           const data = await res.json();
-          AppState.productsPosts = (data && (data.posts || data.productPosts)) || [];
-          renderProductsPosts(AppState.productsPosts);
+          const remotePosts = (data && (data.posts || data.productPosts)) || [];
+          AppState.productsPosts = (remotePosts && remotePosts.length) ? remotePosts : defaultWeeklyCampaignPosts;
+        } else {
+          AppState.productsPosts = defaultWeeklyCampaignPosts;
         }
       } catch (err) {
-        console.error('Failed to fetch product creatives:', err);
+        console.error('Failed to fetch product creatives, using curated weekly timetable posts:', err);
+        AppState.productsPosts = defaultWeeklyCampaignPosts;
+      }
+      renderProductsPosts(AppState.productsPosts);
+    }
+
+    let activeProductCategoryFilter = 'all';
+
+    function filterProductsByCategory(dayKey, btn) {
+      activeProductCategoryFilter = dayKey;
+      const allFilterBtns = document.querySelectorAll('.cat-filter-btn');
+      allFilterBtns.forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+
+      const allPosts = (AppState.productsPosts && AppState.productsPosts.length)
+        ? AppState.productsPosts
+        : defaultWeeklyCampaignPosts;
+
+      let filtered = allPosts;
+      if (dayKey !== 'all') {
+        filtered = allPosts.filter(p => {
+          if (p.day && p.day.toLowerCase() === dayKey.toLowerCase()) return true;
+          const text = ((p.title || '') + ' ' + (p.description || '') + ' ' + (p.caption || '')).toLowerCase();
+          if (dayKey === 'monday' && (text.includes('beverage') || text.includes('drink') || text.includes('soda') || text.includes('del monte') || text.includes('coke'))) return true;
+          if (dayKey === 'tuesday' && (text.includes('vehicle') || text.includes('car') || text.includes('prado') || text.includes('isuzu') || text.includes('auto'))) return true;
+          if (dayKey === 'wednesday' && (text.includes('tech') || text.includes('gadget') || text.includes('samsung') || text.includes('appliance') || text.includes('electronic'))) return true;
+          if (dayKey === 'thursday' && (text.includes('fashion') || text.includes('boutique') || text.includes('suziebeauty') || text.includes('cosmetic') || text.includes('sneaker'))) return true;
+          if (dayKey === 'friday' && (text.includes('dessert') || text.includes('cream') || text.includes('gelato') || text.includes('sundae') || text.includes('tgif') || text.includes('food'))) return true;
+          return false;
+        });
+      }
+
+      renderFilteredProductsCards(filtered);
+    }
+
+    function scrollToProductsAndFilter(dayKey) {
+      switchView('home');
+      setTimeout(() => {
+        const prodSection = document.getElementById('home-products-container');
+        if (prodSection) prodSection.scrollIntoView({ behavior: 'smooth' });
+        const targetBtn = document.querySelector(`.cat-filter-btn[onclick*="${dayKey}"]`);
+        filterProductsByCategory(dayKey, targetBtn);
+      }, 100);
+    }
+
+    function selectTimetableDay(dayKey, btn) {
+      const allNavBtns = document.querySelectorAll('.day-nav-btn');
+      allNavBtns.forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+
+      const cards = document.querySelectorAll('.day-card');
+      const rows = document.querySelectorAll('.timetable-table tbody tr');
+
+      if (dayKey === 'all') {
+        cards.forEach(c => c.style.display = 'flex');
+        rows.forEach(r => r.style.display = '');
+      } else {
+        cards.forEach(c => {
+          if (c.getAttribute('data-day') === dayKey) {
+            c.style.display = 'flex';
+            c.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          } else {
+            c.style.display = 'none';
+          }
+        });
+        rows.forEach(r => {
+          if (r.id === `row-${dayKey}`) {
+            r.style.display = '';
+          } else {
+            r.style.display = 'none';
+          }
+        });
       }
     }
 
-    function renderProductsPosts(posts) {
-      const homeContainer = document.getElementById('home-products-container');
-      const dashContainer = document.getElementById('dash-products-container');
+    
+    function animateCounters() {
+      const counters = [
+        { el: document.getElementById('counter-views'), target: 1.8, decimals: 1, duration: 1600 },
+        { el: document.getElementById('counter-disbursed'), target: 12.4, decimals: 1, duration: 1800 },
+        { el: document.getElementById('counter-partners'), target: 14200, decimals: 0, duration: 2000 }
+      ];
 
-      // Update hero sideways animated marquee showcase with admin posted creatives
-      renderHeroShowcase(posts);
+      counters.forEach(({ el, target, decimals, duration }) => {
+        if (!el) return;
+        const startTime = performance.now();
+        const startVal = 0;
+
+        function update(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const easeProgress = 1 - Math.pow(1 - progress, 3);
+          const current = startVal + (target - startVal) * easeProgress;
+
+          if (decimals === 0) {
+            el.textContent = Math.floor(current).toLocaleString();
+          } else {
+            el.textContent = current.toFixed(decimals);
+          }
+
+          if (progress < 1) {
+            requestAnimationFrame(update);
+          }
+        }
+        requestAnimationFrame(update);
+      });
+    }
+
+    function initWeeklyTimetable() {
+      const now = new Date();
+      const dayIndex = now.getDay(); // 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
+      const dayMap = { 1: 'monday', 2: 'tuesday', 3: 'wednesday', 4: 'thursday', 5: 'friday' };
+      const currentDayKey = dayMap[dayIndex];
+
+      if (currentDayKey) {
+        const card = document.getElementById(`day-card-${currentDayKey}`);
+        if (card) {
+          card.classList.add('is-today');
+          const header = card.querySelector('.day-card-header');
+          if (header && !header.querySelector('.today-indicator')) {
+            const badge = document.createElement('span');
+            badge.className = 'today-indicator';
+            badge.textContent = 'TODAY';
+            badge.style.marginLeft = 'auto';
+            header.appendChild(badge);
+          }
+        }
+        const row = document.getElementById(`row-${currentDayKey}`);
+        if (row) row.classList.add('is-today-row');
+
+        const navBtn = document.getElementById(`day-nav-${currentDayKey}`);
+        if (navBtn && !navBtn.querySelector('.today-indicator')) {
+          const pill = document.createElement('span');
+          pill.className = 'today-indicator';
+          pill.textContent = 'TODAY';
+          navBtn.appendChild(pill);
+        }
+      }
+    }
+
+    function renderFilteredProductsCards(posts) {
+      const homeContainer = document.getElementById('home-products-container');
+      if (!homeContainer) return;
 
       if (!posts || !posts.length) {
-        const emptyHTML = `
+        homeContainer.innerHTML = `
           <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--charcoal-muted); background: var(--bg-cream); border-radius: var(--radius-md); border: 1px dashed var(--beige-border);">
-            <p style="font-size: 15px; margin-bottom: 6px;">New WhatsApp campaign product pictures are being curated by our admin team.</p>
-            <span style="font-size: 13px;">Check back shortly for fresh brand creatives to download and post!</span>
+            <p style="font-size: 15px; margin-bottom: 6px;">No campaign posts match this category filter.</p>
+            <button class="btn btn-secondary btn-sm" onclick="filterProductsByCategory('all', document.querySelector('.cat-filter-btn'))">View All Categories</button>
           </div>
         `;
-        if (homeContainer) homeContainer.innerHTML = emptyHTML;
-        if (dashContainer) dashContainer.innerHTML = emptyHTML;
         return;
       }
 
-      const cardsHTML = posts.map(p => {
+      homeContainer.innerHTML = posts.map(p => {
         const imgSource = p.image_base64 || p.image_url || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="200" fill="%232D1537"%3E%3Ctext x="50%25" y="50%25" fill="%23D8B4FE" font-size="16" text-anchor="middle" dominant-baseline="middle"%3EAlmai Creative%3C/text%3E%3C/svg%3E';
         const escapedCaption = escapeHTML(p.caption || '');
         const escapedTitle = escapeHTML(p.title || 'Brand Product Post');
@@ -4644,9 +5740,60 @@
           </div>
         `;
       }).join('');
+    }
 
-      if (homeContainer) homeContainer.innerHTML = cardsHTML;
-      if (dashContainer) dashContainer.innerHTML = cardsHTML;
+    function renderProductsPosts(posts) {
+      const dashContainer = document.getElementById('dash-products-container');
+      const allPosts = (posts && posts.length) ? posts : defaultWeeklyCampaignPosts;
+
+      // Update hero sideways animated marquee showcase with admin posted creatives
+      renderHeroShowcase(allPosts);
+
+      // Render home products with current active category filter
+      filterProductsByCategory(activeProductCategoryFilter, document.querySelector(`.cat-filter-btn[onclick*="${activeProductCategoryFilter}"]`));
+
+      if (dashContainer) {
+        dashContainer.innerHTML = allPosts.map(p => {
+          const imgSource = p.image_base64 || p.image_url || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="200" fill="%232D1537"%3E%3Ctext x="50%25" y="50%25" fill="%23D8B4FE" font-size="16" text-anchor="middle" dominant-baseline="middle"%3EAlmai Creative%3C/text%3E%3C/svg%3E';
+          const escapedCaption = escapeHTML(p.caption || '');
+          const escapedTitle = escapeHTML(p.title || 'Brand Product Post');
+          const escapedBrand = escapeHTML(p.brand_name || 'Almai Verified Partner');
+          const filename = (p.image_name || (p.title ? p.title.toLowerCase().replace(/[^a-z0-9]/g, '_') : 'almai_product') + '.jpg');
+
+          return `
+            <div class="product-post-card">
+              <div class="product-post-img-wrap">
+                <img src="${imgSource}" alt="${escapedTitle}" loading="lazy">
+                <span class="product-post-badge">${escapedBrand}</span>
+              </div>
+              <div class="product-post-body">
+                <h3 class="product-post-title">${escapedTitle}</h3>
+                <p class="product-post-caption" id="caption-text-dash-${p.id}">${escapedCaption}</p>
+                <div class="product-post-footer">
+                  <span class="product-post-downloads">
+                    <span class="svg-icon" style="width: 14px; height: 14px;">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    </span>
+                    <span id="prod-dl-count-${p.id}">${p.downloads_count || 0}</span> downloads
+                  </span>
+                  <div style="display: flex; gap: 6px; width: 100%; margin-top: 10px;">
+                    <button class="btn btn-primary btn-sm" style="flex: 1;" onclick="downloadProductImage('${p.id}', '${imgSource}', '${escapeHTML(filename)}')">
+                      <span class="svg-icon" style="width: 14px; height: 14px; margin-right: 4px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                      </span>
+                      Download
+                    </button>
+                    <button class="btn btn-secondary btn-sm" onclick="copyProductCaption('${p.id}')">
+                      <span class="svg-icon" style="width: 14px; height: 14px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+      }
     }
 
     async function downloadProductImage(id, source, filename) {
@@ -5511,7 +6658,7 @@
                         Reject
                       </button>
                     </div>
-                  ` : (p.status === 'completed' ? `<span style="color: var(--success-green); font-size: 12.5px; font-weight: 700;">✓ Verified Active</span>` : `<span style="color: var(--warning-red); font-size: 12.5px;">${escapeHTML(p.rejection_reason || p.status)}</span>`)}
+                  ` : (p.status === 'completed' ? `<span style="color: var(--success-green); font-size: 12.5px; font-weight: 700;"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg> Verified Active</span>` : `<span style="color: var(--warning-red); font-size: 12.5px;">${escapeHTML(p.rejection_reason || p.status)}</span>`)}
                 </td>
               </tr>
             `;
@@ -5815,7 +6962,7 @@
                 <div class="admin-prod-item-main-row">
                   <div class="admin-prod-item-thumb" onclick="previewImageModal('${imgSource}', '${safeTitle}')" title="Tap to preview high-res image">
                     <img src="${imgSource}" alt="${safeTitle}" loading="lazy">
-                    <span class="admin-prod-item-thumb-zoom">🔍 Zoom</span>
+                    <span class="admin-prod-item-thumb-zoom"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:3px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Zoom</span>
                   </div>
                   <div class="admin-prod-item-content">
                     <div class="admin-prod-item-title">${safeTitle}</div>
@@ -5824,7 +6971,7 @@
                     <div class="admin-prod-item-meta">
                       <span>Downloads: <strong style="color: var(--primary-purple);">${p.downloads_count || 0}</strong></span>
                       ${dateStr ? `<span>Posted: <strong>${dateStr}</strong></span>` : ''}
-                      <span style="color: var(--success-green); font-weight: 700;">✓ Live on feeds</span>
+                      <span style="color: var(--success-green); font-weight: 700;"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg> Live on feeds</span>
                     </div>
                   </div>
                 </div>
@@ -5874,7 +7021,7 @@
     }
 
     async function adminClearAllProducts() {
-      if (!confirm('⚠️ Are you sure you want to delete and clear ALL posted products and creatives?\n\nThis will remove all live creatives from the landing page showcase and user download portal.')) return;
+      if (!confirm('Warning: Are you sure you want to delete and clear ALL posted products and creatives?\n\nThis will remove all live creatives from the landing page showcase and user download portal.')) return;
 
       const confirmation = prompt('To confirm permanent deletion of all products, type CLEAR:');
       if (confirmation !== 'CLEAR') {
