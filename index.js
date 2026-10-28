@@ -1946,64 +1946,33 @@ async function onRequestPost13(context) {
       now
     ).run();
     const maxViews = activePackage.max_views_per_task || 200;
-    const effectiveViews = Math.min(views, maxViews);
-    const rewardKsh = effectiveViews * activePackage.reward_per_view_ksh;
+    const cappedViews = Math.min(views, maxViews);
+    const estimatedRewardKsh = cappedViews * activePackage.reward_per_view_ksh;
     await env.DB.prepare(`
       INSERT INTO task_submissions (
         id, user_id, campaign_id, package_id, reported_views, approved_views,
         reward_rate_ksh, reward_amount_ksh, evidence_text, evidence_id,
         status, created_at, reviewed_at
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'approved', ?, ?)
+      VALUES (?, ?, ?, ?, ?, 0, ?, 0, ?, ?, 'pending', ?, NULL)
     `).bind(
       taskId,
       user.id,
       campaignId || "camp_almai_main",
       activePackage.package_id,
       views,
-      effectiveViews,
       activePackage.reward_per_view_ksh,
-      rewardKsh,
-      evidenceNote || "Verified WhatsApp Status views proof",
+      evidenceNote || "WhatsApp Status views proof submitted",
       evidenceId,
-      now,
       now
     ).run();
-    const wallet = await env.DB.prepare("SELECT id, available_balance_ksh FROM wallets WHERE user_id = ?").bind(user.id).first();
-    let balanceAfter = rewardKsh;
-    if (wallet) {
-      balanceAfter = (wallet.available_balance_ksh || 0) + rewardKsh;
-      await env.DB.prepare(`
-        UPDATE wallets
-        SET available_balance_ksh = available_balance_ksh + ?,
-            lifetime_earnings_ksh = lifetime_earnings_ksh + ?,
-            updated_at = ?
-        WHERE user_id = ?
-      `).bind(rewardKsh, rewardKsh, now, user.id).run();
-      const txId = generateId("tx");
-      await env.DB.prepare(`
-        INSERT INTO wallet_transactions (id, wallet_id, user_id, type, amount_ksh, balance_after_ksh, reference_id, description, created_at)
-        VALUES (?, ?, ?, 'task_reward', ?, ?, ?, ?, ?)
-      `).bind(
-        txId,
-        wallet.id,
-        user.id,
-        rewardKsh,
-        balanceAfter,
-        taskId,
-        `WhatsApp Campaign: ${effectiveViews} views @ KSh ${activePackage.reward_per_view_ksh}/view`,
-        now
-      ).run();
-    }
     return jsonSuccess({
-      message: `\u{1F389} Success! Captured ${effectiveViews} verified views. KSh ${rewardKsh.toLocaleString()} credited directly to your available balance!`,
+      message: `Task submitted successfully! Your submission of ${views} WhatsApp views is awaiting administrator approval. Your wallet balance will be updated once approved by an administrator.`,
       taskId,
       reportedViews: views,
-      approvedViews: effectiveViews,
-      rewardEarnedKsh: rewardKsh,
-      newBalanceKsh: balanceAfter,
+      estimatedRewardKsh,
       packageRateKsh: activePackage.reward_per_view_ksh,
-      status: "approved"
+      status: "pending"
     }, 201);
   } catch (err) {
     console.error("Task submission error:", err);
