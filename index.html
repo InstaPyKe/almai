@@ -139,7 +139,7 @@
     .navbar {
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 1000;
       background: rgba(248, 240, 226, 0.96);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
@@ -250,18 +250,12 @@
       letter-spacing: -0.03em;
     }
     .menu-toggle {
+      display: none;
       cursor: pointer !important;
-      z-index: 120 !important;
+      z-index: 1001 !important;
       position: relative !important;
       pointer-events: auto !important;
       -webkit-tap-highlight-color: rgba(109, 40, 217, 0.2);
-    }
-    .menu-toggle:active {
-      transform: scale(0.94);
-    }
-
-    .menu-toggle {
-      display: none;
       background: var(--white-card);
       border: 1.5px solid var(--beige-border);
       border-radius: var(--radius-sm);
@@ -271,9 +265,20 @@
       align-items: center;
       justify-content: center;
       box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+    }
+    .menu-toggle:active {
+      transform: scale(0.94);
     }
     .menu-toggle:hover {
       background: var(--bg-cream-dark);
+      border-color: var(--primary-purple);
+      color: var(--primary-purple);
+    }
+    .menu-toggle.is-active {
+      background: var(--primary-purple-light);
+      border-color: var(--primary-purple);
+      color: var(--primary-purple);
     }
 
     /* Mobile Drawer & Backdrop */
@@ -283,10 +288,10 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(28, 25, 23, 0.6);
+      background: rgba(28, 25, 23, 0.65);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
-      z-index: 250;
+      z-index: 99998;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -300,12 +305,12 @@
       position: fixed;
       top: 0;
       right: 0;
-      width: min(330px, 86vw);
+      width: min(340px, 88vw);
       height: 100%;
       height: 100dvh;
       background: var(--white-card);
-      z-index: 300;
-      box-shadow: -8px 0 36px rgba(36, 33, 36, 0.25);
+      z-index: 99999;
+      box-shadow: -8px 0 36px rgba(36, 33, 36, 0.3);
       padding: 24px 20px;
       display: flex;
       flex-direction: column;
@@ -1803,7 +1808,7 @@
       bottom: 0;
       background: rgba(36, 33, 36, 0.65);
       backdrop-filter: blur(4px);
-      z-index: 1000;
+      z-index: 100000;
       align-items: center;
       justify-content: center;
       padding: 16px;
@@ -2517,11 +2522,47 @@
        MOBILE RESPONSIVENESS FIXES
        ==================================================================== */
     @media (max-width: 860px) {
+      .navbar {
+        padding: 10px 0;
+      }
+      .brand-logo {
+        gap: 8px;
+        flex: 1;
+        min-width: 0;
+      }
+      .brand-logo-icon {
+        width: 38px;
+        height: 38px;
+        font-size: 19px;
+        border-radius: var(--radius-sm);
+        flex-shrink: 0;
+      }
+      .brand-title-wrap {
+        min-width: 0;
+        overflow: hidden;
+      }
+      .brand-title-main {
+        font-size: clamp(17px, 4.2vw, 22px);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+        max-width: 100%;
+      }
+      .brand-tag {
+        display: none !important;
+      }
       .nav-links, #nav-guest-actions, #nav-auth-actions {
         display: none !important;
       }
+      .nav-actions {
+        margin-left: auto;
+        flex-shrink: 0;
+        gap: 8px;
+      }
       .menu-toggle {
         display: inline-flex !important;
+        flex-shrink: 0;
       }
       .calc-grid {
         grid-template-columns: 1fr;
@@ -3310,7 +3351,7 @@
       position: fixed;
       bottom: 28px;
       right: 28px;
-      z-index: 99999;
+      z-index: 9999;
       background: #25D366;
       color: #FFFFFF;
       border-radius: var(--radius-full);
@@ -3507,8 +3548,8 @@
         </div>
 
         <!-- Responsive Hamburger Toggle Button -->
-        <button class="menu-toggle" onclick="toggleMobileNav()" aria-label="Toggle Mobile Menu">
-          <span class="svg-icon" id="hamburger-icon" style="width: 22px; height: 22px;">
+        <button class="menu-toggle" id="menu-toggle-btn" onclick="toggleMobileNav(event)" aria-label="Toggle Mobile Menu" type="button">
+          <span class="svg-icon" id="hamburger-icon" style="width: 22px; height: 22px; pointer-events: none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
           </span>
         </button>
@@ -3532,35 +3573,47 @@
     </div>
 
     <ul class="mobile-nav-links">
-      <li class="mobile-nav-item active" onclick="mobileNavAction('home')">
+      <li class="mobile-nav-item active" id="mob-nav-home" onclick="mobileNavAction('home')">
         <span class="svg-icon" style="width: 18px; height: 18px;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
         </span>
         Home
       </li>
-      <li class="mobile-nav-item" onclick="mobileNavAction('tasks')">
+      <li class="mobile-nav-item" id="mob-nav-tasks" onclick="mobileNavAction('tasks')">
         <span class="svg-icon" style="width: 18px; height: 18px;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
         </span>
         How It Works
       </li>
-      <li class="mobile-nav-item" onclick="mobileNavAction('products')">
+      <li class="mobile-nav-item" id="mob-nav-products" onclick="mobileNavAction('products')">
         <span class="svg-icon" style="width: 18px; height: 18px;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
         </span>
-        Packages & Pricing
+        Packages &amp; Pricing
       </li>
-      <li class="mobile-nav-item" onclick="mobileNavAction('calc')">
+      <li class="mobile-nav-item" id="mob-nav-calc" onclick="mobileNavAction('calc')">
         <span class="svg-icon" style="width: 18px; height: 18px;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M8 18h.01M12 18h.01"></path></svg>
         </span>
         Earnings Calculator
       </li>
-      <li class="mobile-nav-item" id="mob-nav-dash" style="display: none;" onclick="mobileNavAction('dashboard')">
+      <li class="mobile-nav-item" id="mob-nav-dashboard" style="display: none;" onclick="mobileNavAction('dashboard')">
         <span class="svg-icon" style="width: 18px; height: 18px;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
         </span>
         Partner Dashboard
+      </li>
+      <li class="mobile-nav-item" id="mob-nav-dash-products" style="display: none;" onclick="mobileNavAction('dash-products')">
+        <span class="svg-icon" style="width: 18px; height: 18px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        </span>
+        Download Creatives
+      </li>
+      <li class="mobile-nav-item" id="mob-nav-dash-withdraw" style="display: none;" onclick="mobileNavAction('dash-withdraw')">
+        <span class="svg-icon" style="width: 18px; height: 18px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg>
+        </span>
+        Request M-Pesa Payout
       </li>
       <li class="mobile-nav-item" id="mob-nav-admin" style="display: none;" onclick="mobileNavAction('admin')">
         <span class="svg-icon" style="width: 18px; height: 18px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="display:inline-block;vertical-align:-2px;color:#F59E0B;"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg></span>
@@ -3915,7 +3968,7 @@
     <section class="container" style="padding: 20px 0 50px;">
       <div class="section-header">
         <h2 class="section-title">Daily WhatsApp Products to Post &amp; Earn</h2>
-        <p class="section-desc">Download ready-to-post banners, copy pre-written captions, and earn cash per 18h verified view.</p>
+        <p class="section-desc">Browse today's verified brand campaigns. Sign in to your partner account to download pictures, copy captions, and earn cash per 18h view.</p>
       </div>
 
       <!-- Category Filter Tabs Matching the Monday-Friday Timetable -->
@@ -4903,12 +4956,12 @@
         </div>
 
         <div class="footer-col">
-          <h4>Security &amp; Payments</h4>
+          <h4>Partner Support</h4>
           <ul class="footer-links">
-            <li>Safaricom M-Pesa Disbursements</li>
-            <li>HttpOnly Session Cookies</li>
-            <li>Cloudflare D1 Persistent Ledger</li>
-            <li>Anti-Fraud Evidence Auditing</li>
+            <li><a href="https://wa.me/254712066804?text=Hello%20Almai%20Support%2C%20I%20have%20an%20inquiry" target="_blank" rel="noopener">WhatsApp Helpdesk</a></li>
+            <li><a href="javascript:void(0)" onclick="openInquiryModal()">Book Brand Campaign</a></li>
+            <li><a href="javascript:void(0)" onclick="scrollToTasks()">How Earnings Work</a></li>
+            <li><a href="javascript:void(0)" onclick="showAuthModal('login')">Creator Portal Sign In</a></li>
           </ul>
         </div>
       </div>
@@ -5082,15 +5135,6 @@
       updateCalculator();
       initWeeklyTimetable();
 
-      // Ensure mobile toggle button click handler is solidly hooked
-      const toggleMenuBtn = document.querySelector('.menu-toggle');
-      if (toggleMenuBtn) {
-        toggleMenuBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          toggleMobileNav();
-        });
-      }
-
       setupCountersObserver();
     });
 
@@ -5138,9 +5182,16 @@
       document.getElementById('nav-user-name').textContent = AppState.user.name.split(' ')[0] || 'Dashboard';
 
       // Mobile drawer nav
-      document.getElementById('mob-guest-actions').style.display = 'none';
-      document.getElementById('mob-auth-actions').style.display = 'flex';
-      document.getElementById('mob-nav-dash').style.display = 'flex';
+      const mobGuest = document.getElementById('mob-guest-actions');
+      if (mobGuest) mobGuest.style.display = 'none';
+      const mobAuth = document.getElementById('mob-auth-actions');
+      if (mobAuth) mobAuth.style.display = 'flex';
+      const mobDash = document.getElementById('mob-nav-dashboard');
+      if (mobDash) mobDash.style.display = 'flex';
+      const mobDashProds = document.getElementById('mob-nav-dash-products');
+      if (mobDashProds) mobDashProds.style.display = 'flex';
+      const mobDashWithdraw = document.getElementById('mob-nav-dash-withdraw');
+      if (mobDashWithdraw) mobDashWithdraw.style.display = 'flex';
 
       // Toggle Admin navigation for admin role
       const btnAdmin = document.getElementById('btn-admin-nav');
@@ -5156,6 +5207,9 @@
         if (navAdmin) navAdmin.style.display = 'none';
         if (mobAdmin) mobAdmin.style.display = 'none';
       }
+
+      // Re-render home cards so button says 'Open in Dashboard'
+      renderFilteredProductsCards(AppState.productsPosts || []);
 
       // Populate dashboard values
       document.getElementById('dash-user-name').textContent = AppState.user.name;
@@ -5197,11 +5251,21 @@
       if (navAdmin) navAdmin.style.display = 'none';
 
       // Mobile drawer nav
-      document.getElementById('mob-guest-actions').style.display = 'flex';
-      document.getElementById('mob-auth-actions').style.display = 'none';
-      document.getElementById('mob-nav-dash').style.display = 'none';
+      const mobGuest = document.getElementById('mob-guest-actions');
+      if (mobGuest) mobGuest.style.display = 'flex';
+      const mobAuth = document.getElementById('mob-auth-actions');
+      if (mobAuth) mobAuth.style.display = 'none';
+      const mobDash = document.getElementById('mob-nav-dashboard');
+      if (mobDash) mobDash.style.display = 'none';
+      const mobDashProds = document.getElementById('mob-nav-dash-products');
+      if (mobDashProds) mobDashProds.style.display = 'none';
+      const mobDashWithdraw = document.getElementById('mob-nav-dash-withdraw');
+      if (mobDashWithdraw) mobDashWithdraw.style.display = 'none';
       const mobAdmin = document.getElementById('mob-nav-admin');
       if (mobAdmin) mobAdmin.style.display = 'none';
+
+      // Re-render home cards so button says 'Login to Download'
+      renderFilteredProductsCards(AppState.productsPosts || []);
     }
 
     function renderPackageGatingBanner() {
@@ -5390,6 +5454,9 @@
         }
       }
 
+      // Ensure mobile drawer is cleanly closed on every view transition
+      closeMobileNav();
+
       const views = ['home', 'products', 'auth', 'dashboard', 'admin'];
       views.forEach(v => {
         const el = document.getElementById(`view-${v}`);
@@ -5423,18 +5490,27 @@
       }
     }
 
-    function toggleMobileNav() {
+    function toggleMobileNav(e) {
+      if (e) {
+        if (typeof e.preventDefault === 'function') e.preventDefault();
+        if (typeof e.stopPropagation === 'function') e.stopPropagation();
+      }
       const drawer = document.getElementById('mobile-drawer');
       const backdrop = document.getElementById('mobile-backdrop');
-      const toggleBtn = document.querySelector('.menu-toggle');
-      const isOpen = drawer && drawer.classList.contains('open');
+      const toggleBtn = document.getElementById('menu-toggle-btn') || document.querySelector('.menu-toggle');
+      if (!drawer || !backdrop) return;
+
+      const isOpen = drawer.classList.contains('open');
 
       if (isOpen) {
         closeMobileNav();
-      } else if (drawer && backdrop) {
+      } else {
         drawer.classList.add('open');
         backdrop.classList.add('open');
-        if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'true');
+        if (toggleBtn) {
+          toggleBtn.setAttribute('aria-expanded', 'true');
+          toggleBtn.classList.add('is-active');
+        }
         document.body.style.overflow = 'hidden';
       }
     }
@@ -5442,10 +5518,13 @@
     function closeMobileNav() {
       const drawer = document.getElementById('mobile-drawer');
       const backdrop = document.getElementById('mobile-backdrop');
-      const toggleBtn = document.querySelector('.menu-toggle');
+      const toggleBtn = document.getElementById('menu-toggle-btn') || document.querySelector('.menu-toggle');
       if (drawer) drawer.classList.remove('open');
       if (backdrop) backdrop.classList.remove('open');
-      if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
+      if (toggleBtn) {
+        toggleBtn.setAttribute('aria-expanded', 'false');
+        toggleBtn.classList.remove('is-active');
+      }
       document.body.style.overflow = '';
     }
 
@@ -5480,10 +5559,21 @@
 
     function mobileNavAction(action) {
       closeMobileNav();
-      if (action === 'tasks' || action === 'timetable') { scrollToTasks(); } else if (action === 'calc') {
+      if (action === 'tasks' || action === 'timetable') { 
+        scrollToTasks(); 
+      } else if (action === 'calc') {
         scrollToCalculator();
-      } else if (action === 'timetable') {
-        scrollToTimetable();
+      } else if (action === 'dash-products') {
+        switchView('dashboard');
+        setTimeout(() => {
+          const el = document.getElementById('dash-products-container') || document.getElementById('active-campaign-card');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }, 150);
+      } else if (action === 'dash-withdraw') {
+        switchView('dashboard');
+        setTimeout(() => {
+          openWithdrawalModal();
+        }, 150);
       } else {
         switchView(action);
       }
@@ -5846,14 +5936,28 @@
         const escapedBrand = escapeHTML(p.brand_name || 'Almai Verified Partner');
         const filename = (p.image_name || (p.title ? p.title.toLowerCase().replace(/[^a-z0-9]/g, '_') : 'almai_product') + '.jpg');
 
+        const actionBtn = AppState.user
+          ? `<button class="btn btn-primary btn-sm" style="flex: 1;" onclick="switchView('dashboard')">
+               <span class="svg-icon" style="width: 14px; height: 14px; margin-right: 4px;">
+                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+               </span>
+               Open in Dashboard &rarr;
+             </button>`
+          : `<button class="btn btn-primary btn-sm" style="flex: 1;" onclick="showAuthModal('login')">
+               <span class="svg-icon" style="width: 14px; height: 14px; margin-right: 4px;">
+                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+               </span>
+               Login to Download
+             </button>`;
+
         return `
           <div class="product-post-card">
-            <div class="product-post-img-wrap">
+            <div class="product-post-img-wrap" style="user-select: none;">
               <button class="img-fit-btn" onclick="toggleImgFit(this)" title="Toggle banner Fit/Fill ratio">
                 <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6m0-6L14 10M9 21H3v-6m0 6l7-7"/></svg>
                 Fill
               </button>
-              <img src="${imgSource}" alt="${escapedTitle}" loading="lazy">
+              <img src="${imgSource}" alt="${escapedTitle}" loading="lazy" draggable="false" oncontextmenu="return false;" style="user-select: none; -webkit-user-drag: none;">
               <span class="product-post-badge">${escapedBrand}</span>
             </div>
             <div class="product-post-body">
@@ -5864,15 +5968,10 @@
                   <span class="svg-icon" style="width: 14px; height: 14px;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                   </span>
-                  <span id="prod-dl-count-${p.id}">${p.downloads_count || 0}</span> downloads
+                  <span id="prod-dl-count-${p.id}">${p.downloads_count || 0}</span> partner downloads
                 </span>
                 <div style="display: flex; gap: 6px; width: 100%; margin-top: 10px;">
-                  <button class="btn btn-primary btn-sm" style="flex: 1;" onclick="downloadProductImage('${p.id}', '${imgSource}', '${escapeHTML(filename)}')">
-                    <span class="svg-icon" style="width: 14px; height: 14px; margin-right: 4px;">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                    </span>
-                    Download Picture
-                  </button>
+                  ${actionBtn}
                   <button class="btn btn-secondary btn-sm" onclick="copyProductCaption('${p.id}')" title="Copy suggested WhatsApp caption">
                     <span class="svg-icon" style="width: 14px; height: 14px;">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
@@ -5962,6 +6061,11 @@
     }
 
     async function downloadProductImage(id, source, filename) {
+      if (!AppState.user) {
+        alert('Product creative downloads are reserved for registered partners. Please sign in or create an account to download pictures and submit proof for payouts.');
+        showAuthModal('login');
+        return;
+      }
       try {
         // Track download count in backend
         fetch('/api/products-posts', {
@@ -6014,7 +6118,12 @@
     }
 
     function copyProductCaption(id) {
-      const el = document.getElementById(`caption-text-${id}`);
+      if (!AppState.user) {
+        alert('Please log in to your partner account to copy WhatsApp captions and download official brand product pictures.');
+        showAuthModal('login');
+        return;
+      }
+      const el = document.getElementById(`caption-text-${id}`) || document.getElementById(`caption-text-dash-${id}`);
       if (!el) return;
       const text = el.textContent;
       navigator.clipboard.writeText(text).then(() => {
@@ -6065,7 +6174,7 @@
         return `
           <div class="showcase-card" onclick="handleShowcaseCardClick('${item.id}', '${imgSource}', '${escapeHTML(filename)}')">
             <div class="showcase-card-img-wrap">
-              <img src="${imgSource}" alt="${title}" loading="lazy">
+              <img src="${imgSource}" alt="${title}" loading="lazy" draggable="false" oncontextmenu="return false;" style="user-select: none;">
               <span class="showcase-card-brand-badge">${brand}</span>
             </div>
             <div class="showcase-card-body">
@@ -6089,7 +6198,11 @@
 
     function handleShowcaseCardClick(id, source, filename) {
       if (AppState.user) {
-        downloadProductImage(id, source, filename);
+        switchView('dashboard');
+        setTimeout(() => {
+          const el = document.getElementById('dash-products-container') || document.getElementById('active-campaign-card');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }, 150);
       } else {
         showAuthModal('register');
       }
