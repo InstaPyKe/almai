@@ -1611,122 +1611,382 @@
     }
 
     /* ====================================================================
-       4. USER DASHBOARD VIEW
+       4. USER DASHBOARD VIEW (PREMIUM PARTNER DASHBOARD)
        ==================================================================== */
     .dashboard-header {
-      background: var(--white-card);
-      border: 1px solid var(--beige-border);
-      border-radius: var(--radius-md);
-      padding: 22px 24px;
-      margin: 24px 0;
+      background: linear-gradient(135deg, #FFFFFF 0%, #FAF6FE 60%, #F5EEFD 100%);
+      border: 1.5px solid rgba(139, 92, 246, 0.25);
+      border-radius: var(--radius-lg);
+      padding: 28px 32px;
+      margin: 24px 0 28px 0;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 16px;
-      box-shadow: var(--shadow-sm);
+      gap: 20px;
+      box-shadow: 0 10px 30px -4px rgba(76, 29, 149, 0.09), 0 2px 8px rgba(0, 0, 0, 0.02);
+      position: relative;
+      overflow: hidden;
+    }
+    .dashboard-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #7C3AED, #A855F7, #EC4899, #10B981);
+    }
+    .user-greeting-wrap {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .dash-avatar-badge {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4C1D95 0%, #2D1537 100%);
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 900;
+      box-shadow: 0 6px 18px -2px rgba(76, 29, 149, 0.4);
+      position: relative;
+      flex-shrink: 0;
+      border: 2px solid #E9D5FF;
+    }
+    .dash-avatar-status {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 14px;
+      height: 14px;
+      background: #10B981;
+      border: 2.5px solid #FFFFFF;
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
+      animation: livePulseDot 2s infinite ease-in-out;
     }
     .user-greeting h2 {
-      font-size: 26px;
-      font-weight: 900;
-      margin-bottom: 4px;
+      font-size: 28px;
+      font-weight: 950;
+      color: var(--deep-purple-heading);
+      letter-spacing: -0.025em;
+      line-height: 1.25;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .user-greeting-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
     }
     .user-pkg-tag {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 5px 14px;
-      background: var(--primary-purple-light);
-      color: var(--primary-purple);
-      border: 1.5px solid rgba(109, 40, 217, 0.25);
+      padding: 6px 16px;
+      background: linear-gradient(135deg, #F3E8FF, #EDE9FE);
+      color: #4C1D95;
+      border: 1.5px solid #C084FC;
       border-radius: var(--radius-full);
-      font-size: 14px;
-      font-weight: 800;
+      font-size: 13.5px;
+      font-weight: 900;
+      letter-spacing: 0.03em;
+      box-shadow: 0 2px 8px rgba(109, 40, 217, 0.12);
+      transition: var(--transition);
+    }
+    .user-pkg-tag:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(109, 40, 217, 0.2);
+    }
+    .dash-user-email-text {
+      font-size: 14.5px;
+      font-weight: 750;
+      color: #524B5C;
+    }
+    .partner-verified-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #DCFCE7;
+      color: #166534;
+      border: 1px solid #86EFAC;
+      border-radius: var(--radius-full);
+      font-size: 12.5px;
+      font-weight: 850;
+      padding: 4px 12px;
     }
 
+    /* Section Structure & Arranged Banners */
+    .dash-section-group {
+      margin-bottom: 32px;
+    }
+    .dash-group-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 12px;
+      border-bottom: 2px solid rgba(229, 218, 203, 0.7);
+      padding-bottom: 12px;
+    }
+    .dash-group-title {
+      font-size: 22px;
+      font-weight: 950;
+      color: var(--deep-purple-heading);
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .dash-group-subtitle {
+      font-size: 15px;
+      font-weight: 700;
+      color: #5C5468;
+      margin-top: 4px;
+    }
+    .dash-group-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--primary-purple-light);
+      color: var(--primary-purple);
+      font-size: 13px;
+      font-weight: 850;
+      padding: 5px 14px;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(109, 40, 217, 0.2);
+    }
+
+    /* Metric Grids & Cards */
     .dash-metrics-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+      gap: 18px;
       margin-bottom: 24px;
     }
     .dash-metric-card {
       background: var(--white-card);
-      border: 1.5px solid var(--beige-border);
-      border-radius: var(--radius-md);
-      padding: 22px 20px;
-      box-shadow: var(--shadow-sm);
+      border: 1.5px solid rgba(229, 218, 203, 0.95);
+      border-radius: var(--radius-lg);
+      padding: 24px 22px;
+      box-shadow: 0 4px 16px rgba(59, 7, 100, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
       position: relative;
+      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .dash-metric-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 36px -8px rgba(76, 29, 149, 0.16), 0 4px 12px rgba(0, 0, 0, 0.03);
+      border-color: #C084FC;
     }
     .dash-metric-card.highlight {
-      border-color: var(--primary-purple);
-      background: #FAF8FE;
+      background: linear-gradient(135deg, #FAF5FF 0%, #F5F3FF 50%, #EDE9FE 100%);
+      border: 2px solid #8B5CF6;
+      box-shadow: 0 8px 24px -4px rgba(139, 92, 246, 0.25);
+    }
+    .dash-metric-card.highlight:hover {
+      border-color: #7C3AED;
+      box-shadow: 0 18px 42px -6px rgba(124, 58, 237, 0.32);
+    }
+    .dash-metric-card.highlight::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        60deg,
+        transparent 20%,
+        rgba(255, 255, 255, 0.6) 25%,
+        transparent 30%
+      );
+      transform: translateX(-100%);
+      animation: shimmerSweep 7s infinite ease-in-out;
+      pointer-events: none;
+    }
+    .dash-metric-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .dash-metric-icon-chip {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+    .chip-purple {
+      background: #F3E8FF;
+      color: #6D28D9;
+      border: 1px solid #DDD6FE;
+    }
+    .chip-emerald {
+      background: #DCFCE7;
+      color: #047857;
+      border: 1px solid #A7F3D0;
+    }
+    .chip-amber {
+      background: #FEF3C7;
+      color: #B45309;
+      border: 1px solid #FDE68A;
+    }
+    .chip-blue {
+      background: #DBEAFE;
+      color: #1D4ED8;
+      border: 1px solid #BFDBFE;
     }
     .dash-metric-lbl {
-      font-size: 14px;
-      font-weight: 800;
-      color: var(--charcoal-muted);
+      font-size: 13.5px;
+      font-weight: 900;
+      color: #5B5366;
       text-transform: uppercase;
-      letter-spacing: 0.03em;
+      letter-spacing: 0.05em;
       margin-bottom: 6px;
       display: flex;
       align-items: center;
       gap: 6px;
     }
     .dash-metric-val {
-      font-size: 34px;
+      font-size: 38px;
       font-weight: 900;
       color: var(--deep-purple-heading);
       font-family: 'Space Grotesk', sans-serif;
-      margin-bottom: 4px;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 6px;
     }
     .dash-metric-sub {
-      font-size: 13.5px;
-      font-weight: 650;
-      color: var(--charcoal-muted);
+      font-size: 14.5px;
+      font-weight: 750;
+      color: #5E5669;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
+    /* 18-Hour Task Mission Station */
     .cooldown-banner {
-      background: var(--white-card);
-      border: 2px solid var(--beige-border);
-      border-radius: var(--radius-md);
-      padding: 22px;
-      margin-bottom: 24px;
+      background: linear-gradient(135deg, #FFFFFF 0%, #FCF8FF 55%, #F5EEFD 100%);
+      border: 2px solid rgba(139, 92, 246, 0.35);
+      border-radius: var(--radius-lg);
+      padding: 28px 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px -4px rgba(76, 29, 149, 0.1);
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+    .cooldown-banner:hover {
+      box-shadow: 0 16px 38px -6px rgba(76, 29, 149, 0.16);
+      border-color: #8B5CF6;
+    }
+    .cooldown-banner-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 16px;
-      box-shadow: var(--shadow-sm);
+      margin-bottom: 14px;
     }
     .cooldown-info h3 {
-      font-size: 18px;
-      margin-bottom: 4px;
+      font-size: 22px;
+      font-weight: 950;
+      color: var(--deep-purple-heading);
+      margin-bottom: 6px;
+      letter-spacing: -0.02em;
     }
     .cooldown-info p {
-      color: var(--charcoal-muted);
-      font-size: 14px;
+      color: #4C4656;
+      font-size: 15.5px;
+      font-weight: 650;
+      max-width: 680px;
+      line-height: 1.5;
+    }
+    .mission-roadmap-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 12px;
+      margin: 18px 0;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(216, 180, 254, 0.45);
+      border-radius: var(--radius-md);
+      box-shadow: 0 2px 8px rgba(76, 29, 149, 0.03);
+    }
+    .roadmap-step-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .roadmap-step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #7C3AED, #4C1D95);
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(124, 58, 237, 0.3);
+    }
+    .roadmap-step-text {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--charcoal-text);
+      line-height: 1.35;
     }
     .timer-badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      background: #FEF3C7;
+      gap: 8px;
+      background: linear-gradient(135deg, #FEF3C7, #FDE68A);
       color: #92400E;
-      padding: 6px 14px;
+      padding: 8px 18px;
       border-radius: var(--radius-full);
-      font-weight: 800;
-      font-family: monospace;
-      font-size: 14.5px;
+      border: 1.5px solid #FCD34D;
+      font-weight: 900;
+      font-family: 'Space Grotesk', monospace;
+      font-size: 15px;
+      box-shadow: 0 4px 12px rgba(217, 119, 6, 0.15);
+      animation: timerHeartbeat 2.5s infinite ease-in-out;
     }
 
+    /* Dashboard Sections & Cards */
     .dash-section {
       background: var(--white-card);
-      border: 1px solid var(--beige-border);
-      border-radius: var(--radius-md);
-      padding: 24px;
-      margin-bottom: 24px;
-      box-shadow: var(--shadow-sm);
+      border: 1.5px solid var(--beige-border);
+      border-radius: var(--radius-lg);
+      padding: 26px 28px;
+      margin-bottom: 26px;
+      box-shadow: 0 6px 20px rgba(59, 7, 100, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+      transition: var(--transition);
+    }
+    .dash-section:hover {
+      box-shadow: 0 12px 28px rgba(59, 7, 100, 0.08);
+      border-color: #D8B4FE;
     }
     .dash-section-header {
       display: flex;
@@ -1734,66 +1994,188 @@
       justify-content: space-between;
       margin-bottom: 18px;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1.5px solid rgba(229, 218, 203, 0.6);
     }
     .dash-section-title {
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 950;
       font-family: 'Space Grotesk', sans-serif;
       color: var(--deep-purple-heading);
       letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
+    /* History Tables & Clean Tab Switching */
+    .dash-tabs-bar {
+      display: inline-flex;
+      gap: 8px;
+      background: #F4EBE0;
+      padding: 6px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--beige-border);
+      margin-bottom: 20px;
+      max-width: 100%;
+      overflow-x: auto;
+    }
+    .dash-tab-btn {
+      padding: 10px 22px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: transparent;
+      color: #5C5468;
+      font-size: 15px;
+      font-weight: 850;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+    .dash-tab-btn:hover {
+      color: var(--primary-purple);
+      background: rgba(255, 255, 255, 0.7);
+    }
+    .dash-tab-btn.active {
+      background: var(--white-card);
+      color: var(--primary-purple);
+      box-shadow: 0 4px 12px rgba(59, 7, 100, 0.12);
+    }
+    .dash-history-panel {
+      display: none;
+    }
+    .dash-history-panel.active {
+      display: block;
+      animation: partnerFadeInUp 0.35s ease-out both;
+    }
+
+    /* Tables High-End Styling */
     .table-responsive {
       width: 100%;
       overflow-x: auto;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--beige-border);
+      box-shadow: 0 4px 14px rgba(59, 7, 100, 0.04);
     }
     table {
       width: 100%;
       border-collapse: collapse;
       text-align: left;
       font-size: 15.5px;
-      font-weight: 600;
+      font-weight: 700;
     }
     th {
-      background: var(--bg-cream);
-      color: var(--charcoal-text);
-      font-weight: 850;
-      font-size: 15px;
-      padding: 14px 16px;
-      border-bottom: 1.5px solid var(--beige-border);
+      background: linear-gradient(180deg, #FAF6FE 0%, #F3ECFC 100%);
+      color: var(--deep-purple-heading);
+      font-weight: 900;
+      font-size: 14px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 16px 20px;
+      border-bottom: 2px solid #E9D8FD;
       white-space: nowrap;
     }
     td {
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--beige-border);
+      padding: 16px 20px;
+      border-bottom: 1px solid #EFEAE3;
       color: var(--charcoal-text);
-      font-size: 15px;
-      font-weight: 600;
+      font-size: 15.5px;
+      font-weight: 700;
+      transition: background 0.2s ease;
     }
-    tr:last-child td {
+    tbody tr:hover td {
+      background: #FAF5FF;
+    }
+    tbody tr:last-child td {
       border-bottom: none;
     }
 
     .status-badge {
-      display: inline-block;
-      padding: 4px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 14px;
       border-radius: var(--radius-full);
-      font-size: 13px;
-      font-weight: 800;
+      font-size: 13.5px;
+      font-weight: 900;
       text-transform: capitalize;
+      letter-spacing: 0.02em;
     }
     .status-pending {
       background: #FEF3C7;
       color: #92400E;
+      border: 1px solid #FCD34D;
     }
     .status-approved, .status-completed {
-      background: var(--success-green-bg);
-      color: var(--success-green);
+      background: #DCFCE7;
+      color: #166534;
+      border: 1px solid #86EFAC;
     }
     .status-rejected {
-      background: var(--warning-red-bg);
-      color: var(--warning-red);
+      background: #FEE2E2;
+      color: #991B1B;
+      border: 1px solid #FCA5A5;
+    }
+
+    /* Partner Keyframe Animations */
+    @keyframes partnerFadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes shimmerSweep {
+      0% { transform: translateX(-150%) rotate(25deg); }
+      35%, 100% { transform: translateX(250%) rotate(25deg); }
+    }
+    @keyframes livePulseDot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.7; }
+    }
+    @keyframes timerHeartbeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+    @keyframes waveHand {
+      0%, 100% { transform: rotate(0deg); }
+      20%, 60% { transform: rotate(14deg); }
+      40%, 80% { transform: rotate(-14deg); }
+    }
+    .wave-emoji {
+      display: inline-block;
+      transform-origin: 70% 70%;
+      animation: waveHand 2.2s infinite ease-in-out;
+    }
+
+    /* Staggered Entrance on Active Dashboard */
+    #view-dashboard.active-view .dashboard-header {
+      animation: partnerFadeInUp 0.4s ease-out 0.04s both;
+    }
+    #view-dashboard.active-view .dash-group-financials {
+      animation: partnerFadeInUp 0.45s ease-out 0.10s both;
+    }
+    #view-dashboard.active-view .dash-group-views {
+      animation: partnerFadeInUp 0.45s ease-out 0.18s both;
+    }
+    #view-dashboard.active-view .cooldown-banner {
+      animation: partnerFadeInUp 0.45s ease-out 0.25s both;
+    }
+    #view-dashboard.active-view #active-campaign-card {
+      animation: partnerFadeInUp 0.45s ease-out 0.32s both;
+    }
+    #view-dashboard.active-view .dash-group-products {
+      animation: partnerFadeInUp 0.45s ease-out 0.38s both;
+    }
+    #view-dashboard.active-view .dash-group-history {
+      animation: partnerFadeInUp 0.45s ease-out 0.44s both;
     }
 
     /* ====================================================================
@@ -4189,132 +4571,260 @@
   </main>
 
   <!-- ====================================================================
-       VIEW 4: USER DASHBOARD
+       VIEW 4: USER DASHBOARD (SUPER NICE PARTNER DASHBOARD)
        ==================================================================== -->
   <main id="view-dashboard" class="view-container">
-    <div class="container" style="padding-bottom: 50px;">
+    <div class="container" style="padding-bottom: 60px;">
       <!-- Dashboard Gating / Verification Status Banner -->
       <div id="dashboard-gating-banner" style="display: none;"></div>
 
-      <!-- Dashboard Header -->
+      <!-- Dashboard Command Header -->
       <div class="dashboard-header">
-        <div class="user-greeting">
-          <h2>Welcome back, <span id="dash-user-name">Partner</span>!</h2>
-          <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
-            <span class="user-pkg-tag" id="dash-pkg-tag">Starter Pro</span>
-            <span style="font-size: 13px; color: var(--charcoal-muted);" id="dash-user-email">user@almai.co.ke</span>
+        <div class="user-greeting-wrap">
+          <div class="dash-avatar-badge">
+            <span id="dash-avatar-initials">P</span>
+            <span class="dash-avatar-status" title="Account Active"></span>
+          </div>
+          <div class="user-greeting">
+            <h2>Welcome back, <span id="dash-user-name">Partner</span>! <span class="wave-emoji">👋</span></h2>
+            <div class="user-greeting-meta">
+              <span class="user-pkg-tag" id="dash-pkg-tag">Starter Pro</span>
+              <span class="partner-verified-badge">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Verified Active Partner
+              </span>
+              <span class="dash-user-email-text" id="dash-user-email">user@almai.co.ke</span>
+            </div>
           </div>
         </div>
 
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-          <button class="btn btn-secondary btn-sm" onclick="switchView('products')">
+        <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+          <button class="btn btn-secondary btn-upgrade-cta" onclick="switchView('products')">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
             Upgrade Tier
           </button>
-          <button class="btn btn-success btn-sm" onclick="openWithdrawalModal()">
-            <span class="svg-icon" style="width: 15px; height: 15px; margin-right: 4px;">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg>
-            </span>
+          <button class="btn btn-success btn-payout-cta" onclick="openWithdrawalModal()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
             Request M-Pesa Payout
           </button>
         </div>
       </div>
 
-      <!-- Financial Ledger Overview Cards -->
-      <div class="dash-metrics-grid">
-        <div class="dash-metric-card highlight">
-          <div class="dash-metric-lbl">Available Balance</div>
-          <div class="dash-metric-val" id="dash-val-avail">KSh 0</div>
-          <div class="dash-metric-sub">Ready for instant withdrawal</div>
-        </div>
-
-        <div class="dash-metric-card">
-          <div class="dash-metric-lbl">Reserved Balance</div>
-          <div class="dash-metric-val" id="dash-val-reserved">KSh 0</div>
-          <div class="dash-metric-sub">Held in pending payout requests</div>
-        </div>
-
-        <div class="dash-metric-card">
-          <div class="dash-metric-lbl">Lifetime Earnings</div>
-          <div class="dash-metric-val" id="dash-val-earned">KSh 0</div>
-          <div class="dash-metric-sub">Total verified rewards earned</div>
-        </div>
-
-        <div class="dash-metric-card">
-          <div class="dash-metric-lbl">Completed Payouts</div>
-          <div class="dash-metric-val" id="dash-val-withdrawn">KSh 0</div>
-          <div class="dash-metric-sub">Disbursed directly via M-Pesa</div>
-        </div>
-      </div>
-
-      <!-- Views Breakdown Cards -->
-      <div class="dash-metrics-grid">
-        <div class="dash-metric-card">
-          <div class="dash-metric-lbl">Reported Views</div>
-          <div class="dash-metric-val" id="dash-views-reported">0</div>
-          <div class="dash-metric-sub">Total views submitted by you</div>
-        </div>
-
-        <div class="dash-metric-card">
-          <div class="dash-metric-lbl">Pending Review</div>
-          <div class="dash-metric-val" id="dash-views-pending">0</div>
-          <div class="dash-metric-sub">Awaiting admin screenshot audit</div>
-        </div>
-
-        <div class="dash-metric-card">
-          <div class="dash-metric-lbl">Approved Views</div>
-          <div class="dash-metric-val" id="dash-views-approved">0</div>
-          <div class="dash-metric-sub">Verified human views paid</div>
-        </div>
-
-        <div class="dash-metric-card">
-          <div class="dash-metric-lbl">Earn Rate</div>
-          <div class="dash-metric-val" id="dash-rate-per-view">KSh 20</div>
-          <div class="dash-metric-sub">Per approved payable view</div>
-        </div>
-      </div>
-
-      <!-- 18-Hour Task Cooldown & Submission Card -->
-      <div class="cooldown-banner">
-        <div class="cooldown-info">
-          <h3 id="cooldown-title">Daily WhatsApp Campaign Available</h3>
-          <p id="cooldown-desc">Post the live Almai campaign to your WhatsApp Status for 18 hours to earn rewards.</p>
-        </div>
-        <div>
-          <span class="timer-badge" id="cooldown-badge" style="display: none;">
-            <span class="svg-icon" style="width: 15px; height: 15px;">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            </span>
-            <span id="cooldown-badge-text">Cooldown Active</span>
+      <!-- SECTION 1: FINANCIAL LEDGER & WALLET BALANCES -->
+      <div class="dash-section-group dash-group-financials">
+        <div class="dash-group-header">
+          <div>
+            <div class="dash-group-title">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#7C3AED" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+              Financial Ledger &amp; Wallet Balances
+            </div>
+            <div class="dash-group-subtitle">
+              Real-time Cloudflare D1 balance ledger with instant Safaricom M-Pesa payouts
+            </div>
+          </div>
+          <span class="dash-group-pill">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: #10B981; display: inline-block;"></span>
+            D1 Verified Ledger
           </span>
-          <button class="btn btn-primary" id="btn-submit-task-trigger" onclick="openTaskModal()">
-            <span class="svg-icon" style="width: 16px; height: 16px; margin-right: 4px;">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-            </span>
-            Submit 18h WhatsApp Proof
-          </button>
+        </div>
+
+        <div class="dash-metrics-grid">
+          <!-- Card 1: Available Balance (Hero Card) -->
+          <div class="dash-metric-card highlight">
+            <div class="dash-metric-top">
+              <div class="dash-metric-lbl">Available Balance</div>
+              <div class="dash-metric-icon-chip chip-purple">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg>
+              </div>
+            </div>
+            <div class="dash-metric-val" id="dash-val-avail">KSh 0</div>
+            <div class="dash-metric-sub">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#059669" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              Ready for instant M-Pesa withdrawal
+            </div>
+          </div>
+
+          <!-- Card 2: Reserved Balance -->
+          <div class="dash-metric-card">
+            <div class="dash-metric-top">
+              <div class="dash-metric-lbl">Reserved Balance</div>
+              <div class="dash-metric-icon-chip chip-amber">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              </div>
+            </div>
+            <div class="dash-metric-val" id="dash-val-reserved">KSh 0</div>
+            <div class="dash-metric-sub">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#D97706" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              Held in pending payout requests
+            </div>
+          </div>
+
+          <!-- Card 3: Lifetime Earnings -->
+          <div class="dash-metric-card">
+            <div class="dash-metric-top">
+              <div class="dash-metric-lbl">Lifetime Earnings</div>
+              <div class="dash-metric-icon-chip chip-purple">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+              </div>
+            </div>
+            <div class="dash-metric-val" id="dash-val-earned">KSh 0</div>
+            <div class="dash-metric-sub">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              Total verified rewards earned
+            </div>
+          </div>
+
+          <!-- Card 4: Completed Payouts -->
+          <div class="dash-metric-card">
+            <div class="dash-metric-top">
+              <div class="dash-metric-lbl">Completed Payouts</div>
+              <div class="dash-metric-icon-chip chip-emerald">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              </div>
+            </div>
+            <div class="dash-metric-val" id="dash-val-withdrawn">KSh 0</div>
+            <div class="dash-metric-sub">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#047857" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              Disbursed directly via M-Pesa
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Live Campaign Active Banner Info -->
+      <!-- SECTION 2: WHATSAPP VIEWS & PERFORMANCE METRICS -->
+      <div class="dash-section-group dash-group-views">
+        <div class="dash-group-header">
+          <div>
+            <div class="dash-group-title">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#7C3AED" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              WhatsApp Traffic &amp; Audit Performance
+            </div>
+            <div class="dash-group-subtitle">
+              Monitor your submitted status impressions, pending verification queue, and tier rates
+            </div>
+          </div>
+          <span class="dash-group-pill">18-Hour Rule Protected</span>
+        </div>
+
+        <div class="dash-metrics-grid">
+          <!-- Card 1: Reported Views -->
+          <div class="dash-metric-card">
+            <div class="dash-metric-top">
+              <div class="dash-metric-lbl">Reported Views</div>
+              <div class="dash-metric-icon-chip chip-blue">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"></path><path d="M12 20V4"></path><path d="M6 20v-6"></path></svg>
+              </div>
+            </div>
+            <div class="dash-metric-val" id="dash-views-reported">0</div>
+            <div class="dash-metric-sub">Total views submitted by you</div>
+          </div>
+
+          <!-- Card 2: Pending Review -->
+          <div class="dash-metric-card">
+            <div class="dash-metric-top">
+              <div class="dash-metric-lbl">Pending Review</div>
+              <div class="dash-metric-icon-chip chip-amber">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              </div>
+            </div>
+            <div class="dash-metric-val" id="dash-views-pending">0</div>
+            <div class="dash-metric-sub">Awaiting admin screenshot audit</div>
+          </div>
+
+          <!-- Card 3: Approved Views -->
+          <div class="dash-metric-card">
+            <div class="dash-metric-top">
+              <div class="dash-metric-lbl">Approved Views</div>
+              <div class="dash-metric-icon-chip chip-emerald">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              </div>
+            </div>
+            <div class="dash-metric-val" id="dash-views-approved">0</div>
+            <div class="dash-metric-sub">Verified human views paid</div>
+          </div>
+
+          <!-- Card 4: Earn Rate -->
+          <div class="dash-metric-card">
+            <div class="dash-metric-top">
+              <div class="dash-metric-lbl">Earn Rate</div>
+              <div class="dash-metric-icon-chip chip-purple">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v12M15 9.5H9.5a2.5 2.5 0 0 1 0-5H14"></path></svg>
+              </div>
+            </div>
+            <div class="dash-metric-val" id="dash-rate-per-view">KSh 20</div>
+            <div class="dash-metric-sub">Per approved payable view</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 3: 18-HOUR TASK MISSION STATION -->
+      <div class="cooldown-banner">
+        <div class="cooldown-banner-top">
+          <div class="cooldown-info">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+              <span class="status-badge status-approved" style="font-size: 12px; padding: 3px 10px;">Daily Mission</span>
+              <span style="font-size: 13px; font-weight: 800; color: #7C3AED;">18h Cooldown System</span>
+            </div>
+            <h3 id="cooldown-title">Daily WhatsApp Campaign Available</h3>
+            <p id="cooldown-desc">Post the live Almai campaign to your WhatsApp Status for 18 hours to earn rewards.</p>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <span class="timer-badge" id="cooldown-badge" style="display: none;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              <span id="cooldown-badge-text">Cooldown Active</span>
+            </span>
+            <button class="btn btn-primary" id="btn-submit-task-trigger" onclick="openTaskModal()" style="font-weight: 900; font-size: 15.5px; padding: 13px 24px; box-shadow: 0 8px 22px rgba(76, 29, 149, 0.35);">
+              <span class="svg-icon" style="width: 18px; height: 18px; margin-right: 6px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+              </span>
+              Submit 18h WhatsApp Proof
+            </button>
+          </div>
+        </div>
+
+        <div class="mission-roadmap-steps">
+          <div class="roadmap-step-item">
+            <div class="roadmap-step-num">1</div>
+            <div class="roadmap-step-text">Download Brand Picture</div>
+          </div>
+          <div class="roadmap-step-item">
+            <div class="roadmap-step-num">2</div>
+            <div class="roadmap-step-text">Post with Caption to Status</div>
+          </div>
+          <div class="roadmap-step-item">
+            <div class="roadmap-step-num">3</div>
+            <div class="roadmap-step-text">Keep Live for 18 Hours</div>
+          </div>
+          <div class="roadmap-step-item">
+            <div class="roadmap-step-num">4</div>
+            <div class="roadmap-step-text">Screenshot Views &amp; Get Paid</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 4: LIVE SPONSORED CAMPAIGN -->
       <div class="dash-section" id="active-campaign-card">
         <div class="dash-section-header">
-          <div class="dash-section-title">Today's Active Campaign to Post</div>
-          <span class="status-badge status-approved">Live & Active</span>
+          <div class="dash-section-title">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#7C3AED" stroke-width="2.2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            Today's Active Campaign to Post
+          </div>
+          <span class="status-badge status-approved">Live &amp; Active</span>
         </div>
-        <div style="background: var(--bg-cream); border: 1px solid var(--beige-border); border-radius: var(--radius-sm); padding: 18px;">
-          <h4 id="camp-title" style="font-size: 16.5px; margin-bottom: 6px;">Almai Digital Growth & Mobile Brand Blast</h4>
-          <p id="camp-guidelines" style="color: var(--charcoal-muted); font-size: 14px; margin-bottom: 14px;">
+        <div style="background: linear-gradient(135deg, var(--bg-cream) 0%, #FAF6EE 100%); border: 1.5px solid var(--beige-border); border-radius: var(--radius-md); padding: 22px;">
+          <h4 id="camp-title" style="font-size: 18px; font-weight: 900; color: var(--deep-purple-heading); margin-bottom: 8px;">Almai Digital Growth &amp; Mobile Brand Blast</h4>
+          <p id="camp-guidelines" style="color: #4C4656; font-size: 15px; font-weight: 650; margin-bottom: 16px; line-height: 1.55;">
             1. Post the official Almai banner on your WhatsApp Status. 2. Caption: "Discover verified digital advertising solutions with Almai!". 3. Keep for 18 hours, take full-screen view count screenshot, and submit proof.
           </p>
-          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <a href="https://almai.pages.dev" target="_blank" class="btn btn-secondary btn-sm">
-              <span class="svg-icon" style="width: 14px; height: 14px; margin-right: 4px;">
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <a href="https://almai.pages.dev" target="_blank" class="btn btn-secondary btn-sm" style="font-weight: 850; font-size: 14px; padding: 10px 18px;">
+              <span class="svg-icon" style="width: 15px; height: 15px; margin-right: 6px;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
               </span>
               View Target Link
             </a>
-            <button class="btn btn-secondary btn-sm" onclick="copyCaptionText()">
-              <span class="svg-icon" style="width: 14px; height: 14px; margin-right: 4px;">
+            <button class="btn btn-secondary btn-sm" onclick="copyCaptionText(this)" style="font-weight: 850; font-size: 14px; padding: 10px 18px;">
+              <span class="svg-icon" style="width: 15px; height: 15px; margin-right: 6px;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
               </span>
               Copy Suggested Caption
@@ -4323,13 +4833,21 @@
         </div>
       </div>
 
-      <!-- WhatsApp Status Products to Post & Download -->
-      <div class="dash-section">
+      <!-- SECTION 5: TODAY'S WHATSAPP STATUS PRODUCTS TO DOWNLOAD -->
+      <div class="dash-section dash-group-products">
         <div class="dash-section-header">
-          <div class="dash-section-title">Today's WhatsApp Status Products to Download &amp; Post</div>
-          <span style="font-size: 13px; color: var(--charcoal-muted);">Direct picture download &amp; 1-click caption copy</span>
+          <div>
+            <div class="dash-section-title">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#7C3AED" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Today's WhatsApp Status Products to Download &amp; Post
+            </div>
+            <div style="font-size: 14.5px; font-weight: 700; color: #5C5468; margin-top: 4px;">
+              Download verified brand pictures below, copy captions with 1 click, and post to your status.
+            </div>
+          </div>
+          <span class="dash-group-pill">Direct HD Downloads</span>
         </div>
-        <p style="font-size: 13.5px; color: var(--charcoal-muted); margin-bottom: 16px;">
+        <p style="font-size: 14.5px; color: #4B4553; font-weight: 650; margin-bottom: 20px; line-height: 1.5;">
           Download any of our verified brand product pictures below to your phone. Copy the caption, post it on your WhatsApp Status, and keep it up for 18 hours to earn your approved view payouts!
         </p>
         <div class="products-posts-grid" id="dash-products-container">
@@ -4337,63 +4855,83 @@
         </div>
       </div>
 
-      <!-- Task Submissions History Table -->
-      <div class="dash-section">
+      <!-- SECTION 6: ARRANGED ACTIVITY & FINANCIAL HISTORY (TABBED) -->
+      <div class="dash-section dash-group-history">
         <div class="dash-section-header">
-          <div class="dash-section-title">Your Task Submissions</div>
-          <span style="font-size: 13px; color: var(--charcoal-muted);">Real-time audit status</span>
+          <div>
+            <div class="dash-section-title">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#7C3AED" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              Partner History &amp; Audits
+            </div>
+            <div style="font-size: 14.5px; font-weight: 700; color: #5C5468; margin-top: 4px;">
+              Real-time audit log of your WhatsApp screenshot submissions and Safaricom M-Pesa disbursements
+            </div>
+          </div>
+          <button class="btn btn-success btn-sm" onclick="openWithdrawalModal()" style="font-weight: 850; font-size: 14px;">
+            + Request Payout
+          </button>
         </div>
 
-        <div class="table-responsive">
-          <table id="table-user-tasks">
-            <thead>
-              <tr>
-                <th>Submission Date</th>
-                <th>Reported Views</th>
-                <th>Approved Views</th>
-                <th>Rate / View</th>
-                <th>Reward (KSh)</th>
-                <th>Status</th>
-                <th>Notes</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-user-tasks">
-              <tr>
-                <td colspan="7" style="text-align: center; color: var(--charcoal-muted); padding: 26px;">
-                  No task submissions yet. Complete your first WhatsApp task above!
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Withdrawal Requests Table -->
-      <div class="dash-section">
-        <div class="dash-section-header">
-          <div class="dash-section-title">Your Withdrawal Requests</div>
-          <button class="btn btn-secondary btn-sm" onclick="openWithdrawalModal()">+ New Request</button>
+        <!-- Arranged Tab Bar -->
+        <div class="dash-tabs-bar">
+          <button class="dash-tab-btn active" id="dash-tab-btn-tasks" onclick="switchDashHistoryTab('tasks')">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            Task Submissions History
+          </button>
+          <button class="dash-tab-btn" id="dash-tab-btn-withdrawals" onclick="switchDashHistoryTab('withdrawals')">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+            M-Pesa Withdrawal Requests
+          </button>
         </div>
 
-        <div class="table-responsive">
-          <table id="table-user-withdrawals">
-            <thead>
-              <tr>
-                <th>Date Requested</th>
-                <th>Amount (KSh)</th>
-                <th>M-Pesa Phone</th>
-                <th>Status</th>
-                <th>Receipt / Reason</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-user-withdrawals">
-              <tr>
-                <td colspan="5" style="text-align: center; color: var(--charcoal-muted); padding: 26px;">
-                  No withdrawals requested yet. Accumulate KSh 100 or more to request a payout.
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <!-- Panel 1: Task Submissions -->
+        <div id="dash-tab-panel-tasks" class="dash-history-panel active">
+          <div class="table-responsive">
+            <table id="table-user-tasks">
+              <thead>
+                <tr>
+                  <th>Submission Date</th>
+                  <th>Reported Views</th>
+                  <th>Approved Views</th>
+                  <th>Rate / View</th>
+                  <th>Reward (KSh)</th>
+                  <th>Status</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-user-tasks">
+                <tr>
+                  <td colspan="7" style="text-align: center; color: var(--charcoal-muted); padding: 30px; font-weight: 750;">
+                    No task submissions yet. Complete your first WhatsApp task above!
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Panel 2: Withdrawal Requests -->
+        <div id="dash-tab-panel-withdrawals" class="dash-history-panel">
+          <div class="table-responsive">
+            <table id="table-user-withdrawals">
+              <thead>
+                <tr>
+                  <th>Date Requested</th>
+                  <th>Amount (KSh)</th>
+                  <th>M-Pesa Phone</th>
+                  <th>Status</th>
+                  <th>Receipt / Reason</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-user-withdrawals">
+                <tr>
+                  <td colspan="5" style="text-align: center; color: var(--charcoal-muted); padding: 30px; font-weight: 750;">
+                    No withdrawals requested yet. Accumulate KSh 100 or more to request a payout.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -5230,6 +5768,10 @@
       // Populate dashboard values
       document.getElementById('dash-user-name').textContent = AppState.user.name;
       document.getElementById('dash-user-email').textContent = AppState.user.email;
+      const avatarEl = document.getElementById('dash-avatar-initials');
+      if (avatarEl && AppState.user.name) {
+        avatarEl.textContent = AppState.user.name.trim().charAt(0).toUpperCase();
+      }
       
       const pkgName = AppState.activePackage ? AppState.activePackage.name : (AppState.pendingPackage ? 'Verification Pending' : 'No Active Package');
       document.getElementById('dash-pkg-tag').textContent = pkgName;
@@ -6762,9 +7304,39 @@
       }
     }
 
-    function copyCaptionText() {
+    function switchDashHistoryTab(tabName) {
+      const tabs = ['tasks', 'withdrawals'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`dash-tab-btn-${t}`);
+        const panel = document.getElementById(`dash-tab-panel-${t}`);
+        if (btn) btn.classList.remove('active');
+        if (panel) panel.classList.remove('active');
+      });
+      const activeBtn = document.getElementById(`dash-tab-btn-${tabName}`);
+      const activePanel = document.getElementById(`dash-tab-panel-${tabName}`);
+      if (activeBtn) activeBtn.classList.add('active');
+      if (activePanel) activePanel.classList.add('active');
+    }
+
+    function copyCaptionText(btnEl) {
       const caption = 'Discover verified digital advertising and daily earnings with Almai Products! Visit: https://almai.pages.dev';
       navigator.clipboard.writeText(caption).then(() => {
+        if (btnEl) {
+          const origHtml = btnEl.innerHTML;
+          btnEl.innerHTML = `<span class="svg-icon" style="width: 15px; height: 15px; margin-right: 6px;"><svg viewBox="0 0 24 24" fill="none" stroke="#166534" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></span> Copied to Clipboard!`;
+          btnEl.style.background = '#DCFCE7';
+          btnEl.style.borderColor = '#86EFAC';
+          btnEl.style.color = '#166534';
+          setTimeout(() => {
+            btnEl.innerHTML = origHtml;
+            btnEl.style.background = '';
+            btnEl.style.borderColor = '';
+            btnEl.style.color = '';
+          }, 2400);
+        } else {
+          alert('Campaign caption copied to clipboard!');
+        }
+      }).catch(() => {
         alert('Campaign caption copied to clipboard!');
       });
     }

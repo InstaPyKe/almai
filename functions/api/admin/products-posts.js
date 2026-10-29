@@ -159,7 +159,7 @@ export async function onRequestDelete(context) {
   const admin = auth.user;
 
   const url = new URL(request.url);
-  const isClearAll = url.searchParams.get('clearAll') === 'true' || url.searchParams.get('action') === 'clear_all';
+  let isClearAll = url.searchParams.get('clearAll') === 'true' || url.searchParams.get('action') === 'clear_all';
   let postId = url.searchParams.get('id') || url.searchParams.get('postId');
 
   if (!postId && !isClearAll) {
