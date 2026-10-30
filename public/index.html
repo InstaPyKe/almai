@@ -2242,137 +2242,441 @@
     }
 
     /* ====================================================================
-       ADMIN FULL-PAGE VIEW & RESPONSIVE NON-OVERLAPPING TABLES
+       ADMIN CONSOLE: SIDEBAR WORKSPACE & RICH THEMED SECTIONS
        ==================================================================== */
     .admin-header-card {
-      background: var(--white-card);
-      border: 1.5px solid var(--beige-border);
-      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #FFFFFF 0%, #FAF6FE 60%, #F5EEFD 100%);
+      border: 1.5px solid rgba(139, 92, 246, 0.25);
+      border-radius: var(--radius-lg);
       padding: 24px 28px;
-      margin: 24px 0 20px;
+      margin: 20px 0 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 16px;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 8px 26px -4px rgba(76, 29, 149, 0.08);
+      position: relative;
+      overflow: hidden;
     }
-    .admin-nav-bar {
-      display: flex;
-      gap: 8px;
-      background: var(--white-card);
-      border: 1.5px solid var(--beige-border);
-      border-radius: var(--radius-md);
-      padding: 8px;
-      margin-bottom: 24px;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      box-shadow: var(--shadow-sm);
+    .admin-header-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #D97706, #7C3AED, #06B6D4, #10B981);
     }
-    .admin-nav-bar::-webkit-scrollbar {
-      height: 6px;
+
+    /* 2-Column Workspace Layout */
+    .admin-workspace {
+      display: grid;
+      grid-template-columns: 290px minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+      margin-bottom: 40px;
     }
-    .admin-nav-bar::-webkit-scrollbar-thumb {
-      background: #D8B4FE;
+
+    /* Left Sidebar Navigation */
+    .admin-sidebar {
+      background: #FFFFFF;
+      border: 1.5px solid rgba(139, 92, 246, 0.22);
+      border-radius: var(--radius-lg);
+      padding: 22px 14px;
+      box-shadow: 0 10px 30px -4px rgba(76, 29, 149, 0.07), 0 2px 6px rgba(0, 0, 0, 0.02);
+      position: sticky;
+      top: 85px;
+      z-index: 90;
+      max-height: calc(100vh - 105px);
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #DDD6FE transparent;
+    }
+    .admin-sidebar::-webkit-scrollbar {
+      width: 5px;
+    }
+    .admin-sidebar::-webkit-scrollbar-thumb {
+      background: #DDD6FE;
       border-radius: 4px;
     }
-    .admin-tab {
-      padding: 10px 18px;
-      border-radius: var(--radius-sm);
-      font-weight: 800;
-      font-size: 15px;
-      color: var(--charcoal-muted);
-      background: none;
-      white-space: nowrap;
-      cursor: pointer;
-      display: inline-flex;
+
+    /* Sidebar Brand / Mode Chip */
+    .admin-sidebar-profile {
+      display: flex;
       align-items: center;
-      gap: 8px;
-      transition: var(--transition);
+      gap: 12px;
+      padding: 12px 14px;
+      background: linear-gradient(135deg, #F3E8FF 0%, #FAF5FF 100%);
+      border: 1px solid #DDD6FE;
+      border-radius: var(--radius-md);
+      margin-bottom: 18px;
+    }
+    .admin-avatar-crown {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #7C3AED, #3B0764);
+      color: #FBBF24;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(109, 40, 217, 0.35);
+      flex-shrink: 0;
+    }
+    .admin-profile-meta {
+      flex: 1;
+      min-width: 0;
+    }
+    .admin-profile-title {
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--deep-purple-heading);
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+    }
+    .admin-profile-status {
+      font-size: 12px;
+      font-weight: 750;
+      color: #059669;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 3px;
+    }
+    .admin-live-pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10B981;
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
+      animation: livePulseDot 2s infinite ease-in-out;
+    }
+
+    /* Group Category Labels */
+    .admin-side-group {
+      margin-bottom: 16px;
+    }
+    .admin-side-group-label {
+      font-size: 11px;
+      font-weight: 900;
+      color: #7C3AED;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0 10px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Sidebar Navigation Tabs */
+    .admin-tab {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 14.5px;
+      color: #4B4553;
+      background: transparent;
       border: 1.5px solid transparent;
+      cursor: pointer;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      text-align: left;
+      margin-bottom: 4px;
+      position: relative;
     }
     .admin-tab:hover {
-      background: var(--primary-purple-light);
+      background: #FAF5FF;
       color: var(--primary-purple);
-      border-color: rgba(109, 40, 217, 0.2);
+      border-color: #E9D5FF;
+      transform: translateX(3px);
     }
     .admin-tab.active {
-      background: var(--primary-purple);
-      color: #fff;
-      border-color: var(--primary-purple);
-      box-shadow: 0 4px 12px rgba(109, 40, 217, 0.28);
+      background: linear-gradient(135deg, #4C1D95 0%, #2D1537 100%);
+      color: #FFFFFF !important;
+      border-color: #7C3AED;
+      box-shadow: 0 6px 18px -2px rgba(76, 29, 149, 0.35);
+      transform: translateX(4px);
     }
-    .tab-badge {
-      background: rgba(255, 255, 255, 0.25);
-      color: #fff;
-      font-size: 11px;
-      font-weight: 850;
-      padding: 1px 7px;
-      border-radius: var(--radius-full);
-      line-height: 1.3;
-      margin-left: 4px;
+    .admin-tab-chip {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
       transition: var(--transition);
     }
-    .admin-tab:not(.active) .tab-badge {
-      background: var(--primary-purple-light);
-      color: var(--primary-purple);
+    .admin-tab:not(.active) .admin-tab-chip.chip-amber { background: #FEF3C7; color: #D97706; }
+    .admin-tab:not(.active) .admin-tab-chip.chip-purple { background: #F3E8FF; color: #7C3AED; }
+    .admin-tab:not(.active) .admin-tab-chip.chip-emerald { background: #DCFCE7; color: #059669; }
+    .admin-tab:not(.active) .admin-tab-chip.chip-blue { background: #DBEAFE; color: #2563EB; }
+    .admin-tab:not(.active) .admin-tab-chip.chip-pink { background: #FCE7F3; color: #DB2777; }
+    .admin-tab:not(.active) .admin-tab-chip.chip-indigo { background: #E0E7FF; color: #4F46E5; }
+    .admin-tab:not(.active) .admin-tab-chip.chip-slate { background: #F1F5F9; color: #475569; }
+
+    .admin-tab.active .admin-tab-chip {
+      background: rgba(255, 255, 255, 0.2);
+      color: #FFFFFF;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+    .admin-tab-title {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Badges in Sidebar */
+    .tab-badge {
+      background: #F3E8FF;
+      color: #6D28D9;
+      font-size: 11.5px;
+      font-weight: 850;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      line-height: 1.3;
+      margin-left: auto;
+      border: 1px solid #DDD6FE;
+    }
+    .admin-tab.active .tab-badge {
+      background: rgba(255, 255, 255, 0.25);
+      color: #FFFFFF;
+      border-color: rgba(255, 255, 255, 0.4);
     }
     .tab-badge.badge-alert {
-      background: var(--warning-orange) !important;
-      color: #fff !important;
+      background: #DC2626 !important;
+      color: #FFFFFF !important;
+      border-color: #B91C1C !important;
       animation: alertPulse 2s infinite ease-in-out;
     }
-    @keyframes alertPulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.85; transform: scale(1.08); }
+
+    /* Sidebar Footer Utilities */
+    .admin-sidebar-footer {
+      border-top: 1.5px solid rgba(229, 218, 203, 0.8);
+      padding-top: 14px;
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
+    .admin-side-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #5C5468;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: left;
+    }
+    .admin-side-btn:hover {
+      background: #F5EEFD;
+      color: var(--primary-purple);
+    }
+    .admin-side-btn.btn-signout:hover {
+      background: #FEE2E2;
+      color: #991B1B;
+    }
+
+    /* Right Main Content Area */
+    .admin-main-area {
+      min-width: 0;
+    }
+
+    /* KPI Grid */
     .admin-kpi-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 22px;
     }
     .admin-kpi-card {
-      background: #fff;
-      border: 1.5px solid var(--beige-border);
+      background: #FFFFFF;
+      border: 1.5px solid rgba(229, 218, 203, 0.95);
       border-radius: var(--radius-md);
-      padding: 18px;
-      box-shadow: var(--shadow-sm);
+      padding: 18px 16px;
+      box-shadow: 0 4px 16px rgba(59, 7, 100, 0.04);
       transition: var(--transition);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      position: relative;
+      overflow: hidden;
     }
     .admin-kpi-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-      border-color: #D8B4FE;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 24px -4px rgba(76, 29, 149, 0.12);
     }
+    .admin-kpi-card.kpi-amber { border-left: 4.5px solid #F59E0B; }
+    .admin-kpi-card.kpi-purple { border-left: 4.5px solid #7C3AED; }
+    .admin-kpi-card.kpi-cyan { border-left: 4.5px solid #06B6D4; }
+    .admin-kpi-card.kpi-violet { border-left: 4.5px solid #8B5CF6; }
+    .admin-kpi-card.kpi-emerald { border-left: 4.5px solid #10B981; }
+
     .admin-kpi-lbl {
       font-size: 12px;
-      font-weight: 800;
-      color: var(--charcoal-muted);
+      font-weight: 850;
+      color: #5C5468;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.04em;
     }
     .admin-kpi-val {
-      font-size: 28px;
+      font-size: 30px;
       font-weight: 900;
       font-family: 'Space Grotesk', sans-serif;
       color: var(--deep-purple-heading);
-      margin: 6px 0 2px;
+      letter-spacing: -0.02em;
+      margin: 6px 0 3px;
+      line-height: 1.15;
     }
     .admin-kpi-sub {
       font-size: 12px;
-      color: var(--charcoal-muted);
-      font-weight: 600;
+      color: #6B6275;
+      font-weight: 700;
     }
+
+    /* Content Section Boxes & Themed Headers */
     .admin-content-section {
       background: var(--white-card);
       border: 1.5px solid var(--beige-border);
-      border-radius: var(--radius-md);
-      padding: 26px 24px;
+      border-radius: var(--radius-lg);
+      padding: 26px 26px 30px;
       margin-bottom: 24px;
+      box-shadow: 0 8px 24px -3px rgba(59, 7, 100, 0.05);
+      animation: adminSectionFadeIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    @keyframes adminSectionFadeIn {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Colored Section Banners */
+    .admin-section-banner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      border-radius: var(--radius-md);
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 14px;
+      border-left: 5px solid;
+    }
+    .banner-theme-amber {
+      background: linear-gradient(135deg, #FFFDF5 0%, #FEF9C3 100%);
+      border: 1px solid #FDE047;
+      border-left-color: #D97706;
+    }
+    .banner-theme-purple {
+      background: linear-gradient(135deg, #FAF5FF 0%, #F3E8FF 100%);
+      border: 1px solid #DDD6FE;
+      border-left-color: #7C3AED;
+    }
+    .banner-theme-pink {
+      background: linear-gradient(135deg, #FDF4FF 0%, #FAE8FF 100%);
+      border: 1px solid #F5D0FE;
+      border-left-color: #D946EF;
+    }
+    .banner-theme-violet {
+      background: linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 100%);
+      border: 1px solid #DDD6FE;
+      border-left-color: #8B5CF6;
+    }
+    .banner-theme-emerald {
+      background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%);
+      border: 1px solid #86EFAC;
+      border-left-color: #059669;
+    }
+    .banner-theme-indigo {
+      background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
+      border: 1px solid #C7D2FE;
+      border-left-color: #4F46E5;
+    }
+    .banner-theme-slate {
+      background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+      border: 1px solid #CBD5E1;
+      border-left-color: #475569;
+    }
+
+    .admin-banner-lead {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .admin-banner-chip {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+    .chip-bg-amber { background: #FEF3C7; color: #D97706; }
+    .chip-bg-purple { background: #F3E8FF; color: #7C3AED; }
+    .chip-bg-pink { background: #FCE7F3; color: #DB2777; }
+    .chip-bg-violet { background: #EDE9FE; color: #7C3AED; }
+    .chip-bg-emerald { background: #DCFCE7; color: #047857; }
+    .chip-bg-indigo { background: #E0E7FF; color: #4338CA; }
+    .chip-bg-slate { background: #E2E8F0; color: #334155; }
+
+    .admin-banner-title {
+      font-size: 19px;
+      font-weight: 950;
+      color: var(--deep-purple-heading);
+      letter-spacing: -0.015em;
+      margin-bottom: 3px;
+    }
+    .admin-banner-subtitle {
+      font-size: 14px;
+      font-weight: 650;
+      color: #5C5468;
+      margin: 0;
+    }
+
+    @media (max-width: 1024px) {
+      .admin-workspace {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .admin-sidebar {
+        position: static;
+        max-height: none;
+        overflow-x: auto;
+        padding: 16px;
+      }
+      .admin-side-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .admin-tab {
+        width: auto;
+        flex: 1 1 calc(50% - 6px);
+        min-width: 140px;
+      }
+      .admin-sidebar-footer {
+        flex-direction: row;
+      }
+    }
+    @media (max-width: 640px) {
+      .admin-tab {
+        flex: 1 1 100%;
+      }
+    }
       box-shadow: var(--shadow-sm);
     }
     .table-responsive-clean {
@@ -4176,122 +4480,6 @@
       </div>
     </section>
 
-    <!-- ====================================================================
-         TASKS FOR PARTNERS & ADVERTISERS (SIMPLE, RICH & INTERACTIVE)
-         ==================================================================== -->
-    <section class="container" id="tasks-overview-section" style="padding: 40px 0 60px;">
-      <div class="section-header">
-        <div class="section-pill" style="background: #F3E8FF; color: #3B0764; border: none; box-shadow: 0 2px 8px rgba(59, 7, 100, 0.08);">HOW IT WORKS</div>
-        <h2 class="section-title" style="color: #2D1537;">Partner &amp; Advertiser Tasks</h2>
-        <p class="section-desc" style="color: #3B0764;">Turn WhatsApp Status views into daily M-Pesa payouts or broadcast corporate brand ads across Kenya.</p>
-      </div>
-
-      <div class="tasks-grid-wrapper">
-        <!-- Card 1: Partner Tasks -->
-        <div class="task-role-card task-role-partner">
-          
-          <div class="task-role-header">
-            <div class="task-role-icon">
-              <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                <circle cx="9" cy="7" r="4"></circle>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-              </svg>
-            </div>
-            <div>
-              <h3 class="task-role-title">Partner Tasks</h3>
-              <span class="task-role-badge">
-                <span class="ticker-live-dot" style="width: 6px; height: 6px;"></span>
-                Daily WhatsApp Status Monetization
-              </span>
-            </div>
-          </div>
-          
-          <div class="task-steps-list">
-            <div class="task-step-item step-1">
-              <div class="task-step-num">1</div>
-              <div class="task-step-content">
-                <strong>Pick &amp; Download Banner</strong>
-                <p>Choose today's creative from the live product grid below and copy the ready-made caption.</p>
-              </div>
-            </div>
-
-            <div class="task-step-item step-2">
-              <div class="task-step-num">2</div>
-              <div class="task-step-content">
-                <strong>Post to Status for 18h</strong>
-                <p>Publish to your WhatsApp Status. Keep it live to reach your authentic audience across Kenya.</p>
-              </div>
-            </div>
-
-            <div class="task-step-item step-3">
-              <div class="task-step-num">3</div>
-              <div class="task-step-content">
-                <strong style="color: #047857;">Submit Screenshot &amp; Withdraw</strong>
-                <p>Upload your 18h viewer count screenshot in your dashboard for instant M-Pesa clearance.</p>
-              </div>
-            </div>
-          </div>
-
-          <button class="task-cta-btn btn btn-primary" onclick="scrollToProductsContainer()">
-            <span>Browse Today's Creatives</span>
-            <span class="cta-arrow">&rarr;</span>
-          </button>
-        </div>
-
-        <!-- Card 2: Advertiser Tasks -->
-        <div class="task-role-card task-role-advertiser">
-          
-          <div class="task-role-header">
-            <div class="task-role-icon">
-              <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-              </svg>
-            </div>
-            <div>
-              <h3 class="task-role-title">Advertiser Tasks</h3>
-              <span class="task-role-badge">
-                <span class="ticker-live-dot" style="width: 6px; height: 6px; background: #3B0764; box-shadow: 0 0 8px #3B0764;"></span>
-                Brand Reach &amp; Customer Acquisition
-              </span>
-            </div>
-          </div>
-
-          <div class="task-steps-list">
-            <div class="task-step-item step-1">
-              <div class="task-step-num">1</div>
-              <div class="task-step-content">
-                <strong>Provide Banner &amp; Pitch</strong>
-                <p>Submit your product poster, discount offer, or campaign details to the Almai portal.</p>
-              </div>
-            </div>
-
-            <div class="task-step-item step-2">
-              <div class="task-step-num">2</div>
-              <div class="task-step-content">
-                <strong>Target Kenyan Regions</strong>
-                <p>Choose nationwide reach or target specific counties (Nairobi, Mombasa, Nakuru, Kisumu, Eldoret).</p>
-              </div>
-            </div>
-
-            <div class="task-step-item step-3">
-              <div class="task-step-num">3</div>
-              <div class="task-step-content">
-                <strong style="color: #3B0764;">Live Status Impressions</strong>
-                <p>Your ad goes live on 1,000+ status feeds simultaneously, generating high-conversion sales.</p>
-              </div>
-            </div>
-          </div>
-
-          <button class="task-cta-btn btn btn-secondary" onclick="openInquiryModal('Brand Campaign Inquiry')">
-            <span>Inquire Business Advertising</span>
-            <span class="cta-arrow">&rarr;</span>
-          </button>
-        </div>
-      </div>
-    </section>
 
     <!-- Testimonials & Social Proof -->
     <section class="container testimonials-section">
@@ -5172,281 +5360,419 @@
         </div>
       </div>
 
-      <!-- Executive Operational Metrics (Live Overview) -->
-      <div class="admin-kpi-grid">
-        <div class="admin-kpi-card" style="border-left: 4px solid var(--warning-orange);">
-          <div class="admin-kpi-lbl">Pending Payments</div>
-          <div class="admin-kpi-val" id="kpi-pending-payments">0</div>
-          <div class="admin-kpi-sub">M-Pesa codes awaiting audit</div>
-        </div>
-        <div class="admin-kpi-card" style="border-left: 4px solid var(--primary-purple);">
-          <div class="admin-kpi-lbl">Total Partners</div>
-          <div class="admin-kpi-val" id="kpi-total-users">0</div>
-          <div class="admin-kpi-sub">Registered Kenyan earners</div>
-        </div>
-        <div class="admin-kpi-card" style="border-left: 4px solid #06B6D4;">
-          <div class="admin-kpi-lbl">Active Creatives</div>
-          <div class="admin-kpi-val" id="kpi-live-products">0</div>
-          <div class="admin-kpi-sub">WhatsApp product downloads</div>
-        </div>
-        <div class="admin-kpi-card" style="border-left: 4px solid #3B0764;">
-          <div class="admin-kpi-lbl">Pending Task Proofs</div>
-          <div class="admin-kpi-val" id="kpi-pending-tasks">0</div>
-          <div class="admin-kpi-sub">18h Status screenshots</div>
-        </div>
-        <div class="admin-kpi-card" style="border-left: 4px solid var(--success-green);">
-          <div class="admin-kpi-lbl">Pending Cashouts</div>
-          <div class="admin-kpi-val" id="kpi-pending-withdrawals">0</div>
-          <div class="admin-kpi-sub">M-Pesa cashouts queued</div>
-        </div>
-      </div>
-
-      <!-- Navigation Tabs Bar -->
-      <div class="admin-nav-bar">
-        <button class="admin-tab active" id="atab-payments" onclick="switchAdminTab('payments')">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-3px;margin-right:4px;"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg> M-Pesa Codes <span class="tab-badge" id="tab-badge-payments" style="display: none;">0</span>
-        </button>
-        <button class="admin-tab" id="atab-users" onclick="switchAdminTab('users')">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-3px;margin-right:4px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> Partner Directory
-        </button>
-        <button class="admin-tab" id="atab-products" onclick="switchAdminTab('products')">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-3px;margin-right:4px;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg> WhatsApp Products <span class="tab-badge" id="tab-badge-products" style="display: none;">0</span>
-        </button>
-        <button class="admin-tab" id="atab-tasks" onclick="switchAdminTab('tasks')">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-3px;margin-right:4px;"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect><path d="M9 14l2 2 4-4"></path></svg> Task Proofs <span class="tab-badge" id="tab-badge-tasks" style="display: none;">0</span>
-        </button>
-        <button class="admin-tab" id="atab-withdrawals" onclick="switchAdminTab('withdrawals')">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-3px;margin-right:4px;"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg> Withdrawals <span class="tab-badge" id="tab-badge-withdrawals" style="display: none;">0</span>
-        </button>
-        <button class="admin-tab" id="atab-stats" onclick="switchAdminTab('stats')">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-3px;margin-right:4px;"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg> Financial Stats
-        </button>
-        <button class="admin-tab" id="atab-audit" onclick="switchAdminTab('audit')">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-3px;margin-right:4px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Audit Logs
-        </button>
-      </div>
-
-      <!-- Tab 1: Payment Verification (M-Pesa Codes) -->
-      <div id="asec-payments" class="admin-content-section">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
-          <div>
-            <h3 style="font-size: 19px; color: var(--deep-purple-heading); margin-bottom: 4px;">User Lipa na M-Pesa Transaction Verification</h3>
-            <p style="font-size: 14.5px; color: var(--charcoal-muted); margin: 0;">Audit user-submitted Safaricom reference codes to activate partner packages instantly.</p>
+      <!-- 2-Column Admin Workspace (Sidebar Navigation + Dynamic Content Sections) -->
+      <div class="admin-workspace">
+        <!-- Sticky Left Sidebar -->
+        <aside class="admin-sidebar">
+          <div class="admin-sidebar-profile">
+            <div class="admin-avatar-crown">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <div class="admin-profile-meta">
+              <div class="admin-profile-title">Almai Admin</div>
+              <div class="admin-profile-status"><span class="admin-live-pulse-dot"></span> Live Operations</div>
+            </div>
           </div>
-          <div style="display: flex; gap: 8px;">
-            <button class="btn btn-primary btn-sm" id="btn-payfilter-pending" onclick="filterAdminPayments('pending')">Pending Only</button>
-            <button class="btn btn-secondary btn-sm" id="btn-payfilter-completed" onclick="filterAdminPayments('completed')">Verified</button>
-            <button class="btn btn-secondary btn-sm" id="btn-payfilter-all" onclick="filterAdminPayments('all')">All Codes</button>
+
+          <!-- Group 1: Verifications & Approvals -->
+          <div class="admin-side-group">
+            <div class="admin-side-group-label">VERIFICATIONS &amp; AUDITS</div>
+            <button class="admin-tab active" id="atab-payments" onclick="switchAdminTab('payments')">
+              <span class="admin-tab-chip chip-amber">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+              </span>
+              <span class="admin-tab-title">M-Pesa Codes</span>
+              <span class="tab-badge" id="tab-badge-payments" style="display: none;">0</span>
+            </button>
+
+            <button class="admin-tab" id="atab-tasks" onclick="switchAdminTab('tasks')">
+              <span class="admin-tab-chip chip-purple">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect><path d="M9 14l2 2 4-4"></path></svg>
+              </span>
+              <span class="admin-tab-title">Task Proofs</span>
+              <span class="tab-badge" id="tab-badge-tasks" style="display: none;">0</span>
+            </button>
+
+            <button class="admin-tab" id="atab-withdrawals" onclick="switchAdminTab('withdrawals')">
+              <span class="admin-tab-chip chip-emerald">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              </span>
+              <span class="admin-tab-title">Withdrawals</span>
+              <span class="tab-badge" id="tab-badge-withdrawals" style="display: none;">0</span>
+            </button>
           </div>
-        </div>
 
-        <div class="table-responsive-clean">
-          <table>
-            <thead>
-              <tr>
-                <th>Partner User</th>
-                <th>Target Package</th>
-                <th>Amount (KSh)</th>
-                <th>M-Pesa Code</th>
-                <th>Submitted</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-admin-payments">
-              <tr>
-                <td colspan="7" style="text-align: center; padding: 24px;">Loading payment codes...</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+          <!-- Group 2: Platform & Creatives -->
+          <div class="admin-side-group">
+            <div class="admin-side-group-label">PLATFORM &amp; CREATIVES</div>
+            <button class="admin-tab" id="atab-users" onclick="switchAdminTab('users')">
+              <span class="admin-tab-chip chip-blue">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              </span>
+              <span class="admin-tab-title">Partner Directory</span>
+            </button>
 
-      <!-- Tab 2: User Accounts Directory -->
-      <div id="asec-users" class="admin-content-section" style="display: none;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
-          <div>
-            <h3 style="font-size: 19px; color: var(--deep-purple-heading); margin-bottom: 4px;">Registered Partner Users Directory</h3>
-            <p style="font-size: 14.5px; color: var(--charcoal-muted); margin: 0;">Lookup partner accounts, assign or upgrade packages, and review wallet balances.</p>
+            <button class="admin-tab" id="atab-products" onclick="switchAdminTab('products')">
+              <span class="admin-tab-chip chip-pink">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+              </span>
+              <span class="admin-tab-title">WhatsApp Products</span>
+              <span class="tab-badge" id="tab-badge-products" style="display: none;">0</span>
+            </button>
           </div>
-          <div style="width: 320px; max-width: 100%;">
-            <input type="text" id="admin-user-search" placeholder="Search name, email, phone..." oninput="debounceUserSearch()" style="padding: 10px 14px; font-size: 14px; width: 100%;">
+
+          <!-- Group 3: Metrics & Security -->
+          <div class="admin-side-group">
+            <div class="admin-side-group-label">METRICS &amp; SECURITY</div>
+            <button class="admin-tab" id="atab-stats" onclick="switchAdminTab('stats')">
+              <span class="admin-tab-chip chip-indigo">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+              </span>
+              <span class="admin-tab-title">Financial Stats</span>
+            </button>
+
+            <button class="admin-tab" id="atab-audit" onclick="switchAdminTab('audit')">
+              <span class="admin-tab-chip chip-slate">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              </span>
+              <span class="admin-tab-title">Audit Logs</span>
+            </button>
           </div>
-        </div>
 
-        <div class="table-responsive-clean">
-          <table>
-            <thead>
-              <tr>
-                <th>User Details</th>
-                <th>Role &amp; Status</th>
-                <th>Active Package</th>
-                <th>Available Balance</th>
-                <th>Lifetime Earned</th>
-                <th>Joined</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-admin-users">
-              <tr>
-                <td colspan="7" style="text-align: center; padding: 24px;">Loading users directory...</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+          <!-- Sidebar Footer Utilities -->
+          <div class="admin-sidebar-footer">
+            <button class="admin-side-btn" onclick="switchView('dashboard')">
+              <span class="svg-icon" style="width: 16px; height: 16px; color: var(--primary-purple);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+              </span>
+              <span>Partner Dashboard</span>
+            </button>
+            <button class="admin-side-btn btn-signout" onclick="handleLogout()">
+              <span class="svg-icon" style="width: 16px; height: 16px; color: #DC2626;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+              </span>
+              <span>Sign Out</span>
+            </button>
+          </div>
+        </aside>
 
-      <!-- Tab 3: Post WhatsApp Products -->
-      <div id="asec-products" class="admin-content-section" style="display: none;">
-        <div class="admin-products-grid">
-          <!-- Form to post product picture -->
-          <div class="admin-prod-form-card">
-            <h3 style="font-size: 18.5px; margin-bottom: 6px; color: var(--deep-purple-heading);">Upload New Product Picture for WhatsApp Posts</h3>
-            <p style="font-size: 14px; color: var(--charcoal-muted); margin-bottom: 18px;">
-              Publish brand product pictures that partners can download to their devices and post to their WhatsApp Status.
-            </p>
+        <!-- Right Main Workspace Content Area -->
+        <div class="admin-main-area">
+          <!-- Executive Operational Metrics (Live Overview) -->
+          <div class="admin-kpi-grid">
+            <div class="admin-kpi-card kpi-amber">
+              <div class="admin-kpi-lbl">Pending Payments</div>
+              <div class="admin-kpi-val" id="kpi-pending-payments">0</div>
+              <div class="admin-kpi-sub">M-Pesa codes awaiting audit</div>
+            </div>
+            <div class="admin-kpi-card kpi-purple">
+              <div class="admin-kpi-lbl">Total Partners</div>
+              <div class="admin-kpi-val" id="kpi-total-users">0</div>
+              <div class="admin-kpi-sub">Registered Kenyan earners</div>
+            </div>
+            <div class="admin-kpi-card kpi-cyan">
+              <div class="admin-kpi-lbl">Active Creatives</div>
+              <div class="admin-kpi-val" id="kpi-live-products">0</div>
+              <div class="admin-kpi-sub">WhatsApp product downloads</div>
+            </div>
+            <div class="admin-kpi-card kpi-violet">
+              <div class="admin-kpi-lbl">Pending Task Proofs</div>
+              <div class="admin-kpi-val" id="kpi-pending-tasks">0</div>
+              <div class="admin-kpi-sub">18h Status screenshots</div>
+            </div>
+            <div class="admin-kpi-card kpi-emerald">
+              <div class="admin-kpi-lbl">Pending Cashouts</div>
+              <div class="admin-kpi-val" id="kpi-pending-withdrawals">0</div>
+              <div class="admin-kpi-sub">M-Pesa cashouts queued</div>
+            </div>
+          </div>
 
-            <form id="form-admin-post-product" onsubmit="handleAdminProductSubmit(event)">
-              <div class="form-group">
-                <label class="form-label" for="prod-title">Product Campaign Title</label>
-                <input type="text" id="prod-title" required placeholder="e.g. Samsung Galaxy A54 Flash Promo">
-              </div>
-
-              <div class="form-group">
-                <label class="form-label" for="prod-brand">Brand / Company Name</label>
-                <input type="text" id="prod-brand" required placeholder="e.g. Samsung Kenya Deals">
-              </div>
-
-              <div class="form-group">
-                <label class="form-label" for="prod-caption">Suggested WhatsApp Status Caption</label>
-                <textarea id="prod-caption" rows="3" required placeholder="e.g. Big Flash Sale today! Get genuine Samsung Galaxy smartphones with countrywide delivery. DM me now to order! #AlmaiPartner"></textarea>
-                <div class="form-hint">Partners will be able to copy this exact text with one click.</div>
-              </div>
-
-              <div class="form-group">
-                <label class="form-label" for="prod-image-file">Product Picture (PNG, JPG, SVG - Max 3.5MB)</label>
-                <div class="admin-prod-file-dropzone" onclick="document.getElementById('prod-image-file').click()">
-                  <input type="file" id="prod-image-file" accept="image/*" required onchange="previewAdminProductImage(event)" style="display: none;">
-                  <div id="admin-file-drop-prompt">
-                    <span class="svg-icon" style="width: 28px; height: 28px; color: var(--primary-purple); margin-bottom: 6px;">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                    </span>
-                    <div style="font-size: 14.5px; font-weight: 750; color: var(--deep-purple-heading);">Tap to Choose Product Creative</div>
-                    <div style="font-size: 12px; color: var(--charcoal-muted); margin-top: 3px;">JPEG, PNG, WebP up to 3.5MB</div>
-                  </div>
-                  <div id="admin-prod-preview-wrap" style="display: none; margin-top: 10px; text-align: center;">
-                    <img id="admin-prod-preview-img" src="" alt="Product Preview" style="max-height: 160px; max-width: 100%; border-radius: 8px; border: 1.5px solid var(--beige-border); background: #000; object-fit: contain;">
-                    <div id="admin-file-name-tag" style="font-size: 12px; color: var(--primary-purple); font-weight: 750; margin-top: 6px;"></div>
-                  </div>
+          <!-- Tab 1: Payment Verification (M-Pesa Codes) -->
+          <div id="asec-payments" class="admin-content-section">
+            <div class="admin-section-banner banner-theme-amber">
+              <div class="admin-banner-lead">
+                <div class="admin-banner-chip chip-bg-amber">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                </div>
+                <div>
+                  <div class="admin-banner-title">Lipa na M-Pesa Transaction Verification</div>
+                  <p class="admin-banner-subtitle">Audit user-submitted Safaricom reference codes to activate partner packages instantly.</p>
                 </div>
               </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="btn btn-primary btn-sm" id="btn-payfilter-pending" onclick="filterAdminPayments('pending')">Pending Only</button>
+                <button class="btn btn-secondary btn-sm" id="btn-payfilter-completed" onclick="filterAdminPayments('completed')">Verified</button>
+                <button class="btn btn-secondary btn-sm" id="btn-payfilter-all" onclick="filterAdminPayments('all')">All Codes</button>
+              </div>
+            </div>
 
-              <div id="admin-prod-alert" style="display: none;" class="alert"></div>
-
-              <button type="submit" class="btn btn-primary btn-block btn-lg" id="btn-admin-prod-submit">
-                <span class="svg-icon" style="width: 16px; height: 16px; margin-right: 6px;">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                </span>
-                Publish Creative for Users
-              </button>
-            </form>
+            <div class="table-responsive-clean">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Partner User</th>
+                    <th>Target Package</th>
+                    <th>Amount (KSh)</th>
+                    <th>M-Pesa Code</th>
+                    <th>Submitted</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-admin-payments">
+                  <tr>
+                    <td colspan="7" style="text-align: center; padding: 24px;">Loading payment codes...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
 
-          <!-- Existing products list -->
-          <div>
-            <div class="admin-prods-header">
-              <h3 style="font-size: 18.5px; margin: 0; color: var(--deep-purple-heading);">Live Products on Platform (<span id="admin-prod-count">0</span>)</h3>
-              <button class="btn btn-secondary btn-sm" id="btn-admin-clear-prods" onclick="adminClearAllProducts()" style="color: var(--warning-red); border-color: rgba(220, 38, 38, 0.4); font-weight: 750;" title="Delete and clear all existing posted product creatives">
-                <span class="svg-icon" style="width: 14px; height: 14px; margin-right: 4px;">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                </span>
-                Clear All Products
-              </button>
+          <!-- Tab 2: User Accounts Directory -->
+          <div id="asec-users" class="admin-content-section" style="display: none;">
+            <div class="admin-section-banner banner-theme-purple">
+              <div class="admin-banner-lead">
+                <div class="admin-banner-chip chip-bg-purple">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                </div>
+                <div>
+                  <div class="admin-banner-title">Registered Partner Users Directory</div>
+                  <p class="admin-banner-subtitle">Lookup partner accounts, assign or upgrade packages, and review wallet balances.</p>
+                </div>
+              </div>
+              <div style="width: 320px; max-width: 100%;">
+                <input type="text" id="admin-user-search" placeholder="Search name, email, phone..." oninput="debounceUserSearch()" style="padding: 10px 14px; font-size: 14px; width: 100%;">
+              </div>
             </div>
-            <div id="admin-products-list" class="admin-prods-list-container">
-              <div style="text-align: center; padding: 24px; color: var(--charcoal-muted);">Loading products...</div>
+
+            <div class="table-responsive-clean">
+              <table>
+                <thead>
+                  <tr>
+                    <th>User Details</th>
+                    <th>Role &amp; Status</th>
+                    <th>Active Package</th>
+                    <th>Available Balance</th>
+                    <th>Lifetime Earned</th>
+                    <th>Joined</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-admin-users">
+                  <tr>
+                    <td colspan="7" style="text-align: center; padding: 24px;">Loading users directory...</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
-        </div>
-      </div>
 
-      <!-- Tab 4: Tasks Review -->
-      <div id="asec-tasks" class="admin-content-section" style="display: none;">
-        <h3 style="margin-bottom: 8px; font-size: 19px; color: var(--deep-purple-heading);">Pending Task Proofs for Verification</h3>
-        <p style="font-size: 14.5px; color: var(--charcoal-muted); margin-bottom: 18px;">Inspect submitted status screenshots and view counts.</p>
-        <div class="table-responsive-clean">
-          <table>
-            <thead>
-              <tr>
-                <th>Partner</th>
-                <th>Package Tier</th>
-                <th>Reported Views</th>
-                <th>Evidence Proof</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-admin-tasks">
-              <tr>
-                <td colspan="5" style="text-align: center; padding: 24px;">Loading pending task proofs...</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+          <!-- Tab 3: Post WhatsApp Products -->
+          <div id="asec-products" class="admin-content-section" style="display: none;">
+            <div class="admin-section-banner banner-theme-pink">
+              <div class="admin-banner-lead">
+                <div class="admin-banner-chip chip-bg-pink">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                </div>
+                <div>
+                  <div class="admin-banner-title">WhatsApp Creative Campaigns &amp; Products</div>
+                  <p class="admin-banner-subtitle">Publish brand product pictures that partners can download to their devices and post to their WhatsApp Status.</p>
+                </div>
+              </div>
+            </div>
 
-      <!-- Tab 5: Withdrawals Queue -->
-      <div id="asec-withdrawals" class="admin-content-section" style="display: none;">
-        <h3 style="margin-bottom: 8px; font-size: 19px; color: var(--deep-purple-heading);">Pending M-Pesa Disbursements Queue</h3>
-        <p style="font-size: 14.5px; color: var(--charcoal-muted); margin-bottom: 18px;">Send funds to the partner M-Pesa number and record receipt reference.</p>
-        <div class="table-responsive-clean">
-          <table>
-            <thead>
-              <tr>
-                <th>Partner</th>
-                <th>Amount (KSh)</th>
-                <th>Target Phone</th>
-                <th>Requested At</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-admin-withdrawals">
-              <tr>
-                <td colspan="5" style="text-align: center; padding: 24px;">Loading pending withdrawals...</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+            <div class="admin-products-grid">
+              <!-- Form to post product picture -->
+              <div class="admin-prod-form-card">
+                <h3 style="font-size: 18.5px; margin-bottom: 6px; color: var(--deep-purple-heading);">Upload New Product Picture for WhatsApp Posts</h3>
+                <p style="font-size: 14px; color: var(--charcoal-muted); margin-bottom: 18px;">
+                  Publish brand product pictures that partners can download to their devices and post to their WhatsApp Status.
+                </p>
 
-      <!-- Tab 6: Stats -->
-      <div id="asec-stats" class="admin-content-section" style="display: none;">
-        <h3 style="margin-bottom: 16px; font-size: 19px; color: var(--deep-purple-heading);">System Financial &amp; Performance Metrics</h3>
-        <div class="dash-metrics-grid" id="admin-stats-grid">
-          <!-- Populated dynamically -->
-        </div>
-      </div>
+                <form id="form-admin-post-product" onsubmit="handleAdminProductSubmit(event)">
+                  <div class="form-group">
+                    <label class="form-label" for="prod-title">Product Campaign Title</label>
+                    <input type="text" id="prod-title" required placeholder="e.g. Samsung Galaxy A54 Flash Promo">
+                  </div>
 
-      <!-- Tab 7: Audit Logs -->
-      <div id="asec-audit" class="admin-content-section" style="display: none;">
-        <h3 style="margin-bottom: 8px; font-size: 19px; color: var(--deep-purple-heading);">Recent System Audit Trail</h3>
-        <p style="font-size: 14.5px; color: var(--charcoal-muted); margin-bottom: 18px;">All administrative actions, verification stamps, and ledger adjustments are logged here.</p>
-        <div class="table-responsive-clean">
-          <table>
-            <thead>
-              <tr>
-                <th>Time</th>
-                <th>Administrator</th>
-                <th>Action</th>
-                <th>Target ID</th>
-                <th>Details</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-admin-audit">
-              <tr>
-                <td colspan="5" style="text-align: center; padding: 24px;">Loading audit logs...</td>
-              </tr>
-            </tbody>
-          </table>
+                  <div class="form-group">
+                    <label class="form-label" for="prod-brand">Brand / Company Name</label>
+                    <input type="text" id="prod-brand" required placeholder="e.g. Samsung Kenya Deals">
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="prod-caption">Suggested WhatsApp Status Caption</label>
+                    <textarea id="prod-caption" rows="3" required placeholder="e.g. Big Flash Sale today! Get genuine Samsung Galaxy smartphones with countrywide delivery. DM me now to order! #AlmaiPartner"></textarea>
+                    <div class="form-hint">Partners will be able to copy this exact text with one click.</div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="prod-image-file">Product Picture (PNG, JPG, SVG - Max 3.5MB)</label>
+                    <div class="admin-prod-file-dropzone" onclick="document.getElementById('prod-image-file').click()">
+                      <input type="file" id="prod-image-file" accept="image/*" required onchange="previewAdminProductImage(event)" style="display: none;">
+                      <div id="admin-file-drop-prompt">
+                        <span class="svg-icon" style="width: 28px; height: 28px; color: var(--primary-purple); margin-bottom: 6px;">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                        </span>
+                        <div style="font-size: 14.5px; font-weight: 750; color: var(--deep-purple-heading);">Tap to Choose Product Creative</div>
+                        <div style="font-size: 12px; color: var(--charcoal-muted); margin-top: 3px;">JPEG, PNG, WebP up to 3.5MB</div>
+                      </div>
+                      <div id="admin-prod-preview-wrap" style="display: none; margin-top: 10px; text-align: center;">
+                        <img id="admin-prod-preview-img" src="" alt="Product Preview" style="max-height: 160px; max-width: 100%; border-radius: 8px; border: 1.5px solid var(--beige-border); background: #000; object-fit: contain;">
+                        <div id="admin-file-name-tag" style="font-size: 12px; color: var(--primary-purple); font-weight: 750; margin-top: 6px;"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div id="admin-prod-alert" style="display: none;" class="alert"></div>
+
+                  <button type="submit" class="btn btn-primary btn-block btn-lg" id="btn-admin-prod-submit">
+                    <span class="svg-icon" style="width: 16px; height: 16px; margin-right: 6px;">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    </span>
+                    Publish Creative for Users
+                  </button>
+                </form>
+              </div>
+
+              <!-- Existing products list -->
+              <div>
+                <div class="admin-prods-header">
+                  <h3 style="font-size: 18.5px; margin: 0; color: var(--deep-purple-heading);">Live Products on Platform (<span id="admin-prod-count">0</span>)</h3>
+                  <button class="btn btn-secondary btn-sm" id="btn-admin-clear-prods" onclick="adminClearAllProducts()" style="color: var(--warning-red); border-color: rgba(220, 38, 38, 0.4); font-weight: 750;" title="Delete and clear all existing posted product creatives">
+                    <span class="svg-icon" style="width: 14px; height: 14px; margin-right: 4px;">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </span>
+                    Clear All Products
+                  </button>
+                </div>
+                <div id="admin-products-list" class="admin-prods-list-container">
+                  <div style="text-align: center; padding: 24px; color: var(--charcoal-muted);">Loading products...</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 4: Tasks Review -->
+          <div id="asec-tasks" class="admin-content-section" style="display: none;">
+            <div class="admin-section-banner banner-theme-violet">
+              <div class="admin-banner-lead">
+                <div class="admin-banner-chip chip-bg-violet">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect><path d="M9 14l2 2 4-4"></path></svg>
+                </div>
+                <div>
+                  <div class="admin-banner-title">Pending 18h Status Task Proofs</div>
+                  <p class="admin-banner-subtitle">Inspect submitted status screenshots and view counts for instant M-Pesa clearance.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="table-responsive-clean">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Partner</th>
+                    <th>Package Tier</th>
+                    <th>Reported Views</th>
+                    <th>Evidence Proof</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-admin-tasks">
+                  <tr>
+                    <td colspan="5" style="text-align: center; padding: 24px;">Loading pending task proofs...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tab 5: Withdrawals Queue -->
+          <div id="asec-withdrawals" class="admin-content-section" style="display: none;">
+            <div class="admin-section-banner banner-theme-emerald">
+              <div class="admin-banner-lead">
+                <div class="admin-banner-chip chip-bg-emerald">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                </div>
+                <div>
+                  <div class="admin-banner-title">Pending M-Pesa Disbursements Queue</div>
+                  <p class="admin-banner-subtitle">Send funds to the partner M-Pesa number and record Safaricom receipt reference.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="table-responsive-clean">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Partner</th>
+                    <th>Amount (KSh)</th>
+                    <th>Target Phone</th>
+                    <th>Requested At</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-admin-withdrawals">
+                  <tr>
+                    <td colspan="5" style="text-align: center; padding: 24px;">Loading pending withdrawals...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tab 6: Stats -->
+          <div id="asec-stats" class="admin-content-section" style="display: none;">
+            <div class="admin-section-banner banner-theme-indigo">
+              <div class="admin-banner-lead">
+                <div class="admin-banner-chip chip-bg-indigo">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                </div>
+                <div>
+                  <div class="admin-banner-title">System Financial &amp; Performance Metrics</div>
+                  <p class="admin-banner-subtitle">Real-time ledger overview, package activation totals, view rates and revenue metrics.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="dash-metrics-grid" id="admin-stats-grid">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+
+          <!-- Tab 7: Audit Logs -->
+          <div id="asec-audit" class="admin-content-section" style="display: none;">
+            <div class="admin-section-banner banner-theme-slate">
+              <div class="admin-banner-lead">
+                <div class="admin-banner-chip chip-bg-slate">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                </div>
+                <div>
+                  <div class="admin-banner-title">Recent System Audit Trail</div>
+                  <p class="admin-banner-subtitle">All administrative actions, verification stamps, and ledger adjustments are securely logged.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="table-responsive-clean">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Administrator</th>
+                    <th>Action</th>
+                    <th>Target ID</th>
+                    <th>Details</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-admin-audit">
+                  <tr>
+                    <td colspan="5" style="text-align: center; padding: 24px;">Loading audit logs...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -6141,7 +6467,7 @@
     function scrollToTasks() {
       switchView('home');
       setTimeout(() => {
-        const el = document.getElementById('tasks-overview-section');
+        const el = document.getElementById('calculator-section') || document.getElementById('home-products-container');
         if (el) el.scrollIntoView({ behavior: 'smooth' });
       }, 100);
     }
