@@ -2397,13 +2397,16 @@
       background: linear-gradient(90deg, #D97706, #7C3AED, #06B6D4, #10B981);
     }
 
-    /* 2-Column Workspace Layout */
+    /* 2-Column Workspace Layout (With Strict Mobile Overflow Constraints) */
     .admin-workspace {
       display: grid;
       grid-template-columns: 290px minmax(0, 1fr);
       gap: 24px;
       align-items: start;
       margin-bottom: 40px;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
     }
 
     /* Left Sidebar Navigation */
@@ -2674,7 +2677,7 @@
       font-weight: 700;
     }
 
-    /* Content Section Boxes & Themed Headers */
+    /* Content Section Boxes & Themed Headers (Constrained for Horizontal Table Scrolling) */
     .admin-content-section {
       background: var(--white-card);
       border: 1.5px solid var(--beige-border);
@@ -2683,6 +2686,11 @@
       margin-bottom: 24px;
       box-shadow: 0 8px 24px -3px rgba(59, 7, 100, 0.05);
       animation: adminSectionFadeIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+      min-width: 0;
+      max-width: 100%;
+      width: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
     }
     @keyframes adminSectionFadeIn {
       from { opacity: 0; transform: translateY(14px); }
@@ -2777,14 +2785,19 @@
 
     @media (max-width: 1024px) {
       .admin-workspace {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr) !important;
         gap: 20px;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
       }
       .admin-sidebar {
         position: static;
         max-height: none;
         overflow-x: auto;
         padding: 16px;
+        width: 100%;
+        box-sizing: border-box;
       }
       .admin-side-group {
         display: flex;
@@ -2805,41 +2818,71 @@
         flex: 1 1 100%;
       }
     }
-      box-shadow: var(--shadow-sm);
-    }
-    .table-responsive-clean {
-      width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
+
+    /* Clean, Bulletproof Responsive Table Containers with Touch Momentum */
+    .table-responsive-clean,
+    .table-responsive {
+      display: block !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 0 !important;
+      overflow-x: auto !important;
+      overflow-y: hidden !important;
+      -webkit-overflow-scrolling: touch !important;
+      touch-action: pan-x pan-y !important;
+      overscroll-behavior-x: contain;
+      position: relative;
       border: 1.5px solid var(--beige-border);
-      border-radius: var(--radius-sm);
+      border-radius: var(--radius-md);
       background: var(--white-card);
-      margin-top: 14px;
+      margin-top: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+      scrollbar-width: thin;
+      scrollbar-color: #8B5CF6 #F3E8FF;
     }
+    .table-responsive-clean::-webkit-scrollbar,
+    .table-responsive::-webkit-scrollbar {
+      height: 8px;
+    }
+    .table-responsive-clean::-webkit-scrollbar-track,
+    .table-responsive::-webkit-scrollbar-track {
+      background: #F5F3FF;
+      border-radius: 4px;
+    }
+    .table-responsive-clean::-webkit-scrollbar-thumb,
+    .table-responsive::-webkit-scrollbar-thumb {
+      background: #A78BFA;
+      border-radius: 4px;
+    }
+    .table-responsive-clean::-webkit-scrollbar-thumb:hover,
+    .table-responsive::-webkit-scrollbar-thumb:hover {
+      background: #7C3AED;
+    }
+
     .table-responsive-clean table {
       width: 100%;
-      min-width: 820px;
+      min-width: 760px;
       border-collapse: collapse;
       text-align: left;
-      font-size: 15px;
+      font-size: 14.5px;
       font-weight: 600;
     }
     .table-responsive-clean th {
       background: #F5F3FF;
       color: var(--deep-purple-heading);
       font-weight: 850;
-      font-size: 14.5px;
-      padding: 14px 18px;
+      font-size: 13.5px;
+      padding: 13px 16px;
       border-bottom: 2px solid #DDD6FE;
       white-space: nowrap;
       text-transform: uppercase;
       letter-spacing: 0.03em;
     }
     .table-responsive-clean td {
-      padding: 14px 18px;
+      padding: 13px 16px;
       border-bottom: 1px solid var(--beige-border);
       color: var(--charcoal-text);
-      font-size: 15px;
+      font-size: 14px;
       vertical-align: middle;
     }
     .table-responsive-clean tr:last-child td {
@@ -2847,6 +2890,52 @@
     }
     .table-responsive-clean tr:hover td {
       background: #FAF8FE;
+    }
+
+    /* Mobile Table Scroll Helper Banner */
+    .table-scroll-hint {
+      display: none;
+      align-items: center;
+      gap: 7px;
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #6D28D9;
+      background: linear-gradient(135deg, #FAF5FF 0%, #F3E8FF 100%);
+      border: 1.5px solid #DDD6FE;
+      padding: 8px 14px;
+      border-radius: 10px;
+      margin-top: 10px;
+      margin-bottom: 4px;
+      box-shadow: 0 2px 6px rgba(124, 58, 237, 0.08);
+      user-select: none;
+    }
+    @media (max-width: 900px) {
+      .table-scroll-hint {
+        display: inline-flex;
+      }
+      .admin-content-section {
+        padding: 16px 14px 20px !important;
+        border-radius: var(--radius-md) !important;
+      }
+      .admin-section-banner {
+        padding: 12px 14px !important;
+        margin-bottom: 14px !important;
+        gap: 10px !important;
+      }
+      .admin-banner-title {
+        font-size: 17px !important;
+      }
+      .admin-banner-subtitle {
+        font-size: 13px !important;
+      }
+      .table-responsive-clean th {
+        padding: 10px 12px !important;
+        font-size: 12.5px !important;
+      }
+      .table-responsive-clean td {
+        padding: 10px 12px !important;
+        font-size: 13px !important;
+      }
     }
     .admin-products-grid {
       display: grid;
@@ -5986,7 +6075,11 @@
 
         <!-- Panel 1: Task Submissions -->
         <div id="dash-tab-panel-tasks" class="dash-history-panel active">
-          <div class="table-responsive">
+          <div class="table-scroll-hint">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              <span>Swipe table horizontally to view all status view details &rarr;</span>
+            </div>
+            <div class="table-responsive">
             <table id="table-user-tasks">
               <thead>
                 <tr>
@@ -6012,7 +6105,11 @@
 
         <!-- Panel 2: Withdrawal Requests -->
         <div id="dash-tab-panel-withdrawals" class="dash-history-panel">
-          <div class="table-responsive">
+          <div class="table-scroll-hint">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              <span>Swipe table horizontally to view payout history &amp; receipts &rarr;</span>
+            </div>
+            <div class="table-responsive">
             <table id="table-user-withdrawals">
               <thead>
                 <tr>
@@ -6418,6 +6515,10 @@
               </div>
             </div>
 
+            <div class="table-scroll-hint">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              <span>Swipe table horizontally to inspect all payment codes &amp; actions &rarr;</span>
+            </div>
             <div class="table-responsive-clean">
               <table>
                 <thead>
@@ -6457,6 +6558,10 @@
               </div>
             </div>
 
+            <div class="table-scroll-hint">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              <span>Swipe table horizontally to inspect partner balances &amp; controls &rarr;</span>
+            </div>
             <div class="table-responsive-clean">
               <table>
                 <thead>
@@ -6579,6 +6684,10 @@
               </div>
             </div>
 
+            <div class="table-scroll-hint">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              <span>Swipe table horizontally to inspect 18h proofs &amp; approvals &rarr;</span>
+            </div>
             <div class="table-responsive-clean">
               <table>
                 <thead>
@@ -6613,6 +6722,10 @@
               </div>
             </div>
 
+            <div class="table-scroll-hint">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              <span>Swipe table horizontally to process pending cashout queues &rarr;</span>
+            </div>
             <div class="table-responsive-clean">
               <table>
                 <thead>
@@ -6666,6 +6779,10 @@
               </div>
             </div>
 
+            <div class="table-scroll-hint">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              <span>Swipe table horizontally to inspect full audit logs &amp; details &rarr;</span>
+            </div>
             <div class="table-responsive-clean">
               <table>
                 <thead>
