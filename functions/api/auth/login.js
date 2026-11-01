@@ -31,12 +31,26 @@ export async function onRequestPost(context) {
   // 1. Rate Limiting Check (Maximum 3 attempts)
   const ipCheck = await checkRateLimit(env, `login:ip:${ip}`);
   if (!ipCheck.allowed) {
-    return jsonError(`Too many login attempts from this network (3 attempts reached). Please wait ${ipCheck.waitMinutes || 5} minute(s) before trying again.`, 429);
+    const waitMins = ipCheck.waitMinutes || 5;
+    return jsonError(`Too many login attempts from this network (3 trials reached). Please wait ${waitMins} minute(s) before trying again.`, 429, {
+      attempts: 3,
+      remaining: 0,
+      locked: true,
+      waitMinutes: waitMins,
+      waitSeconds: ipCheck.waitSeconds || (waitMins * 60)
+    });
   }
 
   const emailCheck = await checkRateLimit(env, `login:email:${cleanEmail}`);
   if (!emailCheck.allowed) {
-    return jsonError(`Account access temporarily locked due to 3 failed login attempts. Please wait ${emailCheck.waitMinutes || 5} minute(s) before trying again.`, 429);
+    const waitMins = emailCheck.waitMinutes || 5;
+    return jsonError(`Account access temporarily locked due to 3 failed login attempts. Please wait ${waitMins} minute(s) before trying again.`, 429, {
+      attempts: 3,
+      remaining: 0,
+      locked: true,
+      waitMinutes: waitMins,
+      waitSeconds: emailCheck.waitSeconds || (waitMins * 60)
+    });
   }
 
   try {
@@ -93,9 +107,19 @@ export async function onRequestPost(context) {
       const failRecord = await recordFailedAttempt(env, `login:email:${cleanEmail}`, 300);
       await recordFailedAttempt(env, `login:ip:${ip}`, 300);
       if (failRecord.locked) {
-        return jsonError('Too many failed login attempts (3 of 3). Your account access is locked for 5 minutes for your security.', 429);
+        return jsonError('Too many failed sign-in attempts (3 of 3 trials used). Access is locked for 5 minutes for security.', 429, {
+          attempts: 3,
+          remaining: 0,
+          locked: true,
+          waitMinutes: 5,
+          waitSeconds: 300
+        });
       }
-      return jsonError(`Invalid email or password. You have ${failRecord.remaining} attempt(s) remaining before temporary lockout.`, 401);
+      return jsonError(`Invalid email or password. Trial ${failRecord.attempts} of 3 used (${failRecord.remaining} attempt${failRecord.remaining === 1 ? '' : 's'} remaining).`, 401, {
+        attempts: failRecord.attempts,
+        remaining: failRecord.remaining,
+        locked: false
+      });
     }
 
     if (user.status !== 'active') {
@@ -108,9 +132,19 @@ export async function onRequestPost(context) {
       const failRecord = await recordFailedAttempt(env, `login:email:${cleanEmail}`, 300);
       await recordFailedAttempt(env, `login:ip:${ip}`, 300);
       if (failRecord.locked) {
-        return jsonError('Too many failed login attempts (3 of 3). Your account access is locked for 5 minutes for your security.', 429);
+        return jsonError('Too many failed sign-in attempts (3 of 3 trials used). Access is locked for 5 minutes for security.', 429, {
+          attempts: 3,
+          remaining: 0,
+          locked: true,
+          waitMinutes: 5,
+          waitSeconds: 300
+        });
       }
-      return jsonError(`Invalid email or password. You have ${failRecord.remaining} attempt(s) remaining before temporary lockout.`, 401);
+      return jsonError(`Invalid email or password. Trial ${failRecord.attempts} of 3 used (${failRecord.remaining} attempt${failRecord.remaining === 1 ? '' : 's'} remaining).`, 401, {
+        attempts: failRecord.attempts,
+        remaining: failRecord.remaining,
+        locked: false
+      });
     }
 
     // Successful login: clear rate limits

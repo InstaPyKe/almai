@@ -192,7 +192,7 @@ export async function requireAdmin(request, env) {
  * Rate Limiting for Authentication (3 attempts limit)
  */
 export async function checkRateLimit(env, key) {
-  if (!env || !env.DB) return { allowed: true, remaining: 3 };
+  if (!env || !env.DB) return { allowed: true, remaining: 3, attempts: 0 };
   try {
     const now = Math.floor(Date.now() / 1000);
     const row = await env.DB.prepare(`
@@ -204,6 +204,7 @@ export async function checkRateLimit(env, key) {
 
     if (!row) return { allowed: true, remaining: 3, attempts: 0 };
 
+    // If currently locked out and time remains
     if (row.blocked_until && row.blocked_until > now) {
       const waitSeconds = row.blocked_until - now;
       return {
@@ -211,21 +212,29 @@ export async function checkRateLimit(env, key) {
         remaining: 0,
         attempts: row.attempts,
         waitSeconds,
-        waitMinutes: Math.ceil(waitSeconds / 60)
+        waitMinutes: Math.ceil(waitSeconds / 60),
+        locked: true
       };
+    }
+
+    // If lockout period has expired, reset attempts to grant fresh trials
+    if (row.blocked_until && row.blocked_until <= now) {
+      await env.DB.prepare('DELETE FROM rate_limits WHERE key = ?').bind(key).run().catch(() => {});
+      return { allowed: true, remaining: 3, attempts: 0, locked: false };
     }
 
     // Reset if window of 10 minutes has passed
     if (now - row.last_attempt > 600) {
       await env.DB.prepare('DELETE FROM rate_limits WHERE key = ?').bind(key).run().catch(() => {});
-      return { allowed: true, remaining: 3, attempts: 0 };
+      return { allowed: true, remaining: 3, attempts: 0, locked: false };
     }
 
-    const remaining = Math.max(0, 3 - row.attempts);
+    const remaining = Math.max(0, 3 - (row.attempts || 0));
     return {
-      allowed: row.attempts < 3,
+      allowed: (row.attempts || 0) < 3,
       remaining,
-      attempts: row.attempts
+      attempts: row.attempts || 0,
+      locked: (row.attempts || 0) >= 3
     };
   } catch (err) {
     // Auto-create table if missing
@@ -239,16 +248,26 @@ export async function checkRateLimit(env, key) {
         )
       `).run();
     } catch (e) {}
-    return { allowed: true, remaining: 3, attempts: 0 };
+    return { allowed: true, remaining: 3, attempts: 0, locked: false };
   }
 }
 
 export async function recordFailedAttempt(env, key, lockoutSeconds = 300) {
-  if (!env || !env.DB) return { attempts: 1, remaining: 2, locked: false };
+  if (!env || !env.DB) return { attempts: 1, remaining: 2, locked: false, waitSeconds: 0 };
   try {
     const now = Math.floor(Date.now() / 1000);
-    const row = await env.DB.prepare('SELECT attempts FROM rate_limits WHERE key = ?').bind(key).first();
-    const currentAttempts = (row?.attempts || 0) + 1;
+    const row = await env.DB.prepare('SELECT attempts, last_attempt, blocked_until FROM rate_limits WHERE key = ?').bind(key).first();
+    
+    let currentAttempts = 1;
+    if (row) {
+      // If previous lockout or inactivity window expired, start fresh count
+      if ((row.blocked_until && row.blocked_until <= now) || (now - row.last_attempt > 600)) {
+        currentAttempts = 1;
+      } else {
+        currentAttempts = (row.attempts || 0) + 1;
+      }
+    }
+
     const isLocked = currentAttempts >= 3;
     const blockedUntil = isLocked ? now + lockoutSeconds : 0;
 
@@ -258,18 +277,28 @@ export async function recordFailedAttempt(env, key, lockoutSeconds = 300) {
       ON CONFLICT(key) DO UPDATE SET
         attempts = excluded.attempts,
         last_attempt = excluded.last_attempt,
-        blocked_until = CASE WHEN excluded.attempts >= 3 THEN ? ELSE rate_limits.blocked_until END
+        blocked_until = CASE WHEN excluded.attempts >= 3 THEN ? ELSE 0 END
     `).bind(key, currentAttempts, now, blockedUntil, blockedUntil).run();
 
     return {
       attempts: currentAttempts,
       remaining: Math.max(0, 3 - currentAttempts),
       locked: isLocked,
-      waitSeconds: lockoutSeconds,
-      waitMinutes: Math.ceil(lockoutSeconds / 60)
+      waitSeconds: isLocked ? lockoutSeconds : 0,
+      waitMinutes: isLocked ? Math.ceil(lockoutSeconds / 60) : 0
     };
   } catch (err) {
-    return { attempts: 1, remaining: 2, locked: false };
+    try {
+      await env.DB.prepare(`
+        CREATE TABLE IF NOT EXISTS rate_limits (
+          key TEXT PRIMARY KEY,
+          attempts INTEGER NOT NULL DEFAULT 1,
+          last_attempt INTEGER NOT NULL,
+          blocked_until INTEGER NOT NULL DEFAULT 0
+        )
+      `).run();
+    } catch (e) {}
+    return { attempts: 1, remaining: 2, locked: false, waitSeconds: 0 };
   }
 }
 

@@ -1613,20 +1613,22 @@
     /* ====================================================================
        4. USER DASHBOARD VIEW (PREMIUM PARTNER DASHBOARD)
        ==================================================================== */
+    /* ====================================================================
+       PREMIUM DASHBOARD COMMAND HEADER & PERFECT ORIENTATION
+       ==================================================================== */
     .dashboard-header {
-      background: linear-gradient(135deg, #FFFFFF 0%, #FAF6FE 60%, #F5EEFD 100%);
-      border: 1.5px solid rgba(139, 92, 246, 0.25);
-      border-radius: var(--radius-lg);
-      padding: 28px 32px;
-      margin: 24px 0 28px 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 20px;
-      box-shadow: 0 10px 30px -4px rgba(76, 29, 149, 0.09), 0 2px 8px rgba(0, 0, 0, 0.02);
-      position: relative;
-      overflow: hidden;
+      background: linear-gradient(135deg, #FFFFFF 0%, #FAF7FE 50%, #F5EEFD 100%) !important;
+      border: 2px solid rgba(139, 92, 246, 0.3) !important;
+      border-radius: 20px !important;
+      padding: 24px 28px !important;
+      margin: 20px 0 28px 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 24px !important;
+      box-shadow: 0 12px 32px -4px rgba(76, 29, 149, 0.12), 0 2px 8px rgba(0, 0, 0, 0.02) !important;
+      position: relative !important;
+      overflow: hidden !important;
     }
     .dashboard-header::before {
       content: '';
@@ -1635,94 +1637,220 @@
       left: 0;
       right: 0;
       height: 4px;
-      background: linear-gradient(90deg, #7C3AED, #A855F7, #EC4899, #10B981);
+      background: linear-gradient(90deg, #7C3AED, #A855F7, #F59E0B, #10B981);
+    }
+    .dash-header-main {
+      display: flex !important;
+      align-items: center !important;
+      gap: 18px !important;
+      min-width: 0 !important;
+      flex: 1 !important;
     }
     .user-greeting-wrap {
-      display: flex;
-      align-items: center;
-      gap: 18px;
+      display: flex !important;
+      align-items: center !important;
+      gap: 18px !important;
+      min-width: 0 !important;
+      flex: 1 !important;
     }
     .dash-avatar-badge {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #4C1D95 0%, #2D1537 100%);
-      color: #FFFFFF;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      font-weight: 900;
-      box-shadow: 0 6px 18px -2px rgba(76, 29, 149, 0.4);
-      position: relative;
-      flex-shrink: 0;
-      border: 2px solid #E9D5FF;
+      width: 62px !important;
+      height: 62px !important;
+      border-radius: 18px !important;
+      background: linear-gradient(135deg, #7C3AED 0%, #3B0764 100%) !important;
+      color: #FFFFFF !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      font-size: 26px !important;
+      font-weight: 950 !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+      box-shadow: 0 8px 20px -2px rgba(124, 58, 237, 0.45) !important;
+      position: relative !important;
+      flex-shrink: 0 !important;
+      border: 2px solid #E9D5FF !important;
     }
     .dash-avatar-status {
-      position: absolute;
-      bottom: 2px;
-      right: 2px;
-      width: 14px;
-      height: 14px;
-      background: #10B981;
-      border: 2.5px solid #FFFFFF;
-      border-radius: 50%;
-      box-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
-      animation: livePulseDot 2s infinite ease-in-out;
+      position: absolute !important;
+      bottom: -3px !important;
+      right: -3px !important;
+      width: 15px !important;
+      height: 15px !important;
+      background: #10B981 !important;
+      border: 2.5px solid #FFFFFF !important;
+      border-radius: 50% !important;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.8) !important;
+      animation: livePulseDot 2s infinite ease-in-out !important;
     }
-    .user-greeting h2 {
-      font-size: 28px;
-      font-weight: 950;
-      color: var(--deep-purple-heading);
-      letter-spacing: -0.025em;
-      line-height: 1.25;
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
+    .user-greeting {
+      min-width: 0 !important;
+      flex: 1 !important;
+    }
+    .user-greeting h2,
+    .user-greeting-heading {
+      font-size: 24px !important;
+      font-weight: 950 !important;
+      color: #1E1B4B !important;
+      letter-spacing: -0.025em !important;
+      line-height: 1.3 !important;
+      margin: 0 0 8px 0 !important;
+      display: block !important;
+      word-break: break-word;
+    }
+    .greeting-highlight-name {
+      color: #6D28D9 !important;
+      font-weight: 950 !important;
+    }
+    .user-greeting .wave-emoji {
+      display: inline-block !important;
+      margin-left: 4px !important;
+      vertical-align: middle !important;
+      animation: waveHand 2.2s infinite !important;
+      transform-origin: 70% 70% !important;
+    }
+    @keyframes waveHand {
+      0%, 100% { transform: rotate(0deg); }
+      15% { transform: rotate(14deg); }
+      30% { transform: rotate(-8deg); }
+      45% { transform: rotate(14deg); }
+      60% { transform: rotate(-4deg); }
+      75% { transform: rotate(10deg); }
     }
     .user-greeting-meta {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
+      display: flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+      flex-wrap: wrap !important;
     }
     .user-pkg-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 16px;
-      background: linear-gradient(135deg, #F3E8FF, #EDE9FE);
-      color: #4C1D95;
-      border: 1.5px solid #C084FC;
-      border-radius: var(--radius-full);
-      font-size: 13.5px;
-      font-weight: 900;
-      letter-spacing: 0.03em;
-      box-shadow: 0 2px 8px rgba(109, 40, 217, 0.12);
-      transition: var(--transition);
-    }
-    .user-pkg-tag:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(109, 40, 217, 0.2);
-    }
-    .dash-user-email-text {
-      font-size: 14.5px;
-      font-weight: 750;
-      color: #524B5C;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 5px !important;
+      padding: 4px 12px !important;
+      background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%) !important;
+      color: #78350F !important;
+      border: 1.5px solid #F59E0B !important;
+      border-radius: var(--radius-full) !important;
+      font-size: 12.5px !important;
+      font-weight: 900 !important;
+      letter-spacing: 0.02em !important;
+      box-shadow: 0 2px 6px rgba(245, 158, 11, 0.15) !important;
+      white-space: nowrap !important;
     }
     .partner-verified-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      background: #DCFCE7;
-      color: #166534;
-      border: 1px solid #86EFAC;
-      border-radius: var(--radius-full);
-      font-size: 12.5px;
-      font-weight: 850;
-      padding: 4px 12px;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 5px !important;
+      background: #ECFDF5 !important;
+      color: #065F46 !important;
+      border: 1.5px solid #10B981 !important;
+      border-radius: var(--radius-full) !important;
+      font-size: 12.5px !important;
+      font-weight: 850 !important;
+      padding: 4px 12px !important;
+      box-shadow: 0 2px 6px rgba(16, 185, 129, 0.12) !important;
+      white-space: nowrap !important;
+    }
+    .user-email-chip, .dash-user-email-text {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      background: rgba(255, 255, 255, 0.85) !important;
+      color: #475569 !important;
+      border: 1.5px solid #CBD5E1 !important;
+      border-radius: var(--radius-full) !important;
+      font-size: 12.5px !important;
+      font-weight: 750 !important;
+      padding: 4px 12px !important;
+      white-space: nowrap !important;
+      max-width: 280px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .dash-header-actions {
+      display: flex !important;
+      align-items: center !important;
+      gap: 12px !important;
+      flex-shrink: 0 !important;
+    }
+    .btn-upgrade-cta {
+      background: #FFFFFF !important;
+      color: #6D28D9 !important;
+      border: 2px solid #C084FC !important;
+      font-weight: 850 !important;
+      font-size: 14.5px !important;
+      padding: 10px 18px !important;
+      border-radius: 12px !important;
+      box-shadow: 0 4px 12px rgba(109, 40, 217, 0.08) !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      transition: all 0.2s ease !important;
+      white-space: nowrap !important;
+    }
+    .btn-upgrade-cta:hover {
+      background: #F5EEFD !important;
+      border-color: #7C3AED !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 8px 18px rgba(109, 40, 217, 0.16) !important;
+    }
+    .btn-payout-cta {
+      background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+      color: #FFFFFF !important;
+      border: none !important;
+      font-weight: 900 !important;
+      font-size: 14.5px !important;
+      padding: 11px 20px !important;
+      border-radius: 12px !important;
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35) !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 7px !important;
+      transition: all 0.2s ease !important;
+      white-space: nowrap !important;
+    }
+    .btn-payout-cta:hover {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 10px 24px rgba(16, 185, 129, 0.45) !important;
+    }
+
+    @media (max-width: 900px) {
+      .dashboard-header {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        padding: 20px !important;
+        gap: 18px !important;
+      }
+      .dash-header-actions {
+        width: 100% !important;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10px !important;
+      }
+      .dash-header-actions .btn {
+        width: 100% !important;
+        justify-content: center !important;
+      }
+    }
+    @media (max-width: 520px) {
+      .dash-header-main, .user-greeting-wrap {
+        flex-direction: row !important;
+        align-items: flex-start !important;
+        gap: 14px !important;
+      }
+      .dash-avatar-badge {
+        width: 52px !important;
+        height: 52px !important;
+        font-size: 22px !important;
+      }
+      .user-greeting h2,
+      .user-greeting-heading {
+        font-size: 20px !important;
+      }
+      .dash-header-actions {
+        grid-template-columns: 1fr !important;
+      }
     }
 
     /* Section Structure & Arranged Banners */
@@ -5578,34 +5706,44 @@
       <!-- Dashboard Gating / Verification Status Banner -->
       <div id="dashboard-gating-banner" style="display: none;"></div>
 
-      <!-- Dashboard Command Header -->
+      <!-- Dashboard Command Header (Ultra-Clean, Perfectly Oriented Layout) -->
       <div class="dashboard-header">
-        <div class="user-greeting-wrap">
+        <div class="dash-header-main">
+          <!-- Luxury Avatar Badge with Glow & Live Status Indicator -->
           <div class="dash-avatar-badge">
             <span id="dash-avatar-initials">P</span>
             <span class="dash-avatar-status" title="Account Active"></span>
           </div>
+
+          <!-- User Info & Greeting Group -->
           <div class="user-greeting">
-            <h2>Welcome back, <span id="dash-user-name">Partner</span>! <span class="wave-emoji">👋</span></h2>
+            <h2 class="user-greeting-heading">Welcome back, <span id="dash-user-name" class="greeting-highlight-name">Partner</span>! <span class="wave-emoji" aria-label="waving hand">👋</span></h2>
             <div class="user-greeting-meta">
-              <span class="user-pkg-tag" id="dash-pkg-tag">Starter Pro</span>
+              <span class="user-pkg-tag" id="dash-pkg-tag">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                Starter Pro
+              </span>
               <span class="partner-verified-badge">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
                 Verified Active Partner
               </span>
-              <span class="dash-user-email-text" id="dash-user-email">user@almai.co.ke</span>
+              <span class="user-email-chip">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                <span id="dash-user-email">user@almai.co.ke</span>
+              </span>
             </div>
           </div>
         </div>
 
-        <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+        <!-- Action Call-to-Actions (Upgrade & Payout) -->
+        <div class="dash-header-actions">
           <button class="btn btn-secondary btn-upgrade-cta" onclick="switchView('products')">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
-            Upgrade Tier
+            <span>Upgrade Tier</span>
           </button>
           <button class="btn btn-success btn-payout-cta" onclick="openWithdrawalModal()">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
-            Request M-Pesa Payout
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+            <span>Request M-Pesa Payout</span>
           </button>
         </div>
       </div>
@@ -7983,16 +8121,94 @@
       }
     }
 
+    let loginLockoutTimer = null;
+
+    function checkLoginLockoutStatus() {
+      const lockedUntil = parseInt(localStorage.getItem('almai_login_locked_until'), 10);
+      const now = Date.now();
+      if (lockedUntil && lockedUntil > now) {
+        const remainingSeconds = Math.ceil((lockedUntil - now) / 1000);
+        startLoginLockoutTimer(remainingSeconds);
+        return true;
+      } else if (lockedUntil) {
+        localStorage.removeItem('almai_login_locked_until');
+      }
+      return false;
+    }
+
+    function startLoginLockoutTimer(totalSeconds) {
+      if (loginLockoutTimer) clearInterval(loginLockoutTimer);
+
+      const btn = document.getElementById('btn-login-submit');
+      const emailInput = document.getElementById('login-email');
+      const passInput = document.getElementById('login-password');
+      const alertEl = document.getElementById('auth-alert');
+
+      if (btn) btn.disabled = true;
+      if (emailInput) emailInput.disabled = true;
+      if (passInput) passInput.disabled = true;
+
+      let remaining = totalSeconds;
+
+      function renderCountdown() {
+        const mins = Math.floor(remaining / 60);
+        const secs = remaining % 60;
+        const formatted = String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+
+        if (btn) {
+          btn.innerHTML = '<span class="svg-icon" style="width: 15px; height: 15px; margin-right: 6px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span> Locked (' + formatted + ')';
+        }
+
+        if (alertEl) {
+          alertEl.className = 'alert alert-error';
+          alertEl.style.display = 'flex';
+          alertEl.innerHTML = '<div style="display:flex; align-items:flex-start; gap:8px;">' +
+            '<span style="font-size:18px;">🔒</span>' +
+            '<div><strong>3 of 3 Trials Exceeded. Sign-in Locked.</strong><br>' +
+            '<span style="font-size:13.5px;">For security, access is temporarily locked for 5 minutes. Try again in <strong>' + formatted + '</strong>.</span></div>' +
+            '</div>';
+        }
+
+        if (remaining <= 0) {
+          clearInterval(loginLockoutTimer);
+          loginLockoutTimer = null;
+          localStorage.removeItem('almai_login_locked_until');
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = 'Sign In to Account';
+          }
+          if (emailInput) emailInput.disabled = false;
+          if (passInput) passInput.disabled = false;
+          if (alertEl) {
+            alertEl.className = 'alert alert-info';
+            alertEl.innerHTML = '✓ Lockout expired. You have 3 fresh attempts.';
+          }
+        }
+        remaining--;
+      }
+
+      renderCountdown();
+      loginLockoutTimer = setInterval(renderCountdown, 1000);
+    }
+
     async function handleLoginSubmit(e) {
       e.preventDefault();
+      
+      // If currently locked, prevent any submission
+      if (checkLoginLockoutStatus()) {
+        return;
+      }
+
       const email = document.getElementById('login-email').value;
       const password = document.getElementById('login-password').value;
-      const alert = document.getElementById('auth-alert');
+      const alertEl = document.getElementById('auth-alert');
       const btn = document.getElementById('btn-login-submit');
 
       btn.disabled = true;
       btn.textContent = 'Signing in...';
-      alert.style.display = 'none';
+      alertEl.style.display = 'none';
+
+      let isLocked = false;
 
       try {
         const res = await fetch('/api/auth/login', {
@@ -8002,7 +8218,9 @@
         });
 
         const data = await res.json();
+
         if (res.ok && data.success) {
+          localStorage.removeItem('almai_login_locked_until');
           await checkAuthSession();
 
           // Administrator login flow:
@@ -8012,20 +8230,46 @@
           }
 
           // User login flow:
-          // Landing page -> Sign up -> Sign in -> Land on Partner Dashboard!
           switchView('dashboard');
         } else {
-          alert.className = 'alert alert-error';
-          alert.textContent = data.error || 'Invalid email or password';
-          alert.style.display = 'flex';
+          // Check if 3-trial lockout triggered
+          if (res.status === 429 || data.locked || data.attempts >= 3) {
+            isLocked = true;
+            const waitSecs = data.waitSeconds || (data.waitMinutes ? data.waitMinutes * 60 : 300);
+            localStorage.setItem('almai_login_locked_until', Date.now() + waitSecs * 1000);
+            startLoginLockoutTimer(waitSecs);
+          } else {
+            const attempts = data.attempts || 1;
+            const remaining = typeof data.remaining === 'number' ? data.remaining : Math.max(0, 3 - attempts);
+            alertEl.className = 'alert alert-error';
+            alertEl.style.display = 'flex';
+            
+            if (remaining === 1) {
+              alertEl.innerHTML = '<div style="display:flex; align-items:flex-start; gap:8px;">' +
+                '<span style="font-size:18px;">⚠️</span>' +
+                '<div><strong>Trial 2 of 3 Failed!</strong><br>' +
+                '<span style="font-size:13.5px;">Invalid credentials. <strong>Only 1 attempt remaining</strong> before your account is locked for 5 minutes.</span></div>' +
+                '</div>';
+            } else if (remaining === 2) {
+              alertEl.innerHTML = '<div style="display:flex; align-items:flex-start; gap:8px;">' +
+                '<span style="font-size:18px;">⚠️</span>' +
+                '<div><strong>Trial 1 of 3 Used.</strong><br>' +
+                '<span style="font-size:13.5px;">Invalid email or password. You have <strong>2 attempts remaining</strong>.</span></div>' +
+                '</div>';
+            } else {
+              alertEl.textContent = data.error || 'Invalid email or password.';
+            }
+          }
         }
       } catch (err) {
-        alert.className = 'alert alert-error';
-        alert.textContent = 'Connection error. Please try again.';
-        alert.style.display = 'flex';
+        alertEl.className = 'alert alert-error';
+        alertEl.textContent = 'Connection error. Please try again.';
+        alertEl.style.display = 'flex';
       } finally {
-        btn.disabled = false;
-        btn.textContent = 'Sign In to Account';
+        if (!isLocked && !checkLoginLockoutStatus()) {
+          btn.disabled = false;
+          btn.textContent = 'Sign In to Account';
+        }
       }
     }
 
