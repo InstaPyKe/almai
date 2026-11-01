@@ -4172,6 +4172,818 @@
         padding: 5px 10px;
       }
     }
+  
+    /* ====================================================================
+       SUPER COLORED ALTERNATING SECTIONS (YELLOW, BLUE, GREEN, PURPLE)
+       WITH ALTERNATING COLORED UI TEXT FONTS
+       ==================================================================== */
+
+    /* Theme Yellow (Amber / Gold / Sunshine) */
+    .dash-theme-yellow {
+      background: linear-gradient(145deg, #FFFDF0 0%, #FEF9C3 35%, #FEF08A 100%) !important;
+      border: 2.5px solid #F59E0B !important;
+      border-radius: var(--radius-lg) !important;
+      padding: 26px 26px 30px !important;
+      box-shadow: 0 14px 34px -4px rgba(245, 158, 11, 0.22), 0 3px 10px rgba(0, 0, 0, 0.04) !important;
+      margin-bottom: 32px !important;
+      position: relative !important;
+      overflow: hidden !important;
+    }
+    .dash-theme-yellow::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .dash-theme-yellow .dash-group-header,
+    .dash-theme-yellow .dash-section-header {
+      border-bottom: 2px solid rgba(217, 119, 6, 0.25) !important;
+    }
+    .dash-theme-yellow .dash-group-title,
+    .dash-theme-yellow .dash-section-title,
+    .dash-theme-yellow h2,
+    .dash-theme-yellow h3,
+    .dash-theme-yellow h4 {
+      color: #78350F !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+      font-weight: 950 !important;
+      letter-spacing: -0.02em;
+    }
+    .dash-theme-yellow .dash-group-subtitle,
+    .dash-theme-yellow p {
+      color: #92400E !important;
+      font-weight: 750 !important;
+    }
+    .dash-theme-yellow .dash-group-pill {
+      background: #FEF3C7 !important;
+      color: #92400E !important;
+      border: 1.5px solid #F59E0B !important;
+      font-weight: 850 !important;
+    }
+    .dash-theme-yellow .dash-metric-card {
+      background: #FFFFFF !important;
+      border: 2px solid #FDE68A !important;
+      box-shadow: 0 8px 22px rgba(245, 158, 11, 0.14) !important;
+    }
+    .dash-theme-yellow .dash-metric-card:hover {
+      border-color: #F59E0B !important;
+      transform: translateY(-4px) !important;
+      box-shadow: 0 14px 28px rgba(245, 158, 11, 0.25) !important;
+    }
+    .dash-theme-yellow .dash-metric-lbl {
+      color: #92400E !important;
+      font-weight: 850 !important;
+      font-size: 13.5px !important;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .dash-theme-yellow .dash-metric-val {
+      color: #78350F !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+      font-weight: 950 !important;
+      font-size: 32px !important;
+    }
+    .dash-theme-yellow .dash-metric-sub {
+      color: #B45309 !important;
+      font-weight: 800 !important;
+    }
+    .dash-theme-yellow .dash-tab-btn.active {
+      background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+      color: #FFFFFF !important;
+      border-color: #D97706 !important;
+    }
+    .dash-theme-yellow table th {
+      background: #FEF3C7 !important;
+      color: #78350F !important;
+      border-bottom: 2px solid #F59E0B !important;
+      font-weight: 900 !important;
+    }
+
+    /* Theme Blue (Cobalt / Sky / Royal Sapphire) */
+    .dash-theme-blue {
+      background: linear-gradient(145deg, #F0F9FF 0%, #E0F2FE 35%, #BAE6FD 100%) !important;
+      border: 2.5px solid #3B82F6 !important;
+      border-radius: var(--radius-lg) !important;
+      padding: 26px 26px 30px !important;
+      box-shadow: 0 14px 34px -4px rgba(59, 130, 246, 0.22), 0 3px 10px rgba(0, 0, 0, 0.04) !important;
+      margin-bottom: 32px !important;
+      position: relative !important;
+      overflow: hidden !important;
+    }
+    .dash-theme-blue::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .dash-theme-blue .dash-group-header,
+    .dash-theme-blue .dash-section-header {
+      border-bottom: 2px solid rgba(37, 99, 235, 0.25) !important;
+    }
+    .dash-theme-blue .dash-group-title,
+    .dash-theme-blue .dash-section-title,
+    .dash-theme-blue h2,
+    .dash-theme-blue h3,
+    .dash-theme-blue h4 {
+      color: #1E3A8A !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+      font-weight: 950 !important;
+      letter-spacing: -0.02em;
+    }
+    .dash-theme-blue .dash-group-subtitle,
+    .dash-theme-blue p {
+      color: #1D4ED8 !important;
+      font-weight: 750 !important;
+    }
+    .dash-theme-blue .dash-group-pill {
+      background: #DBEAFE !important;
+      color: #1E40AF !important;
+      border: 1.5px solid #3B82F6 !important;
+      font-weight: 850 !important;
+    }
+    .dash-theme-blue .dash-metric-card {
+      background: #FFFFFF !important;
+      border: 2px solid #BFDBFE !important;
+      box-shadow: 0 8px 22px rgba(37, 99, 235, 0.14) !important;
+    }
+    .dash-theme-blue .dash-metric-card:hover {
+      border-color: #3B82F6 !important;
+      transform: translateY(-4px) !important;
+      box-shadow: 0 14px 28px rgba(37, 99, 235, 0.25) !important;
+    }
+    .dash-theme-blue .dash-metric-lbl {
+      color: #1E40AF !important;
+      font-weight: 850 !important;
+      font-size: 13.5px !important;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .dash-theme-blue .dash-metric-val {
+      color: #1E3A8A !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+      font-weight: 950 !important;
+      font-size: 32px !important;
+    }
+    .dash-theme-blue .dash-metric-sub {
+      color: #2563EB !important;
+      font-weight: 800 !important;
+    }
+
+    /* Theme Green (Emerald / Jade / Mint) */
+    .dash-theme-green {
+      background: linear-gradient(145deg, #F0FDF4 0%, #DCFCE7 35%, #BBF7D0 100%) !important;
+      border: 2.5px solid #10B981 !important;
+      border-radius: var(--radius-lg) !important;
+      padding: 26px 26px 30px !important;
+      box-shadow: 0 14px 34px -4px rgba(16, 185, 129, 0.22), 0 3px 10px rgba(0, 0, 0, 0.04) !important;
+      margin-bottom: 32px !important;
+      position: relative !important;
+      overflow: hidden !important;
+    }
+    .dash-theme-green::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .dash-theme-green .dash-group-header,
+    .dash-theme-green .dash-section-header {
+      border-bottom: 2px solid rgba(5, 150, 105, 0.25) !important;
+    }
+    .dash-theme-green .dash-group-title,
+    .dash-theme-green .dash-section-title,
+    .dash-theme-green h2,
+    .dash-theme-green h3,
+    .dash-theme-green h4 {
+      color: #064E3B !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+      font-weight: 950 !important;
+      letter-spacing: -0.02em;
+    }
+    .dash-theme-green .dash-group-subtitle,
+    .dash-theme-green p {
+      color: #047857 !important;
+      font-weight: 750 !important;
+    }
+    .dash-theme-green .dash-group-pill {
+      background: #D1FAE5 !important;
+      color: #065F46 !important;
+      border: 1.5px solid #10B981 !important;
+      font-weight: 850 !important;
+    }
+    .dash-theme-green .roadmap-step-item {
+      background: #FFFFFF !important;
+      border: 2px solid #A7F3D0 !important;
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.12) !important;
+    }
+    .dash-theme-green .roadmap-step-num {
+      background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+      color: #FFFFFF !important;
+      font-weight: 950 !important;
+    }
+    .dash-theme-green .roadmap-step-text {
+      color: #064E3B !important;
+      font-weight: 850 !important;
+    }
+    .dash-theme-green .cooldown-banner {
+      background: #FFFFFF !important;
+      border: 2px solid #6EE7B7 !important;
+      border-radius: var(--radius-md) !important;
+      padding: 24px !important;
+      box-shadow: 0 8px 24px rgba(5, 150, 105, 0.1) !important;
+      margin-bottom: 20px !important;
+    }
+
+    /* Theme Purple (Royal Violet / Amethyst / Lavender) */
+    .dash-theme-purple {
+      background: linear-gradient(145deg, #FAF5FF 0%, #F3E8FF 35%, #E9D5FF 100%) !important;
+      border: 2.5px solid #8B5CF6 !important;
+      border-radius: var(--radius-lg) !important;
+      padding: 26px 26px 30px !important;
+      box-shadow: 0 14px 34px -4px rgba(139, 92, 246, 0.22), 0 3px 10px rgba(0, 0, 0, 0.04) !important;
+      margin-bottom: 32px !important;
+      position: relative !important;
+      overflow: hidden !important;
+    }
+    .dash-theme-purple::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .dash-theme-purple .dash-group-header,
+    .dash-theme-purple .dash-section-header {
+      border-bottom: 2px solid rgba(109, 40, 217, 0.25) !important;
+    }
+    .dash-theme-purple .dash-group-title,
+    .dash-theme-purple .dash-section-title,
+    .dash-theme-purple h2,
+    .dash-theme-purple h3,
+    .dash-theme-purple h4 {
+      color: #3B0764 !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+      font-weight: 950 !important;
+      letter-spacing: -0.02em;
+    }
+    .dash-theme-purple .dash-group-subtitle,
+    .dash-theme-purple p {
+      color: #6D28D9 !important;
+      font-weight: 750 !important;
+    }
+    .dash-theme-purple .dash-group-pill {
+      background: #EDE9FE !important;
+      color: #5B21B6 !important;
+      border: 1.5px solid #8B5CF6 !important;
+      font-weight: 850 !important;
+    }
+
+    /* ====================================================================
+       ADMIN DASHBOARD SUPER COLORED ALTERNATING SECTIONS
+       ==================================================================== */
+    .admin-sec-yellow {
+      background: linear-gradient(145deg, #FFFDF0 0%, #FEF9C3 35%, #FEF08A 100%) !important;
+      border: 2.5px solid #F59E0B !important;
+      box-shadow: 0 14px 34px -4px rgba(245, 158, 11, 0.22) !important;
+    }
+    .admin-sec-yellow .admin-section-banner {
+      background: linear-gradient(135deg, #FEF08A 0%, #FDE047 100%) !important;
+      border: 2px solid #EAB308 !important;
+      border-left: 6px solid #B45309 !important;
+    }
+    .admin-sec-yellow .admin-banner-title {
+      color: #78350F !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+      font-weight: 950 !important;
+    }
+    .admin-sec-yellow .admin-banner-subtitle {
+      color: #92400E !important;
+      font-weight: 750 !important;
+    }
+    .admin-sec-yellow table th {
+      background: #FEF3C7 !important;
+      color: #78350F !important;
+      border-bottom: 2px solid #F59E0B !important;
+      font-weight: 900 !important;
+    }
+
+    .admin-sec-blue {
+      background: linear-gradient(145deg, #F0F9FF 0%, #E0F2FE 35%, #BAE6FD 100%) !important;
+      border: 2.5px solid #3B82F6 !important;
+      box-shadow: 0 14px 34px -4px rgba(59, 130, 246, 0.22) !important;
+    }
+    .admin-sec-blue .admin-section-banner {
+      background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%) !important;
+      border: 2px solid #60A5FA !important;
+      border-left: 6px solid #1D4ED8 !important;
+    }
+    .admin-sec-blue .admin-banner-title {
+      color: #1E3A8A !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+      font-weight: 950 !important;
+    }
+    .admin-sec-blue .admin-banner-subtitle {
+      color: #1D4ED8 !important;
+      font-weight: 750 !important;
+    }
+    .admin-sec-blue table th {
+      background: #DBEAFE !important;
+      color: #1E3A8A !important;
+      border-bottom: 2px solid #3B82F6 !important;
+      font-weight: 900 !important;
+    }
+
+    .admin-sec-green {
+      background: linear-gradient(145deg, #F0FDF4 0%, #DCFCE7 35%, #BBF7D0 100%) !important;
+      border: 2.5px solid #10B981 !important;
+      box-shadow: 0 14px 34px -4px rgba(16, 185, 129, 0.22) !important;
+    }
+    .admin-sec-green .admin-section-banner {
+      background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%) !important;
+      border: 2px solid #34D399 !important;
+      border-left: 6px solid #047857 !important;
+    }
+    .admin-sec-green .admin-banner-title {
+      color: #064E3B !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+      font-weight: 950 !important;
+    }
+    .admin-sec-green .admin-banner-subtitle {
+      color: #047857 !important;
+      font-weight: 750 !important;
+    }
+    .admin-sec-green table th {
+      background: #D1FAE5 !important;
+      color: #064E3B !important;
+      border-bottom: 2px solid #10B981 !important;
+      font-weight: 900 !important;
+    }
+
+    .admin-sec-purple {
+      background: linear-gradient(145deg, #FAF5FF 0%, #F3E8FF 35%, #E9D5FF 100%) !important;
+      border: 2.5px solid #8B5CF6 !important;
+      box-shadow: 0 14px 34px -4px rgba(139, 92, 246, 0.22) !important;
+    }
+    .admin-sec-purple .admin-section-banner {
+      background: linear-gradient(135deg, #EDE9FE 0%, #DDD6FE 100%) !important;
+      border: 2px solid #A78BFA !important;
+      border-left: 6px solid #6D28D9 !important;
+    }
+    .admin-sec-purple .admin-banner-title {
+      color: #3B0764 !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+      font-weight: 950 !important;
+    }
+    .admin-sec-purple .admin-banner-subtitle {
+      color: #6D28D9 !important;
+      font-weight: 750 !important;
+    }
+    .admin-sec-purple table th {
+      background: #EDE9FE !important;
+      color: #3B0764 !important;
+      border-bottom: 2px solid #8B5CF6 !important;
+      font-weight: 900 !important;
+    }
+
+    /* Alternating Admin KPI Cards */
+    .admin-kpi-card.kpi-theme-yellow {
+      background: linear-gradient(135deg, #FFFDF0 0%, #FEF9C3 100%) !important;
+      border: 2px solid #F59E0B !important;
+      box-shadow: 0 6px 18px rgba(245, 158, 11, 0.18) !important;
+    }
+    .admin-kpi-card.kpi-theme-yellow .admin-kpi-lbl { color: #92400E !important; font-weight: 850 !important; }
+    .admin-kpi-card.kpi-theme-yellow .admin-kpi-val { color: #78350F !important; font-family: 'Space Grotesk', sans-serif !important; font-weight: 950 !important; }
+    .admin-kpi-card.kpi-theme-yellow .admin-kpi-sub { color: #B45309 !important; font-weight: 700 !important; }
+
+    .admin-kpi-card.kpi-theme-blue {
+      background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%) !important;
+      border: 2px solid #3B82F6 !important;
+      box-shadow: 0 6px 18px rgba(59, 130, 246, 0.18) !important;
+    }
+    .admin-kpi-card.kpi-theme-blue .admin-kpi-lbl { color: #1E40AF !important; font-weight: 850 !important; }
+    .admin-kpi-card.kpi-theme-blue .admin-kpi-val { color: #1E3A8A !important; font-family: 'Space Grotesk', sans-serif !important; font-weight: 950 !important; }
+    .admin-kpi-card.kpi-theme-blue .admin-kpi-sub { color: #2563EB !important; font-weight: 700 !important; }
+
+    .admin-kpi-card.kpi-theme-green {
+      background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%) !important;
+      border: 2px solid #10B981 !important;
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.18) !important;
+    }
+    .admin-kpi-card.kpi-theme-green .admin-kpi-lbl { color: #047857 !important; font-weight: 850 !important; }
+    .admin-kpi-card.kpi-theme-green .admin-kpi-val { color: #064E3B !important; font-family: 'Space Grotesk', sans-serif !important; font-weight: 950 !important; }
+    .admin-kpi-card.kpi-theme-green .admin-kpi-sub { color: #059669 !important; font-weight: 700 !important; }
+
+    .admin-kpi-card.kpi-theme-purple {
+      background: linear-gradient(135deg, #FAF5FF 0%, #F3E8FF 100%) !important;
+      border: 2px solid #8B5CF6 !important;
+      box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18) !important;
+    }
+    .admin-kpi-card.kpi-theme-purple .admin-kpi-lbl { color: #6D28D9 !important; font-weight: 850 !important; }
+    .admin-kpi-card.kpi-theme-purple .admin-kpi-val { color: #3B0764 !important; font-family: 'Space Grotesk', sans-serif !important; font-weight: 950 !important; }
+    .admin-kpi-card.kpi-theme-purple .admin-kpi-sub { color: #7C3AED !important; font-weight: 700 !important; }
+
+    /* ====================================================================
+       MAGNIFICENT PRODUCT IMAGES & DUAL-LAYER AMBIENT GLOW SYSTEM
+       ==================================================================== */
+    .products-posts-grid {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)) !important;
+      gap: 26px !important;
+      margin-top: 20px !important;
+    }
+    .product-post-card {
+      background: #FFFFFF !important;
+      border: 1.5px solid rgba(229, 218, 203, 0.8) !important;
+      border-radius: var(--radius-lg) !important;
+      overflow: hidden !important;
+      box-shadow: 0 12px 30px -4px rgba(59, 7, 100, 0.1), 0 3px 10px rgba(0, 0, 0, 0.03) !important;
+      display: flex !important;
+      flex-direction: column !important;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+    .product-post-card:hover {
+      transform: translateY(-6px) !important;
+      border-color: #8B5CF6 !important;
+      box-shadow: 0 20px 42px -6px rgba(59, 7, 100, 0.22), 0 6px 16px rgba(0, 0, 0, 0.05) !important;
+    }
+    .product-post-img-wrap {
+      width: 100% !important;
+      height: 310px !important;
+      min-height: 290px !important;
+      max-height: 340px !important;
+      background: radial-gradient(circle at center, #1E1B4B 0%, #0F172A 100%) !important;
+      position: relative !important;
+      overflow: hidden !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    .img-backdrop-glow {
+      position: absolute !important;
+      inset: -25px !important;
+      background-size: cover !important;
+      background-position: center !important;
+      filter: blur(24px) brightness(0.65) saturate(1.4) !important;
+      opacity: 0.82 !important;
+      transform: scale(1.15) !important;
+      pointer-events: none !important;
+      transition: opacity 0.3s ease, filter 0.3s ease !important;
+    }
+    .product-post-img-wrap img {
+      position: relative !important;
+      z-index: 2 !important;
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: contain !important;
+      object-position: center !important;
+      background-color: transparent !important;
+      filter: drop-shadow(0 12px 26px rgba(0, 0, 0, 0.48)) !important;
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.25s ease !important;
+      cursor: pointer !important;
+    }
+    .product-post-card:hover .product-post-img-wrap img {
+      transform: scale(1.04) !important;
+    }
+    .product-post-img-wrap.fit-cover img {
+      object-fit: cover !important;
+      filter: none !important;
+    }
+    .product-post-img-wrap.fit-cover .img-backdrop-glow {
+      opacity: 0 !important;
+    }
+    .img-controls-bar {
+      position: absolute !important;
+      top: 10px !important;
+      right: 10px !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      z-index: 5 !important;
+    }
+    .img-quality-chip {
+      background: rgba(15, 23, 42, 0.85) !important;
+      backdrop-filter: blur(8px) !important;
+      color: #FDE047 !important;
+      border: 1px solid rgba(253, 224, 71, 0.3) !important;
+      border-radius: var(--radius-full) !important;
+      padding: 4px 9px !important;
+      font-size: 10.5px !important;
+      font-weight: 850 !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+      letter-spacing: 0.03em !important;
+    }
+    .img-zoom-btn, .img-fit-btn {
+      background: rgba(15, 23, 42, 0.85) !important;
+      backdrop-filter: blur(8px) !important;
+      color: #FFFFFF !important;
+      border: 1px solid rgba(255, 255, 255, 0.25) !important;
+      border-radius: var(--radius-full) !important;
+      padding: 4px 10px !important;
+      font-size: 11px !important;
+      font-weight: 750 !important;
+      cursor: pointer !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 5px !important;
+      transition: all 0.2s ease !important;
+    }
+    .img-zoom-btn:hover, .img-fit-btn:hover {
+      background: var(--primary-purple) !important;
+      border-color: #A78BFA !important;
+      transform: scale(1.06) !important;
+    }
+
+    /* Product Lightbox Modal */
+    #modal-product-lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 8, 20, 0.88);
+      backdrop-filter: blur(14px);
+      z-index: 99999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    #modal-product-lightbox.open {
+      display: flex !important;
+      animation: modalFadeIn 0.25s ease-out both;
+    }
+    .product-lightbox-container {
+      background: #110E1B;
+      border: 1.5px solid rgba(168, 85, 247, 0.35);
+      border-radius: 20px;
+      max-width: 880px;
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.7);
+    }
+    .product-lightbox-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 22px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .product-lightbox-body {
+      position: relative;
+      width: 100%;
+      height: 480px;
+      max-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: #090710;
+    }
+    .lightbox-img-backdrop-glow {
+      position: absolute;
+      inset: -30px;
+      background-size: cover;
+      background-position: center;
+      filter: blur(35px) brightness(0.6) saturate(1.5);
+      opacity: 0.85;
+      pointer-events: none;
+    }
+    .lightbox-main-img {
+      position: relative;
+      z-index: 2;
+      max-width: 95%;
+      max-height: 95%;
+      object-fit: contain;
+      filter: drop-shadow(0 16px 36px rgba(0, 0, 0, 0.6));
+      border-radius: 8px;
+    }
+    .product-lightbox-footer {
+      padding: 18px 22px 22px;
+      background: rgba(255, 255, 255, 0.02);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .lightbox-caption-text {
+      color: #E2E8F0;
+      font-size: 14.5px;
+      font-weight: 600;
+      line-height: 1.55;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px dashed rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      word-break: break-word;
+    }
+    .lightbox-actions-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    /* ====================================================================
+       STANDARD MODERN COMPANY FOOTER UI
+       ==================================================================== */
+    footer {
+      background: #141118 !important;
+      color: #E2D9CC !important;
+      padding: 48px 0 28px !important;
+      margin-top: auto !important;
+      border-top: 3px solid #F59E0B !important;
+    }
+    .footer-status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      padding: 14px 20px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-md);
+      margin-bottom: 38px;
+    }
+    .footer-status-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .footer-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      font-weight: 750;
+      color: #E2E8F0;
+    }
+    .live-pulse-green {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10B981;
+      box-shadow: 0 0 10px #10B981;
+      display: inline-block;
+      animation: statusPulse 1.8s infinite;
+    }
+    @keyframes statusPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+    }
+    .footer-status-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13.5px;
+      font-weight: 750;
+      color: #CBD5E1;
+    }
+    .kenya-flag-chip {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #FFFFFF;
+      font-size: 12.5px;
+    }
+    .footer-grid {
+      display: grid !important;
+      grid-template-columns: 2fr 1fr 1fr 1.3fr !important;
+      gap: 36px !important;
+      margin-bottom: 38px !important;
+    }
+    .footer-col h4 {
+      color: #FFFFFF !important;
+      font-size: 17.5px !important;
+      font-weight: 900 !important;
+      margin-bottom: 16px !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+      letter-spacing: -0.01em;
+      position: relative;
+      padding-bottom: 8px;
+    }
+    .footer-col h4::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 28px;
+      height: 2.5px;
+      background: #F59E0B;
+      border-radius: 2px;
+    }
+    .footer-links {
+      list-style: none !important;
+    }
+    .footer-links li {
+      margin-bottom: 10px !important;
+    }
+    .footer-links a {
+      color: #CBD5E1 !important;
+      font-size: 14.5px !important;
+      font-weight: 650 !important;
+      transition: all 0.2s ease !important;
+    }
+    .footer-links a:hover {
+      color: #FDE047 !important;
+      transform: translateX(4px);
+      display: inline-block;
+    }
+    .footer-trust-chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .trust-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-full);
+      padding: 4px 11px;
+      font-size: 12px;
+      font-weight: 750;
+      color: #E2E8F0;
+    }
+    .footer-contact-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13.5px;
+      color: #CBD5E1;
+      line-height: 1.5;
+    }
+    .footer-contact-item svg {
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+    .footer-contact-item strong {
+      color: #FFFFFF;
+      display: block;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+      padding-top: 22px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      flex-wrap: wrap !important;
+      gap: 14px !important;
+      font-size: 14.5px !important;
+      font-weight: 700 !important;
+      color: #94A3B8 !important;
+    }
+    .footer-legal-links {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 13.5px;
+    }
+    .footer-legal-links a {
+      color: #94A3B8 !important;
+      font-weight: 650 !important;
+    }
+    .footer-legal-links a:hover {
+      color: #FFFFFF !important;
+    }
+
+    @media (max-width: 1024px) {
+      .footer-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 28px !important;
+      }
+    }
+    @media (max-width: 640px) {
+      .footer-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .product-post-img-wrap {
+        height: 270px !important;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -4799,7 +5611,7 @@
       </div>
 
       <!-- SECTION 1: FINANCIAL LEDGER & WALLET BALANCES -->
-      <div class="dash-section-group dash-group-financials">
+      <div class="dash-section-group dash-group-financials dash-theme-yellow">
         <div class="dash-group-header">
           <div>
             <div class="dash-group-title">
@@ -4880,7 +5692,7 @@
       </div>
 
       <!-- SECTION 2: WHATSAPP VIEWS & PERFORMANCE METRICS -->
-      <div class="dash-section-group dash-group-views">
+      <div class="dash-section-group dash-group-views dash-theme-blue">
         <div class="dash-group-header">
           <div>
             <div class="dash-group-title">
@@ -4945,8 +5757,24 @@
         </div>
       </div>
 
-      <!-- SECTION 3: 18-HOUR TASK MISSION STATION -->
-      <div class="cooldown-banner">
+      <!-- SECTION 3: 18-HOUR TASK MISSION STATION (SUPER COLORED GREEN THEME) -->
+      <div class="dash-section dash-theme-green">
+        <div class="dash-section-header" style="margin-bottom: 18px;">
+          <div>
+            <div class="dash-section-title">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#059669" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              Today's 18h WhatsApp Task Mission Station
+            </div>
+            <div class="dash-group-subtitle">
+              Post verified sponsor creatives, maintain status for 18 hours, and earn guaranteed M-Pesa rewards
+            </div>
+          </div>
+          <span class="dash-group-pill">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: #059669; display: inline-block;"></span>
+            18h Rule Protected
+          </span>
+        </div>
+        <div class="cooldown-banner">
         <div class="cooldown-banner-top">
           <div class="cooldown-info">
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
@@ -5021,8 +5849,9 @@
         </div>
       </div>
 
+      </div>
       <!-- SECTION 5: TODAY'S WHATSAPP STATUS PRODUCTS TO DOWNLOAD -->
-      <div class="dash-section dash-group-products">
+      <div class="dash-section dash-group-products dash-theme-purple">
         <div class="dash-section-header">
           <div>
             <div class="dash-section-title">
@@ -5044,7 +5873,7 @@
       </div>
 
       <!-- SECTION 6: ARRANGED ACTIVITY & FINANCIAL HISTORY (TABBED) -->
-      <div class="dash-section dash-group-history">
+      <div class="dash-section dash-group-history dash-theme-yellow">
         <div class="dash-section-header">
           <div>
             <div class="dash-section-title">
@@ -5460,27 +6289,27 @@
         <div class="admin-main-area">
           <!-- Executive Operational Metrics (Live Overview) -->
           <div class="admin-kpi-grid">
-            <div class="admin-kpi-card kpi-amber">
+            <div class="admin-kpi-card kpi-theme-yellow">
               <div class="admin-kpi-lbl">Pending Payments</div>
               <div class="admin-kpi-val" id="kpi-pending-payments">0</div>
               <div class="admin-kpi-sub">M-Pesa codes awaiting audit</div>
             </div>
-            <div class="admin-kpi-card kpi-purple">
+            <div class="admin-kpi-card kpi-theme-blue">
               <div class="admin-kpi-lbl">Total Partners</div>
               <div class="admin-kpi-val" id="kpi-total-users">0</div>
               <div class="admin-kpi-sub">Registered Kenyan earners</div>
             </div>
-            <div class="admin-kpi-card kpi-cyan">
+            <div class="admin-kpi-card kpi-theme-green">
               <div class="admin-kpi-lbl">Active Creatives</div>
               <div class="admin-kpi-val" id="kpi-live-products">0</div>
               <div class="admin-kpi-sub">WhatsApp product downloads</div>
             </div>
-            <div class="admin-kpi-card kpi-violet">
+            <div class="admin-kpi-card kpi-theme-purple">
               <div class="admin-kpi-lbl">Pending Task Proofs</div>
               <div class="admin-kpi-val" id="kpi-pending-tasks">0</div>
               <div class="admin-kpi-sub">18h Status screenshots</div>
             </div>
-            <div class="admin-kpi-card kpi-emerald">
+            <div class="admin-kpi-card kpi-theme-yellow">
               <div class="admin-kpi-lbl">Pending Cashouts</div>
               <div class="admin-kpi-val" id="kpi-pending-withdrawals">0</div>
               <div class="admin-kpi-sub">M-Pesa cashouts queued</div>
@@ -5488,7 +6317,7 @@
           </div>
 
           <!-- Tab 1: Payment Verification (M-Pesa Codes) -->
-          <div id="asec-payments" class="admin-content-section">
+          <div id="asec-payments" class="admin-content-section admin-sec-yellow">
             <div class="admin-section-banner banner-theme-amber">
               <div class="admin-banner-lead">
                 <div class="admin-banner-chip chip-bg-amber">
@@ -5529,7 +6358,7 @@
           </div>
 
           <!-- Tab 2: User Accounts Directory -->
-          <div id="asec-users" class="admin-content-section" style="display: none;">
+          <div id="asec-users" class="admin-content-section admin-sec-blue" style="display: none;">
             <div class="admin-section-banner banner-theme-purple">
               <div class="admin-banner-lead">
                 <div class="admin-banner-chip chip-bg-purple">
@@ -5568,7 +6397,7 @@
           </div>
 
           <!-- Tab 3: Post WhatsApp Products -->
-          <div id="asec-products" class="admin-content-section" style="display: none;">
+          <div id="asec-products" class="admin-content-section admin-sec-green" style="display: none;">
             <div class="admin-section-banner banner-theme-pink">
               <div class="admin-banner-lead">
                 <div class="admin-banner-chip chip-bg-pink">
@@ -5654,7 +6483,7 @@
           </div>
 
           <!-- Tab 4: Tasks Review -->
-          <div id="asec-tasks" class="admin-content-section" style="display: none;">
+          <div id="asec-tasks" class="admin-content-section admin-sec-purple" style="display: none;">
             <div class="admin-section-banner banner-theme-violet">
               <div class="admin-banner-lead">
                 <div class="admin-banner-chip chip-bg-violet">
@@ -5688,7 +6517,7 @@
           </div>
 
           <!-- Tab 5: Withdrawals Queue -->
-          <div id="asec-withdrawals" class="admin-content-section" style="display: none;">
+          <div id="asec-withdrawals" class="admin-content-section admin-sec-yellow" style="display: none;">
             <div class="admin-section-banner banner-theme-emerald">
               <div class="admin-banner-lead">
                 <div class="admin-banner-chip chip-bg-emerald">
@@ -5722,7 +6551,7 @@
           </div>
 
           <!-- Tab 6: Stats -->
-          <div id="asec-stats" class="admin-content-section" style="display: none;">
+          <div id="asec-stats" class="admin-content-section admin-sec-blue" style="display: none;">
             <div class="admin-section-banner banner-theme-indigo">
               <div class="admin-banner-lead">
                 <div class="admin-banner-chip chip-bg-indigo">
@@ -5741,7 +6570,7 @@
           </div>
 
           <!-- Tab 7: Audit Logs -->
-          <div id="asec-audit" class="admin-content-section" style="display: none;">
+          <div id="asec-audit" class="admin-content-section admin-sec-green" style="display: none;">
             <div class="admin-section-banner banner-theme-slate">
               <div class="admin-banner-lead">
                 <div class="admin-banner-chip chip-bg-slate">
@@ -5796,17 +6625,78 @@
   <!-- ====================================================================
        FOOTER
        ==================================================================== -->
+  
+  <!-- ====================================================================
+       HIGH-RESOLUTION PRODUCT LIGHTBOX MODAL
+       ==================================================================== -->
+  <div id="modal-product-lightbox" class="modal-backdrop" onclick="handleLightboxBackdropClick(event)">
+    <div class="product-lightbox-container" onclick="event.stopPropagation()">
+      <div class="product-lightbox-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="product-post-badge" id="lightbox-brand" style="margin: 0; background: #9333EA; color: #FFF;">Almai Creative</span>
+          <h3 id="lightbox-title" style="font-size: 17.5px; color: #FFF; margin: 0; font-family: 'Space Grotesk', sans-serif;">Product Creative</h3>
+        </div>
+        <button class="modal-close-btn" onclick="closeProductLightbox()" title="Close Lightbox" style="color: #FFF; font-size: 24px; background: none; border: none; cursor: pointer;">&times;</button>
+      </div>
+      <div class="product-lightbox-body">
+        <div class="lightbox-img-backdrop-glow" id="lightbox-backdrop-glow"></div>
+        <img id="lightbox-img" src="" alt="Full Product View" class="lightbox-main-img">
+      </div>
+      <div class="product-lightbox-footer">
+        <div id="lightbox-caption" class="lightbox-caption-text"></div>
+        <div class="lightbox-actions-row">
+          <button class="btn btn-secondary btn-sm" id="lightbox-btn-copy" onclick="copyLightboxCaption()">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Copy WhatsApp Caption
+          </button>
+          <button class="btn btn-primary btn-sm" id="lightbox-btn-dl" onclick="downloadLightboxImage()">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Download Full HD Picture
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <footer>
     <div class="container">
+      <!-- Live Status & Ticker Bar -->
+      <div class="footer-status-bar">
+        <div class="footer-status-left">
+          <div class="footer-status-badge">
+            <span class="live-pulse-green"></span>
+            <span>Cloudflare D1 Network: 100% Operational</span>
+          </div>
+          <div class="footer-status-badge">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#10B981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>Safaricom M-Pesa Daraja: Active 24/7</span>
+          </div>
+          <div class="footer-status-badge">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#F59E0B" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <span>256-Bit SSL Encrypted &amp; Audited</span>
+          </div>
+        </div>
+        <div class="footer-status-right">
+          <span>Nairobi Local Time: <strong id="footer-live-time">EAT UTC+3</strong></span>
+          <span class="kenya-flag-chip">🇰🇪 Kenya Official</span>
+        </div>
+      </div>
+
+      <!-- 4 Columns Main Grid -->
       <div class="footer-grid">
-        <div class="footer-col">
+        <!-- Col 1: Brand Authority & Compliance -->
+        <div class="footer-col footer-col-brand">
           <div class="brand-logo" style="color: #fff; margin-bottom: 14px; font-size: 28px; font-weight: 950;">
             <div class="brand-logo-icon">A</div>
-            <span class="brand-title-main" style="color: #fff; background: none; -webkit-text-fill-color: #fff; font-size: 28px; font-weight: 900;">Almai Products Company</span>
+            <span class="brand-title-main" style="color: #fff; background: none; -webkit-text-fill-color: #fff; font-size: 28px; font-weight: 900;">Almai Products</span>
           </div>
-          <p style="color: #D6D3D1; font-size: 15.5px; font-weight: 600; max-width: 440px; line-height: 1.68;">
-            Kenya's leading WhatsApp Status advertising network. Empowering Kenyan creators, students, and digital partners with guaranteed daily income backed by transparent Cloudflare technology.
+          <p style="color: #D6D3D1; font-size: 15px; font-weight: 600; max-width: 440px; line-height: 1.68; margin-bottom: 18px;">
+            Kenya's premier WhatsApp Status advertising and digital monetization network. Connecting corporate brands with verified digital partners across all 47 Kenyan counties with guaranteed daily income disbursed directly via Safaricom M-Pesa.
           </p>
+          <div class="footer-trust-chips">
+            <span class="trust-chip"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#10B981" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Registered in Kenya</span>
+            <span class="trust-chip"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#3B82F6" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Data Protection Act 2019</span>
+          </div>
           <div class="footer-sponsor-box" style="margin-top: 18px; display: inline-flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.06); padding: 7px 16px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.12);">
             <span style="font-size: 12px; font-weight: 800; color: #D6D3D1; text-transform: uppercase; letter-spacing: 0.05em;">Sponsored by</span>
             <svg style="height: 22px; width: 72px; vertical-align: middle;" viewBox="0 0 603 182" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Amazon">
@@ -5817,40 +6707,83 @@
           </div>
         </div>
 
+        <!-- Col 2: Partner Earnings & Features -->
         <div class="footer-col">
-          <h4>Navigation</h4>
+          <h4>Partner Earnings</h4>
           <ul class="footer-links">
-            <li><a href="javascript:void(0)" onclick="switchView('home')">Home</a></li>
-            <li><a href="javascript:void(0)" onclick="switchView('products')">Packages &amp; Pricing</a></li>
-            <li><a href="javascript:void(0)" onclick="scrollToCalculator()">Earnings Calculator</a></li>
-            <li><a href="javascript:void(0)" onclick="showAuthModal('register')">Get Started</a></li>
+            <li><a href="javascript:void(0)" onclick="switchView('products')">Starter Pro Tier (KSh 15/view)</a></li>
+            <li><a href="javascript:void(0)" onclick="switchView('products')">Growth Leader Tier (KSh 20/view)</a></li>
+            <li><a href="javascript:void(0)" onclick="switchView('products')">Elite Influencer Tier (KSh 30/view)</a></li>
+            <li><a href="javascript:void(0)" onclick="scrollToCalculator()">Daily Earnings Calculator</a></li>
+            <li><a href="javascript:void(0)" onclick="scrollToTasks()">18-Hour Rule Protected</a></li>
+            <li><a href="javascript:void(0)" onclick="switchView('dashboard')">Instant M-Pesa Payouts</a></li>
+            <li><a href="javascript:void(0)" onclick="showAuthModal('register')">10% Lifetime Referral Program</a></li>
           </ul>
         </div>
 
+        <!-- Col 3: Platform & Navigation -->
         <div class="footer-col">
-          <h4>Partner Support</h4>
+          <h4>Platform Links</h4>
           <ul class="footer-links">
-            <li><a href="https://wa.me/254712066804?text=Hello%20Almai%20Support%2C%20I%20have%20an%20inquiry" target="_blank" rel="noopener">WhatsApp Helpdesk</a></li>
-            <li><a href="javascript:void(0)" onclick="openInquiryModal()">Book Brand Campaign</a></li>
-            <li><a href="javascript:void(0)" onclick="scrollToTasks()">How Earnings Work</a></li>
-            <li><a href="javascript:void(0)" onclick="showAuthModal('login')">Creator Portal Sign In</a></li>
+            <li><a href="javascript:void(0)" onclick="switchView('home')">Home Overview</a></li>
+            <li><a href="javascript:void(0)" onclick="switchView('products')">Packages &amp; Pricing</a></li>
+            <li><a href="javascript:void(0)" onclick="switchView('dashboard')">Partner Dashboard</a></li>
+            <li><a href="javascript:void(0)" onclick="openInquiryModal()">Advertise With Almai</a></li>
+            <li><a href="javascript:void(0)" onclick="showAuthModal('login')">Creator Portal Login</a></li>
+            <li><a href="javascript:void(0)" onclick="showAuthModal('register')">Join as Verified Partner</a></li>
+            <li><a href="javascript:void(0)" onclick="scrollToTimetable()">Weekly Payout Timetable</a></li>
           </ul>
+        </div>
+
+        <!-- Col 4: Kenya HQ & Live Support -->
+        <div class="footer-col">
+          <h4>Kenya Operations &amp; Support</h4>
+          <div class="footer-contact-item">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#A855F7" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            <div>
+              <strong>Headquarters:</strong>
+              <div>View Park Towers, 9th Floor, University Way, Nairobi CBD, Kenya 🇰🇪</div>
+            </div>
+          </div>
+          <div class="footer-contact-item" style="margin-top: 10px;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#10B981" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            <div>
+              <strong>WhatsApp Direct:</strong>
+              <div><a href="https://wa.me/254712066804?text=Hello%20Almai%20Support%2C%20I%20have%20an%20inquiry" target="_blank" rel="noopener" style="color: #34D399; font-weight: 800;">+254 712 066 804 (24/7 Desk)</a></div>
+            </div>
+          </div>
+          <div class="footer-contact-item" style="margin-top: 10px;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#60A5FA" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            <div>
+              <strong>Official Email:</strong>
+              <div><a href="mailto:support@almai.co.ke" style="color: #93C5FD; font-weight: 750;">support@almai.co.ke</a></div>
+            </div>
+          </div>
+          <div class="footer-contact-item" style="margin-top: 10px;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#FDE047" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <div>
+              <strong>Hours:</strong>
+              <div>Mon &ndash; Sun: 7:00 AM &ndash; 10:00 PM EAT</div>
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- Footer Bottom Bar -->
       <div class="footer-bottom">
-        <div id="footer-copyright" class="copyright-trigger" onclick="handleCopyrightTap()" title="Almai Products">&copy; <span id="cur-year">2026</span> Almai Products. All rights reserved.</div>
-        <div class="footer-sponsor-inline" style="display: inline-flex; align-items: center; gap: 8px;">
-          <span style="font-size: 13px; font-weight: 700; color: #A8A29E;">Sponsored by</span>
-          <svg style="height: 18px; width: 62px; vertical-align: middle;" viewBox="0 0 603 182" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Amazon">
-            <path fill="#FFFFFF" d="M167.3 103.5c0-4.6-.2-9-1.2-13.3h-44.5v25.2h25.7c-1.1 6-4.5 11.2-9.7 14.8v12.3h15.6c9.1-8.4 15.1-21 15.1-39zM121.6 69.3c14.6 0 24.5 5.5 30.1 10.3l11.4-11.4c-9.1-8.2-21.6-13.9-41.5-13.9-24.8 0-45.7 16.7-53.2 39.8h14.7c7-14.1 21.5-24.8 38.5-24.8zM68.5 129.5H53.8v-59H39.2v-12h43.7v71zM195.9 57.6h15v71.9h-15V57.6zM195.9 33.7h15v15.7h-15V33.7zM245.5 129.5h-14.6V70.6h14.6v12c4.2-8.5 12.5-13.3 22.4-13.3 3.5 0 6.9.5 9.7 1.6v14.4c-3.1-1.1-6.5-1.7-10.1-1.7-11.5 0-22 7-22 22.1v24zM324.9 69.3c-15.6 0-27.4 12.8-27.4 30.4 0 17.4 11.7 30.2 27.4 30.2 15.6 0 27.4-12.8 27.4-30.2-.1-17.6-11.8-30.4-27.4-30.4zm0 47.9c-8.6 0-13.1-7.5-13.1-17.5 0-10.1 4.5-17.7 13.1-17.7 8.6 0 13.1 7.6 13.1 17.7 0 10-4.5 17.5-13.1 17.5zM395 69.3c-15.6 0-27.4 12.8-27.4 30.4 0 17.4 11.7 30.2 27.4 30.2 15.6 0 27.4-12.8 27.4-30.2-.1-17.6-11.8-30.4-27.4-30.4zm0 47.9c-8.6 0-13.1-7.5-13.1-17.5 0-10.1 4.5-17.7 13.1-17.7 8.6 0 13.1 7.6 13.1 17.7 0 10-4.5 17.5-13.1 17.5zM448.2 57.6h14.6v11.8c4.3-8.4 12.8-13.1 22.4-13.1 10.7 0 19.5 5.2 23.3 14.1 5.3-8.8 14.5-14.1 25.1-14.1 14.6 0 23.5 8.5 23.5 24.1v53.2h-14.6V83.8c0-8.8-4.5-14.2-13.6-14.2-7.8 0-14.1 5.4-14.1 16v43.9h-14.6V83.8c0-8.8-4.5-14.2-13.6-14.2-7.8 0-14.1 5.4-14.1 16v43.9h-14.6V57.6z"/>
-            <path fill="#FF9900" d="M375.4 153.2c-45.7 31.9-115 30.7-167 1.3-2.1-1.2-1.3-4.1.9-3.7 48.9 9.3 103.5 5.5 149.2-24.1 2.4-1.6 5.3 1.5 3.4 3.5-.7.8-3 2-4.5 3z"/>
-            <path fill="#FF9900" d="M510.6 157.9c-10.3 7-22.1 12.1-34.5 15.3-2.3.6-3.3-2.4-1.3-3.7 26.6-17.3 46-44.5 55.3-75.1.7-2.3 3.9-2.3 4.5 0 8.7 29.5-.4 60.1-24 63.5z"/>
-          </svg>
-        </div>
-        <div style="display: flex; gap: 20px; font-size: 16px; font-weight: 750;">
+        <div id="footer-copyright" class="copyright-trigger" onclick="handleCopyrightTap()" title="Almai Products">&copy; <span id="cur-year">2026</span> Almai Products Media Ltd. All rights reserved.</div>
+        <div class="footer-legal-links">
+          <a href="javascript:void(0)" onclick="alert('Almai Products Terms of Service: All partner earnings are subject to verified genuine human WhatsApp impressions and our 18-hour status proof policy.')">Terms of Service</a>
+          <span>&bull;</span>
+          <a href="javascript:void(0)" onclick="alert('Privacy Policy: Almai adheres strictly to the Kenya Data Protection Act 2019. Your phone number and payment data are encrypted and never shared.')">Privacy Policy</a>
+          <span>&bull;</span>
+          <a href="javascript:void(0)" onclick="alert('Partner Guidelines: Uploading fraudulent, edited or fake view counts results in immediate permanent ban and forfeiture of balance.')">Partner Rules</a>
+          <span>&bull;</span>
           <a href="javascript:void(0)" onclick="openInquiryModal()">Advertise With Us</a>
-          <a href="javascript:void(0)" onclick="showAuthModal('login')">Partner Portal</a>
+        </div>
+        <div class="footer-sponsor-inline" style="display: inline-flex; align-items: center; gap: 8px;">
+          <span style="font-size: 13px; font-weight: 700; color: #A8A29E;">Engineered for Kenya</span>
+          <span style="font-size: 16px;">🇰🇪</span>
         </div>
       </div>
     </div>
@@ -6837,11 +7770,22 @@
         return `
           <div class="product-post-card">
             <div class="product-post-img-wrap" style="user-select: none;">
-              <button class="img-fit-btn" onclick="toggleImgFit(this)" title="Toggle banner Fit/Fill ratio">
-                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6m0-6L14 10M9 21H3v-6m0 6l7-7"/></svg>
-                Fill
-              </button>
-              <img src="${imgSource}" alt="${escapedTitle}" loading="lazy" draggable="false" oncontextmenu="return false;" style="user-select: none; -webkit-user-drag: none;">
+              <div class="img-backdrop-glow" style="background-image: url('${imgSource}');"></div>
+              <div class="img-controls-bar">
+                <span class="img-quality-chip">
+                  <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  4K HD
+                </span>
+                <button class="img-fit-btn" onclick="toggleImgFit(this)" title="Toggle Fit/Fill ratio">
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6m0-6L14 10M9 21H3v-6m0 6l7-7"/></svg>
+                  Fill
+                </button>
+                <button class="img-zoom-btn" onclick="openProductLightbox('${p.id}', '${imgSource}', '${escapeHTML(escapedTitle)}', '${escapeHTML(escapedCaption)}', '${escapeHTML(escapedBrand)}', '${escapeHTML(filename)}')" title="View High-Res Magnified">
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+                  Zoom
+                </button>
+              </div>
+              <img src="${imgSource}" alt="${escapedTitle}" loading="lazy" draggable="false" oncontextmenu="return false;" onclick="openProductLightbox('${p.id}', '${imgSource}', '${escapeHTML(escapedTitle)}', '${escapeHTML(escapedCaption)}', '${escapeHTML(escapedBrand)}', '${escapeHTML(filename)}')" title="Tap to magnify high-res picture">
               <span class="product-post-badge">${escapedBrand}</span>
             </div>
             <div class="product-post-body">
@@ -6899,13 +7843,24 @@
           return `
             <div class="product-post-card">
               <div class="product-post-img-wrap">
-              <button class="img-fit-btn" onclick="toggleImgFit(this)" title="Toggle banner Fit/Fill ratio">
-                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6m0-6L14 10M9 21H3v-6m0 6l7-7"/></svg>
-                Fill
-              </button>
-              <img src="${imgSource}" alt="${escapedTitle}" loading="lazy">
-              <span class="product-post-badge">${escapedBrand}</span>
-            </div>
+                <div class="img-backdrop-glow" style="background-image: url('${imgSource}');"></div>
+                <div class="img-controls-bar">
+                  <span class="img-quality-chip">
+                    <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    4K HD
+                  </span>
+                  <button class="img-fit-btn" onclick="toggleImgFit(this)" title="Toggle Fit/Fill ratio">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6m0-6L14 10M9 21H3v-6m0 6l7-7"/></svg>
+                    Fill
+                  </button>
+                  <button class="img-zoom-btn" onclick="openProductLightbox('${p.id}', '${imgSource}', '${escapeHTML(escapedTitle)}', '${escapeHTML(escapedCaption)}', '${escapeHTML(escapedBrand)}', '${escapeHTML(filename)}')" title="View High-Res Magnified">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+                    Zoom
+                  </button>
+                </div>
+                <img src="${imgSource}" alt="${escapedTitle}" loading="lazy" onclick="openProductLightbox('${p.id}', '${imgSource}', '${escapeHTML(escapedTitle)}', '${escapeHTML(escapedCaption)}', '${escapeHTML(escapedBrand)}', '${escapeHTML(filename)}')" title="Tap to magnify high-res picture">
+                <span class="product-post-badge">${escapedBrand}</span>
+              </div>
               <div class="product-post-body">
                 <h3 class="product-post-title">${escapedTitle}</h3>
                 <p class="product-post-caption" id="caption-text-dash-${p.id}">${escapedCaption}</p>
@@ -8116,7 +9071,8 @@
             return `
               <div class="admin-prod-item">
                 <div class="admin-prod-item-main-row">
-                  <div class="admin-prod-item-thumb" onclick="previewImageModal('${imgSource}', '${safeTitle}')" title="Tap to preview high-res image">
+                  <div class="admin-prod-item-thumb" onclick="openProductLightbox('${p.id}', '${imgSource}', '${safeTitle}', '${safeCaption}', '${safeBrand}', 'almai_product.jpg')" title="Tap to preview high-res image">
+                    <div class="img-backdrop-glow" style="background-image: url('${imgSource}');"></div>
                     <img src="${imgSource}" alt="${safeTitle}" loading="lazy">
                     <span class="admin-prod-item-thumb-zoom"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:3px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Zoom</span>
                   </div>
@@ -8533,6 +9489,80 @@
         item.classList.add('active');
       }
     }
+  
+    // ====================================================================
+    // LIGHTBOX CONTROLLER
+    // ====================================================================
+    let currentLightboxData = null;
+
+    function openProductLightbox(id, src, title, caption, brand, filename) {
+      currentLightboxData = { id, src, title, caption, brand, filename: filename || 'almai_whatsapp_creative.jpg' };
+      const img = document.getElementById('lightbox-img');
+      const glow = document.getElementById('lightbox-backdrop-glow');
+      const titleEl = document.getElementById('lightbox-title');
+      const brandEl = document.getElementById('lightbox-brand');
+      const captionEl = document.getElementById('lightbox-caption');
+
+      if (img) img.src = src;
+      if (glow) glow.style.backgroundImage = 'url(' + src + ')';
+      if (titleEl) titleEl.textContent = title || 'Product Creative';
+      if (brandEl) brandEl.textContent = brand || 'Almai Verified Creative';
+      if (captionEl) captionEl.textContent = caption || 'No caption provided.';
+
+      const modal = document.getElementById('modal-product-lightbox');
+      if (modal) modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    
+    // Live Nairobi EAT Clock in Footer
+    function updateFooterClock() {
+      const el = document.getElementById('footer-live-time');
+      if (!el) return;
+      try {
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString('en-GB', { timeZone: 'Africa/Nairobi', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        el.textContent = timeStr + ' EAT';
+      } catch (e) {
+        el.textContent = 'EAT (UTC+3)';
+      }
+    }
+    updateFooterClock();
+    setInterval(updateFooterClock, 1000);
+
+    function closeProductLightbox() {
+      const modal = document.getElementById('modal-product-lightbox');
+      if (modal) modal.classList.remove('open');
+      document.body.style.overflow = '';
+      currentLightboxData = null;
+    }
+
+    function handleLightboxBackdropClick(e) {
+      if (e.target && e.target.id === 'modal-product-lightbox') {
+        closeProductLightbox();
+      }
+    }
+
+    function copyLightboxCaption() {
+      if (!currentLightboxData || !currentLightboxData.caption) return;
+      navigator.clipboard.writeText(currentLightboxData.caption).then(() => {
+        alert('✓ WhatsApp Status caption copied to clipboard!');
+      }).catch(() => {
+        prompt('Copy suggested WhatsApp Status caption:', currentLightboxData.caption);
+      });
+    }
+
+    function downloadLightboxImage() {
+      if (!currentLightboxData) return;
+      downloadProductImage(currentLightboxData.id, currentLightboxData.src, currentLightboxData.filename);
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeProductLightbox();
+      }
+    });
+
   </script>
 
   <!-- Floating WhatsApp "Chat with Us" Widget (+447455909204) -->
