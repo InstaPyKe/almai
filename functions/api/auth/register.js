@@ -27,7 +27,7 @@ export async function onRequestPost(context) {
     return jsonError('Invalid JSON request body', 400);
   }
 
-  const { name, email, phone, password } = body;
+  const { name, email, phone, password, referralCode } = body;
 
   // 1. Validation
   if (!name || typeof name !== 'string' || name.trim().length < 2) {
@@ -50,6 +50,7 @@ export async function onRequestPost(context) {
   const cleanEmail = email.trim().toLowerCase();
   const cleanPhone = phone.trim().replace(/\s+/g, '');
   const cleanName = name.trim();
+  const cleanReferral = (referralCode || '').trim();
 
   try {
     // 2. Check if email already registered
@@ -65,22 +66,32 @@ export async function onRequestPost(context) {
     // Record registration attempt for rate-limiting (max 3 accounts per IP per 10 mins)
     await recordFailedAttempt(env, `reg:ip:${ip}`, 600);
 
+    // Look up referrer if referral code provided
+    let referrer = null;
+    if (cleanReferral) {
+      referrer = await env.DB.prepare(`
+        SELECT id, name, email FROM users
+        WHERE (id = ? OR referral_code = ? OR referral_code = ?) AND status = 'active'
+        LIMIT 1
+      `).bind(cleanReferral, cleanReferral, cleanReferral.toUpperCase()).first();
+    }
+
     // 3. Hash password with PBKDF2-SHA256
     const { hash, salt } = await hashPassword(password);
 
     const userId = generateId('usr');
     const walletId = generateId('wal');
     const now = Math.floor(Date.now() / 1000);
+    const myReferralCode = 'ALM' + generateToken(3).toUpperCase();
+    const referredById = referrer ? referrer.id : null;
 
-    // 4. Check if this is the first user registered in the system - if so, make them admin!
-    const totalUsersCountResult = await env.DB.prepare('SELECT COUNT(*) as count FROM users').first();
-    const isFirstUser = (totalUsersCountResult?.count || 0) === 0;
-    const initialRole = isFirstUser ? 'admin' : 'user';
+    // 4. Default user role is always 'user'
+    const initialRole = 'user';
 
-    // 5. Insert User
+    // 5. Insert User with Referral Code and Referrer
     await env.DB.prepare(`
-      INSERT INTO users (id, name, email, phone, password_hash, salt, role, status, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?, ?)
+      INSERT INTO users (id, name, email, phone, password_hash, salt, role, status, referral_code, referred_by, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?)
     `).bind(
       userId,
       cleanName,
@@ -89,21 +100,36 @@ export async function onRequestPost(context) {
       hash,
       salt,
       initialRole,
+      myReferralCode,
+      referredById,
       now,
       now
     ).run();
 
-    // 6. Initialize Wallet
+    // 6. Record Referral Tracking record if referred
+    if (referrer) {
+      const refTrackingId = generateId('ref');
+      await env.DB.prepare(`
+        INSERT INTO referrals (id, referrer_id, referred_user_id, referral_code, status, created_at)
+        VALUES (?, ?, ?, ?, 'registered', ?)
+      `).bind(refTrackingId, referrer.id, userId, cleanReferral, now).run();
+    }
+
+    // 7. Initialize Wallet
     await env.DB.prepare(`
       INSERT INTO wallets (id, user_id, available_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
       VALUES (?, ?, 0, 0, 0, 0, ?)
     `).bind(walletId, userId, now).run();
 
-    // 7. Return registration success requiring subsequent login
+    // 8. Return registration success requiring subsequent login
     return jsonSuccess({
-      message: 'Registration successful! Please log in with your email and password to choose and activate your partner package.',
+      message: referrer
+        ? `Registration successful! You were invited by ${referrer.name}. Please sign in to activate your partner package.`
+        : 'Registration successful! Please log in with your email and password to choose and activate your partner package.',
       registered: true,
-      email: cleanEmail
+      email: cleanEmail,
+      referralCode: myReferralCode,
+      referredBy: referrer ? referrer.name : null
     }, 201);
 
   } catch (err) {

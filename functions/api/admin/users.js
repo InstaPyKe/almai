@@ -4,7 +4,7 @@
 // Protected Administrator User Directory & Account Management
 // ====================================================================
 
-import { jsonError, jsonSuccess, requireAdmin, createAuditLog, generateId } from '../_utils.js';
+import { jsonError, jsonSuccess, requireAdmin, createAuditLog, generateId, awardReferralCommission } from '../_utils.js';
 
 /**
  * GET /api/admin/users
@@ -128,6 +128,9 @@ export async function onRequestPost(context) {
         VALUES (?, ?, ?, 'active', ?)
       `).bind(userPackageId, target.id, pkg.id, now).run();
 
+      // Award 45% Referral Commission to verified referrer
+      await awardReferralCommission(env, target.id, pkg.id, pkg.name, pkg.price_ksh);
+
       // Audit log
       await createAuditLog(env, {
         adminId: admin.id,
@@ -170,6 +173,12 @@ export async function onRequestPost(context) {
 
     } else if (action === 'toggle_role') {
       const nextRole = newRole || (target.role === 'admin' ? 'user' : 'admin');
+      if (nextRole === 'admin' && target.email.toLowerCase() !== 'mentorbravin@gmail.com') {
+        return jsonError('Only mentorbravin@gmail.com can hold the Administrator role.', 400);
+      }
+      if (target.email.toLowerCase() === 'mentorbravin@gmail.com' && nextRole !== 'admin') {
+        return jsonError('Primary administrator account cannot be demoted.', 400);
+      }
 
       await env.DB.prepare('UPDATE users SET role = ?, updated_at = ? WHERE id = ?')
         .bind(nextRole, now, target.id).run();

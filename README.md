@@ -22,15 +22,33 @@ A real, production-ready WhatsApp advertising and monetization platform built sp
 
 ## 🎨 Design System Palette
 
-The application strictly implements the required color tokens:
-- **Background Cream:** `#F8F0E2`
-- **Primary Purple Buttons:** `#6D28D9`
-- **Deep Purple Headings:** `#54218F`
-- **Light Purple Accents:** `#8B5CF6`
-- **Charcoal Text:** `#242124`
-- **Warning Red:** `#B91C1C`
-- **White Cards:** `#FFFFFF`
-- **Beige Borders:** `#E8DFD2`
+The application strictly implements an attractive, cohesive, and modern luxury design system:
+- **Clean Slate Background:** `#F8FAFC` (Luminous, high-contrast, modern clean surface)
+- **Subtle Surface Contrast:** `#F1F5F9`
+- **Primary Royal Purple:** `#4C1D95` / `#3B0764` (Vibrant buttons & luxury highlights)
+- **Electric Violet Accent:** `#7C3AED` / `#8B5CF6`
+- **Deep Obsidian Headings:** `#1E1B4B` (Ultra-sharp typography)
+- **High-Contrast Slate Text:** `#0F172A` / `#475569`
+- **Commission Emerald:** `#059669` / `#10B981` (Referral rewards & status badges)
+- **Luxury Gold / Amber:** `#F59E0B` / `#D97706` (Earnings highlights)
+- **Crisp Slate Borders:** `#E2E8F0`
+- **Warning Red:** `#DC2626`
+
+---
+
+## 🤝 45% Referral Downlines & Commission Hub
+
+Partners can invite new users and earn a guaranteed **45% cash commission** for every downline who activates any package:
+- **Starter Z (KSh 250):** Referrer earns **KSh 113** (45%) instantly.
+- **Exclusive Tier (KSh 500):** Referrer earns **KSh 225** (45%) instantly.
+- **Premium Tier (KSh 1,200):** Referrer earns **KSh 540** (45%) instantly.
+
+### Key Referral Features:
+1. **Unique Code & Links:** Every partner receives an automatically generated unique referral code (e.g. `ALM-A1B2` or `ALM` + unique 4-character ID) returned upon registration/login and displayed prominently in the dashboard.
+2. **One-Click Link & WhatsApp Sharing:** Partners can copy their unique invite URL (`https://<domain>/?ref=ALM...`) or share directly to WhatsApp with pre-formatted high-converting copy with 1 click.
+3. **Auto-Prefill & Link Tracking:** When an invitee opens a referral link, `?ref=` is automatically saved and pre-filled into the registration form.
+4. **Instant Double-Entry Ledger Credit:** When an invited user activates a package, `awardReferralCommission` atomically updates the referral status to `active_paid`, credits the referrer's `available_balance_ksh` and `lifetime_earnings_ksh`, and writes an immutable audit record to `wallet_transactions`.
+5. **Active Paid Tracker Section:** The partner dashboard features a dedicated section that tracks **only active paid users with active packages**, showing downline name, masked phone number, package tier, package price, 45% earned commission, and activation timestamp.
 
 ---
 
@@ -154,20 +172,24 @@ Under **Settings** > **Environment variables** (Production), configure:
 
 ## 🛡️ Administrative Account Setup
 
-The very first user who registers on a fresh database is automatically assigned the `admin` role.
+The platform is configured with a dedicated, exclusive administrator account:
+- **Email:** `mentorbravin@gmail.com`
+- **Password:** `Mentor@2026`
 
-To promote any existing or specific user to Administrator in production securely:
+All public page sections and footer links/triggers have no administrative references. The administrator logs in directly through the standard **Sign In** portal using these designated credentials.
+
+To promote or reconcile the administrator account via the backend setup endpoint if needed:
 ```bash
 curl -X POST https://your-project.pages.dev/api/setup-admin \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "admin@almai.com",
+    "email": "mentorbravin@gmail.com",
     "setupSecret": "<YOUR_ADMIN_SETUP_SECRET>"
   }'
 ```
 
 Once logged in as an administrator:
-1. An **"🛡️ Admin"** button will appear in the top navigation bar (or via the secret 7-tap trigger on the landing page copyright footer).
+1. An **"🛡️ Admin Center"** button appears in the authenticated header actions.
 2. The Full-Page Admin Center enables:
    - **Task Review Queue:** View full screenshots uploaded by partners, enter verified views, and approve (which atomically calculates rewards and credits partner wallets) or reject with feedback.
    - **Withdrawals Queue:** View requested M-Pesa payouts, disburse funds, enter the official Safaricom M-Pesa receipt code, and mark complete. Alternatively, reject to automatically refund reserved funds back into the partner's available balance.

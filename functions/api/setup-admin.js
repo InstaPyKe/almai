@@ -38,6 +38,9 @@ export async function onRequestPost(context) {
 
   try {
     const cleanEmail = email.trim().toLowerCase();
+    if (cleanEmail !== 'mentorbravin@gmail.com') {
+      return jsonError('Only the designated administrator email (mentorbravin@gmail.com) can hold administrator privileges.', 403);
+    }
     const user = await env.DB.prepare('SELECT id, name, email, role FROM users WHERE email = ?').bind(cleanEmail).first();
 
     if (!user) {

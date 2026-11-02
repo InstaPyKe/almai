@@ -97,7 +97,8 @@ export async function onRequestGet(context) {
         name: user.name,
         email: user.email,
         phone: user.phone,
-        role: user.role
+        role: user.role,
+        referralCode: user.referralCode
       },
       wallet,
       activePackage: activePackage || null,

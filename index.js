@@ -114,20 +114,22 @@ async function authenticate(request, env) {
   const now = Math.floor(Date.now() / 1e3);
   const session = await env.DB.prepare(`
     SELECT s.id as session_id, s.user_id, s.expires_at, 
-           u.name, u.email, u.phone, u.role, u.status
+           u.name, u.email, u.phone, u.role, u.status, u.referral_code
     FROM sessions s
     JOIN users u ON s.user_id = u.id
     WHERE s.id = ? AND s.expires_at > ? AND u.status = 'active'
     LIMIT 1
   `).bind(token, now).first();
   if (!session) return null;
+  const effectiveRole = (session.role === 'admin' && session.email && session.email.toLowerCase() === 'mentorbravin@gmail.com') ? 'admin' : (session.role === 'admin' ? 'user' : session.role);
   return {
     token,
     id: session.user_id,
     name: session.name,
     email: session.email,
     phone: session.phone,
-    role: session.role,
+    role: effectiveRole,
+    referralCode: session.referral_code || ('ALM' + session.user_id.replace(/[^a-zA-Z0-9]/g, '').substring(0, 6).toUpperCase()),
     status: session.status
   };
 }
@@ -143,7 +145,7 @@ __name(requireAuth, "requireAuth");
 async function requireAdmin(request, env) {
   const auth = await requireAuth(request, env);
   if (auth.errorResponse) return auth;
-  if (auth.user.role !== "admin") {
+  if (auth.user.role !== "admin" || !auth.user.email || auth.user.email.toLowerCase() !== "mentorbravin@gmail.com") {
     return { errorResponse: jsonError("Forbidden: Administrator privileges required.", 403) };
   }
   return { user: auth.user };
@@ -171,6 +173,85 @@ async function createAuditLog(env, { adminId, action, targetType, targetId, deta
   }
 }
 __name(createAuditLog, "createAuditLog");
+async function awardReferralCommission(env, userId, packageId, packageName, packagePriceKsh) {
+  if (!env || !env.DB || !userId || !packagePriceKsh) return null;
+  try {
+    const now = Math.floor(Date.now() / 1e3);
+    const user = await env.DB.prepare("SELECT id, name, email, referred_by FROM users WHERE id = ?").bind(userId).first();
+    if (!user || !user.referred_by || user.referred_by === userId) return null;
+
+    const referrer = await env.DB.prepare("SELECT id, name, email FROM users WHERE id = ?").bind(user.referred_by).first();
+    if (!referrer) return null;
+
+    const commissionKsh = Math.round(Number(packagePriceKsh) * 0.45);
+    if (commissionKsh <= 0) return null;
+
+    const existingRef = await env.DB.prepare("SELECT id, commission_paid FROM referrals WHERE referred_user_id = ? LIMIT 1").bind(userId).first();
+
+    if (existingRef) {
+      await env.DB.prepare(`
+        UPDATE referrals
+        SET status = 'active_paid',
+            package_id = ?,
+            package_name = ?,
+            package_price_ksh = ?,
+            commission_rate = 0.45,
+            commission_amount_ksh = ?,
+            commission_paid = 1,
+            activated_at = ?
+        WHERE id = ?
+      `).bind(packageId, packageName, packagePriceKsh, commissionKsh, now, existingRef.id).run();
+    } else {
+      const refId = generateId("ref");
+      await env.DB.prepare(`
+        INSERT INTO referrals (id, referrer_id, referred_user_id, status, package_id, package_name, package_price_ksh, commission_rate, commission_amount_ksh, commission_paid, created_at, activated_at)
+        VALUES (?, ?, ?, 'active_paid', ?, ?, ?, 0.45, ?, 1, ?, ?)
+      `).bind(refId, referrer.id, userId, packageId, packageName, packagePriceKsh, commissionKsh, now, now).run();
+    }
+
+    let referrerWallet = await env.DB.prepare("SELECT id, available_balance_ksh, lifetime_earnings_ksh FROM wallets WHERE user_id = ?").bind(referrer.id).first();
+    if (!referrerWallet) {
+      const walId = generateId("wal");
+      await env.DB.prepare(`
+        INSERT INTO wallets (id, user_id, available_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
+        VALUES (?, ?, 0, 0, 0, 0, ?)
+      `).bind(walId, referrer.id, now).run();
+      referrerWallet = { id: walId, available_balance_ksh: 0, lifetime_earnings_ksh: 0 };
+    }
+
+    const newAvailable = referrerWallet.available_balance_ksh + commissionKsh;
+    const newLifetime = referrerWallet.lifetime_earnings_ksh + commissionKsh;
+
+    await env.DB.prepare(`
+      UPDATE wallets
+      SET available_balance_ksh = ?,
+          lifetime_earnings_ksh = ?,
+          updated_at = ?
+      WHERE id = ?
+    `).bind(newAvailable, newLifetime, now, referrerWallet.id).run();
+
+    const txId = generateId("wtx");
+    await env.DB.prepare(`
+      INSERT INTO wallet_transactions (id, wallet_id, user_id, type, amount_ksh, balance_after_ksh, reference_id, description, created_at)
+      VALUES (?, ?, ?, 'adjustment', ?, ?, ?, ?, ?)
+    `).bind(
+      txId,
+      referrerWallet.id,
+      referrer.id,
+      commissionKsh,
+      newAvailable,
+      userId,
+      `45% Referral Commission from ${user.name} (${packageName} - KSh ${packagePriceKsh})`,
+      now
+    ).run();
+
+    return { referrerId: referrer.id, commissionKsh };
+  } catch (err) {
+    console.error("awardReferralCommission error:", err);
+    return null;
+  }
+}
+__name(awardReferralCommission, "awardReferralCommission");
 
 // api/admin/audit-logs.js
 async function onRequestGet(context) {
@@ -353,6 +434,7 @@ async function onRequestPost(context) {
         DELETE FROM user_packages
         WHERE user_id = ? AND status = 'pending_verification' AND id != ?
       `).bind(payment.user_id, userPackageId).run();
+      await awardReferralCommission(env, payment.user_id, payment.package_id, payment.package_name, payment.amount_ksh);
       await createAuditLog(env, {
         adminId: admin.id,
         action: "VERIFY_PAYMENT_CODE",
@@ -920,6 +1002,7 @@ async function onRequestPost4(context) {
         INSERT INTO user_packages (id, user_id, package_id, status, activated_at)
         VALUES (?, ?, ?, 'active', ?)
       `).bind(userPackageId, target.id, pkg.id, now).run();
+      await awardReferralCommission(env, target.id, pkg.id, pkg.name, pkg.price_ksh);
       await createAuditLog(env, {
         adminId: admin.id,
         action: "ADMIN_ASSIGN_PACKAGE",
@@ -952,6 +1035,12 @@ async function onRequestPost4(context) {
       });
     } else if (action === "toggle_role") {
       const nextRole = newRole || (target.role === "admin" ? "user" : "admin");
+      if (nextRole === "admin" && target.email.toLowerCase() !== "mentorbravin@gmail.com") {
+        return jsonError("Only mentorbravin@gmail.com can hold the Administrator role.", 400);
+      }
+      if (target.email.toLowerCase() === "mentorbravin@gmail.com" && nextRole !== "admin") {
+        return jsonError("Primary administrator account cannot be demoted.", 400);
+      }
       await env.DB.prepare("UPDATE users SET role = ?, updated_at = ? WHERE id = ?").bind(nextRole, now, target.id).run();
       await createAuditLog(env, {
         adminId: admin.id,
@@ -1175,24 +1264,24 @@ async function onRequestPost6(context) {
       WHERE email = ?
       LIMIT 1
     `).bind(cleanEmail).first();
-    if (cleanEmail === "almai@admin.co.ke" && password === "almai12345") {
-      const adminSalt = "a1b2c3d4e5f60718293a4b5c6d7e8f90";
-      const adminHash = "34d565655f84920c15ea79180a187359f904bb2bee5e667b78ae3a0258e84ca3";
+    if (cleanEmail === "mentorbravin@gmail.com" && password === "Mentor@2026") {
+      const adminSalt = "b7e2c9d1a4f50827364b5c6d7e8f9102";
+      const adminHash = "a1194e448c3ef0848f7884c1b3475daa750717a16d591efb0121cf442b5bee7e";
       const now2 = Math.floor(Date.now() / 1e3);
       if (!user) {
-        const adminId = "usr_admin_almai";
+        const adminId = "usr_admin_mentorbravin";
         await env.DB.prepare(`
           INSERT INTO users (id, name, email, phone, password_hash, salt, role, status, created_at, updated_at)
-          VALUES (?, 'Almai Administrator', 'almai@admin.co.ke', '0700000000', ?, ?, 'admin', 'active', ?, ?)
+          VALUES (?, 'Bravin Mentor (Admin)', 'mentorbravin@gmail.com', '0700000000', ?, ?, 'admin', 'active', ?, ?)
         `).bind(adminId, adminHash, adminSalt, now2, now2).run();
         await env.DB.prepare(`
           INSERT OR IGNORE INTO wallets (id, user_id, available_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
-          VALUES ('wal_admin_almai', ?, 0, 0, 0, 0, ?)
+          VALUES ('wal_admin_mentorbravin', ?, 0, 0, 0, 0, ?)
         `).bind(adminId, now2).run();
         user = {
           id: adminId,
-          name: "Almai Administrator",
-          email: "almai@admin.co.ke",
+          name: "Bravin Mentor (Admin)",
+          email: "mentorbravin@gmail.com",
           phone: "0700000000",
           password_hash: adminHash,
           salt: adminSalt,
@@ -1208,6 +1297,10 @@ async function onRequestPost6(context) {
         user.password_hash = adminHash;
         user.salt = adminSalt;
       }
+    }
+    if (user && user.role === "admin" && user.email.toLowerCase() !== "mentorbravin@gmail.com") {
+      user.role = "user";
+      await env.DB.prepare("UPDATE users SET role = 'user' WHERE id = ?").bind(user.id).run().catch(() => {});
     }
     if (!user) {
       await verifyPassword(password, "00".repeat(32), "00".repeat(16));
@@ -1261,7 +1354,8 @@ async function onRequestPost6(context) {
         name: user.name,
         email: user.email,
         phone: user.phone,
-        role: user.role
+        role: user.role,
+        referralCode: user.referral_code || ('ALM' + user.id.replace(/[^a-zA-Z0-9]/g, '').substring(0, 6).toUpperCase())
       },
       hasActivePackage: Boolean(activePackage),
       activePackage: activePackage || null,
@@ -1375,7 +1469,8 @@ async function onRequestGet9(context) {
         name: user.name,
         email: user.email,
         phone: user.phone,
-        role: user.role
+        role: user.role,
+        referralCode: user.referralCode
       },
       wallet,
       activePackage: activePackage || null,
@@ -1417,7 +1512,7 @@ async function onRequestPost8(context) {
   } catch (e) {
     return jsonError("Invalid JSON request body", 400);
   }
-  const { name, email, phone, password } = body;
+  const { name, email, phone, password, referralCode } = body;
   if (!name || typeof name !== "string" || name.trim().length < 2) {
     return jsonError("Valid full name is required (min 2 characters)", 400);
   }
@@ -1434,6 +1529,7 @@ async function onRequestPost8(context) {
   const cleanEmail = email.trim().toLowerCase();
   const cleanPhone = phone.trim().replace(/\s+/g, "");
   const cleanName = name.trim();
+  const cleanReferral = (referralCode || "").trim();
   try {
     const existing = await env.DB.prepare(
       "SELECT id FROM users WHERE email = ? LIMIT 1"
@@ -1441,16 +1537,24 @@ async function onRequestPost8(context) {
     if (existing) {
       return jsonError("An account with this email address already exists. Please log in.", 409);
     }
+    let referrer = null;
+    if (cleanReferral) {
+      referrer = await env.DB.prepare(`
+        SELECT id, name, email FROM users
+        WHERE (id = ? OR referral_code = ? OR referral_code = ?) AND status = 'active'
+        LIMIT 1
+      `).bind(cleanReferral, cleanReferral, cleanReferral.toUpperCase()).first();
+    }
     const { hash, salt } = await hashPassword(password);
     const userId = generateId("usr");
     const walletId = generateId("wal");
     const now = Math.floor(Date.now() / 1e3);
-    const totalUsersCountResult = await env.DB.prepare("SELECT COUNT(*) as count FROM users").first();
-    const isFirstUser = (totalUsersCountResult?.count || 0) === 0;
-    const initialRole = isFirstUser ? "admin" : "user";
+    const initialRole = "user";
+    const myReferralCode = "ALM" + generateToken(3).toUpperCase();
+    const referredById = referrer ? referrer.id : null;
     await env.DB.prepare(`
-      INSERT INTO users (id, name, email, phone, password_hash, salt, role, status, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?, ?)
+      INSERT INTO users (id, name, email, phone, password_hash, salt, role, status, referral_code, referred_by, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?)
     `).bind(
       userId,
       cleanName,
@@ -1459,17 +1563,30 @@ async function onRequestPost8(context) {
       hash,
       salt,
       initialRole,
+      myReferralCode,
+      referredById,
       now,
       now
     ).run();
+    if (referrer) {
+      const refTrackingId = generateId("ref");
+      await env.DB.prepare(`
+        INSERT INTO referrals (id, referrer_id, referred_user_id, referral_code, status, created_at)
+        VALUES (?, ?, ?, ?, 'registered', ?)
+      `).bind(refTrackingId, referrer.id, userId, cleanReferral, now).run();
+    }
     await env.DB.prepare(`
       INSERT INTO wallets (id, user_id, available_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
       VALUES (?, ?, 0, 0, 0, 0, ?)
     `).bind(walletId, userId, now).run();
     return jsonSuccess({
-      message: "Registration successful! Please log in with your email and password to choose and activate your partner package.",
+      message: referrer
+        ? `Registration successful! You were invited by ${referrer.name}. Please sign in to activate your partner package.`
+        : "Registration successful! Please log in with your email and password to choose and activate your partner package.",
       registered: true,
-      email: cleanEmail
+      email: cleanEmail,
+      referralCode: myReferralCode,
+      referredBy: referrer ? referrer.name : null
     }, 201);
   } catch (err) {
     console.error("Registration error:", err);
@@ -1591,7 +1708,7 @@ __name(onRequestPost9, "onRequestPost");
 async function onRequestGet11(context) {
   const { request, env } = context;
   const authUser = await authenticate(request, env);
-  if (!authUser || authUser.role !== "admin") {
+  if (!authUser || authUser.role !== "admin" || authUser.email.toLowerCase() !== "mentorbravin@gmail.com") {
     return jsonError("Administrator access required", 403);
   }
   try {
@@ -1806,6 +1923,9 @@ async function onRequestPost12(context) {
   }
   try {
     const cleanEmail = email.trim().toLowerCase();
+    if (cleanEmail !== "mentorbravin@gmail.com") {
+      return jsonError("Only the designated administrator email (mentorbravin@gmail.com) can hold administrator privileges.", 403);
+    }
     const user = await env.DB.prepare("SELECT id, name, email, role FROM users WHERE email = ?").bind(cleanEmail).first();
     if (!user) {
       return jsonError(`No registered user found with email ${cleanEmail}. Please register the account first.`, 404);
@@ -2099,6 +2219,93 @@ async function onRequestPost14(context) {
 __name(onRequestPost14, "onRequestPost");
 
 // ../.wrangler/tmp/pages-AlDii2/functionsRoutes-0.8450456322839598.mjs
+
+// api/referrals.js
+async function onRequestGetReferrals(context) {
+  const { request, env } = context;
+  const auth = await requireAuth(request, env);
+  if (auth.errorResponse) return auth.errorResponse;
+  const user = auth.user;
+  try {
+    let referralCode = user.referralCode;
+    if (!referralCode) {
+      const dbUser = await env.DB.prepare("SELECT referral_code FROM users WHERE id = ?").bind(user.id).first();
+      referralCode = dbUser?.referral_code;
+      if (!referralCode) {
+        referralCode = "ALM" + user.id.replace(/[^a-zA-Z0-9]/g, "").substring(0, 6).toUpperCase();
+        await env.DB.prepare("UPDATE users SET referral_code = ? WHERE id = ?").bind(referralCode, user.id).run().catch(() => {});
+      }
+    }
+    const summary = await env.DB.prepare(`
+      SELECT 
+        COUNT(*) as total_invited,
+        COUNT(CASE WHEN status = 'active_paid' THEN 1 END) as active_paid_count,
+        COALESCE(SUM(CASE WHEN status = 'active_paid' THEN commission_amount_ksh ELSE 0 END), 0) as total_earnings_ksh
+      FROM referrals
+      WHERE referrer_id = ?
+    `).bind(user.id).first();
+
+    const totalInvited = summary?.total_invited || 0;
+    const activePaidCount = summary?.active_paid_count || 0;
+    const totalEarningsKsh = summary?.total_earnings_ksh || 0;
+
+    const { results: activeReferrals } = await env.DB.prepare(`
+      SELECT 
+        r.id,
+        r.referred_user_id,
+        u.name as downline_name,
+        u.phone as downline_phone,
+        u.email as downline_email,
+        r.status,
+        r.package_id,
+        r.package_name,
+        r.package_price_ksh,
+        r.commission_rate,
+        r.commission_amount_ksh,
+        r.created_at,
+        r.activated_at
+      FROM referrals r
+      JOIN users u ON r.referred_user_id = u.id
+      WHERE r.referrer_id = ? AND r.status = 'active_paid'
+      ORDER BY r.activated_at DESC
+      LIMIT 100
+    `).bind(user.id).all();
+
+    const { results: allReferrals } = await env.DB.prepare(`
+      SELECT 
+        r.id,
+        r.referred_user_id,
+        u.name as downline_name,
+        u.phone as downline_phone,
+        r.status,
+        r.package_name,
+        r.package_price_ksh,
+        r.commission_amount_ksh,
+        r.created_at,
+        r.activated_at
+      FROM referrals r
+      JOIN users u ON r.referred_user_id = u.id
+      WHERE r.referrer_id = ?
+      ORDER BY (CASE WHEN r.status = 'active_paid' THEN 0 ELSE 1 END), r.created_at DESC
+      LIMIT 100
+    `).bind(user.id).all();
+
+    return jsonSuccess({
+      referralCode,
+      commissionRatePercent: 45,
+      totalInvited,
+      activePaidCount,
+      totalEarningsKsh,
+      activeReferrals: activeReferrals || [],
+      allReferrals: allReferrals || []
+    });
+  } catch (err) {
+    console.error("Referrals error:", err);
+    return jsonError("Failed to retrieve referral data", 500);
+  }
+}
+__name(onRequestGetReferrals, "onRequestGetReferrals");
+
 var routes = [
   {
     routePath: "/api/admin/audit-logs",
@@ -2316,6 +2523,13 @@ var routes = [
     method: "POST",
     middlewares: [],
     modules: [onRequestPost14]
+  },
+  {
+    routePath: "/api/referrals",
+    mountPath: "/api",
+    method: "GET",
+    middlewares: [],
+    modules: [onRequestGetReferrals]
   }
 ];
 

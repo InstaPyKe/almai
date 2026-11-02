@@ -14,22 +14,22 @@
        ALMAI DESIGN SYSTEM & TOKENS
        ==================================================================== */
     :root {
-      --bg-cream: #F8F0E2;
-      --bg-cream-dark: #EDE3D2;
-      --primary-purple: #3B0764;
-      --primary-purple-hover: #2E1065;
+      --bg-cream: #F8FAFC;
+      --bg-cream-dark: #F1F5F9;
+      --primary-purple: #4C1D95;
+      --primary-purple-hover: #3B0764;
       --primary-purple-light: #F3E8FF;
-      --deep-purple-heading: #2D1537;
-      --light-purple-accent: #4C1D95;
-      --charcoal-text: #1C1917;
-      --charcoal-muted: #44403C;
-      --warning-red: #B91C1C;
+      --deep-purple-heading: #1E1B4B;
+      --light-purple-accent: #7C3AED;
+      --charcoal-text: #0F172A;
+      --charcoal-muted: #475569;
+      --warning-red: #DC2626;
       --warning-red-bg: #FEF2F2;
       --white-card: #FFFFFF;
-      --beige-border: #E5DACB;
-      --success-green: #047857;
+      --beige-border: #E2E8F0;
+      --success-green: #059669;
       --success-green-bg: #ECFDF5;
-      --gold-accent: #D97706;
+      --gold-accent: #F59E0B;
       --shadow-sm: 0 1px 3px rgba(36, 33, 36, 0.08);
       --shadow-md: 0 4px 12px rgba(76, 29, 149, 0.09);
       --shadow-lg: 0 10px 25px -3px rgba(76, 29, 149, 0.14);
@@ -1041,14 +1041,23 @@
         margin: 14px auto 26px;
         padding: 12px 8px 14px;
       }
-      .showcase-card {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.showcase-card {
         flex: 0 0 175px;
         width: 175px;
       }
-      .showcase-card-img-wrap {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.showcase-card-img-wrap {
         height: 105px;
       }
-      .hero-showcase-hint {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.hero-showcase-hint {
         display: none;
       }
     }
@@ -1822,13 +1831,19 @@
         padding: 20px !important;
         gap: 18px !important;
       }
-      .dash-header-actions {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.dash-header-actions {
         width: 100% !important;
         display: grid !important;
         grid-template-columns: 1fr 1fr !important;
         gap: 10px !important;
       }
-      .dash-header-actions .btn {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.dash-header-actions .btn {
         width: 100% !important;
         justify-content: center !important;
       }
@@ -1839,16 +1854,25 @@
         align-items: flex-start !important;
         gap: 14px !important;
       }
-      .dash-avatar-badge {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.dash-avatar-badge {
         width: 52px !important;
         height: 52px !important;
         font-size: 22px !important;
       }
-      .user-greeting h2,
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.user-greeting h2,
       .user-greeting-heading {
         font-size: 20px !important;
       }
-      .dash-header-actions {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.dash-header-actions {
         grid-template-columns: 1fr !important;
       }
     }
@@ -1864,7 +1888,7 @@
       margin-bottom: 18px;
       flex-wrap: wrap;
       gap: 12px;
-      border-bottom: 2px solid rgba(229, 218, 203, 0.7);
+      border-bottom: 2px solid rgba(226, 232, 240, 0.7);
       padding-bottom: 12px;
     }
     .dash-group-title {
@@ -1904,7 +1928,7 @@
     }
     .dash-metric-card {
       background: var(--white-card);
-      border: 1.5px solid rgba(229, 218, 203, 0.95);
+      border: 1.5px solid rgba(226, 232, 240, 0.95);
       border-radius: var(--radius-lg);
       padding: 24px 22px;
       box-shadow: 0 4px 16px rgba(59, 7, 100, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
@@ -2124,7 +2148,7 @@
       flex-wrap: wrap;
       gap: 12px;
       padding-bottom: 12px;
-      border-bottom: 1.5px solid rgba(229, 218, 203, 0.6);
+      border-bottom: 1.5px solid rgba(226, 232, 240, 0.6);
     }
     .dash-section-title {
       font-size: 22px;
@@ -2255,7 +2279,10 @@
         opacity: 0;
         transform: translateY(18px);
       }
-      to {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }to {
         opacity: 1;
         transform: translateY(0);
       }
@@ -2589,7 +2616,7 @@
 
     /* Sidebar Footer Utilities */
     .admin-sidebar-footer {
-      border-top: 1.5px solid rgba(229, 218, 203, 0.8);
+      border-top: 1.5px solid rgba(226, 232, 240, 0.8);
       padding-top: 14px;
       margin-top: 16px;
       display: flex;
@@ -2634,7 +2661,7 @@
     }
     .admin-kpi-card {
       background: #FFFFFF;
-      border: 1.5px solid rgba(229, 218, 203, 0.95);
+      border: 1.5px solid rgba(226, 232, 240, 0.95);
       border-radius: var(--radius-md);
       padding: 18px 16px;
       box-shadow: 0 4px 16px rgba(59, 7, 100, 0.04);
@@ -2791,7 +2818,10 @@
         max-width: 100% !important;
         min-width: 0 !important;
       }
-      .admin-sidebar {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.admin-sidebar {
         position: static;
         max-height: none;
         overflow-x: auto;
@@ -2799,17 +2829,26 @@
         width: 100%;
         box-sizing: border-box;
       }
-      .admin-side-group {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.admin-side-group {
         display: flex;
         flex-wrap: wrap;
         gap: 6px;
       }
-      .admin-tab {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.admin-tab {
         width: auto;
         flex: 1 1 calc(50% - 6px);
         min-width: 140px;
       }
-      .admin-sidebar-footer {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.admin-sidebar-footer {
         flex-direction: row;
       }
     }
@@ -2913,26 +2952,44 @@
       .table-scroll-hint {
         display: inline-flex;
       }
-      .admin-content-section {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.admin-content-section {
         padding: 16px 14px 20px !important;
         border-radius: var(--radius-md) !important;
       }
-      .admin-section-banner {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.admin-section-banner {
         padding: 12px 14px !important;
         margin-bottom: 14px !important;
         gap: 10px !important;
       }
-      .admin-banner-title {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.admin-banner-title {
         font-size: 17px !important;
       }
-      .admin-banner-subtitle {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.admin-banner-subtitle {
         font-size: 13px !important;
       }
-      .table-responsive-clean th {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.table-responsive-clean th {
         padding: 10px 12px !important;
         font-size: 12.5px !important;
       }
-      .table-responsive-clean td {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.table-responsive-clean td {
         padding: 10px 12px !important;
         font-size: 13px !important;
       }
@@ -3086,7 +3143,10 @@
         grid-template-columns: 1fr;
         gap: 20px;
       }
-      .admin-header-card {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.admin-header-card {
         flex-direction: column;
         align-items: stretch;
       }
@@ -3096,49 +3156,79 @@
       .admin-prod-form-card {
         padding: 16px 14px;
       }
-      .admin-prods-list-container {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.admin-prods-list-container {
         max-height: none;
         overflow-y: visible;
       }
-      .admin-prod-item {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.admin-prod-item {
         flex-direction: column;
         align-items: stretch;
         gap: 12px;
         padding: 12px;
       }
-      .admin-prod-item-main-row {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.admin-prod-item-main-row {
         gap: 12px;
         align-items: flex-start;
       }
-      .admin-prod-item-thumb {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.admin-prod-item-thumb {
         width: 68px;
         height: 68px;
       }
-      .admin-prod-item-actions {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.admin-prod-item-actions {
         flex-direction: row;
         width: 100%;
         gap: 8px;
         border-top: 1px solid var(--beige-border);
         padding-top: 10px;
       }
-      .admin-prod-item-actions .btn {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.admin-prod-item-actions .btn {
         flex: 1;
         justify-content: center;
       }
-      .admin-prods-header {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.admin-prods-header {
         flex-direction: column;
         align-items: stretch;
         gap: 10px;
       }
-      .admin-prods-header .btn {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.admin-prods-header .btn {
         width: 100%;
         justify-content: center;
       }
-      .products-posts-grid {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.products-posts-grid {
         grid-template-columns: 1fr;
         gap: 16px;
       }
-      
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }
     /* Adjustable Image Card Styling */
     .product-post-img-wrap {
       width: 100%;
@@ -3400,25 +3490,11 @@
       font-weight: 700;
       color: #E7E5E4;
     }
-    .copyright-trigger {
-      cursor: pointer;
-      user-select: none;
-      -webkit-user-select: none;
-      transition: var(--transition);
-      padding: 6px 12px;
-      border-radius: var(--radius-sm);
+    #footer-copyright {
       color: #E7E5E4;
-      font-weight: 800;
-      font-size: 16px;
+      font-weight: 700;
+      font-size: 15px;
       display: inline-block;
-    }
-    .copyright-trigger:hover {
-      color: #ffffff;
-      background: rgba(255, 255, 255, 0.08);
-    }
-    .copyright-trigger:active {
-      transform: scale(0.97);
-      background: rgba(255, 255, 255, 0.16);
     }
 
     /* ====================================================================
@@ -3428,23 +3504,35 @@
       .navbar {
         padding: 10px 0;
       }
-      .brand-logo {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.brand-logo {
         gap: 8px;
         flex: 1;
         min-width: 0;
       }
-      .brand-logo-icon {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.brand-logo-icon {
         width: 38px;
         height: 38px;
         font-size: 19px;
         border-radius: var(--radius-sm);
         flex-shrink: 0;
       }
-      .brand-title-wrap {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.brand-title-wrap {
         min-width: 0;
         overflow: hidden;
       }
-      .brand-title-main {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.brand-title-main {
         font-size: clamp(17px, 4.2vw, 22px);
         white-space: nowrap;
         overflow: hidden;
@@ -3452,43 +3540,76 @@
         display: block;
         max-width: 100%;
       }
-      .brand-tag {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.brand-tag {
         display: none !important;
       }
-      .nav-links, #nav-guest-actions, #nav-auth-actions {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.nav-links, #nav-guest-actions, #nav-auth-actions {
         display: none !important;
       }
-      .nav-actions {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.nav-actions {
         margin-left: auto;
         flex-shrink: 0;
         gap: 8px;
       }
-      .menu-toggle {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.menu-toggle {
         display: inline-flex !important;
         flex-shrink: 0;
       }
-      .calc-grid {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.calc-grid {
         grid-template-columns: 1fr;
         gap: 24px;
       }
-      .tier-switcher-grid {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.tier-switcher-grid {
         grid-template-columns: 1fr;
       }
-      .calc-box {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.calc-box {
         padding: 24px 18px;
       }
-      .brand-solutions-box {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.brand-solutions-box {
         grid-template-columns: 1fr;
         padding: 28px 20px;
       }
-      .footer-grid {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.footer-grid {
         grid-template-columns: 1fr;
         gap: 24px;
       }
-      .hero-section {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.hero-section {
         padding: 40px 0 30px;
       }
-      .dashboard-header {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.dashboard-header {
         flex-direction: column;
         align-items: stretch;
       }
@@ -4353,38 +4474,65 @@
         right: 14px;
         padding: 5px 14px 5px 6px;
       }
-      .wa-icon-bubble {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.wa-icon-bubble {
         width: 38px;
         height: 38px;
       }
-      .wa-svg {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.wa-svg {
         width: 22px;
         height: 22px;
       }
-      .wa-status-text {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.wa-status-text {
         font-size: 10px;
       }
-      .wa-title-text {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.wa-title-text {
         font-size: 13.5px;
       }
-      .hero-trust-bar {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.hero-trust-bar {
         border-radius: var(--radius-md);
         gap: 12px;
         padding: 10px 14px;
       }
-      .trust-item {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.trust-item {
         font-size: 12.5px;
       }
-      .features-showcase-grid,
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.features-showcase-grid,
       .testimonials-grid {
         grid-template-columns: 1fr;
       }
-      .live-activity-stream {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.live-activity-stream {
         border-radius: var(--radius-md);
         padding: 8px 10px;
         gap: 10px;
       }
-      .live-ticker-badge {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.live-ticker-badge {
         font-size: 11px;
         padding: 5px 10px;
       }
@@ -4671,6 +4819,286 @@
     }
 
     /* ====================================================================
+       THEME REFERRAL: 45% LIFETIME REFERRAL & DOWNLINES HUB
+       ==================================================================== */
+    .dash-theme-referral {
+      background: linear-gradient(145deg, #FAF5FF 0%, #F5F3FF 40%, #EDE9FE 100%) !important;
+      border: 2.5px solid #8B5CF6 !important;
+      border-radius: var(--radius-lg) !important;
+      padding: 26px 26px 30px !important;
+      box-shadow: 0 16px 38px -6px rgba(124, 58, 237, 0.18), 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+      margin-bottom: 32px !important;
+      position: relative !important;
+      overflow: hidden !important;
+    }
+    .dash-theme-referral::before {
+      content: '';
+      position: absolute;
+      top: -30px;
+      right: -30px;
+      width: 240px;
+      height: 240px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .referral-highlight-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+      color: #065F46;
+      border: 1.5px solid #10B981;
+      padding: 6px 16px;
+      border-radius: var(--radius-full);
+      font-size: 13.5px;
+      font-weight: 900;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+    }
+    .referral-highlight-pill .pulsing-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #10B981;
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulseGreen 2s infinite;
+    }
+    @keyframes pulseGreen {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    .referral-share-card {
+      background: #FFFFFF;
+      border: 2px solid #DDD6FE;
+      border-radius: var(--radius-md);
+      padding: 22px 24px;
+      box-shadow: 0 8px 24px rgba(109, 40, 217, 0.08);
+      margin-top: 14px;
+    }
+    .referral-share-content {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .referral-code-badge-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .referral-code-label {
+      font-size: 12.5px;
+      font-weight: 850;
+      color: #6D28D9;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .referral-code-value {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 19px;
+      font-weight: 950;
+      color: #3B0764;
+      background: #F3E8FF;
+      border: 1.5px solid #C084FC;
+      padding: 3px 14px;
+      border-radius: 8px;
+      letter-spacing: 0.08em;
+    }
+    .referral-link-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .referral-input-wrap {
+      flex: 1;
+      min-width: 260px;
+      position: relative;
+    }
+    .referral-input-wrap input {
+      width: 100%;
+      padding: 12px 14px 12px 42px;
+      border: 2px solid #C4B5FD;
+      border-radius: var(--radius-sm);
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #1E1B4B;
+      background: #FAF5FF;
+      outline: none;
+      transition: var(--transition);
+    }
+    .referral-input-wrap input:focus {
+      border-color: #7C3AED;
+      background: #FFFFFF;
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+    }
+    .referral-share-btns {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn-copy-ref {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 850;
+      font-size: 14.5px;
+      padding: 12px 20px;
+      background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);
+      color: #FFFFFF;
+      border-radius: var(--radius-sm);
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(109, 40, 217, 0.28);
+      transition: var(--transition);
+    }
+    .btn-copy-ref:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(109, 40, 217, 0.38);
+    }
+    .btn-whatsapp-share {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 850;
+      font-size: 14.5px;
+      padding: 12px 20px;
+      background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+      color: #FFFFFF;
+      border-radius: var(--radius-sm);
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
+      transition: var(--transition);
+    }
+    .btn-whatsapp-share:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(37, 211, 102, 0.45);
+    }
+    .commission-tiers-pill-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1.5px dashed #E9D5FF;
+    }
+    .commission-tier-pill {
+      font-size: 13px;
+      color: #4C1D95;
+      background: #F5F3FF;
+      border: 1px solid #DDD6FE;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+    }
+    .commission-tier-pill.highlight {
+      background: #EDE9FE;
+      border-color: #8B5CF6;
+      color: #3B0764;
+    }
+    .badge-earning-ksh {
+      color: #059669;
+      font-weight: 950;
+    }
+    .active-paid-referrals-box {
+      background: #FFFFFF;
+      border: 2px solid #A7F3D0;
+      border-radius: var(--radius-md);
+      padding: 22px 24px;
+      box-shadow: 0 8px 24px rgba(5, 150, 105, 0.08);
+      margin-top: 24px;
+    }
+    .active-paid-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid #E6F4EA;
+      margin-bottom: 16px;
+    }
+    .active-shield-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: #ECFDF5;
+      border: 1.5px solid #10B981;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .active-count-tag {
+      background: #10B981;
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: 900;
+      padding: 5px 14px;
+      border-radius: var(--radius-full);
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+    }
+    .table-referrals {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+    .table-referrals th {
+      background: #F0FDF4 !important;
+      color: #064E3B !important;
+      border-bottom: 2px solid #10B981 !important;
+      font-weight: 900 !important;
+      font-size: 13.5px;
+      padding: 12px 14px;
+      text-align: left;
+    }
+    .table-referrals td {
+      padding: 14px;
+      border-bottom: 1px solid #E2E8F0;
+      font-size: 14.5px;
+      vertical-align: middle;
+    }
+    .commission-earn-chip {
+      background: #ECFDF5;
+      color: #059669;
+      border: 1.5px solid #10B981;
+      font-weight: 950;
+      font-size: 14.5px;
+      padding: 4px 12px;
+      border-radius: 8px;
+      display: inline-block;
+      box-shadow: 0 2px 6px rgba(5, 150, 105, 0.12);
+    }
+    .referral-toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: #0F172A;
+      color: #FFFFFF;
+      padding: 14px 22px;
+      border-radius: 12px;
+      font-size: 14.5px;
+      font-weight: 800;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+      border-left: 5px solid #10B981;
+      z-index: 99999;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .referral-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    /* ====================================================================
        ADMIN DASHBOARD SUPER COLORED ALTERNATING SECTIONS
        ==================================================================== */
     .admin-sec-yellow {
@@ -4825,7 +5253,7 @@
     }
     .product-post-card {
       background: #FFFFFF !important;
-      border: 1.5px solid rgba(229, 218, 203, 0.8) !important;
+      border: 1.5px solid rgba(226, 232, 240, 0.8) !important;
       border-radius: var(--radius-lg) !important;
       overflow: hidden !important;
       box-shadow: 0 12px 30px -4px rgba(59, 7, 100, 0.1), 0 3px 10px rgba(0, 0, 0, 0.03) !important;
@@ -5196,7 +5624,10 @@
       .footer-grid {
         grid-template-columns: 1fr !important;
       }
-      .product-post-img-wrap {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }.product-post-img-wrap {
         height: 270px !important;
       }
     }
@@ -5226,7 +5657,6 @@
           <li class="nav-link-item" id="nav-products" onclick="switchView('products')">Packages & Pricing</li>
           <li class="nav-link-item" id="nav-calc" onclick="scrollToCalculator()">Calculator</li>
           <li class="nav-link-item" id="nav-dashboard-link" style="display: none;" onclick="switchView('dashboard')">Dashboard</li>
-          <li class="nav-link-item" id="nav-admin-link" style="display: none;" onclick="switchView('admin')">Admin Center</li>
         </ul>
       </nav>
 
@@ -5329,10 +5759,6 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg>
         </span>
         Request M-Pesa Payout
-      </li>
-      <li class="mobile-nav-item" id="mob-nav-admin" style="display: none;" onclick="mobileNavAction('admin')">
-        <span class="svg-icon" style="width: 18px; height: 18px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="display:inline-block;vertical-align:-2px;color:#F59E0B;"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg></span>
-        Admin Center
       </li>
     </ul>
 
@@ -5451,7 +5877,6 @@
         </div>
       </div>
     </section>
-
     <!-- Interactive Earnings Calculator (100% Mobile Responsive) -->
     <section class="container" id="calculator-section" style="padding: 20px 0 40px;">
       <div class="calc-box">
@@ -5508,8 +5933,6 @@
         </div>
       </div>
     </section>
-
-
     <!-- Testimonials & Social Proof -->
     <section class="container testimonials-section">
       <div class="section-header">
@@ -5779,6 +6202,14 @@
             <label class="form-label" for="reg-password">Password (Minimum 8 Characters)</label>
             <input type="password" id="reg-password" minlength="8" required placeholder="••••••••">
           </div>
+          <div class="form-group">
+            <label class="form-label" for="reg-referral">Referral Code / Inviter ID (Optional)</label>
+            <div style="position: relative;">
+              <input type="text" id="reg-referral" placeholder="e.g. ALM-A1B2 or Inviter's Code" style="text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;">
+              <span id="reg-referral-badge" style="display: none; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 800; background: #ECFDF5; color: #059669; border: 1px solid #A7F3D0; padding: 3px 10px; border-radius: 9999px;">✓ Inviter Code Applied</span>
+            </div>
+            <div class="form-hint" id="reg-referral-hint">Joined via partner invite? Enter their referral code or unique ID to link under their 45% commission downline.</div>
+          </div>
           <button type="submit" class="btn btn-primary btn-block btn-lg" id="btn-register-submit">
             Create Free Account
           </button>
@@ -5907,6 +6338,183 @@
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#047857" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
               Disbursed directly via M-Pesa
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: 45% LIFETIME REFERRAL COMMISSIONS & DOWNLINES HUB -->
+      <div class="dash-section-group dash-group-referrals dash-theme-referral" id="dash-referral-section">
+        <div class="dash-group-header">
+          <div>
+            <div class="dash-group-title">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#7C3AED" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              45% Lifetime Referral Commissions &amp; Downlines
+            </div>
+            <div class="dash-group-subtitle">
+              Invite partners with your unique link and earn a guaranteed <strong>45% cash commission</strong> instantly credited to your wallet whenever your downline activates any package!
+            </div>
+          </div>
+          <div class="referral-highlight-pill">
+            <span class="pulsing-dot"></span>
+            <span>45% Instant Cash Per Downline</span>
+          </div>
+        </div>
+
+        <!-- Referral Link & Sharing Box -->
+        <div class="referral-share-card">
+          <div class="referral-share-content">
+            <div class="referral-code-badge-wrap">
+              <span class="referral-code-label">YOUR UNIQUE REFERRAL ID:</span>
+              <span class="referral-code-value" id="dash-referral-code-display">ALM-PARTNER</span>
+            </div>
+            <div class="referral-link-box">
+              <div class="referral-input-wrap">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#6D28D9" stroke-width="2.2" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); pointer-events: none;">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+                <input type="text" id="dash-referral-link-input" readonly value="Loading referral link..." onclick="this.select()">
+              </div>
+              <div class="referral-share-btns">
+                <button type="button" class="btn btn-copy-ref" id="btn-copy-ref" onclick="copyReferralLink()">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.3">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  <span id="btn-copy-ref-text">Copy Link</span>
+                </button>
+                <button type="button" class="btn btn-whatsapp-share" onclick="shareReferralWhatsApp()">
+                  <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor">
+                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                  </svg>
+                  Share on WhatsApp
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Commission breakdown rates -->
+          <div class="commission-tiers-pill-row">
+            <span class="commission-tier-pill">Starter Z (KSh 250): Earn <span class="badge-earning-ksh">KSh 113</span> (45%)</span>
+            <span class="commission-tier-pill highlight">Exclusive Tier (KSh 500): Earn <span class="badge-earning-ksh">KSh 225</span> (45%)</span>
+            <span class="commission-tier-pill">Premium Tier (KSh 1,200): Earn <span class="badge-earning-ksh">KSh 540</span> (45%)</span>
+          </div>
+        </div>
+
+        <!-- 4 Referral KPI Metrics -->
+        <div class="dash-metrics-grid" style="margin-top: 20px;">
+          <!-- Card 1: Referral Cash Earnings -->
+          <div class="dash-metric-card highlight">
+            <div class="dash-metric-top">
+              <div class="dash-metric-lbl">Referral Cash Earnings</div>
+              <div class="dash-metric-icon-chip chip-emerald">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              </div>
+            </div>
+            <div class="dash-metric-val" id="dash-ref-earnings" style="color: #059669 !important;">KSh 0</div>
+            <div class="dash-metric-sub">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#059669" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              Paid instantly to Available Balance
+            </div>
+          </div>
+
+          <!-- Card 2: Active Paid Downlines -->
+          <div class="dash-metric-card">
+            <div class="dash-metric-top">
+              <div class="dash-metric-lbl">Active Paid Downlines</div>
+              <div class="dash-metric-icon-chip chip-purple">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><polyline points="16 11 18 13 22 9"></polyline></svg>
+              </div>
+            </div>
+            <div class="dash-metric-val" id="dash-ref-active-count">0</div>
+            <div class="dash-metric-sub" style="color: #6D28D9;">
+              Downlines with active paid packages
+            </div>
+          </div>
+
+          <!-- Card 3: Total Invited -->
+          <div class="dash-metric-card">
+            <div class="dash-metric-top">
+              <div class="dash-metric-lbl">Total Friends Invited</div>
+              <div class="dash-metric-icon-chip chip-blue">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              </div>
+            </div>
+            <div class="dash-metric-val" id="dash-ref-total-invited">0</div>
+            <div class="dash-metric-sub">
+              Registered via your unique invite link
+            </div>
+          </div>
+
+          <!-- Card 4: Commission Rate -->
+          <div class="dash-metric-card">
+            <div class="dash-metric-top">
+              <div class="dash-metric-lbl">Commission Rate</div>
+              <div class="dash-metric-icon-chip chip-amber">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><path d="M8 12h8"></path><path d="M12 8v8"></path></svg>
+              </div>
+            </div>
+            <div class="dash-metric-val" style="color: #D97706 !important;">45%</div>
+            <div class="dash-metric-sub">
+              Lifetime cut on every downline package
+            </div>
+          </div>
+        </div>
+
+        <!-- TRACK ONLY ACTIVE PAID USERS WITH ACTIVE PACKAGES -->
+        <div class="active-paid-referrals-box">
+          <div class="active-paid-header">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span class="active-shield-icon">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#059669" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+              </span>
+              <div>
+                <h3 style="font-size: 17px; font-weight: 900; color: #065F46; margin: 0;">Active Paid Referral Downlines (45% Earned)</h3>
+                <p style="font-size: 13.5px; color: #047857; margin: 2px 0 0; font-weight: 650;">
+                  Live tracking of active paid partners who activated packages and earned you 45% instant cash.
+                </p>
+              </div>
+            </div>
+            <span class="active-count-tag" id="active-paid-badge-count">0 Active Paid</span>
+          </div>
+
+          <div class="table-scroll-hint">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            <span>Swipe table horizontally to see all downline earnings &amp; package details &rarr;</span>
+          </div>
+          <div class="table-responsive">
+            <table class="table-referrals" id="table-active-referrals">
+              <thead>
+                <tr>
+                  <th>Downline Partner</th>
+                  <th>Phone Number</th>
+                  <th>Active Package</th>
+                  <th>Package Price</th>
+                  <th>Your 45% Commission</th>
+                  <th>Activation Date</th>
+                  <th>Earning Status</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-active-referrals">
+                <tr>
+                  <td colspan="7" style="text-align: center; color: var(--charcoal-muted); padding: 36px 20px;">
+                    <div style="max-width: 480px; margin: 0 auto;">
+                      <div style="font-size: 34px; margin-bottom: 8px;">🚀</div>
+                      <div style="font-weight: 900; font-size: 16px; color: #0F172A; margin-bottom: 6px;">No Active Paid Downlines Yet</div>
+                      <div style="font-size: 14px; color: #64748B; line-height: 1.5; margin-bottom: 16px;">
+                        Invite partners with your referral link above. When they activate Starter Z (KSh 250), Exclusive (KSh 500), or Premium (KSh 1,200), your guaranteed 45% commission is instantly credited to your wallet balance!
+                      </div>
+                      <button type="button" class="btn btn-primary btn-sm" onclick="copyReferralLink()">Copy Your Referral Link</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -6353,7 +6961,7 @@
             <span class="status-badge status-completed" style="font-size: 13.5px; padding: 4px 14px;">Super Administrator</span>
           </div>
           <p style="margin: 0; font-size: 15px; color: var(--charcoal-muted); font-weight: 600;">
-            Logged in as <strong>almai@admin.co.ke</strong> &bull; Complete platform financial ledger, user directory &amp; marketing distribution
+            Logged in as <strong id="admin-header-email">mentorbravin@gmail.com</strong> &bull; Complete platform financial ledger, user directory &amp; marketing distribution
           </p>
         </div>
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
@@ -6378,7 +6986,7 @@
               <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
             </div>
             <div class="admin-profile-meta">
-              <div class="admin-profile-title">Almai Admin</div>
+              <div class="admin-profile-title">Bravin Mentor</div>
               <div class="admin-profile-status"><span class="admin-live-pulse-dot"></span> Live Operations</div>
             </div>
           </div>
@@ -6927,7 +7535,7 @@
 
       <!-- Footer Bottom Bar -->
       <div class="footer-bottom">
-        <div id="footer-copyright" class="copyright-trigger" onclick="handleCopyrightTap()" title="Almai Products">&copy; <span id="cur-year">2026</span> Almai Products Media Ltd. All rights reserved.</div>
+        <div id="footer-copyright">&copy; <span id="cur-year">2026</span> Almai Products Media Ltd. All rights reserved.</div>
         <div class="footer-legal-links">
           <a href="javascript:void(0)" onclick="alert('Almai Products Terms of Service: All partner earnings are subject to verified genuine human WhatsApp impressions and our 18-hour status proof policy.')">Terms of Service</a>
           <span>&bull;</span>
@@ -6967,58 +7575,6 @@
 
     document.getElementById('cur-year').textContent = new Date().getFullYear();
 
-    // ====================================================================
-    // SECRET ADMIN PORTAL ACCESS TRIGGER (7 TAPS ON COPYRIGHT FOOTER)
-    // ====================================================================
-    let copyrightTapCount = 0;
-    let copyrightTapTimer = null;
-
-    function handleCopyrightTap() {
-      copyrightTapCount++;
-      clearTimeout(copyrightTapTimer);
-      // Reset counter after 3.5 seconds of inactivity
-      copyrightTapTimer = setTimeout(() => {
-        copyrightTapCount = 0;
-      }, 3500);
-
-      // Subtle haptic response on supported mobile devices
-      if (window.navigator && window.navigator.vibrate) {
-        window.navigator.vibrate(30);
-      }
-
-      if (copyrightTapCount === 7) {
-        copyrightTapCount = 0;
-        clearTimeout(copyrightTapTimer);
-
-        if (AppState.user && AppState.user.role === 'admin') {
-          switchView('admin');
-        } else {
-          // If not currently logged in as admin, route to auth login and pre-fill credentials
-          switchView('auth');
-          switchAuthTab('login');
-          const emailInput = document.getElementById('login-email');
-          const passInput = document.getElementById('login-password');
-          if (emailInput) {
-            emailInput.value = 'almai@admin.co.ke';
-          }
-          if (passInput) {
-            passInput.value = '';
-            setTimeout(() => passInput.focus(), 250);
-          }
-          const alertEl = document.getElementById('auth-alert');
-          if (alertEl) {
-            alertEl.className = 'alert alert-success';
-            alertEl.style.display = 'flex';
-            alertEl.innerHTML = `
-              <div style="font-size: 15px; font-weight: 700; line-height: 1.5;">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="display:inline-block;vertical-align:-2px;color:#F59E0B;"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg> <strong>Administrator Gateway Unlocked</strong><br>
-                Enter your authorized administrator credentials to access the Administration Center.
-              </div>
-            `;
-          }
-        }
-      }
-    }
 
     // ====================================================================
     // INACTIVITY TRACKER & AUTO-LOGOUT (STRICT 2-MINUTE LIMIT)
@@ -7044,7 +7600,10 @@
           console.warn('User inactive for 2 minutes. Auto logging out...');
           await handleInactivityLogout();
         }
-      }, 2000);
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }}, 2000);
 
       // Keepalive ping every 45s while user is actively using the site to renew sliding server session
       if (keepAliveTimer) clearInterval(keepAliveTimer);
@@ -7056,7 +7615,10 @@
             await fetch('/api/auth/me', { headers: { 'Accept': 'application/json' } });
           } catch (e) {}
         }
-      }, 45000);
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }}, 45000);
     }
 
     async function handleInactivityLogout() {
@@ -7090,6 +7652,22 @@
     // INITIALIZATION & SESSION CHECK
     // ====================================================================
     window.addEventListener('DOMContentLoaded', async () => {
+      // Capture referral query parameter (?ref= or ?referral=)
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const refQuery = urlParams.get('ref') || urlParams.get('referral');
+        if (refQuery && refQuery.trim()) {
+          const cleanRef = refQuery.trim().toUpperCase();
+          localStorage.setItem('almai_referral_code', cleanRef);
+          const regRefInput = document.getElementById('reg-referral');
+          const regRefBadge = document.getElementById('reg-referral-badge');
+          if (regRefInput) regRefInput.value = cleanRef;
+          if (regRefBadge) regRefBadge.style.display = 'inline-block';
+        }
+      } catch (err) {
+        console.warn('Referral param parse error:', err);
+      }
+
       setupCountersObserver();
       animateCounters(true);
       initInactivityTracker();
@@ -7124,7 +7702,10 @@
             renderPackageGatingBanner();
             return true;
           }
-        }
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }  }
       } catch (err) {
         console.warn('Session check failed or user is guest:', err);
       }
@@ -7183,7 +7764,10 @@
       if (avatarEl && AppState.user.name) {
         avatarEl.textContent = AppState.user.name.trim().charAt(0).toUpperCase();
       }
-      
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }
       const pkgName = AppState.activePackage ? AppState.activePackage.name : (AppState.pendingPackage ? 'Verification Pending' : 'No Active Package');
       document.getElementById('dash-pkg-tag').textContent = pkgName;
 
@@ -7250,27 +7834,28 @@
 
       // If Admin
       if (AppState.user.role === 'admin') {
-        const adminHTML = `
-          <div class="gating-banner active">
-            <div class="gating-icon" style="background: #F3E8FF; color: #3B0764; font-size: 20px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="display:inline-block;vertical-align:-2px;color:#F59E0B;"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg></div>
-            <div class="gating-content">
-              <div class="gating-title" style="color: #3B0764; font-size: 17.5px; font-weight: 850;">Administrator Mode Active</div>
-              <p style="margin: 0; font-size: 14.5px; color: #2D1152; font-weight: 600;">
-                Logged in as <strong>almai@admin.co.ke</strong>. Full system oversight active. To access the Administration Center, click the button below or tap the copyright section in the footer 7 times.
-              </p>
-            </div>
-            <button class="btn btn-primary btn-sm" onclick="switchView('admin')">
-              Open Admin Center
-            </button>
-          </div>
-        `;
-        pkgBanner.style.display = 'block';
-        pkgBanner.innerHTML = adminHTML;
+        pkgBanner.style.display = 'none';
         if (dashBanner) {
           dashBanner.style.display = 'block';
-          dashBanner.innerHTML = adminHTML;
+          dashBanner.innerHTML = `
+            <div class="gating-banner active">
+              <div class="gating-icon" style="background: #F3E8FF; color: #3B0764; font-size: 20px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="display:inline-block;vertical-align:-2px;color:#F59E0B;"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg></div>
+              <div class="gating-content">
+                <div class="gating-title" style="color: #3B0764; font-size: 17.5px; font-weight: 850;">Administrator Mode Active</div>
+                <p style="margin: 0; font-size: 14.5px; color: #2D1152; font-weight: 600;">
+                  Logged in as <strong>${escapeHTML(AppState.user.email || 'mentorbravin@gmail.com')}</strong>. Full platform oversight active.
+                </p>
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="switchView('admin')">
+                Open Admin Center
+              </button>
+            </div>
+          `;
         }
-        return;
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }  return;
       }
 
       // If active package
@@ -7296,7 +7881,10 @@
         if (dashBanner) {
           dashBanner.style.display = 'none';
         }
-        return;
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }  return;
       }
 
       // If verification pending
@@ -7327,7 +7915,10 @@
           dashBanner.style.display = 'block';
           dashBanner.innerHTML = pendHTML;
         }
-        return;
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }  return;
       }
 
       // No active package and not pending
@@ -7421,7 +8012,10 @@
           showAuthModal('login');
           return;
         }
-      }
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }}
 
       // Ensure mobile drawer is cleanly closed on every view transition
       closeMobileNav();
@@ -7464,7 +8058,10 @@
         if (typeof e.preventDefault === 'function') e.preventDefault();
         if (typeof e.stopPropagation === 'function') e.stopPropagation();
       }
-      const drawer = document.getElementById('mobile-drawer');
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }const drawer = document.getElementById('mobile-drawer');
       const backdrop = document.getElementById('mobile-backdrop');
       const toggleBtn = document.getElementById('menu-toggle-btn') || document.querySelector('.menu-toggle');
       if (!drawer || !backdrop) return;
@@ -7480,7 +8077,10 @@
           toggleBtn.setAttribute('aria-expanded', 'true');
           toggleBtn.classList.add('is-active');
         }
-        document.body.style.overflow = 'hidden';
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }  document.body.style.overflow = 'hidden';
       }
     }
 
@@ -7494,7 +8094,10 @@
         toggleBtn.setAttribute('aria-expanded', 'false');
         toggleBtn.classList.remove('is-active');
       }
-      document.body.style.overflow = '';
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }document.body.style.overflow = '';
     }
 
     // Keyboard and touch gesture support for sidebar
@@ -7521,7 +8124,10 @@
         if (touchCurrentX - touchStartX > 60) {
           closeMobileNav();
         }
-        touchStartX = 0;
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }  touchStartX = 0;
         touchCurrentX = 0;
       });
     })();
@@ -7601,7 +8207,10 @@
           AppState.packages = data.packages || [];
           renderPackagesList(AppState.packages);
         }
-      } catch (err) {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }} catch (err) {
         console.error('Error fetching packages:', err);
       }
     }
@@ -7668,7 +8277,10 @@
           } else {
             b.classList.remove('active');
           }
-        }
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }  }
       });
       const names = { starter: 'Starter Pro', exclusive: 'Exclusive', premium: 'Premium' };
       const name = names[slug] || 'Tier';
@@ -7704,11 +8316,17 @@
         } else {
           AppState.productsPosts = [];
         }
-      } catch (err) {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }} catch (err) {
         console.warn('Failed to fetch product creatives from server:', err);
         AppState.productsPosts = [];
       }
-      renderProductsPosts(AppState.productsPosts);
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }renderProductsPosts(AppState.productsPosts);
     }
 
     let activeProductCategoryFilter = 'all';
@@ -7769,14 +8387,20 @@
           } else {
             c.style.display = 'none';
           }
-        });
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }  });
         rows.forEach(r => {
           if (r.id === `row-${dayKey}`) {
             r.style.display = '';
           } else {
             r.style.display = 'none';
           }
-        });
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }  });
       }
     }
 
@@ -7814,7 +8438,10 @@
           } else {
             el.textContent = isDecimal ? target.toFixed(1) : target.toLocaleString();
           }
-        }
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }  }
         requestAnimationFrame(update);
       });
     }
@@ -7833,13 +8460,19 @@
               if (entry.isIntersecting) {
                 animateCounters(true);
               }
-            });
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }      });
           }, { threshold: 0.1 });
           observer.observe(statsSection);
         } catch (e) {
           animateCounters(true);
         }
-      }
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }}
       
       // Also animate on load
       setTimeout(() => animateCounters(true), 250);
@@ -7863,7 +8496,10 @@
             badge.style.marginLeft = 'auto';
             header.appendChild(badge);
           }
-        }
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }  }
         const row = document.getElementById(`row-${currentDayKey}`);
         if (row) row.classList.add('is-today-row');
 
@@ -7874,7 +8510,10 @@
           pill.textContent = 'TODAY';
           navBtn.appendChild(pill);
         }
-      }
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }}
     }
 
     function renderFilteredProductsCards(posts) {
@@ -7892,7 +8531,7 @@
               </svg>
             </div>
             <h3 style="font-size: 18px; font-weight: 850; color: var(--deep-purple-heading); margin-bottom: 6px;">No Active Brand Campaigns</h3>
-            <p style="font-size: 14.5px; margin: 0; max-width: 460px; margin: 0 auto; line-height: 1.5;">There are currently no live campaigns posted by administrators. Check back shortly!</p>
+            <p style="font-size: 14.5px; margin: 0; max-width: 460px; margin: 0 auto; line-height: 1.5;">There are currently no live brand campaigns. Check back shortly!</p>
           </div>
         `;
         return;
@@ -8042,7 +8681,10 @@
           `;
         }).join('');
         }
-      }
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }}
     }
 
     async function downloadProductImage(id, source, filename) {
@@ -8051,7 +8693,10 @@
         showAuthModal('login');
         return;
       }
-      try {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }try {
         // Track download count in backend
         fetch('/api/products-posts', {
           method: 'POST',
@@ -8095,7 +8740,10 @@
           } catch (e) {
             window.open(source, '_blank');
           }
-        }
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }  }
       } catch (err) {
         console.error('Download error:', err);
         window.open(source, '_blank');
@@ -8108,7 +8756,10 @@
         showAuthModal('login');
         return;
       }
-      const el = document.getElementById(`caption-text-${id}`) || document.getElementById(`caption-text-dash-${id}`);
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }const el = document.getElementById(`caption-text-${id}`) || document.getElementById(`caption-text-dash-${id}`);
       if (!el) return;
       const text = el.textContent;
       navigator.clipboard.writeText(text).then(() => {
@@ -8146,7 +8797,10 @@
       while (displayItems.length < 8) {
         displayItems = displayItems.concat(rawItems);
       }
-      // Double the entire set for seamless 50% translation loop
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }// Double the entire set for seamless 50% translation loop
       const marqueeList = [...displayItems, ...displayItems];
 
       track.innerHTML = marqueeList.map(item => {
@@ -8216,6 +8870,13 @@
         tabLogin.classList.remove('active');
         formReg.style.display = 'block';
         formLogin.style.display = 'none';
+        const savedRef = localStorage.getItem('almai_referral_code');
+        const regRefInput = document.getElementById('reg-referral');
+        const regRefBadge = document.getElementById('reg-referral-badge');
+        if (regRefInput && savedRef && !regRefInput.value) {
+          regRefInput.value = savedRef;
+          if (regRefBadge) regRefBadge.style.display = 'inline-block';
+        }
       }
     }
 
@@ -8231,7 +8892,10 @@
       } else if (lockedUntil) {
         localStorage.removeItem('almai_login_locked_until');
       }
-      return false;
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }return false;
     }
 
     function startLoginLockoutTimer(totalSeconds) {
@@ -8275,13 +8939,19 @@
             btn.disabled = false;
             btn.textContent = 'Sign In to Account';
           }
-          if (emailInput) emailInput.disabled = false;
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }    if (emailInput) emailInput.disabled = false;
           if (passInput) passInput.disabled = false;
           if (alertEl) {
             alertEl.className = 'alert alert-info';
             alertEl.innerHTML = '✓ Lockout expired. You have 3 fresh attempts.';
           }
-        }
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }  }
         remaining--;
       }
 
@@ -8357,9 +9027,15 @@
             } else {
               alertEl.textContent = data.error || 'Invalid email or password.';
             }
-          }
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }    }
         }
-      } catch (err) {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }} catch (err) {
         alertEl.className = 'alert alert-error';
         alertEl.textContent = 'Connection error. Please try again.';
         alertEl.style.display = 'flex';
@@ -8368,7 +9044,10 @@
           btn.disabled = false;
           btn.textContent = 'Sign In to Account';
         }
-      }
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }}
     }
 
     async function handleRegisterSubmit(e) {
@@ -8377,6 +9056,7 @@
       const email = document.getElementById('reg-email').value;
       const phone = document.getElementById('reg-phone').value;
       const password = document.getElementById('reg-password').value;
+      const referralCode = (document.getElementById('reg-referral')?.value || localStorage.getItem('almai_referral_code') || '').trim();
       const alert = document.getElementById('auth-alert');
       const btn = document.getElementById('btn-register-submit');
 
@@ -8388,7 +9068,7 @@
         const res = await fetch('/api/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, phone, password })
+          body: JSON.stringify({ name, email, phone, password, referralCode })
         });
 
         const data = await res.json();
@@ -8402,7 +9082,10 @@
             passInput.value = '';
             setTimeout(() => passInput.focus(), 250);
           }
-          document.getElementById('form-register').reset();
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }    document.getElementById('form-register').reset();
 
           alert.className = 'alert alert-success';
           alert.innerHTML = `
@@ -8417,7 +9100,10 @@
           alert.textContent = data.error || 'Registration failed';
           alert.style.display = 'flex';
         }
-      } catch (err) {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }} catch (err) {
         alert.className = 'alert alert-error';
         alert.textContent = 'Connection error. Please try again.';
         alert.style.display = 'flex';
@@ -8433,7 +9119,10 @@
       } catch (err) {
         console.error('Logout error:', err);
       }
-      AppState.user = null;
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }AppState.user = null;
       AppState.wallet = null;
       AppState.activePackage = null;
       AppState.pendingPackage = null;
@@ -8451,6 +9140,7 @@
       await fetchUserTasks();
       await fetchUserWithdrawals();
       await fetchProductsPosts();
+      await fetchReferralData();
     }
 
     async function fetchUserTasks() {
@@ -8463,7 +9153,10 @@
             AppState.cooldown = data.cooldown;
             renderCooldownState();
           }
-        }
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }  }
       } catch (err) {
         console.error('Fetch user tasks error:', err);
       }
@@ -8512,7 +9205,10 @@
           const data = await res.json();
           renderUserWithdrawals(data.withdrawals || []);
         }
-      } catch (err) {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }} catch (err) {
         console.error('Fetch withdrawals error:', err);
       }
     }
@@ -8559,12 +9255,18 @@
         showAuthModal('login');
         return;
       }
-      if (!AppState.hasActivePackage) {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }if (!AppState.hasActivePackage) {
         alert('Please activate an advertising partner package first before submitting tasks.');
         switchView('products');
         return;
       }
-      document.getElementById('task-submit-alert').style.display = 'none';
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }document.getElementById('task-submit-alert').style.display = 'none';
       document.getElementById('form-submit-task').reset();
       document.getElementById('screenshot-preview-container').style.display = 'none';
       AppState.evidenceBase64 = null;
@@ -8642,7 +9344,10 @@
           alert.textContent = data.error || 'Submission failed';
           alert.style.display = 'flex';
         }
-      } catch (err) {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }} catch (err) {
         alert.className = 'alert alert-error';
         alert.textContent = 'Connection error. Please try again.';
         alert.style.display = 'flex';
@@ -8660,7 +9365,10 @@
         showAuthModal('login');
         return;
       }
-      const avail = AppState.wallet?.available_balance_ksh || 0;
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }const avail = AppState.wallet?.available_balance_ksh || 0;
       document.getElementById('withdraw-modal-avail').textContent = `KSh ${avail.toLocaleString()}`;
       document.getElementById('withdraw-phone').value = AppState.user.phone || '';
       document.getElementById('withdraw-alert').style.display = 'none';
@@ -8701,7 +9409,10 @@
           alert.textContent = data.error || 'Withdrawal request failed';
           alert.style.display = 'flex';
         }
-      } catch (err) {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }} catch (err) {
         alert.className = 'alert alert-error';
         alert.textContent = 'Connection error. Please try again.';
         alert.style.display = 'flex';
@@ -8719,7 +9430,10 @@
         showAuthModal('login');
         return;
       }
-      document.getElementById('activate-pkg-id').value = packageId;
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }document.getElementById('activate-pkg-id').value = packageId;
       document.getElementById('modal-pkg-subtitle').textContent = `${name} — Pay KSh ${price.toLocaleString()} Activation`;
       document.getElementById('modal-pkg-amount').textContent = `KSh ${price.toLocaleString()}`;
       
@@ -8773,7 +9487,10 @@
           alertEl.textContent = data.error || 'Activation submission failed';
           alertEl.style.display = 'flex';
         }
-      } catch (err) {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }} catch (err) {
         alertEl.className = 'alert alert-error';
         alertEl.textContent = 'Connection error. Please try again.';
         alertEl.style.display = 'flex';
@@ -8795,7 +9512,10 @@
         document.getElementById('inq-email').value = AppState.user.email;
         document.getElementById('inq-phone').value = AppState.user.phone;
       }
-      openModal('modal-inquiry');
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }openModal('modal-inquiry');
     }
 
     async function handleInquirySubmit(e) {
@@ -8833,7 +9553,10 @@
           alert.textContent = data.error || 'Failed to submit inquiry';
           alert.style.display = 'flex';
         }
-      } catch (err) {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }} catch (err) {
         alert.className = 'alert alert-error';
         alert.textContent = 'Connection error. Please try again.';
         alert.style.display = 'flex';
@@ -8875,7 +9598,10 @@
         } else {
           alert('Campaign caption copied to clipboard!');
         }
-      }).catch(() => {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }}).catch(() => {
         alert('Campaign caption copied to clipboard!');
       });
     }
@@ -8888,7 +9614,10 @@
         alert('Administrator access required.');
         return;
       }
-      switchView('admin');
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }switchView('admin');
     }
 
     function switchAdminTab(tab) {
@@ -8955,7 +9684,10 @@
         } else {
           el.classList.remove('badge-alert');
         }
-      } else {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }} else {
         el.style.display = 'none';
       }
     }
@@ -8973,7 +9705,10 @@
             btn.classList.remove('btn-primary');
             btn.classList.add('btn-secondary');
           }
-        }
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }  }
       });
       loadAdminPayments(status);
     }
@@ -9035,7 +9770,10 @@
         } else {
           tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--warning-red);">${data.error || 'Failed to load payments.'}</td></tr>`;
         }
-      } catch (err) {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }} catch (err) {
         tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--warning-red);">Failed to connect to payments API.</td></tr>';
       }
     }
@@ -9059,7 +9797,10 @@
         } else {
           alert(data.error || 'Verification failed');
         }
-      } catch (err) {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }} catch (err) {
         alert('Network error while verifying payment.');
       }
     }
@@ -9081,7 +9822,10 @@
         } else {
           alert(data.error || 'Rejection failed');
         }
-      } catch (err) {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }} catch (err) {
         alert('Network error while rejecting payment.');
       }
     }
@@ -9146,7 +9890,10 @@
         } else {
           tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--warning-red);">${data.error || 'Failed to load users.'}</td></tr>`;
         }
-      } catch (err) {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }} catch (err) {
         tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--warning-red);">Failed to load users directory.</td></tr>';
       }
     }
@@ -9179,7 +9926,10 @@
         } else {
           alert(data.error || 'Assignment failed');
         }
-      } catch (err) {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }} catch (err) {
         alert('Action failed due to network error.');
       }
     }
@@ -9201,7 +9951,10 @@
         } else {
           alert(data.error || 'Toggle status failed');
         }
-      } catch (err) {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }} catch (err) {
         alert('Network error while toggling status.');
       }
     }
@@ -9228,7 +9981,10 @@
           const sizeKb = (file.size / 1024).toFixed(0);
           nameTag.textContent = `✓ ${file.name} (${sizeKb} KB)`;
         }
-      };
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }};
       reader.readAsDataURL(file);
     }
 
@@ -9284,7 +10040,10 @@
           alertEl.textContent = data.error || 'Failed to publish product creative';
           alertEl.style.display = 'flex';
         }
-      } catch (err) {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }} catch (err) {
         alertEl.className = 'alert alert-error';
         alertEl.textContent = 'Network error publishing product.';
         alertEl.style.display = 'flex';
@@ -9363,7 +10122,10 @@
             `;
           }).join('');
         }
-      } catch (err) {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }} catch (err) {
         container.innerHTML = '<div style="color: var(--warning-red); padding: 12px;">Failed to load products.</div>';
       }
     }
@@ -9385,7 +10147,10 @@
         } else {
           alert(data.error || 'Failed to delete product');
         }
-      } catch (err) {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }} catch (err) {
         alert('Network error while deleting product.');
       }
     }
@@ -9419,7 +10184,10 @@
         } else {
           alert(data.error || 'Failed to clear products');
         }
-      } catch (err) {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }} catch (err) {
         alert('Network error while clearing products.');
       } finally {
         const btn = document.getElementById('btn-admin-clear-prods');
@@ -9432,7 +10200,10 @@
             Clear All Products
           `;
         }
-      }
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }}
     }
 
     // --- TAB 4: TASKS REVIEW ---
@@ -9478,7 +10249,10 @@
             </tr>
           `).join('');
         }
-      } catch (err) {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }} catch (err) {
         tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--warning-red);">Failed to load task queue.</td></tr>';
       }
     }
@@ -9495,7 +10269,10 @@
           alert('Invalid view count entered');
           return;
         }
-        notes = prompt('Audit notes (optional):', 'Screenshot verified matching 18h count') || '';
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }  notes = prompt('Audit notes (optional):', 'Screenshot verified matching 18h count') || '';
       } else {
         notes = prompt('Reason for rejection:', 'Screenshot blurred or does not show 18h elapsed timestamp');
         if (notes === null) return;
@@ -9551,7 +10328,10 @@
             `;
           }).join('');
         }
-      } catch (err) {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }} catch (err) {
         tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--warning-red);">Failed to load withdrawals.</td></tr>';
       }
     }
@@ -9573,7 +10353,10 @@
         } catch (err) {
           alert('Action failed');
         }
-      } else {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }} else {
         const reason = prompt('Reason for rejection & refund:', 'M-Pesa number unreachable or invalid');
         if (reason === null) return;
 
@@ -9589,7 +10372,10 @@
         } catch (err) {
           alert('Action failed');
         }
-      }
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }}
     }
 
     // --- TAB 6: PLATFORM STATS ---
@@ -9641,7 +10427,10 @@
             </div>
           `;
         }
-      } catch (err) {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }} catch (err) {
         grid.innerHTML = '<div>Failed to load stats</div>';
       }
     }
@@ -9673,7 +10462,10 @@
             `;
           }).join('');
         }
-      } catch (err) {
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }} catch (err) {
         tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--warning-red);">Failed to load audit logs.</td></tr>';
       }
     }
@@ -9683,7 +10475,10 @@
         alert('No evidence record ID found');
         return;
       }
-      const img = document.getElementById('evidence-viewer-img');
+      const adminEmailEl = document.getElementById('admin-header-email');
+      if (adminEmailEl && AppState.user && AppState.user.role === 'admin') {
+        adminEmailEl.textContent = AppState.user.email || 'mentorbravin@gmail.com';
+      }const img = document.getElementById('evidence-viewer-img');
       img.src = `/api/evidence/${evidenceId}`;
       openModal('modal-evidence-viewer');
     }
@@ -9735,6 +10530,7 @@
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
     }
+    const escapeHtml = escapeHTML;
 
     // ====================================================================
     // FAQ INTERACTIVE ACCORDION
@@ -9821,6 +10617,170 @@
       }
     });
 
+
+    // ====================================================================
+    // 45% REFERRAL SYSTEM CONTROLLER
+    // ====================================================================
+    async function fetchReferralData() {
+      try {
+        const res = await fetch('/api/referrals');
+        if (res.ok) {
+          const data = await res.json();
+          renderReferralDashboard(data);
+        }
+      } catch (err) {
+        console.error('Fetch referral data error:', err);
+      }
+    }
+
+    function renderReferralDashboard(data) {
+      if (!data) return;
+      const refCode = data.referralCode || (AppState.user && AppState.user.referralCode) || 'ALM-PARTNER';
+      const origin = window.location.origin;
+      const refLink = `${origin}/?ref=${encodeURIComponent(refCode)}`;
+
+      const codeEl = document.getElementById('dash-referral-code-display');
+      if (codeEl) codeEl.textContent = refCode;
+
+      const linkEl = document.getElementById('dash-referral-link-input');
+      if (linkEl) linkEl.value = refLink;
+
+      const earnEl = document.getElementById('dash-ref-earnings');
+      if (earnEl) earnEl.textContent = `KSh ${(data.totalEarningsKsh || 0).toLocaleString()}`;
+
+      const activeCountEl = document.getElementById('dash-ref-active-count');
+      if (activeCountEl) activeCountEl.textContent = data.activePaidCount || 0;
+
+      const activeBadgeEl = document.getElementById('active-paid-badge-count');
+      if (activeBadgeEl) activeBadgeEl.textContent = `${data.activePaidCount || 0} Active Paid`;
+
+      const totalInvitedEl = document.getElementById('dash-ref-total-invited');
+      if (totalInvitedEl) totalInvitedEl.textContent = data.totalInvited || 0;
+
+      // Render Active Paid Downlines Table
+      const tbody = document.getElementById('tbody-active-referrals');
+      if (!tbody) return;
+
+      const activeList = data.activeReferrals || [];
+      if (!activeList.length) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align: center; color: var(--charcoal-muted); padding: 36px 20px;">
+              <div style="max-width: 480px; margin: 0 auto;">
+                <div style="font-size: 34px; margin-bottom: 8px;">🚀</div>
+                <div style="font-weight: 900; font-size: 16px; color: #0F172A; margin-bottom: 6px;">No Active Paid Downlines Yet</div>
+                <div style="font-size: 14px; color: #64748B; line-height: 1.5; margin-bottom: 16px;">
+                  Share your referral link above! When friends register and activate Starter Z (KSh 250), Exclusive (KSh 500), or Premium (KSh 1,200), your guaranteed 45% commission is instantly credited to your wallet balance.
+                </div>
+                <button type="button" class="btn btn-primary btn-sm" onclick="copyReferralLink()">Copy Your Referral Link</button>
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = activeList.map(r => {
+        const activatedSec = r.activated_at || r.activatedAt;
+        const dateStr = activatedSec ? new Date(activatedSec * 1000).toLocaleDateString('en-KE', {
+          month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
+        }) : 'Active';
+        const partnerName = r.downline_name || r.referredUserName || 'Downline Partner';
+        const partnerPhone = r.downline_phone || r.referredUserPhone || '';
+        const initial = partnerName.charAt(0).toUpperCase();
+        const maskedPhone = maskPhoneNumber(partnerPhone);
+        const pkgTier = r.package_name || r.packageTier || 'Active Package';
+        const pkgPrice = Number(r.package_price_ksh ?? r.packagePriceKsh ?? 0);
+        const commKsh = Number(r.commission_amount_ksh ?? r.commissionKsh ?? Math.round(pkgPrice * 0.45));
+        const downlineId = r.referred_user_id || r.referredUserId || '—';
+
+        return `
+          <tr>
+            <td>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 34px; height: 34px; border-radius: 50%; background: #ECFDF5; color: #059669; font-weight: 900; display: flex; align-items: center; justify-content: center; font-size: 13.5px; border: 1.5px solid #10B981; flex-shrink: 0;">
+                  ${initial}
+                </div>
+                <div>
+                  <div style="font-weight: 850; color: #0F172A;">${escapeHTML(partnerName)}</div>
+                  <div style="font-size: 12px; color: #64748B;">ID: #${downlineId}</div>
+                </div>
+              </div>
+            </td>
+            <td><span style="font-family: monospace; font-weight: 800; color: #334155; font-size: 13.5px;">${maskedPhone}</span></td>
+            <td><span class="user-pkg-tag" style="background: #F3E8FF; color: #6D28D9; border: 1.5px solid #C084FC; font-size: 12px; padding: 3px 9px;">${escapeHTML(pkgTier)}</span></td>
+            <td><strong style="color: #0F172A; font-size: 14.5px;">KSh ${pkgPrice.toLocaleString()}</strong></td>
+            <td>
+              <span class="commission-earn-chip">
+                +KSh ${commKsh.toLocaleString()}
+              </span>
+            </td>
+            <td style="color: #475569; font-weight: 700; font-size: 13px;">${dateStr}</td>
+            <td>
+              <span class="status-badge status-approved" style="background: #ECFDF5; color: #059669; border: 1.5px solid #10B981; font-size: 12px; padding: 4px 10px; display: inline-flex; align-items: center; gap: 5px;">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Active Paid (45% Credited)
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function maskPhoneNumber(phone) {
+      if (!phone) return '—';
+      const clean = phone.trim();
+      if (clean.length < 8) return clean;
+      return clean.substring(0, 4) + '***' + clean.substring(clean.length - 3);
+    }
+
+    async function copyReferralLink() {
+      const input = document.getElementById('dash-referral-link-input');
+      if (!input) return;
+      const textToCopy = input.value;
+      const btn = document.getElementById('btn-copy-ref');
+      const btnText = document.getElementById('btn-copy-ref-text');
+
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(textToCopy);
+        } else {
+          input.select();
+          document.execCommand('copy');
+        }
+        if (btnText) btnText.textContent = '✓ Copied!';
+        if (btn) btn.style.background = '#059669';
+        showReferralToast('✓ Referral link copied to clipboard!');
+        setTimeout(() => {
+          if (btnText) btnText.textContent = 'Copy Link';
+          if (btn) btn.style.background = '';
+        }, 2500);
+      } catch (err) {
+        input.select();
+        document.execCommand('copy');
+        showReferralToast('✓ Referral link copied!');
+      }
+    }
+
+    function shareReferralWhatsApp() {
+      const code = (AppState.user && AppState.user.referralCode) || document.getElementById('dash-referral-code-display')?.textContent || '';
+      const origin = window.location.origin;
+      const link = `${origin}/?ref=${encodeURIComponent(code)}`;
+      const text = `🔥 Hey! Join me on Almai Products — the #1 WhatsApp Status Monetization Partner Platform in Kenya. Earn guaranteed daily cash for status views, plus instant 45% referral commissions on every partner downline! Register here: ${link}`;
+      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+    }
+
+    function showReferralToast(message) {
+      const toast = document.getElementById('referral-toast');
+      const textEl = document.getElementById('referral-toast-text');
+      if (!toast) return;
+      if (textEl) textEl.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3500);
+    }
+
   </script>
 
   <!-- Floating WhatsApp "Chat with Us" Widget (+447455909204) -->
@@ -9843,5 +10803,10 @@
       </div>
     </div>
   </a>
+  <!-- Referral Copy Notification Toast -->
+  <div id="referral-toast" class="referral-toast">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#10B981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="referral-toast-text">Referral link copied to clipboard!</span>
+  </div>
 </body>
 </html>

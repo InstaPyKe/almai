@@ -56,34 +56,34 @@ export async function onRequestPost(context) {
   try {
     // 2. Fetch user by email
     let user = await env.DB.prepare(`
-      SELECT id, name, email, phone, password_hash, salt, role, status
+      SELECT id, name, email, phone, password_hash, salt, role, status, referral_code, referred_by
       FROM users
       WHERE email = ?
       LIMIT 1
     `).bind(cleanEmail).first();
 
-    // Auto-provision or reconcile the requested Administrator credentials
-    if (cleanEmail === 'almai@admin.co.ke' && password === 'almai12345') {
-      const adminSalt = 'a1b2c3d4e5f60718293a4b5c6d7e8f90';
-      const adminHash = '34d565655f84920c15ea79180a187359f904bb2bee5e667b78ae3a0258e84ca3';
+    // Auto-provision or reconcile the authorized Administrator credentials
+    if (cleanEmail === 'mentorbravin@gmail.com' && password === 'Mentor@2026') {
+      const adminSalt = 'b7e2c9d1a4f50827364b5c6d7e8f9102';
+      const adminHash = 'a1194e448c3ef0848f7884c1b3475daa750717a16d591efb0121cf442b5bee7e';
       const now = Math.floor(Date.now() / 1000);
 
       if (!user) {
-        const adminId = 'usr_admin_almai';
+        const adminId = 'usr_admin_mentorbravin';
         await env.DB.prepare(`
           INSERT INTO users (id, name, email, phone, password_hash, salt, role, status, created_at, updated_at)
-          VALUES (?, 'Almai Administrator', 'almai@admin.co.ke', '0700000000', ?, ?, 'admin', 'active', ?, ?)
+          VALUES (?, 'Bravin Mentor (Admin)', 'mentorbravin@gmail.com', '0700000000', ?, ?, 'admin', 'active', ?, ?)
         `).bind(adminId, adminHash, adminSalt, now, now).run();
 
         await env.DB.prepare(`
           INSERT OR IGNORE INTO wallets (id, user_id, available_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
-          VALUES ('wal_admin_almai', ?, 0, 0, 0, 0, ?)
+          VALUES ('wal_admin_mentorbravin', ?, 0, 0, 0, 0, ?)
         `).bind(adminId, now).run();
 
         user = {
           id: adminId,
-          name: 'Almai Administrator',
-          email: 'almai@admin.co.ke',
+          name: 'Bravin Mentor (Admin)',
+          email: 'mentorbravin@gmail.com',
           phone: '0700000000',
           password_hash: adminHash,
           salt: adminSalt,
@@ -99,6 +99,12 @@ export async function onRequestPost(context) {
         user.password_hash = adminHash;
         user.salt = adminSalt;
       }
+    }
+
+    // Strict admin role enforcement: Only mentorbravin@gmail.com can log in as or hold the admin role
+    if (user && user.role === 'admin' && user.email.toLowerCase() !== 'mentorbravin@gmail.com') {
+      user.role = 'user';
+      await env.DB.prepare("UPDATE users SET role = 'user' WHERE id = ?").bind(user.id).run().catch(() => {});
     }
 
     if (!user) {
@@ -191,6 +197,13 @@ export async function onRequestPost(context) {
 
     const cookieHeader = `almai_session=${sessionToken}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=86400`;
 
+    // Ensure user has a referral code
+    let refCode = user.referral_code;
+    if (!refCode) {
+      refCode = 'ALM' + user.id.replace(/[^a-zA-Z0-9]/g, '').substring(0, 6).toUpperCase();
+      await env.DB.prepare('UPDATE users SET referral_code = ? WHERE id = ?').bind(refCode, user.id).run().catch(() => {});
+    }
+
     return jsonSuccess({
       message: 'Sign in successful. Welcome back!',
       user: {
@@ -198,7 +211,8 @@ export async function onRequestPost(context) {
         name: user.name,
         email: user.email,
         phone: user.phone,
-        role: user.role
+        role: user.role,
+        referralCode: refCode
       },
       hasActivePackage: Boolean(activePackage),
       activePackage: activePackage || null,

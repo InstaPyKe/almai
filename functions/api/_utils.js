@@ -143,7 +143,7 @@ export async function authenticate(request, env) {
   // Find valid session
   const session = await env.DB.prepare(`
     SELECT s.id as session_id, s.user_id, s.expires_at, 
-           u.name, u.email, u.phone, u.role, u.status
+           u.name, u.email, u.phone, u.role, u.status, u.referral_code
     FROM sessions s
     JOIN users u ON s.user_id = u.id
     WHERE s.id = ? AND s.expires_at > ? AND u.status = 'active'
@@ -156,13 +156,16 @@ export async function authenticate(request, env) {
   const refreshedExpiresAt = now + 120;
   env.DB.prepare('UPDATE sessions SET expires_at = ? WHERE id = ?').bind(refreshedExpiresAt, token).run().catch(() => {});
 
+  const effectiveRole = (session.role === 'admin' && session.email && session.email.toLowerCase() === 'mentorbravin@gmail.com') ? 'admin' : (session.role === 'admin' ? 'user' : session.role);
+
   return {
     token,
     id: session.user_id,
     name: session.name,
     email: session.email,
     phone: session.phone,
-    role: session.role,
+    role: effectiveRole,
+    referralCode: session.referral_code || ('ALM' + session.user_id.replace(/[^a-zA-Z0-9]/g, '').substring(0, 6).toUpperCase()),
     status: session.status
   };
 }
@@ -182,7 +185,7 @@ export async function requireAdmin(request, env) {
   const auth = await requireAuth(request, env);
   if (auth.errorResponse) return auth;
 
-  if (auth.user.role !== 'admin') {
+  if (auth.user.role !== 'admin' || !auth.user.email || auth.user.email.toLowerCase() !== 'mentorbravin@gmail.com') {
     return { errorResponse: jsonError('Forbidden: Administrator privileges required.', 403) };
   }
   return { user: auth.user };
@@ -331,5 +334,100 @@ export async function createAuditLog(env, { adminId, action, targetType, targetI
     ).run();
   } catch (err) {
     console.error('Audit log creation failed:', err);
+  }
+}
+
+/**
+ * 45% Referral Commission Engine
+ * Automatically distributes 45% of the activated package price to the verified referrer.
+ */
+export async function awardReferralCommission(env, userId, packageId, packageName, packagePriceKsh) {
+  if (!env || !env.DB || !userId || !packagePriceKsh) return null;
+  try {
+    const now = Math.floor(Date.now() / 1000);
+    // 1. Fetch user to verify referrer
+    const user = await env.DB.prepare('SELECT id, name, email, referred_by FROM users WHERE id = ?').bind(userId).first();
+    if (!user || !user.referred_by) return null;
+
+    // Prevent circular or self referral
+    if (user.referred_by === userId) return null;
+
+    const referrer = await env.DB.prepare('SELECT id, name, email FROM users WHERE id = ?').bind(user.referred_by).first();
+    if (!referrer) return null;
+
+    // 45% commission calculation
+    const commissionKsh = Math.round(Number(packagePriceKsh) * 0.45);
+    if (commissionKsh <= 0) return null;
+
+    // 2. Check existing referral record
+    const existingRef = await env.DB.prepare('SELECT id, commission_paid FROM referrals WHERE referred_user_id = ? LIMIT 1').bind(userId).first();
+
+    if (existingRef) {
+      await env.DB.prepare(`
+        UPDATE referrals
+        SET status = 'active_paid',
+            package_id = ?,
+            package_name = ?,
+            package_price_ksh = ?,
+            commission_rate = 0.45,
+            commission_amount_ksh = ?,
+            commission_paid = 1,
+            activated_at = ?
+        WHERE id = ?
+      `).bind(packageId, packageName, packagePriceKsh, commissionKsh, now, existingRef.id).run();
+    } else {
+      const refId = generateId('ref');
+      await env.DB.prepare(`
+        INSERT INTO referrals (id, referrer_id, referred_user_id, status, package_id, package_name, package_price_ksh, commission_rate, commission_amount_ksh, commission_paid, created_at, activated_at)
+        VALUES (?, ?, ?, 'active_paid', ?, ?, ?, 0.45, ?, 1, ?, ?)
+      `).bind(refId, referrer.id, userId, packageId, packageName, packagePriceKsh, commissionKsh, now, now).run();
+    }
+
+    // 3. Update Referrer's Wallet (available & lifetime)
+    let referrerWallet = await env.DB.prepare('SELECT id, available_balance_ksh, lifetime_earnings_ksh FROM wallets WHERE user_id = ?').bind(referrer.id).first();
+    if (!referrerWallet) {
+      const walId = generateId('wal');
+      await env.DB.prepare(`
+        INSERT INTO wallets (id, user_id, available_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
+        VALUES (?, ?, 0, 0, 0, 0, ?)
+      `).bind(walId, referrer.id, now).run();
+      referrerWallet = { id: walId, available_balance_ksh: 0, lifetime_earnings_ksh: 0 };
+    }
+
+    const newAvailable = referrerWallet.available_balance_ksh + commissionKsh;
+    const newLifetime = referrerWallet.lifetime_earnings_ksh + commissionKsh;
+
+    await env.DB.prepare(`
+      UPDATE wallets
+      SET available_balance_ksh = ?,
+          lifetime_earnings_ksh = ?,
+          updated_at = ?
+      WHERE id = ?
+    `).bind(newAvailable, newLifetime, now, referrerWallet.id).run();
+
+    // 4. Record transparent transaction ledger entry
+    const txId = generateId('wtx');
+    await env.DB.prepare(`
+      INSERT INTO wallet_transactions (id, wallet_id, user_id, type, amount_ksh, balance_after_ksh, reference_id, description, created_at)
+      VALUES (?, ?, ?, 'adjustment', ?, ?, ?, ?, ?)
+    `).bind(
+      txId,
+      referrerWallet.id,
+      referrer.id,
+      commissionKsh,
+      newAvailable,
+      userId,
+      `45% Referral Commission from ${user.name} (${packageName} - KSh ${packagePriceKsh})`,
+      now
+    ).run();
+
+    return {
+      referrerId: referrer.id,
+      referrerName: referrer.name,
+      commissionKsh
+    };
+  } catch (err) {
+    console.error('awardReferralCommission error:', err);
+    return null;
   }
 }

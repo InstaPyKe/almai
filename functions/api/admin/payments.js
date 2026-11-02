@@ -4,7 +4,7 @@
 // Protected Administrator Payment Code Verification
 // ====================================================================
 
-import { jsonError, jsonSuccess, requireAdmin, createAuditLog, generateId } from '../_utils.js';
+import { jsonError, jsonSuccess, requireAdmin, createAuditLog, generateId, awardReferralCommission } from '../_utils.js';
 
 /**
  * GET /api/admin/payments
@@ -128,6 +128,9 @@ export async function onRequestPost(context) {
         DELETE FROM user_packages
         WHERE user_id = ? AND status = 'pending_verification' AND id != ?
       `).bind(payment.user_id, userPackageId).run();
+
+      // 4b. Award 45% Referral Commission to verified referrer
+      const referralResult = await awardReferralCommission(env, payment.user_id, payment.package_id, payment.package_name, payment.amount_ksh);
 
       // 5. Audit Log
       await createAuditLog(env, {

@@ -85,7 +85,7 @@ export async function onRequestGet(context) {
   const { request, env } = context;
 
   const authUser = await authenticate(request, env);
-  if (!authUser || authUser.role !== 'admin') {
+  if (!authUser || authUser.role !== 'admin' || authUser.email.toLowerCase() !== 'mentorbravin@gmail.com') {
     return jsonError('Administrator access required', 403);
   }
 
