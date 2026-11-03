@@ -121,6 +121,8 @@ async function authenticate(request, env) {
     LIMIT 1
   `).bind(token, now).first();
   if (!session) return null;
+  const refreshedExpiresAt = now + 7 * 86400;
+  env.DB.prepare('UPDATE sessions SET expires_at = ? WHERE id = ?').bind(refreshedExpiresAt, token).run().catch(() => {});
   const effectiveRole = (session.role === 'admin' && session.email && session.email.toLowerCase() === 'mentorbravin@gmail.com') ? 'admin' : (session.role === 'admin' ? 'user' : session.role);
   return {
     token,
@@ -1346,7 +1348,8 @@ async function onRequestPost6(context) {
       ORDER BY up.activated_at DESC
       LIMIT 1
     `).bind(user.id).first();
-    const cookieHeader = `almai_session=${sessionToken}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${7 * 86400}`;
+    const isHttps = request.url.startsWith('https://');
+    const cookieHeader = `almai_session=${sessionToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${7 * 86400}${isHttps ? '; Secure' : ''}`;
     return jsonSuccess({
       message: "Sign in successful. Welcome back!",
       user: {
@@ -1382,7 +1385,8 @@ async function onRequestPost7(context) {
       console.error("Logout session delete error:", err);
     }
   }
-  const clearCookieHeader = "almai_session=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0";
+  const isHttps = request.url.startsWith('https://');
+  const clearCookieHeader = `almai_session=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0${isHttps ? '; Secure' : ''}`;
   return jsonSuccess({
     message: "Signed out successfully"
   }, 200, {

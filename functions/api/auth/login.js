@@ -104,7 +104,7 @@ export async function onRequestPost(context) {
     // Strict admin role enforcement: Only mentorbravin@gmail.com can log in as or hold the admin role
     if (user && user.role === 'admin' && user.email.toLowerCase() !== 'mentorbravin@gmail.com') {
       user.role = 'user';
-      await env.DB.prepare("UPDATE users SET role = 'user' WHERE id = ?").bind(user.id).run().catch(() => {});
+      await env.DB.prepare("UPDATE users SET role = 'user' WHERE id = ?").bind(user.id).run().catch(() => { });
     }
 
     if (!user) {
@@ -157,10 +157,10 @@ export async function onRequestPost(context) {
     await clearRateLimit(env, `login:email:${cleanEmail}`);
     await clearRateLimit(env, `login:ip:${ip}`);
 
-    // 4. Issue new session token with 2 minutes inactivity timeout
+    // 4. Issue new session token with 7 days expiration
     const sessionToken = generateToken(32);
     const now = Math.floor(Date.now() / 1000);
-    const expiresAt = now + 120; // 2 minutes of inactivity sliding session
+    const expiresAt = now + 7 * 86400; // 7 days session
     const userAgent = request.headers.get('user-agent') || '';
 
     await env.DB.prepare(`
@@ -195,13 +195,14 @@ export async function onRequestPost(context) {
       LIMIT 1
     `).bind(user.id).first();
 
-    const cookieHeader = `almai_session=${sessionToken}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=86400`;
+    const isHttps = request.url.startsWith('https://');
+    const cookieHeader = `almai_session=${sessionToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=604800${isHttps ? '; Secure' : ''}`;
 
     // Ensure user has a referral code
     let refCode = user.referral_code;
     if (!refCode) {
       refCode = 'ALM' + user.id.replace(/[^a-zA-Z0-9]/g, '').substring(0, 6).toUpperCase();
-      await env.DB.prepare('UPDATE users SET referral_code = ? WHERE id = ?').bind(refCode, user.id).run().catch(() => {});
+      await env.DB.prepare('UPDATE users SET referral_code = ? WHERE id = ?').bind(refCode, user.id).run().catch(() => { });
     }
 
     return jsonSuccess({

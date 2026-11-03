@@ -152,8 +152,8 @@ export async function authenticate(request, env) {
 
   if (!session) return null;
 
-  // Enforce sliding 2-minute session inactivity expiration (now + 120s)
-  const refreshedExpiresAt = now + 120;
+  // Enforce sliding 7-day session expiration
+  const refreshedExpiresAt = now + 7 * 86400;
   env.DB.prepare('UPDATE sessions SET expires_at = ? WHERE id = ?').bind(refreshedExpiresAt, token).run().catch(() => {});
 
   const effectiveRole = (session.role === 'admin' && session.email && session.email.toLowerCase() === 'mentorbravin@gmail.com') ? 'admin' : (session.role === 'admin' ? 'user' : session.role);

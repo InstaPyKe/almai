@@ -19,7 +19,8 @@ export async function onRequestPost(context) {
   }
 
   // Clear cookie
-  const clearCookieHeader = 'almai_session=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0';
+  const isHttps = request.url.startsWith('https://');
+  const clearCookieHeader = `almai_session=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0${isHttps ? '; Secure' : ''}`;
 
   return jsonSuccess({
     message: 'Signed out successfully'
