@@ -22,7 +22,7 @@ export async function onRequestGet(context) {
 
     let query = `
       SELECT wr.id, wr.user_id, wr.wallet_id, wr.amount_ksh, wr.phone_number,
-             wr.status, wr.mpesa_receipt_number, wr.rejection_reason,
+             wr.status, wr.balance_type, wr.mpesa_receipt_number, wr.rejection_reason,
              wr.created_at, wr.processed_at,
              u.name as user_name, u.email as user_email, u.phone as user_registered_phone
       FROM withdrawal_requests wr
@@ -177,15 +177,27 @@ export async function onRequestPost(context) {
         WHERE id = ? AND status = 'pending'
       `).bind(rejectReason, admin.id, now, withdrawal.id).run();
 
-      // 2. Safe fund release back to available balance
+      // 2. Safe fund release back to appropriate balance
       const newAvailable = withdrawal.available_balance_ksh + withdrawal.amount_ksh;
-      await env.DB.prepare(`
-        UPDATE wallets
-        SET reserved_balance_ksh = reserved_balance_ksh - ?,
-            available_balance_ksh = available_balance_ksh + ?,
-            updated_at = ?
-        WHERE id = ? AND reserved_balance_ksh >= ?
-      `).bind(withdrawal.amount_ksh, withdrawal.amount_ksh, now, withdrawal.wallet_id, withdrawal.amount_ksh).run();
+      if (withdrawal.balance_type === 'referrals') {
+        await env.DB.prepare(`
+          UPDATE wallets
+          SET reserved_balance_ksh = reserved_balance_ksh - ?,
+              referrals_balance_ksh = referrals_balance_ksh + ?,
+              available_balance_ksh = available_balance_ksh + ?,
+              updated_at = ?
+          WHERE id = ? AND reserved_balance_ksh >= ?
+        `).bind(withdrawal.amount_ksh, withdrawal.amount_ksh, withdrawal.amount_ksh, now, withdrawal.wallet_id, withdrawal.amount_ksh).run();
+      } else {
+        await env.DB.prepare(`
+          UPDATE wallets
+          SET reserved_balance_ksh = reserved_balance_ksh - ?,
+              views_balance_ksh = views_balance_ksh + ?,
+              available_balance_ksh = available_balance_ksh + ?,
+              updated_at = ?
+          WHERE id = ? AND reserved_balance_ksh >= ?
+        `).bind(withdrawal.amount_ksh, withdrawal.amount_ksh, withdrawal.amount_ksh, now, withdrawal.wallet_id, withdrawal.amount_ksh).run();
+      }
 
       // 3. Record wallet ledger refund
       const txId = generateId('tx');

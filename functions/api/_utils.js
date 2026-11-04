@@ -388,10 +388,10 @@ export async function awardReferralCommission(env, userId, packageId, packageNam
     if (!referrerWallet) {
       const walId = generateId('wal');
       await env.DB.prepare(`
-        INSERT INTO wallets (id, user_id, available_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
-        VALUES (?, ?, 0, 0, 0, 0, ?)
+        INSERT INTO wallets (id, user_id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
+        VALUES (?, ?, 0, 0, 0, 0, 0, 0, ?)
       `).bind(walId, referrer.id, now).run();
-      referrerWallet = { id: walId, available_balance_ksh: 0, lifetime_earnings_ksh: 0 };
+      referrerWallet = { id: walId, available_balance_ksh: 0, views_balance_ksh: 0, referrals_balance_ksh: 0, lifetime_earnings_ksh: 0 };
     }
 
     const newAvailable = referrerWallet.available_balance_ksh + commissionKsh;
@@ -399,11 +399,12 @@ export async function awardReferralCommission(env, userId, packageId, packageNam
 
     await env.DB.prepare(`
       UPDATE wallets
-      SET available_balance_ksh = ?,
-          lifetime_earnings_ksh = ?,
+      SET referrals_balance_ksh = referrals_balance_ksh + ?,
+          available_balance_ksh = available_balance_ksh + ?,
+          lifetime_earnings_ksh = lifetime_earnings_ksh + ?,
           updated_at = ?
       WHERE id = ?
-    `).bind(newAvailable, newLifetime, now, referrerWallet.id).run();
+    `).bind(commissionKsh, commissionKsh, commissionKsh, now, referrerWallet.id).run();
 
     // 4. Record transparent transaction ledger entry
     const txId = generateId('wtx');

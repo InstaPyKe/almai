@@ -114,7 +114,7 @@ async function authenticate(request, env) {
   const now = Math.floor(Date.now() / 1e3);
   const session = await env.DB.prepare(`
     SELECT s.id as session_id, s.user_id, s.expires_at, 
-           u.name, u.email, u.phone, u.role, u.status, u.referral_code
+           u.name, u.email, u.phone, u.role, u.status
     FROM sessions s
     JOIN users u ON s.user_id = u.id
     WHERE s.id = ? AND s.expires_at > ? AND u.status = 'active'
@@ -131,7 +131,6 @@ async function authenticate(request, env) {
     email: session.email,
     phone: session.phone,
     role: effectiveRole,
-    referralCode: session.referral_code || ('ALM' + session.user_id.replace(/[^a-zA-Z0-9]/g, '').substring(0, 6).toUpperCase()),
     status: session.status
   };
 }
@@ -175,85 +174,6 @@ async function createAuditLog(env, { adminId, action, targetType, targetId, deta
   }
 }
 __name(createAuditLog, "createAuditLog");
-async function awardReferralCommission(env, userId, packageId, packageName, packagePriceKsh) {
-  if (!env || !env.DB || !userId || !packagePriceKsh) return null;
-  try {
-    const now = Math.floor(Date.now() / 1e3);
-    const user = await env.DB.prepare("SELECT id, name, email, referred_by FROM users WHERE id = ?").bind(userId).first();
-    if (!user || !user.referred_by || user.referred_by === userId) return null;
-
-    const referrer = await env.DB.prepare("SELECT id, name, email FROM users WHERE id = ?").bind(user.referred_by).first();
-    if (!referrer) return null;
-
-    const commissionKsh = Math.round(Number(packagePriceKsh) * 0.45);
-    if (commissionKsh <= 0) return null;
-
-    const existingRef = await env.DB.prepare("SELECT id, commission_paid FROM referrals WHERE referred_user_id = ? LIMIT 1").bind(userId).first();
-
-    if (existingRef) {
-      await env.DB.prepare(`
-        UPDATE referrals
-        SET status = 'active_paid',
-            package_id = ?,
-            package_name = ?,
-            package_price_ksh = ?,
-            commission_rate = 0.45,
-            commission_amount_ksh = ?,
-            commission_paid = 1,
-            activated_at = ?
-        WHERE id = ?
-      `).bind(packageId, packageName, packagePriceKsh, commissionKsh, now, existingRef.id).run();
-    } else {
-      const refId = generateId("ref");
-      await env.DB.prepare(`
-        INSERT INTO referrals (id, referrer_id, referred_user_id, status, package_id, package_name, package_price_ksh, commission_rate, commission_amount_ksh, commission_paid, created_at, activated_at)
-        VALUES (?, ?, ?, 'active_paid', ?, ?, ?, 0.45, ?, 1, ?, ?)
-      `).bind(refId, referrer.id, userId, packageId, packageName, packagePriceKsh, commissionKsh, now, now).run();
-    }
-
-    let referrerWallet = await env.DB.prepare("SELECT id, available_balance_ksh, lifetime_earnings_ksh FROM wallets WHERE user_id = ?").bind(referrer.id).first();
-    if (!referrerWallet) {
-      const walId = generateId("wal");
-      await env.DB.prepare(`
-        INSERT INTO wallets (id, user_id, available_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
-        VALUES (?, ?, 0, 0, 0, 0, ?)
-      `).bind(walId, referrer.id, now).run();
-      referrerWallet = { id: walId, available_balance_ksh: 0, lifetime_earnings_ksh: 0 };
-    }
-
-    const newAvailable = referrerWallet.available_balance_ksh + commissionKsh;
-    const newLifetime = referrerWallet.lifetime_earnings_ksh + commissionKsh;
-
-    await env.DB.prepare(`
-      UPDATE wallets
-      SET available_balance_ksh = ?,
-          lifetime_earnings_ksh = ?,
-          updated_at = ?
-      WHERE id = ?
-    `).bind(newAvailable, newLifetime, now, referrerWallet.id).run();
-
-    const txId = generateId("wtx");
-    await env.DB.prepare(`
-      INSERT INTO wallet_transactions (id, wallet_id, user_id, type, amount_ksh, balance_after_ksh, reference_id, description, created_at)
-      VALUES (?, ?, ?, 'adjustment', ?, ?, ?, ?, ?)
-    `).bind(
-      txId,
-      referrerWallet.id,
-      referrer.id,
-      commissionKsh,
-      newAvailable,
-      userId,
-      `45% Referral Commission from ${user.name} (${packageName} - KSh ${packagePriceKsh})`,
-      now
-    ).run();
-
-    return { referrerId: referrer.id, commissionKsh };
-  } catch (err) {
-    console.error("awardReferralCommission error:", err);
-    return null;
-  }
-}
-__name(awardReferralCommission, "awardReferralCommission");
 
 // api/admin/audit-logs.js
 async function onRequestGet(context) {
@@ -436,7 +356,6 @@ async function onRequestPost(context) {
         DELETE FROM user_packages
         WHERE user_id = ? AND status = 'pending_verification' AND id != ?
       `).bind(payment.user_id, userPackageId).run();
-      await awardReferralCommission(env, payment.user_id, payment.package_id, payment.package_name, payment.amount_ksh);
       await createAuditLog(env, {
         adminId: admin.id,
         action: "VERIFY_PAYMENT_CODE",
@@ -845,11 +764,12 @@ async function onRequestPost3(context) {
       `).bind(views, rewardKsh, notes || "Verified screenshot evidence", admin.id, now, task.id).run();
       await env.DB.prepare(`
         UPDATE wallets
-        SET available_balance_ksh = available_balance_ksh + ?,
+        SET views_balance_ksh = views_balance_ksh + ?,
+            available_balance_ksh = available_balance_ksh + ?,
             lifetime_earnings_ksh = lifetime_earnings_ksh + ?,
             updated_at = ?
         WHERE user_id = ?
-      `).bind(rewardKsh, rewardKsh, now, task.user_id).run();
+      `).bind(rewardKsh, rewardKsh, rewardKsh, now, task.user_id).run();
       const txId = generateId("tx");
       await env.DB.prepare(`
         INSERT INTO wallet_transactions (id, wallet_id, user_id, type, amount_ksh, balance_after_ksh, reference_id, description, created_at)
@@ -1004,7 +924,6 @@ async function onRequestPost4(context) {
         INSERT INTO user_packages (id, user_id, package_id, status, activated_at)
         VALUES (?, ?, ?, 'active', ?)
       `).bind(userPackageId, target.id, pkg.id, now).run();
-      await awardReferralCommission(env, target.id, pkg.id, pkg.name, pkg.price_ksh);
       await createAuditLog(env, {
         adminId: admin.id,
         action: "ADMIN_ASSIGN_PACKAGE",
@@ -1076,7 +995,7 @@ async function onRequestGet8(context) {
     const filterStatus = url.searchParams.get("status") || "pending";
     let query = `
       SELECT wr.id, wr.user_id, wr.wallet_id, wr.amount_ksh, wr.phone_number,
-             wr.status, wr.mpesa_receipt_number, wr.rejection_reason,
+             wr.status, wr.balance_type, wr.mpesa_receipt_number, wr.rejection_reason,
              wr.created_at, wr.processed_at,
              u.name as user_name, u.email as user_email, u.phone as user_registered_phone
       FROM withdrawal_requests wr
@@ -1195,13 +1114,25 @@ async function onRequestPost5(context) {
         WHERE id = ? AND status = 'pending'
       `).bind(rejectReason, admin.id, now, withdrawal.id).run();
       const newAvailable = withdrawal.available_balance_ksh + withdrawal.amount_ksh;
-      await env.DB.prepare(`
-        UPDATE wallets
-        SET reserved_balance_ksh = reserved_balance_ksh - ?,
-            available_balance_ksh = available_balance_ksh + ?,
-            updated_at = ?
-        WHERE id = ? AND reserved_balance_ksh >= ?
-      `).bind(withdrawal.amount_ksh, withdrawal.amount_ksh, now, withdrawal.wallet_id, withdrawal.amount_ksh).run();
+      if (withdrawal.balance_type === "referrals") {
+        await env.DB.prepare(`
+          UPDATE wallets
+          SET reserved_balance_ksh = reserved_balance_ksh - ?,
+              referrals_balance_ksh = referrals_balance_ksh + ?,
+              available_balance_ksh = available_balance_ksh + ?,
+              updated_at = ?
+          WHERE id = ? AND reserved_balance_ksh >= ?
+        `).bind(withdrawal.amount_ksh, withdrawal.amount_ksh, withdrawal.amount_ksh, now, withdrawal.wallet_id, withdrawal.amount_ksh).run();
+      } else {
+        await env.DB.prepare(`
+          UPDATE wallets
+          SET reserved_balance_ksh = reserved_balance_ksh - ?,
+              views_balance_ksh = views_balance_ksh + ?,
+              available_balance_ksh = available_balance_ksh + ?,
+              updated_at = ?
+          WHERE id = ? AND reserved_balance_ksh >= ?
+        `).bind(withdrawal.amount_ksh, withdrawal.amount_ksh, withdrawal.amount_ksh, now, withdrawal.wallet_id, withdrawal.amount_ksh).run();
+      }
       const txId = generateId("tx");
       await env.DB.prepare(`
         INSERT INTO wallet_transactions (id, wallet_id, user_id, type, amount_ksh, balance_after_ksh, reference_id, description, created_at)
@@ -1302,7 +1233,7 @@ async function onRequestPost6(context) {
     }
     if (user && user.role === "admin" && user.email.toLowerCase() !== "mentorbravin@gmail.com") {
       user.role = "user";
-      await env.DB.prepare("UPDATE users SET role = 'user' WHERE id = ?").bind(user.id).run().catch(() => {});
+      await env.DB.prepare("UPDATE users SET role = 'user' WHERE id = ?").bind(user.id).run().catch(() => { });
     }
     if (!user) {
       await verifyPassword(password, "00".repeat(32), "00".repeat(16));
@@ -1357,8 +1288,7 @@ async function onRequestPost6(context) {
         name: user.name,
         email: user.email,
         phone: user.phone,
-        role: user.role,
-        referralCode: user.referral_code || ('ALM' + user.id.replace(/[^a-zA-Z0-9]/g, '').substring(0, 6).toUpperCase())
+        role: user.role
       },
       hasActivePackage: Boolean(activePackage),
       activePackage: activePackage || null,
@@ -1403,7 +1333,7 @@ async function onRequestGet9(context) {
   const user = auth.user;
   try {
     let wallet = await env.DB.prepare(`
-      SELECT available_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
+      SELECT available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
       FROM wallets
       WHERE user_id = ?
       LIMIT 1
@@ -1411,6 +1341,8 @@ async function onRequestGet9(context) {
     if (!wallet) {
       wallet = {
         available_balance_ksh: 0,
+        views_balance_ksh: 0,
+        referrals_balance_ksh: 0,
         reserved_balance_ksh: 0,
         lifetime_earnings_ksh: 0,
         lifetime_withdrawn_ksh: 0
@@ -1418,7 +1350,7 @@ async function onRequestGet9(context) {
     }
     const activePackage = await env.DB.prepare(`
       SELECT up.id as user_package_id, up.status, up.activated_at,
-             p.id as package_id, p.name, p.slug, p.price_ksh, p.reward_per_view_ksh, p.max_views_per_task, p.badge
+             p.id as package_id, p.name, p.slug, p.price_ksh, p.reward_per_view_ksh, p.max_views_per_task, p.min_withdrawal_views_ksh, p.badge
       FROM user_packages up
       JOIN packages p ON up.package_id = p.id
       WHERE up.user_id = ? AND up.status = 'active'
@@ -1473,8 +1405,7 @@ async function onRequestGet9(context) {
         name: user.name,
         email: user.email,
         phone: user.phone,
-        role: user.role,
-        referralCode: user.referralCode
+        role: user.role
       },
       wallet,
       activePackage: activePackage || null,
@@ -1493,6 +1424,8 @@ async function onRequestGet9(context) {
         approvedRewardsKsh: taskStats?.total_approved_rewards_ksh || 0,
         pendingTasksCount: taskStats?.pending_tasks_count || 0,
         availableBalanceKsh: wallet.available_balance_ksh,
+        viewsBalanceKsh: wallet.views_balance_ksh || 0,
+        referralsBalanceKsh: wallet.referrals_balance_ksh || 0,
         reservedBalanceKsh: wallet.reserved_balance_ksh,
         completedWithdrawalsKsh: wallet.lifetime_withdrawn_ksh
       }
@@ -1516,7 +1449,7 @@ async function onRequestPost8(context) {
   } catch (e) {
     return jsonError("Invalid JSON request body", 400);
   }
-  const { name, email, phone, password, referralCode } = body;
+  const { name, email, phone, password } = body;
   if (!name || typeof name !== "string" || name.trim().length < 2) {
     return jsonError("Valid full name is required (min 2 characters)", 400);
   }
@@ -1533,7 +1466,6 @@ async function onRequestPost8(context) {
   const cleanEmail = email.trim().toLowerCase();
   const cleanPhone = phone.trim().replace(/\s+/g, "");
   const cleanName = name.trim();
-  const cleanReferral = (referralCode || "").trim();
   try {
     const existing = await env.DB.prepare(
       "SELECT id FROM users WHERE email = ? LIMIT 1"
@@ -1541,24 +1473,14 @@ async function onRequestPost8(context) {
     if (existing) {
       return jsonError("An account with this email address already exists. Please log in.", 409);
     }
-    let referrer = null;
-    if (cleanReferral) {
-      referrer = await env.DB.prepare(`
-        SELECT id, name, email FROM users
-        WHERE (id = ? OR referral_code = ? OR referral_code = ?) AND status = 'active'
-        LIMIT 1
-      `).bind(cleanReferral, cleanReferral, cleanReferral.toUpperCase()).first();
-    }
     const { hash, salt } = await hashPassword(password);
     const userId = generateId("usr");
     const walletId = generateId("wal");
     const now = Math.floor(Date.now() / 1e3);
     const initialRole = "user";
-    const myReferralCode = "ALM" + generateToken(3).toUpperCase();
-    const referredById = referrer ? referrer.id : null;
     await env.DB.prepare(`
-      INSERT INTO users (id, name, email, phone, password_hash, salt, role, status, referral_code, referred_by, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?)
+      INSERT INTO users (id, name, email, phone, password_hash, salt, role, status, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?, ?)
     `).bind(
       userId,
       cleanName,
@@ -1567,30 +1489,17 @@ async function onRequestPost8(context) {
       hash,
       salt,
       initialRole,
-      myReferralCode,
-      referredById,
       now,
       now
     ).run();
-    if (referrer) {
-      const refTrackingId = generateId("ref");
-      await env.DB.prepare(`
-        INSERT INTO referrals (id, referrer_id, referred_user_id, referral_code, status, created_at)
-        VALUES (?, ?, ?, ?, 'registered', ?)
-      `).bind(refTrackingId, referrer.id, userId, cleanReferral, now).run();
-    }
     await env.DB.prepare(`
       INSERT INTO wallets (id, user_id, available_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
       VALUES (?, ?, 0, 0, 0, 0, ?)
     `).bind(walletId, userId, now).run();
     return jsonSuccess({
-      message: referrer
-        ? `Registration successful! You were invited by ${referrer.name}. Please sign in to activate your partner package.`
-        : "Registration successful! Please log in with your email and password to choose and activate your partner package.",
+      message: "Registration successful! Please log in with your email and password to choose and activate your partner package.",
       registered: true,
-      email: cleanEmail,
-      referralCode: myReferralCode,
-      referredBy: referrer ? referrer.name : null
+      email: cleanEmail
     }, 201);
   } catch (err) {
     console.error("Registration error:", err);
@@ -1740,7 +1649,7 @@ async function onRequestGet12(context) {
   }
   try {
     const { results } = await env.DB.prepare(`
-      SELECT id, name, slug, price_ksh, reward_per_view_ksh, max_views_per_task, features, badge, is_active
+      SELECT id, name, slug, price_ksh, reward_per_view_ksh, max_views_per_task, min_withdrawal_views_ksh, features, badge, is_active
       FROM packages
       WHERE is_active = 1
       ORDER BY price_ksh ASC
@@ -2114,21 +2023,32 @@ async function onRequestGet15(context) {
   const user = auth.user;
   try {
     const wallet = await env.DB.prepare(`
-      SELECT available_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
+      SELECT available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
       FROM wallets
       WHERE user_id = ?
       LIMIT 1
     `).bind(user.id).first();
+    const activePackage = await env.DB.prepare(`
+      SELECT p.id, p.name, p.slug, p.price_ksh, p.reward_per_view_ksh, p.min_withdrawal_views_ksh
+      FROM user_packages up
+      JOIN packages p ON up.package_id = p.id
+      WHERE up.user_id = ? AND up.status = 'active'
+      ORDER BY up.activated_at DESC
+      LIMIT 1
+    `).bind(user.id).first();
     const { results: requests } = await env.DB.prepare(`
-      SELECT id, amount_ksh, phone_number, status, mpesa_receipt_number, rejection_reason, created_at, processed_at
+      SELECT id, amount_ksh, phone_number, status, balance_type, mpesa_receipt_number, rejection_reason, created_at, processed_at
       FROM withdrawal_requests
       WHERE user_id = ?
       ORDER BY created_at DESC
       LIMIT 50
     `).bind(user.id).all();
+    const minViewsWithdrawal = activePackage?.min_withdrawal_views_ksh || 5000;
     return jsonSuccess({
-      wallet: wallet || { available_balance_ksh: 0, reserved_balance_ksh: 0, lifetime_withdrawn_ksh: 0 },
-      minWithdrawalKsh: MINIMUM_WITHDRAWAL_KSH,
+      wallet: wallet || { available_balance_ksh: 0, views_balance_ksh: 0, referrals_balance_ksh: 0, reserved_balance_ksh: 0, lifetime_withdrawn_ksh: 0 },
+      activePackage: activePackage || null,
+      minViewsWithdrawalKsh: minViewsWithdrawal,
+      minReferralsWithdrawalKsh: MINIMUM_WITHDRAWAL_KSH,
       withdrawals: requests || []
     });
   } catch (err) {
@@ -2148,10 +2068,11 @@ async function onRequestPost14(context) {
   } catch (e) {
     return jsonError("Invalid JSON request body", 400);
   }
-  const { amountKsh, phoneNumber } = body;
+  const { amountKsh, phoneNumber, balanceType: rawBalanceType } = body;
+  const balanceType = (rawBalanceType === "referrals" || rawBalanceType === "referral") ? "referrals" : "views";
   const amount = parseInt(amountKsh, 10);
-  if (isNaN(amount) || amount < MINIMUM_WITHDRAWAL_KSH) {
-    return jsonError(`Minimum withdrawal amount is KSh ${MINIMUM_WITHDRAWAL_KSH}`, 400);
+  if (isNaN(amount) || amount <= 0) {
+    return jsonError("Please enter a valid withdrawal amount", 400);
   }
   const targetPhone = phoneNumber ? phoneNumber.trim().replace(/\s+/g, "") : user.phone;
   if (!targetPhone || targetPhone.length < 9) {
@@ -2159,7 +2080,7 @@ async function onRequestPost14(context) {
   }
   try {
     const wallet = await env.DB.prepare(`
-      SELECT id, available_balance_ksh, reserved_balance_ksh
+      SELECT id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh
       FROM wallets
       WHERE user_id = ?
       LIMIT 1
@@ -2167,62 +2088,137 @@ async function onRequestPost14(context) {
     if (!wallet) {
       return jsonError("Wallet account not found", 404);
     }
-    if (wallet.available_balance_ksh < amount) {
-      return jsonError(`Insufficient available funds. Your available balance is KSh ${wallet.available_balance_ksh}, requested KSh ${amount}.`, 400);
-    }
     const now = Math.floor(Date.now() / 1e3);
     const withdrawalId = generateId("wth");
     const txId = generateId("wtx");
-    const balanceAfter = wallet.available_balance_ksh - amount;
-    const updateResult = await env.DB.prepare(`
-      UPDATE wallets
-      SET available_balance_ksh = available_balance_ksh - ?,
-          reserved_balance_ksh = reserved_balance_ksh + ?,
-          updated_at = ?
-      WHERE user_id = ? AND available_balance_ksh >= ?
-    `).bind(amount, amount, now, user.id, amount).run();
-    if (!updateResult.success || updateResult.meta && updateResult.meta.changes === 0) {
-      return jsonError("Concurrent balance update conflict or insufficient funds. Please refresh and try again.", 409);
-    }
-    await env.DB.prepare(`
-      INSERT INTO withdrawal_requests (id, user_id, wallet_id, amount_ksh, phone_number, status, created_at)
-      VALUES (?, ?, ?, ?, ?, 'pending', ?)
-    `).bind(withdrawalId, user.id, wallet.id, amount, targetPhone, now).run();
-    await env.DB.prepare(`
-      INSERT INTO wallet_transactions (id, wallet_id, user_id, type, amount_ksh, balance_after_ksh, reference_id, description, created_at)
-      VALUES (?, ?, ?, 'withdrawal_reserve', ?, ?, ?, ?, ?)
-    `).bind(
-      txId,
-      wallet.id,
-      user.id,
-      amount,
-      balanceAfter,
-      withdrawalId,
-      `M-Pesa withdrawal request to ${targetPhone} placed on hold pending payout`,
-      now
-    ).run();
-    return jsonSuccess({
-      message: `Withdrawal request for KSh ${amount} submitted successfully. Funds have been reserved pending M-Pesa disbursement.`,
-      withdrawal: {
-        id: withdrawalId,
-        amountKsh: amount,
-        phoneNumber: targetPhone,
-        status: "pending",
-        createdAt: now
-      },
-      wallet: {
-        availableBalanceKsh: balanceAfter,
-        reservedBalanceKsh: wallet.reserved_balance_ksh + amount
+    if (balanceType === "views") {
+      const activePackage = await env.DB.prepare(`
+        SELECT p.id, p.name, p.min_withdrawal_views_ksh
+        FROM user_packages up
+        JOIN packages p ON up.package_id = p.id
+        WHERE up.user_id = ? AND up.status = 'active'
+        ORDER BY up.activated_at DESC
+        LIMIT 1
+      `).bind(user.id).first();
+      if (!activePackage) {
+        return jsonError("You must have an active partner package to withdraw status views earnings. If you have referral earnings, you can withdraw them separately.", 400);
       }
-    }, 201);
+      const minViewsLimit = activePackage.min_withdrawal_views_ksh || 5000;
+      if (amount < minViewsLimit) {
+        return jsonError(`Minimum withdrawal amount for Status Views on your ${activePackage.name} package is KSh ${minViewsLimit.toLocaleString()} (requested KSh ${amount.toLocaleString()}). Note: Referral commissions can be withdrawn separately without this limit.`, 400);
+      }
+      const availableViews = typeof wallet.views_balance_ksh === "number" ? wallet.views_balance_ksh : wallet.available_balance_ksh;
+      if (availableViews < amount) {
+        return jsonError(`Insufficient Status Views earnings. Your available Views balance is KSh ${availableViews.toLocaleString()}, requested KSh ${amount.toLocaleString()}.`, 400);
+      }
+      const balanceAfter = wallet.available_balance_ksh - amount;
+      const updateResult = await env.DB.prepare(`
+        UPDATE wallets
+        SET views_balance_ksh = views_balance_ksh - ?,
+            available_balance_ksh = available_balance_ksh - ?,
+            reserved_balance_ksh = reserved_balance_ksh + ?,
+            updated_at = ?
+        WHERE user_id = ? AND views_balance_ksh >= ?
+      `).bind(amount, amount, amount, now, user.id, amount).run();
+      if (!updateResult.success || updateResult.meta && updateResult.meta.changes === 0) {
+        return jsonError("Concurrent balance update conflict or insufficient views funds. Please refresh and try again.", 409);
+      }
+      await env.DB.prepare(`
+        INSERT INTO withdrawal_requests (id, user_id, wallet_id, amount_ksh, phone_number, status, balance_type, created_at)
+        VALUES (?, ?, ?, ?, ?, 'pending', 'views', ?)
+      `).bind(withdrawalId, user.id, wallet.id, amount, targetPhone, now).run();
+      await env.DB.prepare(`
+        INSERT INTO wallet_transactions (id, wallet_id, user_id, type, amount_ksh, balance_after_ksh, reference_id, description, created_at)
+        VALUES (?, ?, ?, 'withdrawal_reserve', ?, ?, ?, ?, ?)
+      `).bind(
+        txId,
+        wallet.id,
+        user.id,
+        amount,
+        balanceAfter,
+        withdrawalId,
+        `M-Pesa withdrawal request from Status Views (${activePackage.name}) to ${targetPhone} placed on hold pending payout`,
+        now
+      ).run();
+      return jsonSuccess({
+        message: `Status Views withdrawal request for KSh ${amount.toLocaleString()} submitted successfully. Funds have been reserved pending M-Pesa disbursement.`,
+        withdrawal: {
+          id: withdrawalId,
+          amountKsh: amount,
+          phoneNumber: targetPhone,
+          balanceType: "views",
+          status: "pending",
+          createdAt: now
+        },
+        wallet: {
+          availableBalanceKsh: balanceAfter,
+          viewsBalanceKsh: availableViews - amount,
+          referralsBalanceKsh: wallet.referrals_balance_ksh || 0,
+          reservedBalanceKsh: wallet.reserved_balance_ksh + amount
+        }
+      }, 201);
+    } else {
+      const minReferralLimit = 100;
+      if (amount < minReferralLimit) {
+        return jsonError(`Minimum withdrawal amount for Referral Commissions is KSh ${minReferralLimit}`, 400);
+      }
+      const availableReferrals = wallet.referrals_balance_ksh || 0;
+      if (availableReferrals < amount) {
+        return jsonError(`Insufficient Referral Commission funds. Your available Referral balance is KSh ${availableReferrals.toLocaleString()}, requested KSh ${amount.toLocaleString()}.`, 400);
+      }
+      const balanceAfter = wallet.available_balance_ksh - amount;
+      const updateResult = await env.DB.prepare(`
+        UPDATE wallets
+        SET referrals_balance_ksh = referrals_balance_ksh - ?,
+            available_balance_ksh = available_balance_ksh - ?,
+            reserved_balance_ksh = reserved_balance_ksh + ?,
+            updated_at = ?
+        WHERE user_id = ? AND referrals_balance_ksh >= ?
+      `).bind(amount, amount, amount, now, user.id, amount).run();
+      if (!updateResult.success || updateResult.meta && updateResult.meta.changes === 0) {
+        return jsonError("Concurrent balance update conflict or insufficient referral funds. Please refresh and try again.", 409);
+      }
+      await env.DB.prepare(`
+        INSERT INTO withdrawal_requests (id, user_id, wallet_id, amount_ksh, phone_number, status, balance_type, created_at)
+        VALUES (?, ?, ?, ?, ?, 'pending', 'referrals', ?)
+      `).bind(withdrawalId, user.id, wallet.id, amount, targetPhone, now).run();
+      await env.DB.prepare(`
+        INSERT INTO wallet_transactions (id, wallet_id, user_id, type, amount_ksh, balance_after_ksh, reference_id, description, created_at)
+        VALUES (?, ?, ?, 'withdrawal_reserve', ?, ?, ?, ?, ?)
+      `).bind(
+        txId,
+        wallet.id,
+        user.id,
+        amount,
+        balanceAfter,
+        withdrawalId,
+        `M-Pesa withdrawal request from Referral Commissions to ${targetPhone} placed on hold pending payout`,
+        now
+      ).run();
+      return jsonSuccess({
+        message: `Referral Commission withdrawal request for KSh ${amount.toLocaleString()} submitted successfully. Funds have been reserved pending M-Pesa disbursement.`,
+        withdrawal: {
+          id: withdrawalId,
+          amountKsh: amount,
+          phoneNumber: targetPhone,
+          balanceType: "referrals",
+          status: "pending",
+          createdAt: now
+        },
+        wallet: {
+          availableBalanceKsh: balanceAfter,
+          viewsBalanceKsh: wallet.views_balance_ksh || 0,
+          referralsBalanceKsh: availableReferrals - amount,
+          reservedBalanceKsh: wallet.reserved_balance_ksh + amount
+        }
+      }, 201);
+    }
   } catch (err) {
     console.error("Withdrawal error:", err);
     return jsonError("Failed to process withdrawal request. Please try again.", 500);
   }
 }
 __name(onRequestPost14, "onRequestPost");
-
-// ../.wrangler/tmp/pages-AlDii2/functionsRoutes-0.8450456322839598.mjs
 
 // api/referrals.js
 async function onRequestGetReferrals(context) {
@@ -2233,11 +2229,11 @@ async function onRequestGetReferrals(context) {
   try {
     let referralCode = user.referralCode;
     if (!referralCode) {
-      const dbUser = await env.DB.prepare("SELECT referral_code FROM users WHERE id = ?").bind(user.id).first();
+      const dbUser = await env.DB.prepare('SELECT referral_code FROM users WHERE id = ?').bind(user.id).first();
       referralCode = dbUser?.referral_code;
       if (!referralCode) {
-        referralCode = "ALM" + user.id.replace(/[^a-zA-Z0-9]/g, "").substring(0, 6).toUpperCase();
-        await env.DB.prepare("UPDATE users SET referral_code = ? WHERE id = ?").bind(referralCode, user.id).run().catch(() => {});
+        referralCode = 'ALM' + user.id.replace(/[^a-zA-Z0-9]/g, '').substring(0, 6).toUpperCase();
+        await env.DB.prepare('UPDATE users SET referral_code = ? WHERE id = ?').bind(referralCode, user.id).run().catch(() => {});
       }
     }
     const summary = await env.DB.prepare(`
@@ -2248,69 +2244,59 @@ async function onRequestGetReferrals(context) {
       FROM referrals
       WHERE referrer_id = ?
     `).bind(user.id).first();
-
     const totalInvited = summary?.total_invited || 0;
     const activePaidCount = summary?.active_paid_count || 0;
     const totalEarningsKsh = summary?.total_earnings_ksh || 0;
-
     const { results: activeReferrals } = await env.DB.prepare(`
       SELECT 
-        r.id,
-        r.referred_user_id,
-        u.name as downline_name,
-        u.phone as downline_phone,
-        u.email as downline_email,
-        r.status,
-        r.package_id,
-        r.package_name,
-        r.package_price_ksh,
-        r.commission_rate,
-        r.commission_amount_ksh,
-        r.created_at,
-        r.activated_at
+        r.id, r.referred_user_id, u.name as downline_name, u.phone as downline_phone, u.email as downline_email,
+        r.status, r.package_id, r.package_name, r.package_price_ksh, r.commission_rate, r.commission_amount_ksh,
+        r.created_at, r.activated_at
       FROM referrals r
       JOIN users u ON r.referred_user_id = u.id
       WHERE r.referrer_id = ? AND r.status = 'active_paid'
       ORDER BY r.activated_at DESC
       LIMIT 100
     `).bind(user.id).all();
-
     const { results: allReferrals } = await env.DB.prepare(`
       SELECT 
-        r.id,
-        r.referred_user_id,
-        u.name as downline_name,
-        u.phone as downline_phone,
-        r.status,
-        r.package_name,
-        r.package_price_ksh,
-        r.commission_amount_ksh,
-        r.created_at,
-        r.activated_at
+        r.id, r.referred_user_id, u.name as downline_name, u.phone as downline_phone,
+        r.status, r.package_name, r.package_price_ksh, r.commission_amount_ksh,
+        r.created_at, r.activated_at
       FROM referrals r
       JOIN users u ON r.referred_user_id = u.id
       WHERE r.referrer_id = ?
       ORDER BY (CASE WHEN r.status = 'active_paid' THEN 0 ELSE 1 END), r.created_at DESC
       LIMIT 100
     `).bind(user.id).all();
-
+    const wal = await env.DB.prepare('SELECT referrals_balance_ksh FROM wallets WHERE user_id = ?').bind(user.id).first();
+    const withdrawableReferralsKsh = wal?.referrals_balance_ksh || 0;
     return jsonSuccess({
       referralCode,
       commissionRatePercent: 45,
       totalInvited,
       activePaidCount,
       totalEarningsKsh,
+      withdrawableReferralsKsh,
       activeReferrals: activeReferrals || [],
       allReferrals: allReferrals || []
     });
   } catch (err) {
-    console.error("Referrals error:", err);
-    return jsonError("Failed to retrieve referral data", 500);
+    console.error('Referrals API error:', err);
+    return jsonError('Failed to retrieve referral data', 500);
   }
 }
-__name(onRequestGetReferrals, "onRequestGetReferrals");
+__name(onRequestGetReferrals, "onRequestGet");
 
+// ../.wrangler/tmp/pages-AlDii2/functionsRoutes-0.8450456322839598.mjs
 var routes = [
+  {
+    routePath: "/api/referrals",
+    mountPath: "/api",
+    method: "GET",
+    middlewares: [],
+    modules: [onRequestGetReferrals]
+  },
   {
     routePath: "/api/admin/audit-logs",
     mountPath: "/api/admin",
@@ -2527,13 +2513,6 @@ var routes = [
     method: "POST",
     middlewares: [],
     modules: [onRequestPost14]
-  },
-  {
-    routePath: "/api/referrals",
-    mountPath: "/api",
-    method: "GET",
-    middlewares: [],
-    modules: [onRequestGetReferrals]
   }
 ];
 
@@ -2632,18 +2611,18 @@ function parse(str, options) {
   var key = 0;
   var i = 0;
   var path = "";
-  var tryConsume = /* @__PURE__ */ __name(function(type) {
+  var tryConsume = /* @__PURE__ */ __name(function (type) {
     if (i < tokens.length && tokens[i].type === type)
       return tokens[i++].value;
   }, "tryConsume");
-  var mustConsume = /* @__PURE__ */ __name(function(type) {
+  var mustConsume = /* @__PURE__ */ __name(function (type) {
     var value2 = tryConsume(type);
     if (value2 !== void 0)
       return value2;
     var _a2 = tokens[i], nextType = _a2.type, index = _a2.index;
     throw new TypeError("Unexpected ".concat(nextType, " at ").concat(index, ", expected ").concat(type));
   }, "mustConsume");
-  var consumeText = /* @__PURE__ */ __name(function() {
+  var consumeText = /* @__PURE__ */ __name(function () {
     var result2 = "";
     var value2;
     while (value2 = tryConsume("CHAR") || tryConsume("ESCAPED_CHAR")) {
@@ -2651,7 +2630,7 @@ function parse(str, options) {
     }
     return result2;
   }, "consumeText");
-  var isSafe = /* @__PURE__ */ __name(function(value2) {
+  var isSafe = /* @__PURE__ */ __name(function (value2) {
     for (var _i = 0, delimiter_1 = delimiter; _i < delimiter_1.length; _i++) {
       var char2 = delimiter_1[_i];
       if (value2.indexOf(char2) > -1)
@@ -2659,7 +2638,7 @@ function parse(str, options) {
     }
     return false;
   }, "isSafe");
-  var safePattern = /* @__PURE__ */ __name(function(prefix2) {
+  var safePattern = /* @__PURE__ */ __name(function (prefix2) {
     var prev = result[result.length - 1];
     var prevText = prefix2 || (prev && typeof prev === "string" ? prev : "");
     if (prev && !prevText) {
@@ -2732,21 +2711,21 @@ function regexpToFunction(re, keys, options) {
   if (options === void 0) {
     options = {};
   }
-  var _a = options.decode, decode = _a === void 0 ? function(x) {
+  var _a = options.decode, decode = _a === void 0 ? function (x) {
     return x;
   } : _a;
-  return function(pathname) {
+  return function (pathname) {
     var m = re.exec(pathname);
     if (!m)
       return false;
     var path = m[0], index = m.index;
     var params = /* @__PURE__ */ Object.create(null);
-    var _loop_1 = /* @__PURE__ */ __name(function(i2) {
+    var _loop_1 = /* @__PURE__ */ __name(function (i2) {
       if (m[i2] === void 0)
         return "continue";
       var key = keys[i2 - 1];
       if (key.modifier === "*" || key.modifier === "+") {
-        params[key.name] = m[i2].split(key.prefix + key.suffix).map(function(value) {
+        params[key.name] = m[i2].split(key.prefix + key.suffix).map(function (value) {
           return decode(value, key);
         });
       } else {
@@ -2789,7 +2768,7 @@ function regexpToRegexp(path, keys) {
 }
 __name(regexpToRegexp, "regexpToRegexp");
 function arrayToRegexp(paths, keys, options) {
-  var parts = paths.map(function(path) {
+  var parts = paths.map(function (path) {
     return pathToRegexp(path, keys, options).source;
   });
   return new RegExp("(?:".concat(parts.join("|"), ")"), flags(options));
@@ -2803,7 +2782,7 @@ function tokensToRegexp(tokens, keys, options) {
   if (options === void 0) {
     options = {};
   }
-  var _a = options.strict, strict = _a === void 0 ? false : _a, _b = options.start, start = _b === void 0 ? true : _b, _c = options.end, end = _c === void 0 ? true : _c, _d = options.encode, encode = _d === void 0 ? function(x) {
+  var _a = options.strict, strict = _a === void 0 ? false : _a, _b = options.start, start = _b === void 0 ? true : _b, _c = options.end, end = _c === void 0 ? true : _c, _d = options.encode, encode = _d === void 0 ? function (x) {
     return x;
   } : _d, _e = options.delimiter, delimiter = _e === void 0 ? "/#?" : _e, _f = options.endsWith, endsWith = _f === void 0 ? "" : _f;
   var endsWithRe = "[".concat(escapeString(endsWith), "]|$");

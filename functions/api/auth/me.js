@@ -16,7 +16,7 @@ export async function onRequestGet(context) {
   try {
     // 1. Fetch wallet data
     let wallet = await env.DB.prepare(`
-      SELECT available_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
+      SELECT available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
       FROM wallets
       WHERE user_id = ?
       LIMIT 1
@@ -25,6 +25,8 @@ export async function onRequestGet(context) {
     if (!wallet) {
       wallet = {
         available_balance_ksh: 0,
+        views_balance_ksh: 0,
+        referrals_balance_ksh: 0,
         reserved_balance_ksh: 0,
         lifetime_earnings_ksh: 0,
         lifetime_withdrawn_ksh: 0
@@ -34,7 +36,7 @@ export async function onRequestGet(context) {
     // 2. Fetch active and pending user packages
     const activePackage = await env.DB.prepare(`
       SELECT up.id as user_package_id, up.status, up.activated_at,
-             p.id as package_id, p.name, p.slug, p.price_ksh, p.reward_per_view_ksh, p.max_views_per_task, p.badge
+             p.id as package_id, p.name, p.slug, p.price_ksh, p.reward_per_view_ksh, p.max_views_per_task, p.min_withdrawal_views_ksh, p.badge
       FROM user_packages up
       JOIN packages p ON up.package_id = p.id
       WHERE up.user_id = ? AND up.status = 'active'
@@ -117,6 +119,8 @@ export async function onRequestGet(context) {
         approvedRewardsKsh: taskStats?.total_approved_rewards_ksh || 0,
         pendingTasksCount: taskStats?.pending_tasks_count || 0,
         availableBalanceKsh: wallet.available_balance_ksh,
+        viewsBalanceKsh: wallet.views_balance_ksh || 0,
+        referralsBalanceKsh: wallet.referrals_balance_ksh || 0,
         reservedBalanceKsh: wallet.reserved_balance_ksh,
         completedWithdrawalsKsh: wallet.lifetime_withdrawn_ksh
       }

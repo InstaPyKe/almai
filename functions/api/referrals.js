@@ -83,12 +83,16 @@ export async function onRequestGet(context) {
       LIMIT 100
     `).bind(user.id).all();
 
+    const wal = await env.DB.prepare('SELECT referrals_balance_ksh FROM wallets WHERE user_id = ?').bind(user.id).first();
+    const withdrawableReferralsKsh = wal?.referrals_balance_ksh || 0;
+
     return jsonSuccess({
       referralCode,
       commissionRatePercent: 45,
       totalInvited,
       activePaidCount,
       totalEarningsKsh,
+      withdrawableReferralsKsh,
       activeReferrals: activeReferrals || [],
       allReferrals: allReferrals || []
     });

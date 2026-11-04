@@ -2369,6 +2369,197 @@
       color: var(--charcoal-text);
     }
 
+    /* Withdrawal Modal Category Tabs & Dynamic Info Cards */
+    .withdraw-type-tabs {
+      display: flex;
+      gap: 8px;
+      margin: 18px 0 14px;
+      background: #F1F5F9;
+      padding: 5px;
+      border-radius: 12px;
+    }
+    .withdraw-tab-btn {
+      flex: 1;
+      padding: 10px 10px;
+      border: 1.5px solid transparent;
+      border-radius: 9px;
+      font-weight: 800;
+      font-size: 13.5px;
+      cursor: pointer;
+      background: transparent;
+      color: #475569;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .withdraw-tab-btn.active.tab-views {
+      background: #FFFFFF;
+      color: #6D28D9;
+      border-color: #DDD6FE;
+      box-shadow: 0 2px 8px rgba(109, 40, 217, 0.12);
+    }
+    .withdraw-tab-btn.active.tab-referrals {
+      background: #FFFFFF;
+      color: #047857;
+      border-color: #A7F3D0;
+      box-shadow: 0 2px 8px rgba(5, 150, 105, 0.12);
+    }
+    .withdraw-tab-tag {
+      background: #10B981;
+      color: #FFFFFF;
+      font-size: 10.5px;
+      padding: 1px 7px;
+      border-radius: 99px;
+      font-weight: 900;
+      letter-spacing: 0.3px;
+    }
+
+    /* Separate Balances Breakdown Strip in Dashboard */
+    .separate-balances-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .sub-balance-card {
+      border-radius: var(--radius-md);
+      padding: 20px 22px;
+      background: var(--white-card);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+    }
+    .sub-balance-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+    .sub-balance-card.theme-views {
+      border: 1.5px solid #DDD6FE;
+      background: linear-gradient(145deg, #FFFFFF 0%, #FAF5FF 100%);
+    }
+    .sub-balance-card.theme-referrals {
+      border: 1.5px solid #A7F3D0;
+      background: linear-gradient(145deg, #FFFFFF 0%, #F0FDF4 100%);
+    }
+    .sub-balance-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .sub-balance-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sub-balance-icon {
+      font-size: 24px;
+      line-height: 1;
+    }
+    .sub-balance-title h4 {
+      margin: 0;
+      font-size: 15.5px;
+      font-weight: 850;
+      color: #1E1B4B;
+    }
+    .sub-balance-rule {
+      margin: 2px 0 0;
+      font-size: 12px;
+      font-weight: 750;
+      color: #6D28D9;
+    }
+    .sub-balance-amount {
+      font-size: 27px;
+      font-weight: 950;
+      color: #581C87;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+    .sub-balance-progress-wrap {
+      margin-top: 8px;
+    }
+    .sub-balance-progress-bar {
+      height: 8px;
+      background: #E2E8F0;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .sub-balance-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #8B5CF6, #6D28D9);
+      border-radius: 99px;
+      transition: width 0.3s ease;
+    }
+    .sub-balance-progress-text {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #64748B;
+      margin-top: 5px;
+    }
+    .sub-balance-instant-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 750;
+      color: #047857;
+      background: rgba(16, 185, 129, 0.12);
+      padding: 4px 10px;
+      border-radius: 99px;
+      margin-top: 8px;
+      align-self: flex-start;
+    }
+    .pulsing-green-dot {
+      width: 7px;
+      height: 7px;
+      background-color: #10B981;
+      border-radius: 50%;
+      animation: pulseGreen 1.6s infinite ease-in-out;
+    }
+    @keyframes pulseGreen {
+      0% { transform: scale(0.9); opacity: 0.7; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.9); opacity: 0.7; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    .btn-outline-purple {
+      background: #FAF5FF;
+      color: #6D28D9;
+      border: 1.5px solid #C084FC;
+      font-weight: 800;
+      border-radius: var(--radius-sm);
+      padding: 7px 14px;
+      font-size: 12.5px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-outline-purple:hover {
+      background: #6D28D9;
+      color: #FFFFFF;
+      border-color: #6D28D9;
+    }
+    .btn-outline-emerald {
+      background: #ECFDF5;
+      color: #047857;
+      border: 1.5px solid #6EE7B7;
+      font-weight: 800;
+      border-radius: var(--radius-sm);
+      padding: 7px 14px;
+      font-size: 12.5px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-outline-emerald:hover {
+      background: #059669;
+      color: #FFFFFF;
+      border-color: #059669;
+    }
+
     /* ====================================================================
        ADMIN CONSOLE: SIDEBAR WORKSPACE & RICH THEMED SECTIONS
        ==================================================================== */
@@ -5916,6 +6107,16 @@
 
         <div class="faq-item" onclick="toggleFaq(this)">
           <div class="faq-question">
+            <span>What are the withdrawal limits for Status Views vs Referral Commissions?</span>
+            <span class="faq-arrow">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p>Each partner package has a unique minimum withdrawal limit for <strong>Status Views</strong> earnings: <strong>KSh 5,000</strong> for Starter Pro, <strong>KSh 8,000</strong> for Exclusive, and <strong>KSh 12,000</strong> for Premium. However, your <strong>45% Referral Commissions</strong> can be withdrawn separately anytime with a low minimum of only <strong>KSh 100</strong>, completely independent of your views tier threshold!</p>
+          </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">
             <span>How do businesses book ads on Almai Products?</span>
             <span class="faq-arrow">▼</span>
           </div>
@@ -6197,6 +6398,53 @@
             </div>
           </div>
         </div>
+
+        <!-- Dedicated Dual Balances Breakdown (Status Views & Referral Commissions) -->
+        <div class="separate-balances-strip">
+          <!-- Views Balance Card -->
+          <div class="sub-balance-card theme-views">
+            <div class="sub-balance-header">
+              <div class="sub-balance-title">
+                <span class="sub-balance-icon">📱</span>
+                <div>
+                  <h4>Status Views Balance</h4>
+                  <p class="sub-balance-rule" id="dash-views-rule-hint">Starter Pro Min Limit: KSh 5,000</p>
+                </div>
+              </div>
+              <button type="button" class="btn btn-outline-purple" onclick="openWithdrawalModal('views')">
+                Withdraw Views
+              </button>
+            </div>
+            <div class="sub-balance-amount" id="dash-val-views">KSh 0</div>
+            <div class="sub-balance-progress-wrap">
+              <div class="sub-balance-progress-bar">
+                <div class="sub-balance-progress-fill" id="dash-views-progress-fill" style="width: 0%;"></div>
+              </div>
+              <div class="sub-balance-progress-text" id="dash-views-progress-text">0% towards package payout threshold (KSh 0 / KSh 5,000)</div>
+            </div>
+          </div>
+
+          <!-- Referral Commissions Balance Card -->
+          <div class="sub-balance-card theme-referrals">
+            <div class="sub-balance-header">
+              <div class="sub-balance-title">
+                <span class="sub-balance-icon">👥</span>
+                <div>
+                  <h4>45% Referral Commissions</h4>
+                  <p class="sub-balance-rule" style="color: #047857;">Withdrawable Separately Anytime • Min KSh 100</p>
+                </div>
+              </div>
+              <button type="button" class="btn btn-outline-emerald" onclick="openWithdrawalModal('referrals')">
+                Withdraw Referrals
+              </button>
+            </div>
+            <div class="sub-balance-amount" id="dash-val-referrals" style="color: #047857;">KSh 0</div>
+            <div class="sub-balance-instant-tag">
+              <span class="pulsing-green-dot"></span>
+              <span>Independent of package views threshold (Min KSh 100)</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- SECTION: 45% LIFETIME REFERRAL COMMISSIONS & DOWNLINES HUB -->
@@ -6274,9 +6522,17 @@
               </div>
             </div>
             <div class="dash-metric-val" id="dash-ref-earnings" style="color: #059669 !important;">KSh 0</div>
-            <div class="dash-metric-sub">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 6px; flex-wrap: wrap; gap: 6px;">
+              <span class="badge" id="dash-ref-withdrawable-badge" style="background: #ECFDF5; color: #047857; font-weight: 800; font-size: 11px; padding: 3px 8px; border-radius: 99px; border: 1px solid #A7F3D0;">
+                Withdrawable Separately
+              </span>
+              <button type="button" class="btn btn-outline-emerald" onclick="openWithdrawalModal('referrals')" style="font-size: 11px; padding: 4px 10px; border-radius: 6px;">
+                Withdraw Referrals
+              </button>
+            </div>
+            <div class="dash-metric-sub" style="margin-top: 8px;">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#059669" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              Paid instantly to Available Balance
+              Withdrawable separately anytime (Min KSh 100)
             </div>
           </div>
 
@@ -6579,6 +6835,7 @@
               <thead>
                 <tr>
                   <th>Date Requested</th>
+                  <th>Balance Sourced</th>
                   <th>Amount (KSh)</th>
                   <th>M-Pesa Phone</th>
                   <th>Status</th>
@@ -6587,7 +6844,7 @@
               </thead>
               <tbody id="tbody-user-withdrawals">
                 <tr>
-                  <td colspan="5" style="text-align: center; color: var(--charcoal-muted); padding: 30px; font-weight: 750;">
+                  <td colspan="6" style="text-align: center; color: var(--charcoal-muted); padding: 30px; font-weight: 750;">
                     No withdrawals requested yet. Accumulate KSh 100 or more to request a payout.
                   </td>
                 </tr>
@@ -6644,47 +6901,87 @@
   </div>
 
   <!-- ====================================================================
-       MODAL 2: REQUEST WITHDRAWAL
+       MODAL 2: REQUEST WITHDRAWAL (DUAL BALANCES: VIEWS & REFERRALS)
        ==================================================================== -->
   <div class="modal-backdrop" id="modal-withdraw">
-    <div class="modal-content">
+    <div class="modal-content" style="max-width: 520px;">
       <button class="modal-close-btn" onclick="closeModal('modal-withdraw')">
         <span class="svg-icon" style="width: 16px; height: 16px;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </span>
       </button>
-      <h3 style="font-size: 21px; margin-bottom: 8px;">Request M-Pesa Withdrawal</h3>
-      <p style="color: var(--charcoal-muted); font-size: 13.5px; margin-bottom: 18px;">
-        Transfer your verified available earnings directly to your Safaricom M-Pesa line.
-      </p>
 
-      <div style="background: var(--bg-cream); border: 1px solid var(--beige-border); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 18px;">
-        <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 700;">
-          <span>Available to Withdraw:</span>
-          <span style="color: var(--primary-purple);" id="withdraw-modal-avail">KSh 0</span>
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+        <div style="background: linear-gradient(135deg, #10B981, #059669); color: white; width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+        </div>
+        <div>
+          <h3 style="font-size: 20.5px; margin: 0; color: #1E1B4B; font-weight: 900;">Request M-Pesa Payout</h3>
+          <p style="color: var(--charcoal-muted); font-size: 13px; margin: 2px 0 0;">
+            Disbursed instantly to your verified Safaricom M-Pesa line
+          </p>
+        </div>
+      </div>
+
+      <!-- Segmented Tab Switcher (Views vs Referrals) -->
+      <div class="withdraw-type-tabs">
+        <button type="button" class="withdraw-tab-btn active tab-views" id="tab-withdraw-views" onclick="setWithdrawalBalanceType('views')">
+          <span>📱 Status Views</span>
+        </button>
+        <button type="button" class="withdraw-tab-btn tab-referrals" id="tab-withdraw-referrals" onclick="setWithdrawalBalanceType('referrals')">
+          <span>👥 45% Referrals</span>
+          <span class="withdraw-tab-tag">Separate</span>
+        </button>
+      </div>
+
+      <input type="hidden" id="withdraw-balance-type" value="views">
+
+      <!-- Dynamic Views Info Box -->
+      <div id="withdraw-views-box" style="background: linear-gradient(145deg, #FAF5FF, #F3E8FF); border: 1.5px solid #DDD6FE; border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 18px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <span style="font-size: 13.5px; font-weight: 750; color: #581C87;">Withdrawable Views Balance:</span>
+          <span style="color: #6D28D9; font-size: 19px; font-weight: 950;" id="withdraw-modal-views-avail">KSh 0</span>
+        </div>
+        <div style="font-size: 12.5px; color: #581C87; line-height: 1.45; background: rgba(255,255,255,0.75); padding: 8px 12px; border-radius: 6px;">
+          🔒 <strong id="withdraw-modal-views-tier">Starter Pro Package</strong>: Status views payout requires your active tier minimum of <strong id="withdraw-modal-views-limit" style="color: #6D28D9;">KSh 5,000</strong>.
+          <div style="font-size: 11px; color: #64748B; margin-top: 3px;">(Starter Pro: KSh 5,000 | Exclusive: KSh 8,000 | Premium: KSh 12,000)</div>
+        </div>
+      </div>
+
+      <!-- Dynamic Referrals Info Box -->
+      <div id="withdraw-referrals-box" style="display: none; background: linear-gradient(145deg, #ECFDF5, #D1FAE5); border: 1.5px solid #A7F3D0; border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 18px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <span style="font-size: 13.5px; font-weight: 750; color: #065F46;">Withdrawable Referral Commissions:</span>
+          <span style="color: #059669; font-size: 19px; font-weight: 950;" id="withdraw-modal-referrals-avail">KSh 0</span>
+        </div>
+        <div style="font-size: 12.5px; color: #065F46; line-height: 1.45; background: rgba(255,255,255,0.75); padding: 8px 12px; border-radius: 6px;">
+          🎉 <strong>Independent Payout</strong>: Referral commissions can be withdrawn separately anytime! Minimum payout is only <strong style="color: #059669;">KSh 100</strong> with no views restriction.
         </div>
       </div>
 
       <form id="form-withdraw" onsubmit="handleWithdrawalSubmit(event)">
         <div class="form-group">
-          <label class="form-label" for="withdraw-amount">Amount to Withdraw (KSh)</label>
-          <input type="number" id="withdraw-amount" min="100" required placeholder="Min KSh 100">
+          <label class="form-label" for="withdraw-amount" id="withdraw-amount-label">Amount to Withdraw (KSh)</label>
+          <input type="number" id="withdraw-amount" min="5000" required placeholder="Min KSh 5,000">
+          <div class="form-hint" id="withdraw-amount-hint" style="font-size: 12px; color: #6D28D9; font-weight: 700; margin-top: 4px;">
+            Minimum withdrawal: KSh 5,000 for your active package views
+          </div>
         </div>
 
         <div class="form-group">
           <label class="form-label" for="withdraw-phone">M-Pesa Phone Number</label>
           <input type="tel" id="withdraw-phone" required placeholder="07XXXXXXXX or 254XXXXXXXX">
-          <div class="form-hint">Double check your phone number. Funds cannot be reversed once disbursed.</div>
+          <div class="form-hint">Double check your Safaricom number. Funds cannot be reversed once disbursed.</div>
         </div>
 
         <div id="withdraw-alert" style="display: none;" class="alert"></div>
 
-        <div style="font-size: 12.5px; color: var(--charcoal-muted); margin-bottom: 18px; line-height: 1.5;">
+        <div style="font-size: 12px; color: var(--charcoal-muted); margin-bottom: 18px; line-height: 1.5;">
           Almai will never ask you for your M-Pesa PIN. Standard Safaricom M-Pesa transaction fees may apply upon disbursement.
         </div>
 
         <button type="submit" class="btn btn-success btn-block btn-lg" id="btn-withdraw-submit">
-          Confirm Withdrawal Request
+          Confirm M-Pesa Withdrawal
         </button>
       </form>
     </div>
@@ -7719,6 +8016,8 @@
       document.getElementById('dash-pkg-tag').textContent = pkgName;
 
       const avail = AppState.wallet?.available_balance_ksh || 0;
+      const viewsAvail = AppState.wallet?.views_balance_ksh ?? 0;
+      const refAvail = AppState.wallet?.referrals_balance_ksh ?? 0;
       const reserved = AppState.wallet?.reserved_balance_ksh || 0;
       const earned = AppState.wallet?.lifetime_earnings_ksh || 0;
       const withdrawn = AppState.wallet?.lifetime_withdrawn_ksh || 0;
@@ -7727,7 +8026,33 @@
       document.getElementById('dash-val-reserved').textContent = `KSh ${reserved.toLocaleString()}`;
       document.getElementById('dash-val-earned').textContent = `KSh ${earned.toLocaleString()}`;
       document.getElementById('dash-val-withdrawn').textContent = `KSh ${withdrawn.toLocaleString()}`;
-      document.getElementById('withdraw-modal-avail').textContent = `KSh ${avail.toLocaleString()}`;
+
+      // Populate separate views and referral sub-ledgers
+      const viewsAvailEl = document.getElementById('dash-val-views');
+      if (viewsAvailEl) viewsAvailEl.textContent = `KSh ${viewsAvail.toLocaleString()}`;
+
+      const refAvailEl = document.getElementById('dash-val-referrals');
+      if (refAvailEl) refAvailEl.textContent = `KSh ${refAvail.toLocaleString()}`;
+
+      const pkg = AppState.activePackage;
+      const minViews = pkg?.min_withdrawal_views_ksh || (pkg?.slug === 'premium' ? 12000 : (pkg?.slug === 'exclusive' ? 8000 : 5000));
+
+      const viewsRuleEl = document.getElementById('dash-views-rule-hint');
+      if (viewsRuleEl) viewsRuleEl.textContent = `${pkg ? pkg.name : 'Starter Pro'} Min Limit: KSh ${minViews.toLocaleString()}`;
+
+      const viewsFillEl = document.getElementById('dash-views-progress-fill');
+      const viewsTextEl = document.getElementById('dash-views-progress-text');
+      if (viewsFillEl && viewsTextEl) {
+        const pct = Math.min(100, Math.round((viewsAvail / minViews) * 100));
+        viewsFillEl.style.width = `${pct}%`;
+        viewsTextEl.textContent = `${pct}% towards ${pkg ? pkg.name : 'Starter Pro'} payout threshold (KSh ${viewsAvail.toLocaleString()} / KSh ${minViews.toLocaleString()})`;
+      }
+
+      // Also update withdrawal modal if elements exist
+      const modalViewsAvail = document.getElementById('withdraw-modal-views-avail');
+      if (modalViewsAvail) modalViewsAvail.textContent = `KSh ${viewsAvail.toLocaleString()}`;
+      const modalRefAvail = document.getElementById('withdraw-modal-referrals-avail');
+      if (modalRefAvail) modalRefAvail.textContent = `KSh ${refAvail.toLocaleString()}`;
 
       // View counts
       document.getElementById('dash-views-reported').textContent = (AppState.stats?.reportedViews || 0).toLocaleString();
@@ -8148,6 +8473,7 @@
 
       container.innerHTML = packages.map(pkg => {
         const isFeatured = pkg.slug === 'exclusive' || pkg.slug === 'growth';
+        const minViewsLimit = pkg.min_withdrawal_views_ksh || (pkg.slug === 'premium' ? 12000 : (pkg.slug === 'exclusive' ? 8000 : 5000));
         return `
           <div class="pkg-card ${isFeatured ? 'featured' : ''}">
             ${pkg.badge ? `<span class="pkg-badge">${escapeHTML(pkg.badge)}</span>` : ''}
@@ -8167,6 +8493,17 @@
               <div class="pkg-reward-text">
                 KSh ${pkg.reward_per_view_ksh} per approved view
                 <div style="font-size: 12px; font-weight: 500; color: var(--charcoal-muted);">Up to ${pkg.max_views_per_task} views per 18h task</div>
+              </div>
+            </div>
+
+            <!-- Unique Status Views Limit Callout -->
+            <div style="background: linear-gradient(135deg, #FAF5FF, #F3E8FF); border: 1.5px dashed #C084FC; border-radius: 8px; padding: 10px 14px; margin: 12px 0;">
+              <div style="font-size: 13px; font-weight: 850; color: #581C87; display: flex; align-items: center; justify-content: space-between;">
+                <span>📱 Views Payout Limit:</span>
+                <span style="font-size: 14px; color: #6D28D9; font-weight: 950;">Min KSh ${minViewsLimit.toLocaleString()}</span>
+              </div>
+              <div style="font-size: 11px; color: #047857; font-weight: 750; margin-top: 4px; display: flex; align-items: center; gap: 4px;">
+                <span>👥 45% Referral earnings withdrawable separately anytime (min KSh 100)</span>
               </div>
             </div>
 
@@ -9096,7 +9433,7 @@
       if (!withdrawals.length) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="5" style="text-align: center; color: var(--charcoal-muted); padding: 26px;">
+            <td colspan="6" style="text-align: center; color: var(--charcoal-muted); padding: 26px;">
               No withdrawals requested yet. Accumulate KSh 100 or more to request a payout.
             </td>
           </tr>
@@ -9110,10 +9447,16 @@
         });
         const statusClass = `status-${w.status}`;
         const refInfo = w.mpesa_receipt_number ? `M-Pesa Ref: <strong>${escapeHTML(w.mpesa_receipt_number)}</strong>` : (w.rejection_reason ? escapeHTML(w.rejection_reason) : 'In Queue');
+        const isRef = w.balance_type === 'referrals';
 
         return `
           <tr>
             <td><strong>${dateStr}</strong></td>
+            <td>
+              <span class="badge" style="display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; padding: 2px 8px; border-radius: 6px; font-weight: 800; background: ${isRef ? '#ECFDF5; color: #047857; border: 1px solid #A7F3D0;' : '#FAF5FF; color: #6D28D9; border: 1px solid #DDD6FE;'}">
+                ${isRef ? '👥 Referrals' : '📱 Status Views'}
+              </span>
+            </td>
             <td style="font-weight: 700; color: var(--deep-purple-heading);">KSh ${w.amount_ksh.toLocaleString()}</td>
             <td>${escapeHTML(w.phone_number)}</td>
             <td><span class="status-badge ${statusClass}">${escapeHTML(w.status)}</span></td>
@@ -9225,26 +9568,100 @@
     }
 
     // ====================================================================
-    // WITHDRAWAL MODAL & LOGIC
+    // WITHDRAWAL MODAL & LOGIC (DUAL BALANCES: VIEWS & REFERRALS)
     // ====================================================================
-    function openWithdrawalModal() {
+    function openWithdrawalModal(defaultTab = 'views') {
       if (!AppState.user) {
         showAuthModal('login');
         return;
       }
-      const avail = AppState.wallet?.available_balance_ksh || 0;
-      document.getElementById('withdraw-modal-avail').textContent = `KSh ${avail.toLocaleString()}`;
-      document.getElementById('withdraw-phone').value = AppState.user.phone || '';
+
       document.getElementById('withdraw-alert').style.display = 'none';
       document.getElementById('form-withdraw').reset();
       document.getElementById('withdraw-phone').value = AppState.user.phone || '';
+
+      const viewsAvail = AppState.wallet?.views_balance_ksh ?? 0;
+      const refAvail = AppState.wallet?.referrals_balance_ksh ?? 0;
+
+      const viewsAvailEl = document.getElementById('withdraw-modal-views-avail');
+      if (viewsAvailEl) viewsAvailEl.textContent = `KSh ${viewsAvail.toLocaleString()}`;
+
+      const refAvailEl = document.getElementById('withdraw-modal-referrals-avail');
+      if (refAvailEl) refAvailEl.textContent = `KSh ${refAvail.toLocaleString()}`;
+
+      const pkg = AppState.activePackage;
+      const minViews = pkg?.min_withdrawal_views_ksh || (pkg?.slug === 'premium' ? 12000 : (pkg?.slug === 'exclusive' ? 8000 : 5000));
+
+      const pkgTierEl = document.getElementById('withdraw-modal-views-tier');
+      if (pkgTierEl) pkgTierEl.textContent = pkg ? `${pkg.name} Package` : 'Starter Pro Package';
+
+      const viewsLimitEl = document.getElementById('withdraw-modal-views-limit');
+      if (viewsLimitEl) viewsLimitEl.textContent = `KSh ${minViews.toLocaleString()}`;
+
+      setWithdrawalBalanceType(defaultTab);
       openModal('modal-withdraw');
+    }
+
+    function setWithdrawalBalanceType(type) {
+      const typeInput = document.getElementById('withdraw-balance-type');
+      if (typeInput) typeInput.value = type;
+
+      const tabViews = document.getElementById('tab-withdraw-views');
+      const tabRefs = document.getElementById('tab-withdraw-referrals');
+      const boxViews = document.getElementById('withdraw-views-box');
+      const boxRefs = document.getElementById('withdraw-referrals-box');
+      const amountInput = document.getElementById('withdraw-amount');
+      const hint = document.getElementById('withdraw-amount-hint');
+      const label = document.getElementById('withdraw-amount-label');
+
+      const pkg = AppState.activePackage;
+      const minViews = pkg?.min_withdrawal_views_ksh || (pkg?.slug === 'premium' ? 12000 : (pkg?.slug === 'exclusive' ? 8000 : 5000));
+      const viewsAvail = AppState.wallet?.views_balance_ksh ?? 0;
+      const refAvail = AppState.wallet?.referrals_balance_ksh ?? 0;
+
+      if (type === 'referrals') {
+        if (tabViews) tabViews.classList.remove('active');
+        if (tabRefs) tabRefs.classList.add('active');
+        if (boxViews) boxViews.style.display = 'none';
+        if (boxRefs) boxRefs.style.display = 'block';
+
+        if (label) label.textContent = 'Amount to Withdraw from Referral Commissions (KSh)';
+        if (amountInput) {
+          amountInput.min = '100';
+          amountInput.placeholder = 'Min KSh 100';
+          if (refAvail >= 100) amountInput.value = refAvail;
+          else amountInput.value = '';
+        }
+        if (hint) {
+          hint.textContent = `Minimum withdrawal: KSh 100 • You have KSh ${refAvail.toLocaleString()} referral commission withdrawable separately anytime!`;
+          hint.style.color = '#047857';
+        }
+      } else {
+        // default: views
+        if (tabRefs) tabRefs.classList.remove('active');
+        if (tabViews) tabViews.classList.add('active');
+        if (boxRefs) boxRefs.style.display = 'none';
+        if (boxViews) boxViews.style.display = 'block';
+
+        if (label) label.textContent = 'Amount to Withdraw from Status Views (KSh)';
+        if (amountInput) {
+          amountInput.min = String(minViews);
+          amountInput.placeholder = `Min KSh ${minViews.toLocaleString()}`;
+          if (viewsAvail >= minViews) amountInput.value = viewsAvail;
+          else amountInput.value = '';
+        }
+        if (hint) {
+          hint.textContent = `Minimum withdrawal: KSh ${minViews.toLocaleString()} for your ${pkg ? pkg.name : 'active'} package views • Views balance: KSh ${viewsAvail.toLocaleString()}`;
+          hint.style.color = '#6D28D9';
+        }
+      }
     }
 
     async function handleWithdrawalSubmit(e) {
       e.preventDefault();
       const amountKsh = document.getElementById('withdraw-amount').value;
       const phoneNumber = document.getElementById('withdraw-phone').value;
+      const balanceType = document.getElementById('withdraw-balance-type')?.value || 'views';
       const alert = document.getElementById('withdraw-alert');
       const btn = document.getElementById('btn-withdraw-submit');
 
@@ -9256,7 +9673,7 @@
         const res = await fetch('/api/withdrawals', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ amountKsh, phoneNumber })
+          body: JSON.stringify({ amountKsh, phoneNumber, balanceType })
         });
 
         const data = await res.json();
@@ -9279,7 +9696,7 @@
         alert.style.display = 'flex';
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Confirm Withdrawal Request';
+        btn.textContent = 'Confirm M-Pesa Withdrawal';
       }
     }
 
@@ -10103,10 +10520,16 @@
 
           tbody.innerHTML = data.withdrawals.map(w => {
             const dateStr = new Date(w.created_at * 1000).toLocaleString('en-KE');
+            const isRef = w.balance_type === 'referrals';
             return `
               <tr>
                 <td><strong>${escapeHTML(w.user_name)}</strong><br><span style="font-size: 12px; color: var(--charcoal-muted);">${escapeHTML(w.user_email)}</span></td>
-                <td style="font-size: 15px; font-weight: 800; color: var(--deep-purple-heading);">KSh ${w.amount_ksh.toLocaleString()}</td>
+                <td>
+                  <div style="font-size: 15px; font-weight: 850; color: var(--deep-purple-heading);">KSh ${w.amount_ksh.toLocaleString()}</div>
+                  <span class="badge" style="display: inline-flex; align-items: center; gap: 4px; font-size: 11px; padding: 2px 7px; border-radius: 4px; font-weight: 800; margin-top: 3px; background: ${isRef ? '#ECFDF5; color: #047857; border: 1px solid #A7F3D0;' : '#FAF5FF; color: #6D28D9; border: 1px solid #DDD6FE;'}">
+                    ${isRef ? '👥 Referrals' : '📱 Status Views'}
+                  </span>
+                </td>
                 <td><strong>${escapeHTML(w.phone_number)}</strong></td>
                 <td style="font-size: 12px;">${dateStr}</td>
                 <td>
@@ -10423,6 +10846,12 @@
 
       const earnEl = document.getElementById('dash-ref-earnings');
       if (earnEl) earnEl.textContent = `KSh ${(data.totalEarningsKsh || 0).toLocaleString()}`;
+
+      const withdrawableRefEl = document.getElementById('dash-ref-withdrawable-badge');
+      if (withdrawableRefEl) {
+        const withRef = data.withdrawableReferralsKsh ?? AppState.wallet?.referrals_balance_ksh ?? 0;
+        withdrawableRefEl.textContent = `KSh ${withRef.toLocaleString()} Withdrawable Separately`;
+      }
 
       const activeCountEl = document.getElementById('dash-ref-active-count');
       if (activeCountEl) activeCountEl.textContent = data.activePaidCount || 0;

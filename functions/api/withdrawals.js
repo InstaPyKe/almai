@@ -1,6 +1,7 @@
 // ====================================================================
 // ALMAI ADS PRODUCTS — Cloudflare Pages Functions
 // Route: GET, POST /api/withdrawals
+// Package Unique Views Limits & Separate Referral Payouts
 // ====================================================================
 
 import { jsonError, jsonSuccess, requireAuth, generateId } from './_utils.js';
@@ -9,7 +10,7 @@ const MINIMUM_WITHDRAWAL_KSH = 100;
 
 /**
  * GET /api/withdrawals
- * Get withdrawal history and current wallet balance
+ * Get withdrawal history and current wallet balance with breakdown
  */
 export async function onRequestGet(context) {
   const { request, env } = context;
@@ -21,23 +22,36 @@ export async function onRequestGet(context) {
 
   try {
     const wallet = await env.DB.prepare(`
-      SELECT available_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
+      SELECT available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
       FROM wallets
       WHERE user_id = ?
       LIMIT 1
     `).bind(user.id).first();
 
+    const activePackage = await env.DB.prepare(`
+      SELECT p.id, p.name, p.slug, p.price_ksh, p.reward_per_view_ksh, p.min_withdrawal_views_ksh
+      FROM user_packages up
+      JOIN packages p ON up.package_id = p.id
+      WHERE up.user_id = ? AND up.status = 'active'
+      ORDER BY up.activated_at DESC
+      LIMIT 1
+    `).bind(user.id).first();
+
     const { results: requests } = await env.DB.prepare(`
-      SELECT id, amount_ksh, phone_number, status, mpesa_receipt_number, rejection_reason, created_at, processed_at
+      SELECT id, amount_ksh, phone_number, status, balance_type, mpesa_receipt_number, rejection_reason, created_at, processed_at
       FROM withdrawal_requests
       WHERE user_id = ?
       ORDER BY created_at DESC
       LIMIT 50
     `).bind(user.id).all();
 
+    const minViewsWithdrawal = activePackage?.min_withdrawal_views_ksh || 5000;
+
     return jsonSuccess({
-      wallet: wallet || { available_balance_ksh: 0, reserved_balance_ksh: 0, lifetime_withdrawn_ksh: 0 },
-      minWithdrawalKsh: MINIMUM_WITHDRAWAL_KSH,
+      wallet: wallet || { available_balance_ksh: 0, views_balance_ksh: 0, referrals_balance_ksh: 0, reserved_balance_ksh: 0, lifetime_withdrawn_ksh: 0 },
+      activePackage: activePackage || null,
+      minViewsWithdrawalKsh: minViewsWithdrawal,
+      minReferralsWithdrawalKsh: MINIMUM_WITHDRAWAL_KSH,
       withdrawals: requests || []
     });
 
@@ -50,6 +64,7 @@ export async function onRequestGet(context) {
 /**
  * POST /api/withdrawals
  * Request a real M-Pesa payout from available wallet earnings
+ * Supports balanceType: 'views' (enforces package limit) or 'referrals' (independent separate withdrawal)
  */
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -66,11 +81,12 @@ export async function onRequestPost(context) {
     return jsonError('Invalid JSON request body', 400);
   }
 
-  const { amountKsh, phoneNumber } = body;
+  const { amountKsh, phoneNumber, balanceType: rawBalanceType } = body;
+  const balanceType = (rawBalanceType === 'referrals' || rawBalanceType === 'referral') ? 'referrals' : 'views';
 
   const amount = parseInt(amountKsh, 10);
-  if (isNaN(amount) || amount < MINIMUM_WITHDRAWAL_KSH) {
-    return jsonError(`Minimum withdrawal amount is KSh ${MINIMUM_WITHDRAWAL_KSH}`, 400);
+  if (isNaN(amount) || amount <= 0) {
+    return jsonError('Please enter a valid withdrawal amount', 400);
   }
 
   const targetPhone = phoneNumber ? phoneNumber.trim().replace(/\s+/g, '') : user.phone;
@@ -81,7 +97,7 @@ export async function onRequestPost(context) {
   try {
     // 1. Fetch current wallet
     const wallet = await env.DB.prepare(`
-      SELECT id, available_balance_ksh, reserved_balance_ksh
+      SELECT id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh
       FROM wallets
       WHERE user_id = ?
       LIMIT 1
@@ -91,63 +107,157 @@ export async function onRequestPost(context) {
       return jsonError('Wallet account not found', 404);
     }
 
-    if (wallet.available_balance_ksh < amount) {
-      return jsonError(`Insufficient available funds. Your available balance is KSh ${wallet.available_balance_ksh}, requested KSh ${amount}.`, 400);
-    }
-
     const now = Math.floor(Date.now() / 1000);
     const withdrawalId = generateId('wth');
     const txId = generateId('wtx');
-    const balanceAfter = wallet.available_balance_ksh - amount;
 
-    // 2. Atomically reserve funds in wallet
-    const updateResult = await env.DB.prepare(`
-      UPDATE wallets
-      SET available_balance_ksh = available_balance_ksh - ?,
-          reserved_balance_ksh = reserved_balance_ksh + ?,
-          updated_at = ?
-      WHERE user_id = ? AND available_balance_ksh >= ?
-    `).bind(amount, amount, now, user.id, amount).run();
+    if (balanceType === 'views') {
+      // Fetch user's active package to enforce unique withdrawal limit for views
+      const activePackage = await env.DB.prepare(`
+        SELECT p.id, p.name, p.min_withdrawal_views_ksh
+        FROM user_packages up
+        JOIN packages p ON up.package_id = p.id
+        WHERE up.user_id = ? AND up.status = 'active'
+        ORDER BY up.activated_at DESC
+        LIMIT 1
+      `).bind(user.id).first();
 
-    if (!updateResult.success || (updateResult.meta && updateResult.meta.changes === 0)) {
-      return jsonError('Concurrent balance update conflict or insufficient funds. Please refresh and try again.', 409);
-    }
-
-    // 3. Create withdrawal request in pending status
-    await env.DB.prepare(`
-      INSERT INTO withdrawal_requests (id, user_id, wallet_id, amount_ksh, phone_number, status, created_at)
-      VALUES (?, ?, ?, ?, ?, 'pending', ?)
-    `).bind(withdrawalId, user.id, wallet.id, amount, targetPhone, now).run();
-
-    // 4. Record wallet transaction ledger entry
-    await env.DB.prepare(`
-      INSERT INTO wallet_transactions (id, wallet_id, user_id, type, amount_ksh, balance_after_ksh, reference_id, description, created_at)
-      VALUES (?, ?, ?, 'withdrawal_reserve', ?, ?, ?, ?, ?)
-    `).bind(
-      txId,
-      wallet.id,
-      user.id,
-      amount,
-      balanceAfter,
-      withdrawalId,
-      `M-Pesa withdrawal request to ${targetPhone} placed on hold pending payout`,
-      now
-    ).run();
-
-    return jsonSuccess({
-      message: `Withdrawal request for KSh ${amount} submitted successfully. Funds have been reserved pending M-Pesa disbursement.`,
-      withdrawal: {
-        id: withdrawalId,
-        amountKsh: amount,
-        phoneNumber: targetPhone,
-        status: 'pending',
-        createdAt: now
-      },
-      wallet: {
-        availableBalanceKsh: balanceAfter,
-        reservedBalanceKsh: wallet.reserved_balance_ksh + amount
+      if (!activePackage) {
+        return jsonError('You must have an active partner package to withdraw status views earnings. If you have referral earnings, you can withdraw them separately.', 400);
       }
-    }, 201);
+
+      const minViewsLimit = activePackage.min_withdrawal_views_ksh || 5000;
+      if (amount < minViewsLimit) {
+        return jsonError(`Minimum withdrawal amount for Status Views on your ${activePackage.name} package is KSh ${minViewsLimit.toLocaleString()} (requested KSh ${amount.toLocaleString()}). Note: Referral commissions can be withdrawn separately without this limit.`, 400);
+      }
+
+      const availableViews = typeof wallet.views_balance_ksh === 'number' ? wallet.views_balance_ksh : wallet.available_balance_ksh;
+      if (availableViews < amount) {
+        return jsonError(`Insufficient Status Views earnings. Your available Views balance is KSh ${availableViews.toLocaleString()}, requested KSh ${amount.toLocaleString()}.`, 400);
+      }
+
+      const balanceAfter = wallet.available_balance_ksh - amount;
+
+      // Atomically reserve funds from views balance
+      const updateResult = await env.DB.prepare(`
+        UPDATE wallets
+        SET views_balance_ksh = views_balance_ksh - ?,
+            available_balance_ksh = available_balance_ksh - ?,
+            reserved_balance_ksh = reserved_balance_ksh + ?,
+            updated_at = ?
+        WHERE user_id = ? AND views_balance_ksh >= ?
+      `).bind(amount, amount, amount, now, user.id, amount).run();
+
+      if (!updateResult.success || (updateResult.meta && updateResult.meta.changes === 0)) {
+        return jsonError('Concurrent balance update conflict or insufficient views funds. Please refresh and try again.', 409);
+      }
+
+      // Record withdrawal request with balance_type = 'views'
+      await env.DB.prepare(`
+        INSERT INTO withdrawal_requests (id, user_id, wallet_id, amount_ksh, phone_number, status, balance_type, created_at)
+        VALUES (?, ?, ?, ?, ?, 'pending', 'views', ?)
+      `).bind(withdrawalId, user.id, wallet.id, amount, targetPhone, now).run();
+
+      // Ledger entry
+      await env.DB.prepare(`
+        INSERT INTO wallet_transactions (id, wallet_id, user_id, type, amount_ksh, balance_after_ksh, reference_id, description, created_at)
+        VALUES (?, ?, ?, 'withdrawal_reserve', ?, ?, ?, ?, ?)
+      `).bind(
+        txId,
+        wallet.id,
+        user.id,
+        amount,
+        balanceAfter,
+        withdrawalId,
+        `M-Pesa withdrawal request from Status Views (${activePackage.name}) to ${targetPhone} placed on hold pending payout`,
+        now
+      ).run();
+
+      return jsonSuccess({
+        message: `Status Views withdrawal request for KSh ${amount.toLocaleString()} submitted successfully. Funds have been reserved pending M-Pesa disbursement.`,
+        withdrawal: {
+          id: withdrawalId,
+          amountKsh: amount,
+          phoneNumber: targetPhone,
+          balanceType: 'views',
+          status: 'pending',
+          createdAt: now
+        },
+        wallet: {
+          availableBalanceKsh: balanceAfter,
+          viewsBalanceKsh: availableViews - amount,
+          referralsBalanceKsh: wallet.referrals_balance_ksh || 0,
+          reservedBalanceKsh: wallet.reserved_balance_ksh + amount
+        }
+      }, 201);
+
+    } else {
+      // balanceType === 'referrals'
+      const minReferralLimit = MINIMUM_WITHDRAWAL_KSH;
+      if (amount < minReferralLimit) {
+        return jsonError(`Minimum withdrawal amount for Referral Commissions is KSh ${minReferralLimit}`, 400);
+      }
+
+      const availableReferrals = wallet.referrals_balance_ksh || 0;
+      if (availableReferrals < amount) {
+        return jsonError(`Insufficient Referral Commission funds. Your available Referral balance is KSh ${availableReferrals.toLocaleString()}, requested KSh ${amount.toLocaleString()}.`, 400);
+      }
+
+      const balanceAfter = wallet.available_balance_ksh - amount;
+
+      // Atomically reserve funds from referrals balance
+      const updateResult = await env.DB.prepare(`
+        UPDATE wallets
+        SET referrals_balance_ksh = referrals_balance_ksh - ?,
+            available_balance_ksh = available_balance_ksh - ?,
+            reserved_balance_ksh = reserved_balance_ksh + ?,
+            updated_at = ?
+        WHERE user_id = ? AND referrals_balance_ksh >= ?
+      `).bind(amount, amount, amount, now, user.id, amount).run();
+
+      if (!updateResult.success || (updateResult.meta && updateResult.meta.changes === 0)) {
+        return jsonError('Concurrent balance update conflict or insufficient referral funds. Please refresh and try again.', 409);
+      }
+
+      // Record withdrawal request with balance_type = 'referrals'
+      await env.DB.prepare(`
+        INSERT INTO withdrawal_requests (id, user_id, wallet_id, amount_ksh, phone_number, status, balance_type, created_at)
+        VALUES (?, ?, ?, ?, ?, 'pending', 'referrals', ?)
+      `).bind(withdrawalId, user.id, wallet.id, amount, targetPhone, now).run();
+
+      // Ledger entry
+      await env.DB.prepare(`
+        INSERT INTO wallet_transactions (id, wallet_id, user_id, type, amount_ksh, balance_after_ksh, reference_id, description, created_at)
+        VALUES (?, ?, ?, 'withdrawal_reserve', ?, ?, ?, ?, ?)
+      `).bind(
+        txId,
+        wallet.id,
+        user.id,
+        amount,
+        balanceAfter,
+        withdrawalId,
+        `M-Pesa withdrawal request from Referral Commissions to ${targetPhone} placed on hold pending payout`,
+        now
+      ).run();
+
+      return jsonSuccess({
+        message: `Referral Commission withdrawal request for KSh ${amount.toLocaleString()} submitted successfully. Funds have been reserved pending M-Pesa disbursement.`,
+        withdrawal: {
+          id: withdrawalId,
+          amountKsh: amount,
+          phoneNumber: targetPhone,
+          balanceType: 'referrals',
+          status: 'pending',
+          createdAt: now
+        },
+        wallet: {
+          availableBalanceKsh: balanceAfter,
+          viewsBalanceKsh: wallet.views_balance_ksh || 0,
+          referralsBalanceKsh: availableReferrals - amount,
+          reservedBalanceKsh: wallet.reserved_balance_ksh + amount
+        }
+      }, 201);
+    }
 
   } catch (err) {
     console.error('Withdrawal error:', err);

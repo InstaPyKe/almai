@@ -133,14 +133,15 @@ export async function onRequestPost(context) {
         WHERE id = ? AND status = 'pending'
       `).bind(views, rewardKsh, notes || 'Verified screenshot evidence', admin.id, now, task.id).run();
 
-      // 3. Atomically credit wallet
+      // 3. Atomically credit wallet views balance
       await env.DB.prepare(`
         UPDATE wallets
-        SET available_balance_ksh = available_balance_ksh + ?,
+        SET views_balance_ksh = views_balance_ksh + ?,
+            available_balance_ksh = available_balance_ksh + ?,
             lifetime_earnings_ksh = lifetime_earnings_ksh + ?,
             updated_at = ?
         WHERE user_id = ?
-      `).bind(rewardKsh, rewardKsh, now, task.user_id).run();
+      `).bind(rewardKsh, rewardKsh, rewardKsh, now, task.user_id).run();
 
       // 4. Record wallet transaction
       const txId = generateId('tx');

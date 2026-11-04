@@ -18,7 +18,7 @@ export async function onRequestGet(context) {
 
   try {
     const { results } = await env.DB.prepare(`
-      SELECT id, name, slug, price_ksh, reward_per_view_ksh, max_views_per_task, features, badge, is_active
+      SELECT id, name, slug, price_ksh, reward_per_view_ksh, max_views_per_task, min_withdrawal_views_ksh, features, badge, is_active
       FROM packages
       WHERE is_active = 1
       ORDER BY price_ksh ASC

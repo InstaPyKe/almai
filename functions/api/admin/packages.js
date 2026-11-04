@@ -35,7 +35,7 @@ export async function onRequestPut(context) {
     return jsonError('Invalid JSON request body', 400);
   }
 
-  const { id, name, priceKsh, rewardPerViewKsh, maxViewsPerTask, isActive, features, badge } = body;
+  const { id, name, priceKsh, rewardPerViewKsh, maxViewsPerTask, minWithdrawalViewsKsh, isActive, features, badge } = body;
 
   if (!id) {
     return jsonError('Package ID is required', 400);
@@ -50,6 +50,7 @@ export async function onRequestPut(context) {
     const price = priceKsh !== undefined ? parseInt(priceKsh, 10) : existing.price_ksh;
     const reward = rewardPerViewKsh !== undefined ? parseInt(rewardPerViewKsh, 10) : existing.reward_per_view_ksh;
     const maxViews = maxViewsPerTask !== undefined ? parseInt(maxViewsPerTask, 10) : existing.max_views_per_task;
+    const minWithdrawal = minWithdrawalViewsKsh !== undefined ? parseInt(minWithdrawalViewsKsh, 10) : (existing.min_withdrawal_views_ksh || 5000);
     const active = isActive !== undefined ? (isActive ? 1 : 0) : existing.is_active;
     const pkgName = name || existing.name;
     const pkgBadge = badge !== undefined ? badge : existing.badge;
@@ -58,21 +59,21 @@ export async function onRequestPut(context) {
     await env.DB.prepare(`
       UPDATE packages
       SET name = ?, price_ksh = ?, reward_per_view_ksh = ?, max_views_per_task = ?,
-          is_active = ?, badge = ?, features = ?
+          min_withdrawal_views_ksh = ?, is_active = ?, badge = ?, features = ?
       WHERE id = ?
-    `).bind(pkgName, price, reward, maxViews, active, pkgBadge, pkgFeatures, id).run();
+    `).bind(pkgName, price, reward, maxViews, minWithdrawal, active, pkgBadge, pkgFeatures, id).run();
 
     await createAuditLog(env, {
       adminId: admin.id,
       action: 'UPDATE_PACKAGE',
       targetType: 'package',
       targetId: id,
-      details: { name: pkgName, price, reward, maxViews, active }
+      details: { name: pkgName, price, reward, maxViews, minWithdrawalViews: minWithdrawal, active }
     });
 
     return jsonSuccess({
       message: 'Package updated successfully',
-      package: { id, name: pkgName, price_ksh: price, reward_per_view_ksh: reward, max_views_per_task: maxViews, is_active: active }
+      package: { id, name: pkgName, price_ksh: price, reward_per_view_ksh: reward, max_views_per_task: maxViews, min_withdrawal_views_ksh: minWithdrawal, is_active: active }
     });
 
   } catch (err) {
