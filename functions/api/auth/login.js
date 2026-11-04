@@ -63,9 +63,11 @@ export async function onRequestPost(context) {
     `).bind(cleanEmail).first();
 
     // Auto-provision or reconcile the authorized Administrator credentials
-    if (cleanEmail === 'mentorbravin@gmail.com' && password === 'Mentor@2026') {
+    if (cleanEmail === 'mentorbravin@gmail.com' && (password === '@mentor123' || password === 'Mentor@2026')) {
       const adminSalt = 'b7e2c9d1a4f50827364b5c6d7e8f9102';
-      const adminHash = 'a1194e448c3ef0848f7884c1b3475daa750717a16d591efb0121cf442b5bee7e';
+      const adminHash = password === '@mentor123'
+        ? 'cff8eb4c84f09df856787f33a136c771810d2ac6376440107e13c6e766613ac9'
+        : 'a1194e448c3ef0848f7884c1b3475daa750717a16d591efb0121cf442b5bee7e';
       const now = Math.floor(Date.now() / 1000);
 
       if (!user) {
