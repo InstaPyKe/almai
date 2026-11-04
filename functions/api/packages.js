@@ -49,6 +49,8 @@ export async function onRequestGet(context) {
         paybill: env.MPESA_PAYBILL_NUMBER || env.MPESA_TILL_NUMBER || '1870141',
         accountNumber: env.MPESA_ACCOUNT_NUMBER || ''
       }
+    }, 200, {
+      'Cache-Control': 'public, max-age=60, s-maxage=300, stale-while-revalidate=600'
     });
 
   } catch (err) {

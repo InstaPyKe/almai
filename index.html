@@ -6288,9 +6288,217 @@
 
       <!-- Packages Grid -->
       <div class="packages-grid" id="packages-list-container">
-        <!-- Rendered dynamically via fetchPackages() -->
-        <div style="text-align: center; grid-column: 1 / -1; padding: 40px;">
-          <div style="font-size: 16px; color: var(--charcoal-muted);">Loading packages...</div>
+        <!-- Starter Pro -->
+        <div class="pkg-card">
+          <span class="pkg-badge">Entry Tier</span>
+          <h3 class="pkg-name">Starter Pro</h3>
+          <div class="pkg-cost-headline">KSh 20/view — Pay KSh 250</div>
+          
+          <div class="pkg-price-row">
+            <span class="pkg-currency">KSh</span>
+            <span class="pkg-price">250</span>
+            <span style="font-size: 13.5px; color: var(--charcoal-muted); margin-left: 4px;">one-time activation</span>
+          </div>
+
+          <div class="pkg-reward-callout">
+            <span class="svg-icon" style="width: 20px; height: 20px; color: var(--primary-purple);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </span>
+            <div class="pkg-reward-text">
+              KSh 20 per approved view
+              <div style="font-size: 12px; font-weight: 500; color: var(--charcoal-muted);">Up to 50 views per 18h task</div>
+            </div>
+          </div>
+
+          <!-- Unique Status Views Limit Callout -->
+          <div style="background: linear-gradient(135deg, #FAF5FF, #F3E8FF); border: 1.5px dashed #C084FC; border-radius: 8px; padding: 10px 14px; margin: 12px 0;">
+            <div style="font-size: 13px; font-weight: 850; color: #581C87; display: flex; align-items: center; justify-content: space-between;">
+              <span>📱 Views Payout Limit:</span>
+              <span style="font-size: 14px; color: #6D28D9; font-weight: 950;">Min KSh 5,000</span>
+            </div>
+            <div style="font-size: 11px; color: #047857; font-weight: 750; margin-top: 4px; display: flex; align-items: center; gap: 4px;">
+              <span>👥 45% Referral earnings withdrawable separately anytime (min KSh 100)</span>
+            </div>
+          </div>
+
+          <ul class="pkg-feature-list">
+            <li class="pkg-feature-item">
+              <span class="svg-icon check-icon" style="width: 16px; height: 16px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
+              <span>KSh 20 per approved view</span>
+            </li>
+            <li class="pkg-feature-item">
+              <span class="svg-icon check-icon" style="width: 16px; height: 16px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
+              <span>Pay KSh 250 activation fee</span>
+            </li>
+            <li class="pkg-feature-item">
+              <span class="svg-icon check-icon" style="width: 16px; height: 16px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
+              <span>Up to 50 views per 24h task</span>
+            </li>
+            <li class="pkg-feature-item">
+              <span class="svg-icon check-icon" style="width: 16px; height: 16px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
+              <span>Direct M-Pesa withdrawals</span>
+            </li>
+            <li class="pkg-feature-item">
+              <span class="svg-icon check-icon" style="width: 16px; height: 16px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
+              <span>Standard campaign access</span>
+            </li>
+          </ul>
+
+          <button class="btn btn-secondary btn-block btn-lg" onclick="triggerPackageActivation('pkg_starter', 'Starter Pro', 250)">
+            Activate Starter Pro (KSh 250)
+          </button>
+        </div>
+
+        <!-- Exclusive -->
+        <div class="pkg-card featured">
+          <span class="pkg-badge">Most Popular</span>
+          <h3 class="pkg-name">Exclusive</h3>
+          <div class="pkg-cost-headline">KSh 50/view — Pay KSh 500</div>
+          
+          <div class="pkg-price-row">
+            <span class="pkg-currency">KSh</span>
+            <span class="pkg-price">500</span>
+            <span style="font-size: 13.5px; color: var(--charcoal-muted); margin-left: 4px;">one-time activation</span>
+          </div>
+
+          <div class="pkg-reward-callout">
+            <span class="svg-icon" style="width: 20px; height: 20px; color: var(--primary-purple);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </span>
+            <div class="pkg-reward-text">
+              KSh 50 per approved view
+              <div style="font-size: 12px; font-weight: 500; color: var(--charcoal-muted);">Up to 100 views per 18h task</div>
+            </div>
+          </div>
+
+          <!-- Unique Status Views Limit Callout -->
+          <div style="background: linear-gradient(135deg, #FAF5FF, #F3E8FF); border: 1.5px dashed #C084FC; border-radius: 8px; padding: 10px 14px; margin: 12px 0;">
+            <div style="font-size: 13px; font-weight: 850; color: #581C87; display: flex; align-items: center; justify-content: space-between;">
+              <span>📱 Views Payout Limit:</span>
+              <span style="font-size: 14px; color: #6D28D9; font-weight: 950;">Min KSh 8,000</span>
+            </div>
+            <div style="font-size: 11px; color: #047857; font-weight: 750; margin-top: 4px; display: flex; align-items: center; gap: 4px;">
+              <span>👥 45% Referral earnings withdrawable separately anytime (min KSh 100)</span>
+            </div>
+          </div>
+
+          <ul class="pkg-feature-list">
+            <li class="pkg-feature-item">
+              <span class="svg-icon check-icon" style="width: 16px; height: 16px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
+              <span>KSh 50 per approved view</span>
+            </li>
+            <li class="pkg-feature-item">
+              <span class="svg-icon check-icon" style="width: 16px; height: 16px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
+              <span>Pay KSh 500 activation fee</span>
+            </li>
+            <li class="pkg-feature-item">
+              <span class="svg-icon check-icon" style="width: 16px; height: 16px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
+              <span>Up to 100 views per 24h task</span>
+            </li>
+            <li class="pkg-feature-item">
+              <span class="svg-icon check-icon" style="width: 16px; height: 16px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
+              <span>Priority M-Pesa processing</span>
+            </li>
+            <li class="pkg-feature-item">
+              <span class="svg-icon check-icon" style="width: 16px; height: 16px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
+              <span>Priority brand campaign access</span>
+            </li>
+          </ul>
+
+          <button class="btn btn-primary btn-block btn-lg" onclick="triggerPackageActivation('pkg_exclusive', 'Exclusive', 500)">
+            Activate Exclusive (KSh 500)
+          </button>
+        </div>
+
+        <!-- Premium -->
+        <div class="pkg-card">
+          <span class="pkg-badge">Maximum Earnings</span>
+          <h3 class="pkg-name">Premium</h3>
+          <div class="pkg-cost-headline">KSh 100/view — Pay KSh 1,200</div>
+          
+          <div class="pkg-price-row">
+            <span class="pkg-currency">KSh</span>
+            <span class="pkg-price">1,200</span>
+            <span style="font-size: 13.5px; color: var(--charcoal-muted); margin-left: 4px;">one-time activation</span>
+          </div>
+
+          <div class="pkg-reward-callout">
+            <span class="svg-icon" style="width: 20px; height: 20px; color: var(--primary-purple);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </span>
+            <div class="pkg-reward-text">
+              KSh 100 per approved view
+              <div style="font-size: 12px; font-weight: 500; color: var(--charcoal-muted);">Up to 200 views per 18h task</div>
+            </div>
+          </div>
+
+          <!-- Unique Status Views Limit Callout -->
+          <div style="background: linear-gradient(135deg, #FAF5FF, #F3E8FF); border: 1.5px dashed #C084FC; border-radius: 8px; padding: 10px 14px; margin: 12px 0;">
+            <div style="font-size: 13px; font-weight: 850; color: #581C87; display: flex; align-items: center; justify-content: space-between;">
+              <span>📱 Views Payout Limit:</span>
+              <span style="font-size: 14px; color: #6D28D9; font-weight: 950;">Min KSh 12,000</span>
+            </div>
+            <div style="font-size: 11px; color: #047857; font-weight: 750; margin-top: 4px; display: flex; align-items: center; gap: 4px;">
+              <span>👥 45% Referral earnings withdrawable separately anytime (min KSh 100)</span>
+            </div>
+          </div>
+
+          <ul class="pkg-feature-list">
+            <li class="pkg-feature-item">
+              <span class="svg-icon check-icon" style="width: 16px; height: 16px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
+              <span>KSh 100 per approved view</span>
+            </li>
+            <li class="pkg-feature-item">
+              <span class="svg-icon check-icon" style="width: 16px; height: 16px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
+              <span>Pay KSh 1,200 activation fee</span>
+            </li>
+            <li class="pkg-feature-item">
+              <span class="svg-icon check-icon" style="width: 16px; height: 16px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
+              <span>Up to 200 views per 24h task</span>
+            </li>
+            <li class="pkg-feature-item">
+              <span class="svg-icon check-icon" style="width: 16px; height: 16px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
+              <span>VIP instant M-Pesa processing</span>
+            </li>
+            <li class="pkg-feature-item">
+              <span class="svg-icon check-icon" style="width: 16px; height: 16px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
+              <span>Executive campaign sponsorships</span>
+            </li>
+          </ul>
+
+          <button class="btn btn-secondary btn-block btn-lg" onclick="triggerPackageActivation('pkg_premium', 'Premium', 1200)">
+            Activate Premium (KSh 1,200)
+          </button>
         </div>
       </div>
 
@@ -8044,14 +8252,20 @@
       animateCounters(true);
       initInactivityTracker();
       renderHeroShowcase([]);
-      await checkAuthSession();
-      if (AppState.user) {
-        fetchReferralData();
-      }
-      await fetchPackages();
-      await fetchProductsPosts();
-      updateCalculator();
+
+      // 1. FAST ZERO-LATENCY INSTANT PACKAGES & CALCULATOR RENDER
+      initFastPackages();
+      initFastProductsPosts();
       initWeeklyTimetable();
+
+      // 2. RUN NETWORK CALLS CONCURRENTLY IN PARALLEL (ELIMINATE WATERFALL)
+      Promise.allSettled([
+        checkAuthSession().then(() => {
+          if (AppState.user) fetchReferralData();
+        }),
+        fetchPackages(),
+        fetchProductsPosts()
+      ]);
 
       setupCountersObserver();
     });
@@ -8075,6 +8289,15 @@
             AppState.stats = data.stats;
             renderAuthenticatedUI();
             renderPackageGatingBanner();
+
+            // Strict admin check: Eject non-admin email from admin view immediately
+            const isAuthorizedAdmin = AppState.user.role === 'admin' && 
+                                      AppState.user.email && 
+                                      AppState.user.email.toLowerCase() === 'mentorbravin@gmail.com';
+            const adminView = document.getElementById('view-admin');
+            if (adminView && adminView.classList.contains('active-view') && !isAuthorizedAdmin) {
+              switchView('dashboard');
+            }
             return true;
           }
         } else if (res.status === 401 || res.status === 403) {
@@ -8130,12 +8353,17 @@
       const mobDashWithdraw = document.getElementById('mob-nav-dash-withdraw');
       if (mobDashWithdraw) mobDashWithdraw.style.display = 'flex';
 
-      // Toggle Admin navigation for admin role
+      // Toggle Admin navigation for admin role - strictly mentorbravin@gmail.com
       const btnAdmin = document.getElementById('btn-admin-nav');
       const navAdmin = document.getElementById('nav-admin-link');
       const mobAdmin = document.getElementById('mob-nav-admin');
 
-      if (AppState.user && AppState.user.role === 'admin') {
+      const isAuthorizedAdmin = AppState.user && 
+                                AppState.user.role === 'admin' && 
+                                AppState.user.email && 
+                                AppState.user.email.toLowerCase() === 'mentorbravin@gmail.com';
+
+      if (isAuthorizedAdmin) {
         if (btnAdmin) btnAdmin.style.display = 'inline-flex';
         if (navAdmin) navAdmin.style.display = 'block';
         if (mobAdmin) mobAdmin.style.display = 'flex';
@@ -8429,8 +8657,17 @@
       }
 
       if (viewName === 'admin') {
-        if (!AppState.user || AppState.user.role !== 'admin') {
-          showAuthModal('login');
+        const isAuthorizedAdmin = AppState.user && 
+                                  AppState.user.role === 'admin' && 
+                                  AppState.user.email && 
+                                  AppState.user.email.toLowerCase() === 'mentorbravin@gmail.com';
+        if (!isAuthorizedAdmin) {
+          if (AppState.user) {
+            switchView('dashboard');
+            alert('Access restricted: Only the authorized administrator email (mentorbravin@gmail.com) can access the Administration Center.');
+          } else {
+            showAuthModal('login');
+          }
           return;
         }
       }
@@ -8603,19 +8840,101 @@
     }
 
     // ====================================================================
-    // PACKAGES & CALCULATOR
+    // PACKAGES & CALCULATOR (FAST ZERO-WAIT ARCHITECTURE)
     // ====================================================================
+    const DEFAULT_PACKAGES = [
+      {
+        id: 'pkg_starter',
+        name: 'Starter Pro',
+        slug: 'starter-z',
+        price_ksh: 250,
+        reward_per_view_ksh: 20,
+        max_views_per_task: 50,
+        min_withdrawal_views_ksh: 5000,
+        badge: 'Entry Tier',
+        features: [
+          "KSh 20 per approved view",
+          "Pay KSh 250 activation fee",
+          "Up to 50 views per 24h task",
+          "Direct M-Pesa withdrawals",
+          "Standard campaign access"
+        ]
+      },
+      {
+        id: 'pkg_exclusive',
+        name: 'Exclusive',
+        slug: 'exclusive',
+        price_ksh: 500,
+        reward_per_view_ksh: 50,
+        max_views_per_task: 100,
+        min_withdrawal_views_ksh: 8000,
+        badge: 'Most Popular',
+        features: [
+          "KSh 50 per approved view",
+          "Pay KSh 500 activation fee",
+          "Up to 100 views per 24h task",
+          "Priority M-Pesa processing",
+          "Priority brand campaign access"
+        ]
+      },
+      {
+        id: 'pkg_premium',
+        name: 'Premium',
+        slug: 'premium',
+        price_ksh: 1200,
+        reward_per_view_ksh: 100,
+        max_views_per_task: 200,
+        min_withdrawal_views_ksh: 12000,
+        badge: 'Maximum Earnings',
+        features: [
+          "KSh 100 per approved view",
+          "Pay KSh 1,200 activation fee",
+          "Up to 200 views per 24h task",
+          "VIP instant M-Pesa processing",
+          "Executive campaign sponsorships"
+        ]
+      }
+    ];
+
+    function initFastPackages() {
+      let initialPackages = DEFAULT_PACKAGES;
+      try {
+        const cached = localStorage.getItem('almai_cached_packages');
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length) {
+            initialPackages = parsed;
+          }
+        }
+      } catch (e) {}
+
+      AppState.packages = initialPackages;
+      renderPackagesList(AppState.packages);
+      updateCalculator();
+    }
+
     async function fetchPackages() {
       try {
         const res = await fetch('/api/packages');
         if (res.ok) {
           const data = await res.json();
-          AppState.packages = data.packages || [];
+          if (Array.isArray(data.packages) && data.packages.length) {
+            AppState.packages = data.packages;
+            try {
+              localStorage.setItem('almai_cached_packages', JSON.stringify(data.packages));
+            } catch (e) {}
+          }
           AppState.paymentSettings = data.paymentSettings || null;
           renderPackagesList(AppState.packages);
+          updateCalculator();
         }
       } catch (err) {
-        console.error('Error fetching packages:', err);
+        console.warn('Network fetch packages fallback:', err);
+        if (!AppState.packages || !AppState.packages.length) {
+          AppState.packages = DEFAULT_PACKAGES;
+          renderPackagesList(AppState.packages);
+          updateCalculator();
+        }
       }
     }
 
@@ -8724,21 +9043,36 @@
     // Admin-posted products only - no mock posts
     const defaultWeeklyCampaignPosts = [];
 
+    function initFastProductsPosts() {
+      try {
+        const cached = localStorage.getItem('almai_cached_products_posts');
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length) {
+            AppState.productsPosts = parsed;
+            renderProductsPosts(AppState.productsPosts);
+          }
+        }
+      } catch (e) {}
+    }
+
     async function fetchProductsPosts() {
       try {
         const res = await fetch('/api/products-posts');
         if (res.ok) {
           const data = await res.json();
           const remotePosts = (data && (data.posts || data.productPosts)) || [];
-          AppState.productsPosts = Array.isArray(remotePosts) ? remotePosts : [];
-        } else {
-          AppState.productsPosts = [];
+          if (Array.isArray(remotePosts) && remotePosts.length) {
+            AppState.productsPosts = remotePosts;
+            try {
+              localStorage.setItem('almai_cached_products_posts', JSON.stringify(remotePosts));
+            } catch (e) {}
+          }
         }
       } catch (err) {
         console.warn('Failed to fetch product creatives from server:', err);
-        AppState.productsPosts = [];
       }
-      renderProductsPosts(AppState.productsPosts);
+      renderProductsPosts(AppState.productsPosts || []);
     }
 
     let activeProductCategoryFilter = 'all';
@@ -9417,7 +9751,7 @@
 
           // Background sync to refresh wallet, referral stats, packages
           checkAuthSession().then(() => {
-            if (AppState.user && AppState.user.role === 'admin') {
+            if (AppState.user && AppState.user.role === 'admin' && AppState.user.email && AppState.user.email.toLowerCase() === 'mentorbravin@gmail.com') {
               switchAdminTab('payments');
             } else {
               loadDashboardData();
@@ -10075,14 +10409,27 @@
     // ADMINISTRATOR CONSOLE LOGIC
     // ====================================================================
     function openAdminModal() {
-      if (!AppState.user || AppState.user.role !== 'admin') {
-        alert('Administrator access required.');
+      const isAuthorizedAdmin = AppState.user && 
+                                AppState.user.role === 'admin' && 
+                                AppState.user.email && 
+                                AppState.user.email.toLowerCase() === 'mentorbravin@gmail.com';
+      if (!isAuthorizedAdmin) {
+        alert('Access restricted: Only the authorized administrator email (mentorbravin@gmail.com) can access the Administration Center.');
         return;
       }
       switchView('admin');
     }
 
     function switchAdminTab(tab) {
+      const isAuthorizedAdmin = AppState.user && 
+                                AppState.user.role === 'admin' && 
+                                AppState.user.email && 
+                                AppState.user.email.toLowerCase() === 'mentorbravin@gmail.com';
+      if (!isAuthorizedAdmin) {
+        switchView('dashboard');
+        return;
+      }
+
       const tabs = ['payments', 'users', 'products', 'tasks', 'withdrawals', 'stats', 'audit'];
       tabs.forEach(t => {
         const btn = document.getElementById(`atab-${t}`);

@@ -29,6 +29,8 @@ export async function onRequestGet(context) {
     return jsonSuccess({
       posts: results || [],
       productPosts: results || []
+    }, 200, {
+      'Cache-Control': 'public, max-age=60, s-maxage=300, stale-while-revalidate=600'
     });
 
   } catch (err) {

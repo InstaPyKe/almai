@@ -436,6 +436,8 @@ async function onRequestGet4(context) {
     `).all();
     return jsonSuccess({
       productPosts: results || []
+    }, 200, {
+      "Cache-Control": "public, max-age=60, s-maxage=300, stale-while-revalidate=600"
     });
   } catch (err) {
     console.error("Admin fetch product posts error:", err);
@@ -1694,6 +1696,8 @@ async function onRequestGet12(context) {
         paybill: env.MPESA_PAYBILL_NUMBER || env.MPESA_TILL_NUMBER || "1870141",
         accountNumber: env.MPESA_ACCOUNT_NUMBER || ""
       }
+    }, 200, {
+      "Cache-Control": "public, max-age=60, s-maxage=300, stale-while-revalidate=600"
     });
   } catch (err) {
     console.error("Fetch packages error:", err);
@@ -1796,6 +1800,8 @@ async function onRequestGet13(context) {
     `).all();
     return jsonSuccess({
       productPosts: results || []
+    }, 200, {
+      "Cache-Control": "public, max-age=60, s-maxage=300, stale-while-revalidate=600"
     });
   } catch (err) {
     console.error("Fetch product posts error:", err);
