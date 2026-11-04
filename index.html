@@ -167,6 +167,55 @@
       align-items: center;
       gap: 8px;
     }
+    .brand-title-marquee-wrap {
+      position: relative;
+      overflow: hidden;
+      max-width: clamp(280px, 32vw, 480px);
+      white-space: nowrap;
+      mask-image: linear-gradient(90deg, transparent 0%, #000 14px, #000 calc(100% - 14px), transparent 100%);
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 14px, #000 calc(100% - 14px), transparent 100%);
+    }
+    .brand-marquee-track {
+      display: inline-flex;
+      align-items: center;
+      width: max-content;
+      animation: brandMoveLeftToRight 15s linear infinite;
+      will-change: transform;
+    }
+    .brand-logo:hover .brand-marquee-track,
+    .brand-title-marquee-wrap:hover .brand-marquee-track {
+      animation-play-state: paused;
+    }
+    .brand-marquee-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding-right: 28px;
+      flex-shrink: 0;
+    }
+    .brand-marquee-bullet {
+      color: #BE185D;
+      opacity: 0.7;
+      font-size: 16px;
+      margin-left: 6px;
+      display: inline-flex;
+      align-items: center;
+      user-select: none;
+    }
+    @keyframes brandMoveLeftToRight {
+      0% {
+        transform: translateX(-50%);
+      }
+      100% {
+        transform: translateX(0%);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .brand-marquee-track {
+        animation: none !important;
+        transform: none !important;
+      }
+    }
     .brand-title-main {
       font-family: 'Plus Jakarta Sans', 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       font-style: normal;
@@ -3638,17 +3687,27 @@
         min-width: 0;
         overflow: hidden;
       }
+      .brand-title-marquee-wrap {
+        max-width: calc(100vw - 120px) !important;
+      }
+      .brand-marquee-track {
+        animation-duration: 12s;
+      }
       .brand-title-main {
         font-family: 'Plus Jakarta Sans', 'Space Grotesk', system-ui, sans-serif;
         font-style: normal;
         font-weight: 950;
         font-size: clamp(14px, 3.6vw, 19px);
         white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: block;
-        max-width: 100%;
+        overflow: visible;
+        text-overflow: clip;
+        display: inline-block;
+        max-width: none;
         text-transform: uppercase;
+      }
+      .brand-marquee-item {
+        padding-right: 18px;
+        gap: 6px;
       }
       .brand-tag {
         display: none !important;
@@ -5688,11 +5747,21 @@
        ==================================================================== -->
   <header class="navbar">
     <div class="container nav-inner">
-      <div class="brand-logo" onclick="switchView('home')" style="cursor: pointer;">
+      <div class="brand-logo" onclick="switchView('home')" style="cursor: pointer;" title="ALMAI PRODUCTS ADVERTISEMENT COMPANY">
         <div class="brand-logo-icon">A</div>
-        <div class="brand-title-wrap">
-          <span class="brand-title-main">ALMAI PRODUCTS ADVERTISEMENT COMPANY</span>
-          <span class="brand-tag">KENYA</span>
+        <div class="brand-title-wrap brand-title-marquee-wrap">
+          <div class="brand-marquee-track">
+            <div class="brand-marquee-item">
+              <span class="brand-title-main">ALMAI PRODUCTS ADVERTISEMENT COMPANY</span>
+              <span class="brand-tag">KENYA</span>
+              <span class="brand-marquee-bullet" aria-hidden="true">✦</span>
+            </div>
+            <div class="brand-marquee-item" aria-hidden="true">
+              <span class="brand-title-main">ALMAI PRODUCTS ADVERTISEMENT COMPANY</span>
+              <span class="brand-tag">KENYA</span>
+              <span class="brand-marquee-bullet" aria-hidden="true">✦</span>
+            </div>
+          </div>
         </div>
       </div>
 
