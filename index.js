@@ -1666,10 +1666,12 @@ async function onRequestGet12(context) {
       paymentSettings: {
         isMpesaAutomated: isMpesaConfigured,
         paymentMode: isMpesaConfigured ? "automated_stk" : "manual_till",
-        paybill: env.MPESA_PAYBILL_NUMBER || "522533",
-        accountNumber: env.MPESA_ACCOUNT_NUMBER || "8106675",
-        paybillOrTill: `Paybill: ${env.MPESA_PAYBILL_NUMBER || "522533"} (Account: ${env.MPESA_ACCOUNT_NUMBER || "8106675"}, Name: ${env.MPESA_BUSINESS_NAME || "JASPER MARKETS"})`,
-        businessName: env.MPESA_BUSINESS_NAME || "JASPER MARKETS"
+        tillNumber: env.MPESA_TILL_NUMBER || "1870141",
+        businessName: env.MPESA_BUSINESS_NAME || "ALMAIZA AGENCIES",
+        method: "Buy Goods and Services",
+        paybillOrTill: `Buy Goods Till: ${env.MPESA_TILL_NUMBER || "1870141"} (${env.MPESA_BUSINESS_NAME || "ALMAIZA AGENCIES"})`,
+        paybill: env.MPESA_PAYBILL_NUMBER || env.MPESA_TILL_NUMBER || "1870141",
+        accountNumber: env.MPESA_ACCOUNT_NUMBER || ""
       }
     });
   } catch (err) {

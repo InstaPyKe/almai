@@ -34,3 +34,4 @@ SET referrals_balance_ksh = MIN(available_balance_ksh, referrals_balance_ksh);
 
 UPDATE wallets 
 SET views_balance_ksh = MAX(0, available_balance_ksh - referrals_balance_ksh);
+

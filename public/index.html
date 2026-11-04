@@ -6091,7 +6091,7 @@
             <span class="faq-arrow">▼</span>
           </div>
           <div class="faq-answer">
-            <p>You can activate via Safaricom M-Pesa Lipa na M-Pesa using <strong>Paybill 522533</strong> (Business Name: <strong>JASPER MARKETS</strong>) and <strong>Account 8106675</strong>. After sending the exact fee (KSh 250 for Starter Pro, KSh 500 for Exclusive, or KSh 1,200 for Premium), paste your M-Pesa confirmation code in your dashboard to activate immediately.</p>
+            <p>You can activate via Safaricom M-Pesa <strong>Buy Goods and Services (Till Number)</strong> using <strong>Till Number: 1870141</strong> (Store Name: <strong>ALMAIZA AGENCIES</strong>). After sending the exact fee (KSh 250 for Starter Pro, KSh 500 for Exclusive, or KSh 1,200 for Premium), paste your M-Pesa confirmation code in your dashboard to activate immediately.</p>
           </div>
         </div>
 
@@ -7004,18 +7004,19 @@
 
       <div style="background: #F3E8FF; border: 1.5px solid #D8B4FE; border-radius: var(--radius-sm); padding: 18px; margin-bottom: 20px;">
         <div style="font-weight: 850; color: var(--deep-purple-heading); font-size: 15.5px; margin-bottom: 8px;">
-          Lipa na M-Pesa Payment Steps:
+          Lipa na M-Pesa Payment Steps (Buy Goods Till):
         </div>
         <ol style="padding-left: 20px; font-size: 14.5px; color: var(--charcoal-text); line-height: 1.65; font-weight: 600;">
-          <li>Open Safaricom M-Pesa on your mobile phone</li>
-          <li>Select <strong>Lipa na M-Pesa</strong> &gt; <strong>Paybill</strong></li>
-          <li>Enter Business Number: <strong id="modal-paybill-num" style="color: var(--primary-purple); font-size: 16px;">522533</strong></li>
-          <li>Enter Account Number: <strong id="modal-acc-num" style="color: var(--primary-purple); font-size: 16px;">8106675</strong></li>
-          <li>Confirm Business Name: <strong id="modal-biz-name" style="color: #166534; font-size: 15.5px; background: #DCFCE7; padding: 2px 8px; border-radius: 4px; display: inline-block;">JASPER MARKETS</strong></li>
+          <li>Open Safaricom M-Pesa on your mobile phone (SIM Toolkit, M-Pesa App, or dial <code>*334#</code>)</li>
+          <li>Select <strong>Lipa na M-Pesa</strong> &gt; <strong>Buy Goods and Services</strong></li>
+          <li>Enter Till Number: <strong id="modal-till-num" style="color: var(--primary-purple); font-size: 18px; letter-spacing: 0.5px; background: #FFFFFF; padding: 2px 8px; border-radius: 4px; border: 1px solid #DDD6FE;">1870141</strong></li>
+          <li>Confirm Store / Business Name: <strong id="modal-biz-name" style="color: #166534; font-size: 15.5px; background: #DCFCE7; padding: 2px 8px; border-radius: 4px; display: inline-block;">ALMAIZA AGENCIES</strong></li>
           <li>Enter Package Amount: <strong id="modal-pkg-amount" style="color: var(--deep-purple-heading); font-size: 16px;">KSh 250</strong></li>
           <li>Enter your M-Pesa PIN and press OK to send</li>
           <li>Copy the 10-character confirmation code received via SMS (e.g. <code>SLK94HJ12X</code>) and enter it below</li>
         </ol>
+        <span id="modal-paybill-num" style="display: none;">1870141</span>
+        <span id="modal-acc-num" style="display: none;"></span>
       </div>
 
       <form id="form-activate-pkg" onsubmit="handlePackageActivationSubmit(event)">
@@ -8455,6 +8456,7 @@
         if (res.ok) {
           const data = await res.json();
           AppState.packages = data.packages || [];
+          AppState.paymentSettings = data.paymentSettings || null;
           renderPackagesList(AppState.packages);
         }
       } catch (err) {
@@ -9712,12 +9714,17 @@
       document.getElementById('modal-pkg-subtitle').textContent = `${name} — Pay KSh ${price.toLocaleString()} Activation`;
       document.getElementById('modal-pkg-amount').textContent = `KSh ${price.toLocaleString()}`;
       
+      const till = AppState.paymentSettings?.tillNumber || '1870141';
+      const biz = AppState.paymentSettings?.businessName || 'ALMAIZA AGENCIES';
+
+      const tillEl = document.getElementById('modal-till-num');
+      if (tillEl) tillEl.textContent = till;
       const paybillEl = document.getElementById('modal-paybill-num');
-      if (paybillEl) paybillEl.textContent = '522533';
+      if (paybillEl) paybillEl.textContent = till;
       const accEl = document.getElementById('modal-acc-num');
-      if (accEl) accEl.textContent = '8106675';
+      if (accEl) accEl.textContent = '';
       const bizEl = document.getElementById('modal-biz-name');
-      if (bizEl) bizEl.textContent = 'JASPER MARKETS';
+      if (bizEl) bizEl.textContent = biz;
 
       document.getElementById('activate-phone').value = AppState.user.phone || '';
       document.getElementById('activate-pkg-alert').style.display = 'none';

@@ -161,7 +161,8 @@ npx wrangler pages deploy . --project-name=almai
 ### Step 5: Configure Production Secrets
 Under **Settings** > **Environment variables** (Production), configure:
 - `ADMIN_SETUP_SECRET`: A strong secret key used for administrative promotion.
-- `MPESA_PAYBILL_NUMBER`: e.g. `Paybill 522533 (Account: 8106675)` or your Till Number.
+- `MPESA_TILL_NUMBER`: e.g. `1870141` (Buy Goods and Services).
+- `MPESA_BUSINESS_NAME`: e.g. `ALMAIZA AGENCIES`.
 - *(Optional for automated STK Push)*:
   - `MPESA_CONSUMER_KEY`
   - `MPESA_CONSUMER_SECRET`
@@ -204,7 +205,7 @@ Once logged in as an administrator:
 - **Floating WhatsApp Support Widget:** Available on all pages in the bottom-right corner linked directly to WhatsApp number `+447455909204`.
 - **Live Kenyan Disbursements Stream:** Continuous marquee ticker highlighting real-time M-Pesa payouts across Nairobi, Mombasa, Kisumu, Eldoret, Nakuru, and other towns.
 - **Hero Trust Bar & Verification Highlights:** Instant M-Pesa, Cloudflare D1 persistent ledger, 18-hour cooldown, and 14,000+ active partner badges.
-- **Interactive FAQ Accordion:** Fast collapsible answers covering payouts, package activations (Paybill 522533 / Acc 8106675), cooldown rules, and business advertising inquiries.
+- **Interactive FAQ Accordion:** Fast collapsible answers covering payouts, package activations (Buy Goods Till 1870141 - ALMAIZA AGENCIES), cooldown rules, and business advertising inquiries.
 
 ---
 
@@ -216,7 +217,7 @@ Once logged in as an administrator:
    - Verify `/api/auth/me` returns the authenticated profile.
 2. **Package Activation:**
    - Go to "Packages & Pricing", select Starter Pro (KSh 250), Exclusive (KSh 500), or Premium (KSh 1,200).
-   - Send payment to Safaricom Lipa na M-Pesa: **Paybill 522533**, **Account 8106675**.
+   - Send payment to Safaricom Lipa na M-Pesa **Buy Goods and Services**: **Till 1870141** (**ALMAIZA AGENCIES**).
    - Enter payment phone and M-Pesa confirmation code.
    - Verify package becomes active in dashboard immediately.
 3. **Task Cooldown & Submission (18-Hour Rule):**
