@@ -6483,7 +6483,7 @@
                   <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
                   <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
                 </svg>
-                <input type="text" id="dash-referral-link-input" readonly value="Loading referral link..." onclick="this.select()">
+                <input type="text" id="dash-referral-link-input" readonly placeholder="Generating unique referral link..." value="" onclick="this.select()">
               </div>
               <div class="referral-share-btns">
                 <button type="button" class="btn btn-copy-ref" id="btn-copy-ref" onclick="copyReferralLink()">
@@ -7905,6 +7905,9 @@
       initInactivityTracker();
       renderHeroShowcase([]);
       await checkAuthSession();
+      if (AppState.user) {
+        fetchReferralData();
+      }
       await fetchPackages();
       await fetchProductsPosts();
       updateCalculator();
@@ -8012,6 +8015,18 @@
       if (avatarEl && AppState.user.name) {
         avatarEl.textContent = AppState.user.name.trim().charAt(0).toUpperCase();
       }
+
+      // Immediately populate referral link & code from authenticated session
+      const userRefCode = (AppState.user && (AppState.user.referralCode || AppState.user.referral_code)) || 
+                          (AppState.user?.id ? 'ALM' + AppState.user.id.replace(/[^a-zA-Z0-9]/g, '').substring(0, 6).toUpperCase() : 'ALM-PARTNER');
+      const pageOrigin = window.location.origin || 'https://almai.co.ke';
+      const userRefLink = `${pageOrigin}/?ref=${encodeURIComponent(userRefCode)}`;
+
+      const codeDisplayEl = document.getElementById('dash-referral-code-display');
+      if (codeDisplayEl) codeDisplayEl.textContent = userRefCode;
+
+      const linkInputEl = document.getElementById('dash-referral-link-input');
+      if (linkInputEl) linkInputEl.value = userRefLink;
       
       const pkgName = AppState.activePackage ? AppState.activePackage.name : (AppState.pendingPackage ? 'Verification Pending' : 'No Active Package');
       document.getElementById('dash-pkg-tag').textContent = pkgName;
@@ -9357,11 +9372,18 @@
     // DASHBOARD & DATA LOADING
     // ====================================================================
     async function loadDashboardData() {
+      // Immediately render referral link if user is already in session
+      if (AppState.user) {
+        renderReferralDashboard(null);
+      }
       await checkAuthSession();
-      await fetchUserTasks();
-      await fetchUserWithdrawals();
-      await fetchProductsPosts();
-      await fetchReferralData();
+      // Fetch dashboard datasets concurrently so no single request blocks the others
+      await Promise.allSettled([
+        fetchUserTasks(),
+        fetchUserWithdrawals(),
+        fetchProductsPosts(),
+        fetchReferralData()
+      ]);
     }
 
     async function fetchUserTasks() {
@@ -10828,21 +10850,28 @@
     // 45% REFERRAL SYSTEM CONTROLLER
     // ====================================================================
     async function fetchReferralData() {
+      // Ensure referral link and code are visible immediately from session state
+      renderReferralDashboard(null);
+
       try {
         const res = await fetch('/api/referrals');
         if (res.ok) {
           const data = await res.json();
           renderReferralDashboard(data);
+        } else {
+          renderReferralDashboard(null);
         }
       } catch (err) {
-        console.error('Fetch referral data error:', err);
+        console.warn('Fetch referral data error:', err);
+        renderReferralDashboard(null);
       }
     }
 
     function renderReferralDashboard(data) {
-      if (!data) return;
-      const refCode = data.referralCode || (AppState.user && AppState.user.referralCode) || 'ALM-PARTNER';
-      const origin = window.location.origin;
+      const refCode = (data && data.referralCode) || 
+                      (AppState.user && (AppState.user.referralCode || AppState.user.referral_code)) || 
+                      (AppState.user?.id ? 'ALM' + AppState.user.id.replace(/[^a-zA-Z0-9]/g, '').substring(0, 6).toUpperCase() : 'ALM-PARTNER');
+      const origin = window.location.origin || 'https://almai.co.ke';
       const refLink = `${origin}/?ref=${encodeURIComponent(refCode)}`;
 
       const codeEl = document.getElementById('dash-referral-code-display');
@@ -10850,6 +10879,8 @@
 
       const linkEl = document.getElementById('dash-referral-link-input');
       if (linkEl) linkEl.value = refLink;
+
+      if (!data) return;
 
       const earnEl = document.getElementById('dash-ref-earnings');
       if (earnEl) earnEl.textContent = `KSh ${(data.totalEarningsKsh || 0).toLocaleString()}`;
@@ -10949,7 +10980,14 @@
     async function copyReferralLink() {
       const input = document.getElementById('dash-referral-link-input');
       if (!input) return;
-      const textToCopy = input.value;
+
+      let textToCopy = input.value;
+      if (!textToCopy || textToCopy.includes('Loading') || textToCopy.includes('Generating')) {
+        const refCode = (AppState.user && (AppState.user.referralCode || AppState.user.referral_code)) || document.getElementById('dash-referral-code-display')?.textContent || 'ALM-PARTNER';
+        textToCopy = `${window.location.origin}/?ref=${encodeURIComponent(refCode)}`;
+        input.value = textToCopy;
+      }
+
       const btn = document.getElementById('btn-copy-ref');
       const btnText = document.getElementById('btn-copy-ref-text');
 
@@ -10975,8 +11013,8 @@
     }
 
     function shareReferralWhatsApp() {
-      const code = (AppState.user && AppState.user.referralCode) || document.getElementById('dash-referral-code-display')?.textContent || '';
-      const origin = window.location.origin;
+      const code = (AppState.user && (AppState.user.referralCode || AppState.user.referral_code)) || document.getElementById('dash-referral-code-display')?.textContent || 'ALM-PARTNER';
+      const origin = window.location.origin || 'https://almai.co.ke';
       const link = `${origin}/?ref=${encodeURIComponent(code)}`;
       const text = `🔥 Hey! Join me on Almai Products — the #1 WhatsApp Status Monetization Partner Platform in Kenya. Earn guaranteed daily cash for status views, plus instant 45% referral commissions on every partner downline! Register here: ${link}`;
       window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');

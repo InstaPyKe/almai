@@ -14,13 +14,32 @@ export async function onRequestGet(context) {
   const user = auth.user;
 
   try {
-    // 1. Fetch wallet data
-    let wallet = await env.DB.prepare(`
-      SELECT available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
-      FROM wallets
-      WHERE user_id = ?
-      LIMIT 1
-    `).bind(user.id).first();
+    // 1. Fetch wallet data (defensive)
+    let wallet = null;
+    try {
+      wallet = await env.DB.prepare(`
+        SELECT available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
+        FROM wallets
+        WHERE user_id = ?
+        LIMIT 1
+      `).bind(user.id).first();
+    } catch (e) {
+      try {
+        const legacyWallet = await env.DB.prepare(`
+          SELECT available_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
+          FROM wallets
+          WHERE user_id = ?
+          LIMIT 1
+        `).bind(user.id).first();
+        if (legacyWallet) {
+          wallet = {
+            ...legacyWallet,
+            views_balance_ksh: legacyWallet.available_balance_ksh || 0,
+            referrals_balance_ksh: 0
+          };
+        }
+      } catch (e2) {}
+    }
 
     if (!wallet) {
       wallet = {

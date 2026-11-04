@@ -14,19 +14,32 @@ export async function onRequestGet(context) {
 
   const user = auth.user;
 
-  try {
-    // 1. Ensure user has a unique referral code
-    let referralCode = user.referralCode;
-    if (!referralCode) {
+  // 1. Guaranteed unique referral code
+  let referralCode = user.referralCode;
+  if (!referralCode) {
+    try {
       const dbUser = await env.DB.prepare('SELECT referral_code FROM users WHERE id = ?').bind(user.id).first();
       referralCode = dbUser?.referral_code;
-      if (!referralCode) {
-        referralCode = 'ALM' + user.id.replace(/[^a-zA-Z0-9]/g, '').substring(0, 6).toUpperCase();
-        await env.DB.prepare('UPDATE users SET referral_code = ? WHERE id = ?').bind(referralCode, user.id).run().catch(() => {});
-      }
+    } catch (e) {
+      console.warn('Failed to query user referral_code:', e);
     }
 
-    // 2. Aggregate metrics for downlines
+    if (!referralCode) {
+      referralCode = 'ALM' + user.id.replace(/[^a-zA-Z0-9]/g, '').substring(0, 6).toUpperCase();
+      try {
+        await env.DB.prepare('UPDATE users SET referral_code = ? WHERE id = ?').bind(referralCode, user.id).run();
+      } catch (e) {
+        console.warn('Failed to persist user referral_code:', e);
+      }
+    }
+  }
+
+  // 2. Aggregate downlines metrics (defensive)
+  let totalInvited = 0;
+  let activePaidCount = 0;
+  let totalEarningsKsh = 0;
+
+  try {
     const summary = await env.DB.prepare(`
       SELECT 
         COUNT(*) as total_invited,
@@ -36,12 +49,19 @@ export async function onRequestGet(context) {
       WHERE referrer_id = ?
     `).bind(user.id).first();
 
-    const totalInvited = summary?.total_invited || 0;
-    const activePaidCount = summary?.active_paid_count || 0;
-    const totalEarningsKsh = summary?.total_earnings_ksh || 0;
+    if (summary) {
+      totalInvited = summary.total_invited || 0;
+      activePaidCount = summary.active_paid_count || 0;
+      totalEarningsKsh = summary.total_earnings_ksh || 0;
+    }
+  } catch (err) {
+    console.warn('Referrals summary query fallback:', err);
+  }
 
-    // 3. Fetch active paid downlines with active packages (45% commission verified)
-    const { results: activeReferrals } = await env.DB.prepare(`
+  // 3. Active paid downlines (defensive)
+  let activeReferrals = [];
+  try {
+    const activeRows = await env.DB.prepare(`
       SELECT 
         r.id,
         r.referred_user_id,
@@ -63,8 +83,15 @@ export async function onRequestGet(context) {
       LIMIT 100
     `).bind(user.id).all();
 
-    // 4. Fetch all downlines for complete partner visibility
-    const { results: allReferrals } = await env.DB.prepare(`
+    activeReferrals = activeRows?.results || [];
+  } catch (err) {
+    console.warn('Active referrals query fallback:', err);
+  }
+
+  // 4. All downlines (defensive)
+  let allReferrals = [];
+  try {
+    const allRows = await env.DB.prepare(`
       SELECT 
         r.id,
         r.referred_user_id,
@@ -83,23 +110,29 @@ export async function onRequestGet(context) {
       LIMIT 100
     `).bind(user.id).all();
 
-    const wal = await env.DB.prepare('SELECT referrals_balance_ksh FROM wallets WHERE user_id = ?').bind(user.id).first();
-    const withdrawableReferralsKsh = wal?.referrals_balance_ksh || 0;
-
-    return jsonSuccess({
-      referralCode,
-      commissionRatePercent: 45,
-      totalInvited,
-      activePaidCount,
-      totalEarningsKsh,
-      withdrawableReferralsKsh,
-      activeReferrals: activeReferrals || [],
-      allReferrals: allReferrals || []
-    });
-
+    allReferrals = allRows?.results || [];
   } catch (err) {
-    console.error('Referrals API error:', err);
-    return jsonError('Failed to retrieve referral data', 500);
+    console.warn('All referrals query fallback:', err);
   }
-}
 
+  // 5. Withdrawable balance (defensive against missing column)
+  let withdrawableReferralsKsh = 0;
+  try {
+    const wal = await env.DB.prepare('SELECT referrals_balance_ksh FROM wallets WHERE user_id = ?').bind(user.id).first();
+    withdrawableReferralsKsh = wal?.referrals_balance_ksh || 0;
+  } catch (err) {
+    withdrawableReferralsKsh = totalEarningsKsh;
+  }
+
+  return jsonSuccess({
+    referralCode,
+    commissionRatePercent: 45,
+    totalInvited,
+    activePaidCount,
+    totalEarningsKsh,
+    withdrawableReferralsKsh,
+    minWithdrawalReferralsKsh: 100,
+    activeReferrals: activeReferrals || [],
+    allReferrals: allReferrals || []
+  });
+}

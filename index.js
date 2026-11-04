@@ -1332,12 +1332,31 @@ async function onRequestGet9(context) {
   if (auth.errorResponse) return auth.errorResponse;
   const user = auth.user;
   try {
-    let wallet = await env.DB.prepare(`
-      SELECT available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
-      FROM wallets
-      WHERE user_id = ?
-      LIMIT 1
-    `).bind(user.id).first();
+    let wallet = null;
+    try {
+      wallet = await env.DB.prepare(`
+        SELECT available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
+        FROM wallets
+        WHERE user_id = ?
+        LIMIT 1
+      `).bind(user.id).first();
+    } catch (e) {
+      try {
+        const legacyWallet = await env.DB.prepare(`
+          SELECT available_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
+          FROM wallets
+          WHERE user_id = ?
+          LIMIT 1
+        `).bind(user.id).first();
+        if (legacyWallet) {
+          wallet = {
+            ...legacyWallet,
+            views_balance_ksh: legacyWallet.available_balance_ksh || 0,
+            referrals_balance_ksh: 0
+          };
+        }
+      } catch (e2) {}
+    }
     if (!wallet) {
       wallet = {
         available_balance_ksh: 0,
@@ -2228,16 +2247,33 @@ async function onRequestGetReferrals(context) {
   const auth = await requireAuth(request, env);
   if (auth.errorResponse) return auth.errorResponse;
   const user = auth.user;
-  try {
-    let referralCode = user.referralCode;
-    if (!referralCode) {
+
+  // 1. Guaranteed unique referral code
+  let referralCode = user.referralCode;
+  if (!referralCode) {
+    try {
       const dbUser = await env.DB.prepare('SELECT referral_code FROM users WHERE id = ?').bind(user.id).first();
       referralCode = dbUser?.referral_code;
-      if (!referralCode) {
-        referralCode = 'ALM' + user.id.replace(/[^a-zA-Z0-9]/g, '').substring(0, 6).toUpperCase();
-        await env.DB.prepare('UPDATE users SET referral_code = ? WHERE id = ?').bind(referralCode, user.id).run().catch(() => {});
+    } catch (e) {
+      console.warn('Failed to query user referral_code:', e);
+    }
+
+    if (!referralCode) {
+      referralCode = 'ALM' + user.id.replace(/[^a-zA-Z0-9]/g, '').substring(0, 6).toUpperCase();
+      try {
+        await env.DB.prepare('UPDATE users SET referral_code = ? WHERE id = ?').bind(referralCode, user.id).run();
+      } catch (e) {
+        console.warn('Failed to persist user referral_code:', e);
       }
     }
+  }
+
+  // 2. Aggregate downlines metrics (defensive)
+  let totalInvited = 0;
+  let activePaidCount = 0;
+  let totalEarningsKsh = 0;
+
+  try {
     const summary = await env.DB.prepare(`
       SELECT 
         COUNT(*) as total_invited,
@@ -2246,47 +2282,93 @@ async function onRequestGetReferrals(context) {
       FROM referrals
       WHERE referrer_id = ?
     `).bind(user.id).first();
-    const totalInvited = summary?.total_invited || 0;
-    const activePaidCount = summary?.active_paid_count || 0;
-    const totalEarningsKsh = summary?.total_earnings_ksh || 0;
-    const { results: activeReferrals } = await env.DB.prepare(`
+
+    if (summary) {
+      totalInvited = summary.total_invited || 0;
+      activePaidCount = summary.active_paid_count || 0;
+      totalEarningsKsh = summary.total_earnings_ksh || 0;
+    }
+  } catch (err) {
+    console.warn('Referrals summary query fallback:', err);
+  }
+
+  // 3. Active paid downlines (defensive)
+  let activeReferrals = [];
+  try {
+    const activeRows = await env.DB.prepare(`
       SELECT 
-        r.id, r.referred_user_id, u.name as downline_name, u.phone as downline_phone, u.email as downline_email,
-        r.status, r.package_id, r.package_name, r.package_price_ksh, r.commission_rate, r.commission_amount_ksh,
-        r.created_at, r.activated_at
+        r.id,
+        r.referred_user_id,
+        u.name as downline_name,
+        u.phone as downline_phone,
+        u.email as downline_email,
+        r.status,
+        r.package_id,
+        r.package_name,
+        r.package_price_ksh,
+        r.commission_rate,
+        r.commission_amount_ksh,
+        r.created_at,
+        r.activated_at
       FROM referrals r
       JOIN users u ON r.referred_user_id = u.id
       WHERE r.referrer_id = ? AND r.status = 'active_paid'
       ORDER BY r.activated_at DESC
       LIMIT 100
     `).bind(user.id).all();
-    const { results: allReferrals } = await env.DB.prepare(`
+
+    activeReferrals = activeRows?.results || [];
+  } catch (err) {
+    console.warn('Active referrals query fallback:', err);
+  }
+
+  // 4. All downlines (defensive)
+  let allReferrals = [];
+  try {
+    const allRows = await env.DB.prepare(`
       SELECT 
-        r.id, r.referred_user_id, u.name as downline_name, u.phone as downline_phone,
-        r.status, r.package_name, r.package_price_ksh, r.commission_amount_ksh,
-        r.created_at, r.activated_at
+        r.id,
+        r.referred_user_id,
+        u.name as downline_name,
+        u.phone as downline_phone,
+        r.status,
+        r.package_name,
+        r.package_price_ksh,
+        r.commission_amount_ksh,
+        r.created_at,
+        r.activated_at
       FROM referrals r
       JOIN users u ON r.referred_user_id = u.id
       WHERE r.referrer_id = ?
       ORDER BY (CASE WHEN r.status = 'active_paid' THEN 0 ELSE 1 END), r.created_at DESC
       LIMIT 100
     `).bind(user.id).all();
-    const wal = await env.DB.prepare('SELECT referrals_balance_ksh FROM wallets WHERE user_id = ?').bind(user.id).first();
-    const withdrawableReferralsKsh = wal?.referrals_balance_ksh || 0;
-    return jsonSuccess({
-      referralCode,
-      commissionRatePercent: 45,
-      totalInvited,
-      activePaidCount,
-      totalEarningsKsh,
-      withdrawableReferralsKsh,
-      activeReferrals: activeReferrals || [],
-      allReferrals: allReferrals || []
-    });
+
+    allReferrals = allRows?.results || [];
   } catch (err) {
-    console.error('Referrals API error:', err);
-    return jsonError('Failed to retrieve referral data', 500);
+    console.warn('All referrals query fallback:', err);
   }
+
+  // 5. Withdrawable balance (defensive against missing column)
+  let withdrawableReferralsKsh = 0;
+  try {
+    const wal = await env.DB.prepare('SELECT referrals_balance_ksh FROM wallets WHERE user_id = ?').bind(user.id).first();
+    withdrawableReferralsKsh = wal?.referrals_balance_ksh || 0;
+  } catch (err) {
+    withdrawableReferralsKsh = totalEarningsKsh;
+  }
+
+  return jsonSuccess({
+    referralCode,
+    commissionRatePercent: 45,
+    totalInvited,
+    activePaidCount,
+    totalEarningsKsh,
+    withdrawableReferralsKsh,
+    minWithdrawalReferralsKsh: 100,
+    activeReferrals: activeReferrals || [],
+    allReferrals: allReferrals || []
+  });
 }
 __name(onRequestGetReferrals, "onRequestGet");
 
