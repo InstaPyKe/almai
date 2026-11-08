@@ -50,6 +50,18 @@ export async function onRequestGet(context) {
         lifetime_earnings_ksh: 0,
         lifetime_withdrawn_ksh: 0
       };
+    } else {
+      const refBal = Number(wallet.referrals_balance_ksh || 0);
+      let viewsBal = Number(wallet.views_balance_ksh || 0);
+      let availBal = Number(wallet.available_balance_ksh || 0);
+      if (viewsBal === 0 && refBal === 0 && availBal > 0) {
+        viewsBal = availBal;
+      } else if (availBal !== viewsBal + refBal) {
+        availBal = viewsBal + refBal;
+      }
+      wallet.views_balance_ksh = viewsBal;
+      wallet.referrals_balance_ksh = refBal;
+      wallet.available_balance_ksh = availBal;
     }
 
     // 2. Fetch active and pending user packages
@@ -75,14 +87,14 @@ export async function onRequestGet(context) {
       LIMIT 1
     `).bind(user.id).first();
 
-    // 3. Check 18h task submission cooldown & tickets
+    // 3. Check 18h task submission cooldown & tickets (only count user screenshot submissions, not admin credits)
     const userRow = await env.DB.prepare('SELECT COALESCE(submission_tickets, 0) as submission_tickets FROM users WHERE id = ?').bind(user.id).first().catch(() => null);
     const submissionTickets = userRow ? (userRow.submission_tickets || 0) : 0;
 
     const latestTask = await env.DB.prepare(`
       SELECT created_at, status
       FROM task_submissions
-      WHERE user_id = ?
+      WHERE user_id = ? AND evidence_id IS NOT NULL
       ORDER BY created_at DESC
       LIMIT 1
     `).bind(user.id).first();

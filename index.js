@@ -724,6 +724,8 @@ async function onRequestPost3(context) {
     return jsonError('submissionId and action ("approve" | "reject") are required', 400);
   }
   try {
+    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN views_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {});
+    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN referrals_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {});
     const task = await env.DB.prepare(`
       SELECT ts.*, p.max_views_per_task
       FROM task_submissions ts
@@ -734,85 +736,118 @@ async function onRequestPost3(context) {
     if (!task) {
       return jsonError("Task submission not found", 404);
     }
-    if (task.status !== "pending") {
-      return jsonError(`This task submission has already been ${task.status}.`, 409);
-    }
     const now = Math.floor(Date.now() / 1e3);
     const ip = request.headers.get("cf-connecting-ip") || "";
-    if (action === "approve") {
+    if (action === "approve" || action === "modify") {
       const views = parseInt(approvedViews, 10);
-      if (isNaN(views) || views <= 0) {
-        return jsonError("Please specify valid approved views greater than 0", 400);
+      if (isNaN(views) || views < 0) {
+        return jsonError("Please specify valid approved views (0 or greater)", 400);
       }
-      const maxViews = task.max_views_per_task || 200;
-      if (views > maxViews) {
-        return jsonError(`Approved views (${views}) exceeds package cap of ${maxViews} views`, 400);
-      }
-      const rewardKsh = views * task.reward_rate_ksh;
-      const wallet = await env.DB.prepare("SELECT id, available_balance_ksh FROM wallets WHERE user_id = ?").bind(task.user_id).first();
+      const rate = task.reward_rate_ksh || 20;
+      const newRewardKsh = Math.round(views * rate);
+      const previousRewardKsh = task.status === "approved" ? (task.reward_amount_ksh || 0) : 0;
+      const rewardDeltaKsh = newRewardKsh - previousRewardKsh;
+
+      let wallet = await env.DB.prepare("SELECT * FROM wallets WHERE user_id = ?").bind(task.user_id).first();
       if (!wallet) {
-        return jsonError("User wallet not found", 404);
+        const walletId = generateId("wal");
+        await env.DB.prepare(`
+          INSERT INTO wallets (id, user_id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
+          VALUES (?, ?, 0, 0, 0, 0, 0, 0, ?)
+        `).bind(walletId, task.user_id, now).run().catch(() => {});
+        wallet = await env.DB.prepare("SELECT * FROM wallets WHERE user_id = ?").bind(task.user_id).first();
       }
-      const balanceAfter = wallet.available_balance_ksh + rewardKsh;
+      const curAvail = wallet?.available_balance_ksh || 0;
+      const curRef = wallet?.referrals_balance_ksh || 0;
+      const curViewsBal = ((wallet?.views_balance_ksh || 0) === 0 && curAvail > curRef)
+        ? (curAvail - curRef)
+        : (wallet?.views_balance_ksh || 0);
+
+      const nextViewsBal = Math.max(0, curViewsBal + rewardDeltaKsh);
+      const nextAvailBal = Math.max(0, nextViewsBal + curRef);
+      const nextLifetime = Math.max(0, (wallet?.lifetime_earnings_ksh || 0) + rewardDeltaKsh);
+
       await env.DB.prepare(`
         UPDATE task_submissions
         SET status = 'approved',
             approved_views = ?,
+            reported_views = CASE WHEN ? > reported_views THEN ? ELSE reported_views END,
             reward_amount_ksh = ?,
             admin_notes = ?,
             reviewed_by = ?,
             reviewed_at = ?
-        WHERE id = ? AND status = 'pending'
-      `).bind(views, rewardKsh, notes || "Verified screenshot evidence", admin.id, now, task.id).run();
+        WHERE id = ?
+      `).bind(views, views, views, newRewardKsh, notes || "Verified screenshot evidence", admin.id, now, task.id).run();
+
       await env.DB.prepare(`
         UPDATE wallets
-        SET views_balance_ksh = views_balance_ksh + ?,
-            available_balance_ksh = available_balance_ksh + ?,
-            lifetime_earnings_ksh = lifetime_earnings_ksh + ?,
+        SET views_balance_ksh = ?,
+            available_balance_ksh = ?,
+            lifetime_earnings_ksh = ?,
             updated_at = ?
         WHERE user_id = ?
-      `).bind(rewardKsh, rewardKsh, rewardKsh, now, task.user_id).run();
-      const txId = generateId("tx");
-      await env.DB.prepare(`
-        INSERT INTO wallet_transactions (id, wallet_id, user_id, type, amount_ksh, balance_after_ksh, reference_id, description, created_at)
-        VALUES (?, ?, ?, 'task_reward', ?, ?, ?, ?, ?)
-      `).bind(
-        txId,
-        wallet.id,
-        task.user_id,
-        rewardKsh,
-        balanceAfter,
-        task.id,
-        `Campaign reward credited: ${views} approved WhatsApp Status views @ KSh ${task.reward_rate_ksh}/view`,
-        now
-      ).run();
+      `).bind(nextViewsBal, nextAvailBal, nextLifetime, now, task.user_id).run();
+
+      if (rewardDeltaKsh !== 0) {
+        const txId = generateId("tx");
+        await env.DB.prepare(`
+          INSERT INTO wallet_transactions (id, wallet_id, user_id, type, amount_ksh, balance_after_ksh, reference_id, description, created_at)
+          VALUES (?, ?, ?, 'task_reward', ?, ?, ?, ?, ?)
+        `).bind(
+          txId,
+          wallet.id,
+          task.user_id,
+          rewardDeltaKsh,
+          nextAvailBal,
+          task.id,
+          `Campaign reward credited: ${views} approved WhatsApp Status views @ KSh ${rate}/view`,
+          now
+        ).run();
+      }
+
       await createAuditLog(env, {
         adminId: admin.id,
-        action: "APPROVE_TASK",
+        action: task.status === "approved" ? "MODIFY_APPROVED_TASK" : "APPROVE_TASK",
         targetType: "task_submission",
         targetId: task.id,
-        details: { approvedViews: views, rewardKsh, notes },
+        details: { approvedViews: views, newRewardKsh, rewardDeltaKsh, notes },
         ip
       });
       return jsonSuccess({
-        message: `Task submission approved! Credited KSh ${rewardKsh} to partner wallet.`,
+        message: `Task submission ${task.status === "approved" ? "updated" : "approved"}! ${views} views (KSh ${newRewardKsh.toLocaleString()}) credited to partner wallet.`,
         task: {
           id: task.id,
           status: "approved",
           approvedViews: views,
-          rewardAmountKsh: rewardKsh
+          rewardAmountKsh: newRewardKsh
         }
       });
     } else if (action === "reject") {
+      if (task.status === "rejected") {
+        return jsonError("This task submission is already rejected.", 409);
+      }
       const reason = notes || "Screenshot evidence could not be verified or does not match requirements";
+      const previousRewardKsh = task.status === "approved" ? (task.reward_amount_ksh || 0) : 0;
       await env.DB.prepare(`
         UPDATE task_submissions
         SET status = 'rejected',
+            approved_views = 0,
+            reward_amount_ksh = 0,
             admin_notes = ?,
             reviewed_by = ?,
             reviewed_at = ?
-        WHERE id = ? AND status = 'pending'
+        WHERE id = ?
       `).bind(reason, admin.id, now, task.id).run();
+      if (previousRewardKsh > 0) {
+        await env.DB.prepare(`
+          UPDATE wallets
+          SET views_balance_ksh = MAX(0, COALESCE(views_balance_ksh, 0) - ?),
+              available_balance_ksh = MAX(0, COALESCE(available_balance_ksh, 0) - ?),
+              lifetime_earnings_ksh = MAX(0, COALESCE(lifetime_earnings_ksh, 0) - ?),
+              updated_at = ?
+          WHERE user_id = ?
+        `).bind(previousRewardKsh, previousRewardKsh, previousRewardKsh, now, task.user_id).run();
+      }
       await createAuditLog(env, {
         adminId: admin.id,
         action: "REJECT_TASK",
@@ -846,6 +881,8 @@ async function onRequestGet7(context) {
   if (auth.errorResponse) return auth.errorResponse;
   try {
     await env.DB.prepare("ALTER TABLE users ADD COLUMN submission_tickets INTEGER NOT NULL DEFAULT 0").run().catch(() => {});
+    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN views_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {});
+    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN referrals_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {});
     const url = new URL(request.url);
     const search = url.searchParams.get("q") || "";
     let query = `
@@ -853,9 +890,26 @@ async function onRequestGet7(context) {
         u.id, u.name, u.email, u.phone, u.role, u.status, u.created_at, u.updated_at,
         COALESCE(u.submission_tickets, 0) as submission_tickets,
         COALESCE(w.available_balance_ksh, 0) as available_balance_ksh,
+        COALESCE(w.views_balance_ksh, 0) as views_balance_ksh,
+        COALESCE(w.referrals_balance_ksh, 0) as referrals_balance_ksh,
         COALESCE(w.reserved_balance_ksh, 0) as reserved_balance_ksh,
         COALESCE(w.lifetime_earnings_ksh, 0) as lifetime_earnings_ksh,
         COALESCE(w.lifetime_withdrawn_ksh, 0) as lifetime_withdrawn_ksh,
+        (
+          SELECT COALESCE(SUM(ts.reported_views), 0)
+          FROM task_submissions ts
+          WHERE ts.user_id = u.id
+        ) as total_reported_views,
+        (
+          SELECT COALESCE(SUM(ts.approved_views), 0)
+          FROM task_submissions ts
+          WHERE ts.user_id = u.id AND ts.status = 'approved'
+        ) as total_approved_views,
+        (
+          SELECT COALESCE(SUM(ts.reported_views), 0)
+          FROM task_submissions ts
+          WHERE ts.user_id = u.id AND ts.status = 'pending'
+        ) as pending_views,
         p.id as active_package_id,
         p.name as active_package_name,
         p.slug as active_package_slug,
@@ -985,10 +1039,6 @@ async function onRequestPost4(context) {
         role: nextRole
       });
     } else if (action === "modify_views") {
-      const views = parseInt(body.views || body.viewsDelta || 0, 10);
-      if (isNaN(views) || views === 0) {
-        return jsonError("Please specify a valid non-zero views adjustment count (e.g. 50 or -20)", 400);
-      }
       let rate = body.rate ? parseFloat(body.rate) : null;
       if (!rate || isNaN(rate) || rate <= 0) {
         const activePkg = await env.DB.prepare(`
@@ -1001,65 +1051,123 @@ async function onRequestPost4(context) {
         `).bind(target.id).first();
         rate = activePkg ? activePkg.reward_per_view_ksh : 20;
       }
+
+      const curViewsRow = await env.DB.prepare(`
+        SELECT COALESCE(SUM(CASE WHEN status = 'approved' THEN approved_views ELSE 0 END), 0) as approved_views
+        FROM task_submissions
+        WHERE user_id = ?
+      `).bind(target.id).first();
+      const currentApprovedViews = curViewsRow ? (curViewsRow.approved_views || 0) : 0;
+
+      const rawViewsStr = String(body.views ?? body.viewsDelta ?? "").trim();
+      let views = 0;
+      if (body.mode === "set" || rawViewsStr.startsWith("=")) {
+        const targetTotalViews = parseInt(rawViewsStr.replace(/^=/, ""), 10);
+        if (isNaN(targetTotalViews) || targetTotalViews < 0) {
+          return jsonError("Please specify a valid non-negative target views count", 400);
+        }
+        views = targetTotalViews - currentApprovedViews;
+      } else {
+        views = parseInt(rawViewsStr, 10);
+      }
+
+      if (isNaN(views) || views === 0) {
+        return jsonError("Please specify a valid non-zero views adjustment count (e.g. 50, -20, or =100)", 400);
+      }
+
       const rewardKsh = Math.round(views * rate);
       const note = (body.note || body.reason || "Admin views modification").trim();
       let wallet = await env.DB.prepare("SELECT * FROM wallets WHERE user_id = ?").bind(target.id).first();
       if (!wallet) {
         const walletId = generateId("wal");
         await env.DB.prepare(`
-          INSERT INTO wallets (id, user_id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, created_at, updated_at)
-          VALUES (?, ?, 0, 0, 0, 0, 0, 0, ?, ?)
-        `).bind(walletId, target.id, now, now).run().catch(() => {});
+          INSERT INTO wallets (id, user_id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
+          VALUES (?, ?, 0, 0, 0, 0, 0, 0, ?)
+        `).bind(walletId, target.id, now).run().catch(() => {});
         wallet = await env.DB.prepare("SELECT * FROM wallets WHERE user_id = ?").bind(target.id).first();
       }
-      if (rewardKsh >= 0) {
-        await env.DB.prepare(`
-          UPDATE wallets
-          SET views_balance_ksh = COALESCE(views_balance_ksh, 0) + ?,
-              available_balance_ksh = COALESCE(available_balance_ksh, 0) + ?,
-              lifetime_earnings_ksh = COALESCE(lifetime_earnings_ksh, 0) + ?,
-              updated_at = ?
-          WHERE user_id = ?
-        `).bind(rewardKsh, rewardKsh, rewardKsh, now, target.id).run();
-      } else {
-        const deduction = Math.abs(rewardKsh);
-        await env.DB.prepare(`
-          UPDATE wallets
-          SET views_balance_ksh = MAX(0, COALESCE(views_balance_ksh, 0) - ?),
-              available_balance_ksh = MAX(0, COALESCE(available_balance_ksh, 0) - ?),
-              updated_at = ?
-          WHERE user_id = ?
-        `).bind(deduction, deduction, now, target.id).run();
-      }
-      const activePkgRow = await env.DB.prepare(`
-        SELECT package_id FROM user_packages WHERE user_id = ? AND status = 'active' ORDER BY activated_at DESC LIMIT 1
-      `).bind(target.id).first();
-      const pkgId = activePkgRow ? activePkgRow.package_id : "pkg_starter";
-      const taskId = generateId("tsk_adm");
+
+      const curAvail = wallet?.available_balance_ksh || 0;
+      const curRef = wallet?.referrals_balance_ksh || 0;
+      const curViewsBal = ((wallet?.views_balance_ksh || 0) === 0 && curAvail > curRef)
+        ? (curAvail - curRef)
+        : (wallet?.views_balance_ksh || 0);
+
+      const nextViewsBal = Math.max(0, curViewsBal + rewardKsh);
+      const nextAvailBal = Math.max(0, nextViewsBal + curRef);
+      const nextLifetime = Math.max(0, (wallet?.lifetime_earnings_ksh || 0) + rewardKsh);
+
       await env.DB.prepare(`
-        INSERT INTO task_submissions (
-          id, user_id, campaign_id, package_id, reported_views, approved_views,
-          reward_rate_ksh, reward_amount_ksh, evidence_text, status,
-          admin_notes, reviewed_by, reviewed_at, created_at
-        )
-        VALUES (?, ?, 'camp_admin_credit', ?, ?, ?, ?, ?, ?, 'approved', ?, ?, ?, ?)
-      `).bind(
-        taskId,
-        target.id,
-        pkgId,
-        views,
-        views,
-        rate,
-        rewardKsh,
-        `Admin views modification: ${views >= 0 ? "+" : ""}${views} views`,
-        note,
-        admin.id,
-        now,
-        now
-      ).run();
+        UPDATE wallets
+        SET views_balance_ksh = ?,
+            available_balance_ksh = ?,
+            lifetime_earnings_ksh = ?,
+            updated_at = ?
+        WHERE user_id = ?
+      `).bind(nextViewsBal, nextAvailBal, nextLifetime, now, target.id).run();
+
+      const taskId = generateId("tsk_adm");
+      if (views > 0) {
+        const activePkgRow = await env.DB.prepare(`
+          SELECT up.package_id FROM user_packages up JOIN packages p ON up.package_id = p.id WHERE up.user_id = ? AND up.status = 'active' ORDER BY up.activated_at DESC LIMIT 1
+        `).bind(target.id).first();
+        const pkgId = activePkgRow ? activePkgRow.package_id : null;
+
+        await env.DB.prepare(`
+          INSERT INTO task_submissions (
+            id, user_id, campaign_id, package_id, reported_views, approved_views,
+            reward_rate_ksh, reward_amount_ksh, evidence_text, evidence_id, status,
+            admin_notes, reviewed_by, reviewed_at, created_at
+          )
+          VALUES (?, ?, NULL, ?, ?, ?, ?, ?, ?, NULL, 'approved', ?, ?, ?, ?)
+        `).bind(
+          taskId,
+          target.id,
+          pkgId,
+          views,
+          views,
+          rate,
+          rewardKsh,
+          `Admin views credit: +${views} views @ KSh ${rate}/view`,
+          note,
+          admin.id,
+          now,
+          now
+        ).run();
+      } else {
+        let remainingToDeduct = Math.abs(views);
+        const { results: existingTasks } = await env.DB.prepare(`
+          SELECT id, reported_views, approved_views, reward_rate_ksh, reward_amount_ksh
+          FROM task_submissions
+          WHERE user_id = ? AND (approved_views > 0 OR reported_views > 0)
+          ORDER BY created_at DESC
+        `).bind(target.id).all();
+
+        for (const t of (existingTasks || [])) {
+          if (remainingToDeduct <= 0) break;
+          const curApp = t.approved_views || 0;
+          const curRep = t.reported_views || 0;
+          const deductCount = Math.min(remainingToDeduct, Math.max(curApp, curRep));
+          if (deductCount > 0) {
+            const newApp = Math.max(0, curApp - deductCount);
+            const newRep = Math.max(0, curRep - deductCount);
+            const newRew = Math.max(0, newApp * (t.reward_rate_ksh || rate));
+            await env.DB.prepare(`
+              UPDATE task_submissions
+              SET approved_views = ?,
+                  reported_views = ?,
+                  reward_amount_ksh = ?,
+                  admin_notes = ?,
+                  reviewed_by = ?,
+                  reviewed_at = ?
+              WHERE id = ?
+            `).bind(newApp, newRep, newRew, note, admin.id, now, t.id).run();
+            remainingToDeduct -= deductCount;
+          }
+        }
+      }
+
       const txId = generateId("tx");
-      const updatedWallet = await env.DB.prepare("SELECT available_balance_ksh, views_balance_ksh FROM wallets WHERE user_id = ?").bind(target.id).first();
-      const balanceAfter = updatedWallet ? updatedWallet.available_balance_ksh : 0;
       await env.DB.prepare(`
         INSERT INTO wallet_transactions (id, wallet_id, user_id, type, amount_ksh, balance_after_ksh, reference_id, description, created_at)
         VALUES (?, ?, ?, 'task_reward', ?, ?, ?, ?, ?)
@@ -1068,7 +1176,7 @@ async function onRequestPost4(context) {
         wallet.id,
         target.id,
         rewardKsh,
-        balanceAfter,
+        nextAvailBal,
         taskId,
         `Admin views adjustment: ${views >= 0 ? "+" : ""}${views} views @ KSh ${rate}/view (${note})`,
         now
@@ -1078,15 +1186,99 @@ async function onRequestPost4(context) {
         action: "ADMIN_MODIFY_VIEWS",
         targetType: "user",
         targetId: target.id,
-        details: { views, rate, rewardKsh, note, userEmail: target.email },
+        details: { views, rate, rewardKsh, note, userEmail: target.email, availableBalanceKsh: nextAvailBal, viewsBalanceKsh: nextViewsBal },
         ip
       });
       return jsonSuccess({
-        message: `Successfully adjusted ${views >= 0 ? "+" : ""}${views} views (KSh ${rewardKsh.toLocaleString()}) for ${target.name}!`,
+        message: `Successfully adjusted ${views >= 0 ? "+" : ""}${views} views (${rewardKsh >= 0 ? "+KSh " : "-KSh "}${Math.abs(rewardKsh).toLocaleString()}) for ${target.name}! New Available Balance: KSh ${nextAvailBal.toLocaleString()}.`,
         views,
         rate,
         rewardKsh,
-        availableBalanceKsh: balanceAfter
+        availableBalanceKsh: nextAvailBal,
+        viewsBalanceKsh: nextViewsBal
+      });
+    } else if (action === "modify_balance" || action === "adjust_balance") {
+      const balanceType = (body.balanceType === "referrals" || body.balanceType === "referral") ? "referrals" : "views";
+      const rawAmountStr = String(body.amount ?? body.amountKsh ?? "").trim();
+      const note = (body.note || body.reason || "Admin wallet balance modification").trim();
+
+      let wallet = await env.DB.prepare("SELECT * FROM wallets WHERE user_id = ?").bind(target.id).first();
+      if (!wallet) {
+        const walletId = generateId("wal");
+        await env.DB.prepare(`
+          INSERT INTO wallets (id, user_id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
+          VALUES (?, ?, 0, 0, 0, 0, 0, 0, ?)
+        `).bind(walletId, target.id, now).run().catch(() => {});
+        wallet = await env.DB.prepare("SELECT * FROM wallets WHERE user_id = ?").bind(target.id).first();
+      }
+
+      const curAvail = wallet?.available_balance_ksh || 0;
+      const curRef = wallet?.referrals_balance_ksh || 0;
+      const curViews = ((wallet?.views_balance_ksh || 0) === 0 && curAvail > curRef)
+        ? (curAvail - curRef)
+        : (wallet?.views_balance_ksh || 0);
+
+      let deltaKsh = 0;
+      if (body.mode === "set" || rawAmountStr.startsWith("=")) {
+        const targetAmount = parseInt(rawAmountStr.replace(/^=/, ""), 10);
+        if (isNaN(targetAmount) || targetAmount < 0) {
+          return jsonError("Please enter a valid non-negative balance amount in KSh", 400);
+        }
+        deltaKsh = balanceType === "referrals" ? (targetAmount - curRef) : (targetAmount - curViews);
+      } else {
+        deltaKsh = parseInt(rawAmountStr, 10);
+      }
+
+      if (isNaN(deltaKsh) || deltaKsh === 0) {
+        return jsonError("Please enter a valid non-zero balance change in KSh (e.g. 1000, -500, or =5000)", 400);
+      }
+
+      const nextViewsBal = balanceType === "views" ? Math.max(0, curViews + deltaKsh) : curViews;
+      const nextRefBal = balanceType === "referrals" ? Math.max(0, curRef + deltaKsh) : curRef;
+      const nextAvailBal = Math.max(0, nextViewsBal + nextRefBal);
+      const nextLifetime = Math.max(0, (wallet?.lifetime_earnings_ksh || 0) + deltaKsh);
+
+      await env.DB.prepare(`
+        UPDATE wallets
+        SET views_balance_ksh = ?,
+            referrals_balance_ksh = ?,
+            available_balance_ksh = ?,
+            lifetime_earnings_ksh = ?,
+            updated_at = ?
+        WHERE user_id = ?
+      `).bind(nextViewsBal, nextRefBal, nextAvailBal, nextLifetime, now, target.id).run();
+
+      const txId = generateId("tx");
+      await env.DB.prepare(`
+        INSERT INTO wallet_transactions (id, wallet_id, user_id, type, amount_ksh, balance_after_ksh, reference_id, description, created_at)
+        VALUES (?, ?, ?, 'adjustment', ?, ?, ?, ?, ?)
+      `).bind(
+        txId,
+        wallet.id,
+        target.id,
+        deltaKsh,
+        nextAvailBal,
+        admin.id,
+        `Admin ${balanceType === "referrals" ? "Referral" : "Status Views"} balance adjustment: ${deltaKsh >= 0 ? "+KSh " : "-KSh "}${Math.abs(deltaKsh).toLocaleString()} (${note})`,
+        now
+      ).run();
+
+      await createAuditLog(env, {
+        adminId: admin.id,
+        action: "ADMIN_MODIFY_BALANCE",
+        targetType: "user",
+        targetId: target.id,
+        details: { balanceType, deltaKsh, viewsBalanceKsh: nextViewsBal, referralsBalanceKsh: nextRefBal, availableBalanceKsh: nextAvailBal, note, userEmail: target.email },
+        ip
+      });
+
+      return jsonSuccess({
+        message: `Updated ${target.name}'s ${balanceType === "referrals" ? "Referral" : "Status Views"} balance by ${deltaKsh >= 0 ? "+KSh " : "-KSh "}${Math.abs(deltaKsh).toLocaleString()}! Total Available Balance: KSh ${nextAvailBal.toLocaleString()}.`,
+        balanceType,
+        deltaKsh,
+        viewsBalanceKsh: nextViewsBal,
+        referralsBalanceKsh: nextRefBal,
+        availableBalanceKsh: nextAvailBal
       });
     } else if (action === "grant_submission_ticket") {
       const tickets = parseInt(body.tickets || body.count || 1, 10);
@@ -1508,6 +1700,18 @@ async function onRequestGet9(context) {
         lifetime_earnings_ksh: 0,
         lifetime_withdrawn_ksh: 0
       };
+    } else {
+      const refBal = Number(wallet.referrals_balance_ksh || 0);
+      let viewsBal = Number(wallet.views_balance_ksh || 0);
+      let availBal = Number(wallet.available_balance_ksh || 0);
+      if (viewsBal === 0 && refBal === 0 && availBal > 0) {
+        viewsBal = availBal;
+      } else if (availBal !== viewsBal + refBal) {
+        availBal = viewsBal + refBal;
+      }
+      wallet.views_balance_ksh = viewsBal;
+      wallet.referrals_balance_ksh = refBal;
+      wallet.available_balance_ksh = availBal;
     }
     const activePackage = await env.DB.prepare(`
       SELECT up.id as user_package_id, up.status, up.activated_at,
@@ -1534,7 +1738,7 @@ async function onRequestGet9(context) {
     const latestTask = await env.DB.prepare(`
       SELECT created_at, status
       FROM task_submissions
-      WHERE user_id = ?
+      WHERE user_id = ? AND evidence_id IS NOT NULL
       ORDER BY created_at DESC
       LIMIT 1
     `).bind(user.id).first();
@@ -2062,7 +2266,7 @@ async function onRequestGet14(context) {
       LIMIT 20
     `).bind(user.id).all();
     const now = Math.floor(Date.now() / 1e3);
-    const latest = submissions && submissions.length > 0 ? submissions[0] : null;
+    const latest = (submissions || []).find(s => s.evidence_id !== null && s.evidence_id !== undefined) || null;
     const userRow = await env.DB.prepare('SELECT COALESCE(submission_tickets, 0) as submission_tickets FROM users WHERE id = ?').bind(user.id).first().catch(() => null);
     const submissionTickets = userRow ? (userRow.submission_tickets || 0) : 0;
     let canSubmit = true;
@@ -2135,7 +2339,7 @@ async function onRequestPost13(context) {
   const userRow = await env.DB.prepare('SELECT COALESCE(submission_tickets, 0) as submission_tickets FROM users WHERE id = ?').bind(user.id).first().catch(() => null);
   const submissionTickets = userRow ? (userRow.submission_tickets || 0) : 0;
   const latestSubmission = await env.DB.prepare(`
-    SELECT created_at FROM task_submissions WHERE user_id = ? ORDER BY created_at DESC LIMIT 1
+    SELECT created_at FROM task_submissions WHERE user_id = ? AND evidence_id IS NOT NULL ORDER BY created_at DESC LIMIT 1
   `).bind(user.id).first();
   let ticketUsed = false;
   if (latestSubmission) {

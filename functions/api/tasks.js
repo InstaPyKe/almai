@@ -39,9 +39,9 @@ export async function onRequestGet(context) {
       LIMIT 20
     `).bind(user.id).all();
 
-    // 3. Cooldown calculation (18 hours with submission ticket waiver)
+    // 3. Cooldown calculation (18 hours with submission ticket waiver - only count user screenshot submissions)
     const now = Math.floor(Date.now() / 1000);
-    const latest = submissions && submissions.length > 0 ? submissions[0] : null;
+    const latest = (submissions || []).find(s => s.evidence_id !== null && s.evidence_id !== undefined) || null;
 
     // Fetch user submission tickets defensively
     const userRow = await env.DB.prepare('SELECT COALESCE(submission_tickets, 0) as submission_tickets FROM users WHERE id = ?').bind(user.id).first().catch(() => null);
@@ -137,7 +137,7 @@ export async function onRequestPost(context) {
   const submissionTickets = userRow ? (userRow.submission_tickets || 0) : 0;
 
   const latestSubmission = await env.DB.prepare(`
-    SELECT created_at FROM task_submissions WHERE user_id = ? ORDER BY created_at DESC LIMIT 1
+    SELECT created_at FROM task_submissions WHERE user_id = ? AND evidence_id IS NOT NULL ORDER BY created_at DESC LIMIT 1
   `).bind(user.id).first();
 
   let ticketUsed = false;

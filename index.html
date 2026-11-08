@@ -8670,7 +8670,8 @@
     async function checkAuthSession() {
       try {
         const res = await fetch('/api/auth/me', {
-          headers: { 'Accept': 'application/json' }
+          cache: 'no-store',
+          headers: { 'Accept': 'application/json', 'Cache-Control': 'no-cache' }
         });
 
         if (res.ok) {
@@ -10317,7 +10318,7 @@
 
     async function fetchUserTasks() {
       try {
-        const res = await fetch('/api/tasks');
+        const res = await fetch('/api/tasks', { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
           renderUserTasks(data.submissions || []);
@@ -10369,7 +10370,7 @@
 
     async function fetchUserWithdrawals() {
       try {
-        const res = await fetch('/api/withdrawals');
+        const res = await fetch('/api/withdrawals', { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
           renderUserWithdrawals(data.withdrawals || []);
@@ -10878,7 +10879,7 @@
 
     async function refreshAdminKpis() {
       try {
-        const res = await fetch('/api/admin/stats');
+        const res = await fetch('/api/admin/stats', { cache: 'no-store' });
         if (!res.ok) return;
         const data = await res.json();
         if (!data.metrics) return;
@@ -10944,7 +10945,7 @@
 
       try {
         const url = filter === 'all' ? '/api/admin/payments' : `/api/admin/payments?status=${encodeURIComponent(filter)}`;
-        const res = await fetch(url);
+        const res = await fetch(url, { cache: 'no-store' });
         const data = await res.json();
 
         if (res.ok && data.payments) {
@@ -11061,7 +11062,7 @@
 
       try {
         const url = search ? `/api/admin/users?q=${encodeURIComponent(search)}` : '/api/admin/users';
-        const res = await fetch(url);
+        const res = await fetch(url, { cache: 'no-store' });
         const data = await res.json();
 
         if (res.ok && data.users) {
@@ -11075,6 +11076,11 @@
             const pkgInfo = u.active_package_name ? `<span class="user-pkg-tag" style="background:#DCFCE7; color:#166534;">${escapeHTML(u.active_package_name)}</span>` : (u.pending_package_name ? `<span class="user-pkg-tag" style="background:#F3E8FF; color:#6B21A8;">Pending: ${escapeHTML(u.pending_package_name)}</span>` : `<span style="color: var(--charcoal-muted); font-size: 12px;">No Package</span>`);
             const tickets = u.submission_tickets || 0;
             const ticketBadge = `<span class="status-badge" style="background: ${tickets > 0 ? '#DCFCE7' : '#F1F5F9'}; color: ${tickets > 0 ? '#15803D' : '#64748B'}; border: 1.5px solid ${tickets > 0 ? '#86EFAC' : '#CBD5E1'}; font-weight: 850; font-size: 11px; padding: 2px 8px; border-radius: 99px; display: inline-flex; align-items: center; gap: 3px;" title="18h Cooldown Waiver Tickets">🎟️ ${tickets} Ticket${tickets === 1 ? '' : 's'}</span>`;
+            const approvedViews = u.total_approved_views || 0;
+            const pendingViews = u.pending_views || 0;
+            const viewsBal = u.views_balance_ksh ?? u.available_balance_ksh ?? 0;
+            const refBal = u.referrals_balance_ksh ?? 0;
+            const totalAvail = u.available_balance_ksh || 0;
 
             return `
               <tr>
@@ -11091,8 +11097,20 @@
                     ${ticketBadge}
                   </div>
                 </td>
-                <td>${pkgInfo}</td>
-                <td style="font-weight: 700; color: var(--primary-purple);">KSh ${(u.available_balance_ksh || 0).toLocaleString()}</td>
+                <td>
+                  <div style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start;">
+                    ${pkgInfo}
+                    <span style="font-size: 11.5px; font-weight: 800; color: #0F172A; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 2px 7px;">
+                      📱 ${approvedViews.toLocaleString()} Approved Views${pendingViews > 0 ? ` • <span style="color:#D97706;">${pendingViews} Pending</span>` : ''}
+                    </span>
+                  </div>
+                </td>
+                <td>
+                  <div style="font-weight: 850; font-size: 14.5px; color: var(--primary-purple);">KSh ${totalAvail.toLocaleString()}</div>
+                  <div style="font-size: 11px; color: #475569; font-weight: 700; margin-top: 2px;">
+                    Views: KSh ${viewsBal.toLocaleString()} | Ref: KSh ${refBal.toLocaleString()}
+                  </div>
+                </td>
                 <td>KSh ${(u.lifetime_earnings_ksh || 0).toLocaleString()}</td>
                 <td style="font-size: 12px;">${dateStr}</td>
                 <td>
@@ -11100,8 +11118,11 @@
                     <button class="btn btn-secondary btn-sm" onclick="adminAssignPackage('${u.id}', '${escapeHTML(u.name)}')">
                       Assign Package
                     </button>
-                    <button class="btn btn-sm" style="background: #FAF5FF; color: #6D28D9; border: 1.5px solid #C4B5FD; font-weight: 800; padding: 5px 10px; border-radius: 8px;" onclick="adminModifyUserViews('${u.id}', '${escapeHTML(u.name)}', ${u.active_package_rate || 20})">
-                      Modify Views
+                    <button class="btn btn-sm" style="background: #FAF5FF; color: #6D28D9; border: 1.5px solid #C4B5FD; font-weight: 800; padding: 5px 10px; border-radius: 8px;" onclick="adminModifyUserViews('${u.id}', '${escapeHTML(u.name)}', ${u.active_package_rate || 20}, ${approvedViews})">
+                      📱 Modify Views
+                    </button>
+                    <button class="btn btn-sm" style="background: #EFF6FF; color: #1D4ED8; border: 1.5px solid #93C5FD; font-weight: 800; padding: 5px 10px; border-radius: 8px;" onclick="adminModifyUserBalance('${u.id}', '${escapeHTML(u.name)}', ${viewsBal}, ${refBal})">
+                      💰 Modify Balance
                     </button>
                     <button class="btn btn-sm" style="background: #ECFDF5; color: #15803D; border: 1.5px solid #86EFAC; font-weight: 800; padding: 5px 10px; border-radius: 8px;" onclick="adminGrantSubmissionTicket('${u.id}', '${escapeHTML(u.name)}', ${u.submission_tickets || 0})">
                       🎟️ +Ticket (18h)
@@ -11149,6 +11170,8 @@
         if (res.ok && data.success) {
           alert(`Package successfully assigned to ${userName}!`);
           loadAdminUsers();
+          refreshAdminKpis();
+          checkAuthSession();
         } else {
           alert(data.error || 'Assignment failed');
         }
@@ -11179,12 +11202,21 @@
       }
     }
 
-    async function adminModifyUserViews(userId, userName, currentRate = 20) {
-      const viewsInput = prompt(`Adjust WhatsApp Views for ${userName}:\nEnter views count to add (e.g. 50) or deduct (e.g. -20):`, '50');
+    async function adminModifyUserViews(userId, userName, currentRate = 20, currentApprovedViews = 0) {
+      const viewsInput = prompt(
+        `Modify WhatsApp Views for ${userName}\nCurrent Approved Views: ${currentApprovedViews} views\n\n` +
+        `• Enter a positive number to ADD views (e.g. 50)\n` +
+        `• Enter a negative number to DEDUCT views (e.g. -20)\n` +
+        `• Prefix with "=" to SET exact total views (e.g. =150):`,
+        '50'
+      );
       if (viewsInput === null) return;
-      const views = parseInt(viewsInput.trim(), 10);
-      if (isNaN(views) || views === 0) {
-        alert('Please enter a valid non-zero integer for views.');
+      const rawStr = viewsInput.trim();
+      const isSetMode = rawStr.startsWith('=');
+      const parsedVal = parseInt(isSetMode ? rawStr.slice(1).trim() : rawStr, 10);
+
+      if (isNaN(parsedVal) || (!isSetMode && parsedVal === 0) || (isSetMode && parsedVal < 0)) {
+        alert('Please enter a valid number for views (e.g. 50, -20, or =100).');
         return;
       }
 
@@ -11199,10 +11231,13 @@
       const note = prompt(`Enter admin audit note/reason for this modification:`, 'Admin manual views adjustment');
       if (note === null) return;
 
-      const totalReward = Math.round(views * rate);
-      const confirmMsg = views > 0 
-        ? `Confirm crediting ${views} views @ KSh ${rate}/view (+KSh ${totalReward.toLocaleString()}) to ${userName}?`
-        : `Confirm deducting ${Math.abs(views)} views @ KSh ${rate}/view (-KSh ${Math.abs(totalReward).toLocaleString()}) from ${userName}?`;
+      const deltaPreview = isSetMode ? (parsedVal - currentApprovedViews) : parsedVal;
+      const totalReward = Math.round(deltaPreview * rate);
+      const confirmMsg = isSetMode
+        ? `Confirm setting ${userName}'s total approved views to ${parsedVal} views (${deltaPreview >= 0 ? '+' : ''}${deltaPreview} views @ KSh ${rate}/view, ${totalReward >= 0 ? '+KSh ' : '-KSh '}${Math.abs(totalReward).toLocaleString()})?`
+        : (parsedVal > 0
+          ? `Confirm crediting +${parsedVal} views @ KSh ${rate}/view (+KSh ${totalReward.toLocaleString()}) to ${userName}?`
+          : `Confirm deducting ${Math.abs(parsedVal)} views @ KSh ${rate}/view (-KSh ${Math.abs(totalReward).toLocaleString()}) from ${userName}?`);
 
       if (!confirm(confirmMsg)) return;
 
@@ -11213,7 +11248,8 @@
           body: JSON.stringify({
             action: 'modify_views',
             targetUserId: userId,
-            views,
+            views: rawStr,
+            mode: isSetMode ? 'set' : 'delta',
             rate,
             note: note.trim()
           })
@@ -11222,11 +11258,81 @@
         if (res.ok && data.success) {
           alert(`✓ ${data.message}`);
           loadAdminUsers();
+          refreshAdminKpis();
+          checkAuthSession();
         } else {
           alert(data.error || 'Failed to modify views');
         }
       } catch (err) {
         alert('Network error while modifying views.');
+      }
+    }
+
+    async function adminModifyUserBalance(userId, userName, curViewsBal = 0, curRefBal = 0) {
+      const typeChoice = prompt(
+        `Modify Wallet Balance for ${userName}\n` +
+        `Current Status Views Balance: KSh ${curViewsBal.toLocaleString()}\n` +
+        `Current 45% Referral Balance: KSh ${curRefBal.toLocaleString()}\n\n` +
+        `Which balance do you want to modify?\n` +
+        `1 = Status Views Balance (KSh ${curViewsBal.toLocaleString()})\n` +
+        `2 = 45% Referral Commission Balance (KSh ${curRefBal.toLocaleString()})\n\n` +
+        `Enter 1 or 2:`,
+        '1'
+      );
+      if (typeChoice === null) return;
+      const balanceType = typeChoice.trim() === '2' ? 'referrals' : 'views';
+      const label = balanceType === 'referrals' ? '45% Referral Balance' : 'Status Views Balance';
+      const currentVal = balanceType === 'referrals' ? curRefBal : curViewsBal;
+
+      const amountInput = prompt(
+        `Update ${label} for ${userName} (Current: KSh ${currentVal.toLocaleString()})\n\n` +
+        `• Enter positive amount to ADD (e.g. 500)\n` +
+        `• Enter negative amount to DEDUCT (e.g. -200)\n` +
+        `• Prefix with "=" to SET exact balance (e.g. =2500):`,
+        '500'
+      );
+      if (amountInput === null) return;
+      const rawAmt = amountInput.trim();
+      const isSetMode = rawAmt.startsWith('=');
+      const parsedAmt = parseFloat(isSetMode ? rawAmt.slice(1).trim() : rawAmt);
+
+      if (isNaN(parsedAmt) || (!isSetMode && parsedAmt === 0) || (isSetMode && parsedAmt < 0)) {
+        alert('Please enter a valid amount (e.g. 500, -200, or =2500).');
+        return;
+      }
+
+      const note = prompt(`Enter admin audit note/reason for this balance update:`, `Admin ${label} adjustment`);
+      if (note === null) return;
+
+      const confirmMsg = isSetMode
+        ? `Confirm setting ${userName}'s ${label} to KSh ${Math.round(parsedAmt).toLocaleString()}?`
+        : `Confirm ${parsedAmt > 0 ? 'adding +KSh ' + Math.round(parsedAmt).toLocaleString() + ' to' : 'deducting -KSh ' + Math.round(Math.abs(parsedAmt)).toLocaleString() + ' from'} ${userName}'s ${label}?`;
+      if (!confirm(confirmMsg)) return;
+
+      try {
+        const res = await fetch('/api/admin/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'modify_balance',
+            targetUserId: userId,
+            balanceType,
+            amountKsh: rawAmt,
+            mode: isSetMode ? 'set' : 'delta',
+            note: note.trim()
+          })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert(`✓ ${data.message}`);
+          loadAdminUsers();
+          refreshAdminKpis();
+          checkAuthSession();
+        } else {
+          alert(data.error || 'Failed to modify user balance');
+        }
+      } catch (err) {
+        alert('Network error while modifying user balance.');
       }
     }
 
@@ -11257,6 +11363,8 @@
         if (res.ok && data.success) {
           alert(`✓ ${data.message}`);
           loadAdminUsers();
+          refreshAdminKpis();
+          checkAuthSession();
         } else {
           alert(data.error || 'Failed to grant ticket');
         }
@@ -11500,7 +11608,7 @@
       tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">Loading pending task proofs...</td></tr>';
 
       try {
-        const res = await fetch('/api/admin/tasks?status=pending');
+        const res = await fetch('/api/admin/tasks?status=pending', { cache: 'no-store' });
         const data = await res.json();
         if (res.ok && data.submissions) {
           if (!data.submissions.length) {
@@ -11569,6 +11677,8 @@
         const data = await res.json();
         alert(data.message || (data.success ? 'Task updated!' : data.error));
         loadAdminTasks();
+        refreshAdminKpis();
+        checkAuthSession();
       } catch (err) {
         alert('Action failed due to connection error.');
       }
@@ -11580,7 +11690,7 @@
       tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">Loading pending withdrawals...</td></tr>';
 
       try {
-        const res = await fetch('/api/admin/withdrawals?status=pending');
+        const res = await fetch('/api/admin/withdrawals?status=pending', { cache: 'no-store' });
         const data = await res.json();
         if (res.ok && data.withdrawals) {
           if (!data.withdrawals.length) {
@@ -11635,6 +11745,8 @@
           const data = await res.json();
           alert(data.message || (data.success ? 'Marked complete!' : data.error));
           loadAdminWithdrawals();
+          refreshAdminKpis();
+          checkAuthSession();
         } catch (err) {
           alert('Action failed');
         }
@@ -11651,6 +11763,8 @@
           const data = await res.json();
           alert(data.message || (data.success ? 'Withdrawal rejected and refunded!' : data.error));
           loadAdminWithdrawals();
+          refreshAdminKpis();
+          checkAuthSession();
         } catch (err) {
           alert('Action failed');
         }
@@ -11895,7 +12009,7 @@
       renderReferralDashboard(null);
 
       try {
-        const res = await fetch('/api/referrals');
+        const res = await fetch('/api/referrals', { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
           renderReferralDashboard(data);
@@ -12071,6 +12185,40 @@
         toast.classList.remove('show');
       }, 3500);
     }
+
+    // Live Account Synchronization: Ensure admin updates to user balance, views, packages, and tickets reflect immediately
+    async function syncLiveUserAccount() {
+      if (!AppState.user) return;
+      const dashView = document.getElementById('view-dashboard');
+      const isDashVisible = dashView && dashView.classList.contains('active-view');
+      await checkAuthSession();
+      if (isDashVisible) {
+        await Promise.allSettled([
+          fetchUserTasks(),
+          fetchUserWithdrawals(),
+          fetchReferralData()
+        ]);
+      }
+    }
+
+    window.addEventListener('focus', () => {
+      if (AppState.user) syncLiveUserAccount();
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && AppState.user) {
+        syncLiveUserAccount();
+      }
+    });
+
+    setInterval(() => {
+      if (document.visibilityState === 'visible' && AppState.user) {
+        const dashView = document.getElementById('view-dashboard');
+        if (dashView && dashView.classList.contains('active-view')) {
+          syncLiveUserAccount();
+        }
+      }
+    }, 15000);
 
   </script>
 
