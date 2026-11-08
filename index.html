@@ -30,9 +30,12 @@
       --success-green: #059669;
       --success-green-bg: #ECFDF5;
       --gold-accent: #F59E0B;
-      --shadow-sm: 0 1px 3px rgba(36, 33, 36, 0.08);
-      --shadow-md: 0 4px 12px rgba(76, 29, 149, 0.09);
-      --shadow-lg: 0 10px 25px -3px rgba(76, 29, 149, 0.14);
+      --shadow-sm: 0 2px 6px -1px rgba(15, 23, 42, 0.07), 0 1px 3px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 8px 24px -4px rgba(76, 29, 149, 0.11), 0 3px 8px -2px rgba(15, 23, 42, 0.05);
+      --shadow-lg: 0 16px 36px -6px rgba(76, 29, 149, 0.14), 0 6px 14px -3px rgba(15, 23, 42, 0.06);
+      --shadow-xl: 0 24px 50px -10px rgba(76, 29, 149, 0.18), 0 10px 20px -5px rgba(15, 23, 42, 0.08);
+      --shadow-luxury: 0 20px 48px -8px rgba(76, 29, 149, 0.13), 0 6px 18px -2px rgba(16, 185, 129, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+      --shadow-leafy: 0 18px 45px -8px rgba(5, 150, 105, 0.18), 0 6px 16px -3px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.95);
       --radius-sm: 8px;
       --radius-md: 14px;
       --radius-lg: 20px;
@@ -1726,7 +1729,7 @@
       align-items: center !important;
       justify-content: space-between !important;
       gap: 24px !important;
-      box-shadow: 0 12px 32px -4px rgba(76, 29, 149, 0.12), 0 2px 8px rgba(0, 0, 0, 0.02) !important;
+      box-shadow: 0 16px 42px -6px rgba(76, 29, 149, 0.14), 0 4px 16px -2px rgba(16, 185, 129, 0.09), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
       position: relative !important;
       overflow: hidden !important;
     }
@@ -1953,19 +1956,33 @@
       }
     }
 
-    /* Section Structure & Arranged Banners */
+    /* Section Structure & Arranged Banners with Super Nice Multi-Layer Shadows */
     .dash-section-group {
-      margin-bottom: 32px;
+      background: #FFFFFF;
+      border: 1.5px solid rgba(226, 232, 240, 0.9);
+      border-radius: var(--radius-lg);
+      padding: 28px 28px 24px 28px;
+      margin-bottom: 34px;
+      box-shadow: 0 14px 38px -6px rgba(76, 29, 149, 0.08), 0 4px 14px rgba(15, 23, 42, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+    .dash-section-group:hover {
+      box-shadow: 0 20px 48px -8px rgba(76, 29, 149, 0.13), 0 6px 18px rgba(15, 23, 42, 0.05);
+      border-color: #D8B4FE;
     }
     .dash-group-header {
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
       flex-wrap: wrap;
       gap: 12px;
       border-bottom: 2px solid rgba(226, 232, 240, 0.7);
-      padding-bottom: 12px;
+      padding-bottom: 14px;
+      position: relative;
+      z-index: 2;
     }
     .dash-group-title {
       font-size: 22px;
@@ -1995,19 +2012,21 @@
       border: 1px solid rgba(109, 40, 217, 0.2);
     }
 
-    /* Metric Grids & Cards */
+    /* Metric Grids & Luxury Soft Shadow Cards */
     .dash-metrics-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
       gap: 18px;
       margin-bottom: 24px;
+      position: relative;
+      z-index: 2;
     }
     .dash-metric-card {
       background: var(--white-card);
       border: 1.5px solid rgba(226, 232, 240, 0.95);
       border-radius: var(--radius-lg);
       padding: 24px 22px;
-      box-shadow: 0 4px 16px rgba(59, 7, 100, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+      box-shadow: 0 8px 24px -4px rgba(76, 29, 149, 0.07), 0 2px 6px rgba(15, 23, 42, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.9);
       position: relative;
       transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease;
       overflow: hidden;
@@ -2017,17 +2036,17 @@
     }
     .dash-metric-card:hover {
       transform: translateY(-6px);
-      box-shadow: 0 16px 36px -8px rgba(76, 29, 149, 0.16), 0 4px 12px rgba(0, 0, 0, 0.03);
+      box-shadow: 0 18px 40px -6px rgba(76, 29, 149, 0.18), 0 6px 16px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 1);
       border-color: #C084FC;
     }
     .dash-metric-card.highlight {
       background: linear-gradient(135deg, #FAF5FF 0%, #F5F3FF 50%, #EDE9FE 100%);
       border: 2px solid #8B5CF6;
-      box-shadow: 0 8px 24px -4px rgba(139, 92, 246, 0.25);
+      box-shadow: 0 12px 30px -4px rgba(139, 92, 246, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.9);
     }
     .dash-metric-card.highlight:hover {
       border-color: #7C3AED;
-      box-shadow: 0 18px 42px -6px rgba(124, 58, 237, 0.32);
+      box-shadow: 0 22px 46px -6px rgba(124, 58, 237, 0.35), inset 0 1px 0 rgba(255, 255, 255, 1);
     }
     .dash-metric-card.highlight::after {
       content: '';
@@ -2112,20 +2131,20 @@
       gap: 6px;
     }
 
-    /* 18-Hour Task Mission Station */
+    /* 18-Hour Task Mission Station with Super Nice Leafy Glow Shadows */
     .cooldown-banner {
       background: linear-gradient(135deg, #FFFFFF 0%, #FCF8FF 55%, #F5EEFD 100%);
       border: 2px solid rgba(139, 92, 246, 0.35);
       border-radius: var(--radius-lg);
       padding: 28px 30px;
       margin-bottom: 30px;
-      box-shadow: 0 10px 30px -4px rgba(76, 29, 149, 0.1);
+      box-shadow: 0 16px 42px -6px rgba(5, 150, 105, 0.14), 0 4px 16px rgba(124, 58, 237, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95);
       position: relative;
       overflow: hidden;
       transition: var(--transition);
     }
     .cooldown-banner:hover {
-      box-shadow: 0 16px 38px -6px rgba(76, 29, 149, 0.16);
+      box-shadow: 0 24px 54px -8px rgba(5, 150, 105, 0.22), 0 8px 22px rgba(124, 58, 237, 0.12);
       border-color: #8B5CF6;
     }
     .cooldown-banner-top {
@@ -2135,6 +2154,8 @@
       flex-wrap: wrap;
       gap: 16px;
       margin-bottom: 14px;
+      position: relative;
+      z-index: 2;
     }
     .cooldown-info h3 {
       font-size: 22px;
@@ -2160,6 +2181,8 @@
       border: 1px solid rgba(216, 180, 254, 0.45);
       border-radius: var(--radius-md);
       box-shadow: 0 2px 8px rgba(76, 29, 149, 0.03);
+      position: relative;
+      z-index: 2;
     }
     .roadmap-step-item {
       display: flex;
@@ -2202,29 +2225,33 @@
       animation: timerHeartbeat 2.5s infinite ease-in-out;
     }
 
-    /* Dashboard Sections & Cards */
+    /* Dashboard Sections & Luxury Shadow Containers */
     .dash-section {
       background: var(--white-card);
       border: 1.5px solid var(--beige-border);
       border-radius: var(--radius-lg);
-      padding: 26px 28px;
-      margin-bottom: 26px;
-      box-shadow: 0 6px 20px rgba(59, 7, 100, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+      padding: 28px 28px;
+      margin-bottom: 30px;
+      box-shadow: 0 14px 38px -6px rgba(76, 29, 149, 0.08), 0 4px 14px rgba(15, 23, 42, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+      position: relative;
+      overflow: hidden;
       transition: var(--transition);
     }
     .dash-section:hover {
-      box-shadow: 0 12px 28px rgba(59, 7, 100, 0.08);
+      box-shadow: 0 22px 50px -8px rgba(76, 29, 149, 0.14), 0 6px 18px rgba(15, 23, 42, 0.05);
       border-color: #D8B4FE;
     }
     .dash-section-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
       flex-wrap: wrap;
       gap: 12px;
-      padding-bottom: 12px;
+      padding-bottom: 14px;
       border-bottom: 1.5px solid rgba(226, 232, 240, 0.6);
+      position: relative;
+      z-index: 2;
     }
     .dash-section-title {
       font-size: 22px;
@@ -2235,6 +2262,42 @@
       display: flex;
       align-items: center;
       gap: 10px;
+    }
+
+    /* ====================================================================
+       SUPER GREEN BOTANICAL LEAFY PLANT BRANCH DECORATION
+       Lush, vibrant, multi-layered botanical plant branch for dashboard sections
+       ==================================================================== */
+    .leafy-branch-decor {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      width: 142px;
+      height: 142px;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.92;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, filter 0.3s ease;
+      filter: drop-shadow(0 6px 14px rgba(5, 150, 105, 0.28));
+      transform-origin: top right;
+    }
+    .dashboard-header:hover .leafy-branch-decor,
+    .dash-section-group:hover .leafy-branch-decor,
+    .dash-section:hover .leafy-branch-decor,
+    .cooldown-banner:hover .leafy-branch-decor,
+    .referral-share-card:hover .leafy-branch-decor {
+      transform: scale(1.05) rotate(2deg);
+      opacity: 1;
+      filter: drop-shadow(0 8px 18px rgba(5, 150, 105, 0.38));
+    }
+    @media (max-width: 680px) {
+      .leafy-branch-decor {
+        width: 92px;
+        height: 92px;
+        top: -4px;
+        right: -4px;
+        opacity: 0.82;
+      }
     }
 
     /* History Tables & Clean Tab Switching */
@@ -2525,18 +2588,18 @@
     }
     .sub-balance-card {
       border-radius: var(--radius-md);
-      padding: 20px 22px;
+      padding: 22px 24px;
       background: var(--white-card);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+      box-shadow: 0 8px 24px -4px rgba(76, 29, 149, 0.08), 0 2px 6px rgba(0,0,0,0.03), inset 0 1px 0 rgba(255, 255, 255, 0.9);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease;
       position: relative;
     }
     .sub-balance-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 36px -6px rgba(76, 29, 149, 0.16), 0 4px 12px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255, 255, 255, 1);
     }
     .sub-balance-card.theme-views {
       border: 1.5px solid #DDD6FE;
@@ -5029,8 +5092,15 @@
       border: 2px solid #DDD6FE;
       border-radius: var(--radius-md);
       padding: 22px 24px;
-      box-shadow: 0 8px 24px rgba(109, 40, 217, 0.08);
+      box-shadow: 0 14px 36px -6px rgba(109, 40, 217, 0.12), 0 4px 12px rgba(16, 185, 129, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.95);
       margin-top: 14px;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+    .referral-share-card:hover {
+      box-shadow: 0 20px 44px -6px rgba(109, 40, 217, 0.18), 0 6px 18px rgba(16, 185, 129, 0.1);
+      border-color: #8B5CF6;
     }
     .referral-share-content {
       display: flex;
@@ -6634,7 +6704,48 @@
 
       <!-- Dashboard Command Header (Ultra-Clean, Perfectly Oriented Layout) -->
       <div class="dashboard-header">
-        <div class="dash-header-main">
+        <!-- Super Green Botanical Leafy Plant Branch -->
+        <svg class="leafy-branch-decor" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="leafGradHdrA" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#34D399"/>
+              <stop offset="45%" stop-color="#10B981"/>
+              <stop offset="100%" stop-color="#059669"/>
+            </linearGradient>
+            <linearGradient id="leafGradHdrB" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#86EFAC"/>
+              <stop offset="35%" stop-color="#22C55E"/>
+              <stop offset="100%" stop-color="#15803D"/>
+            </linearGradient>
+            <linearGradient id="leafGradHdrC" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#A7F3D0"/>
+              <stop offset="50%" stop-color="#059669"/>
+              <stop offset="100%" stop-color="#064E3B"/>
+            </linearGradient>
+          </defs>
+          <g>
+            <path d="M165,-5 C142,22 112,62 52,108 C32,123 12,138 -5,148" stroke="#047857" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M165,-5 C142,22 112,62 52,108 C32,123 12,138 -5,148" stroke="#22C55E" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+            <path d="M146,16 C131,5 116,2 106,8 C96,14 101,28 116,32 C131,36 143,28 146,16 Z" fill="url(#leafGradHdrB)"/>
+            <path d="M146,16 C133,19 121,21 106,8" stroke="#047857" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M136,36 C146,46 156,56 153,66 C150,76 136,76 126,66 C116,56 123,43 136,36 Z" fill="url(#leafGradHdrA)"/>
+            <path d="M136,36 C138,49 141,59 153,66" stroke="#064E3B" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M112,52 C94,44 80,47 74,57 C68,67 76,80 92,82 C108,84 116,70 112,52 Z" fill="url(#leafGradHdrC)"/>
+            <path d="M112,52 C100,60 90,64 74,57" stroke="#86EFAC" stroke-width="1.1" stroke-linecap="round" opacity="0.75"/>
+            <path d="M100,76 C110,89 122,96 124,106 C126,116 112,121 100,113 C88,105 90,91 100,76 Z" fill="url(#leafGradHdrB)"/>
+            <path d="M100,76 C104,91 110,101 124,106" stroke="#047857" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M74,94 C54,87 42,94 37,104 C32,114 42,126 57,126 C72,126 80,110 74,94 Z" fill="url(#leafGradHdrA)"/>
+            <path d="M74,94 C64,104 54,110 37,104" stroke="#064E3B" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M60,117 C67,130 77,137 76,146 C75,155 64,157 54,150 C44,143 48,130 60,117 Z" fill="url(#leafGradHdrC)"/>
+            <path d="M60,117 C64,130 68,140 76,146" stroke="#86EFAC" stroke-width="1.1" stroke-linecap="round" opacity="0.75"/>
+            <path d="M26,132 C11,130 3,138 1,146 C-1,154 7,160 19,157 C31,154 33,142 26,132 Z" fill="url(#leafGradHdrB)"/>
+            <path d="M26,132 C17,140 11,144 1,146" stroke="#047857" stroke-width="1.1" stroke-linecap="round" opacity="0.65"/>
+            <circle cx="114" cy="26" r="2.4" fill="#FFFFFF" opacity="0.85"/>
+            <circle cx="86" cy="66" r="2.6" fill="#FFFFFF" opacity="0.85"/>
+            <circle cx="49" cy="111" r="2.2" fill="#FFFFFF" opacity="0.85"/>
+          </g>
+        </svg>
+        <div class="dash-header-main" style="position: relative; z-index: 2;">
           <!-- Luxury Avatar Badge with Glow & Live Status Indicator -->
           <div class="dash-avatar-badge">
             <span id="dash-avatar-initials">P</span>
@@ -6676,6 +6787,47 @@
 
       <!-- SECTION 1: FINANCIAL LEDGER & WALLET BALANCES -->
       <div class="dash-section-group dash-group-financials dash-theme-yellow">
+        <!-- Super Green Botanical Leafy Plant Branch -->
+        <svg class="leafy-branch-decor" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="leafGradFinA" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#34D399"/>
+              <stop offset="45%" stop-color="#10B981"/>
+              <stop offset="100%" stop-color="#059669"/>
+            </linearGradient>
+            <linearGradient id="leafGradFinB" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#86EFAC"/>
+              <stop offset="35%" stop-color="#22C55E"/>
+              <stop offset="100%" stop-color="#15803D"/>
+            </linearGradient>
+            <linearGradient id="leafGradFinC" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#A7F3D0"/>
+              <stop offset="50%" stop-color="#059669"/>
+              <stop offset="100%" stop-color="#064E3B"/>
+            </linearGradient>
+          </defs>
+          <g>
+            <path d="M165,-5 C142,22 112,62 52,108 C32,123 12,138 -5,148" stroke="#047857" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M165,-5 C142,22 112,62 52,108 C32,123 12,138 -5,148" stroke="#22C55E" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+            <path d="M146,16 C131,5 116,2 106,8 C96,14 101,28 116,32 C131,36 143,28 146,16 Z" fill="url(#leafGradFinB)"/>
+            <path d="M146,16 C133,19 121,21 106,8" stroke="#047857" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M136,36 C146,46 156,56 153,66 C150,76 136,76 126,66 C116,56 123,43 136,36 Z" fill="url(#leafGradFinA)"/>
+            <path d="M136,36 C138,49 141,59 153,66" stroke="#064E3B" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M112,52 C94,44 80,47 74,57 C68,67 76,80 92,82 C108,84 116,70 112,52 Z" fill="url(#leafGradFinC)"/>
+            <path d="M112,52 C100,60 90,64 74,57" stroke="#86EFAC" stroke-width="1.1" stroke-linecap="round" opacity="0.75"/>
+            <path d="M100,76 C110,89 122,96 124,106 C126,116 112,121 100,113 C88,105 90,91 100,76 Z" fill="url(#leafGradFinB)"/>
+            <path d="M100,76 C104,91 110,101 124,106" stroke="#047857" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M74,94 C54,87 42,94 37,104 C32,114 42,126 57,126 C72,126 80,110 74,94 Z" fill="url(#leafGradFinA)"/>
+            <path d="M74,94 C64,104 54,110 37,104" stroke="#064E3B" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M60,117 C67,130 77,137 76,146 C75,155 64,157 54,150 C44,143 48,130 60,117 Z" fill="url(#leafGradFinC)"/>
+            <path d="M60,117 C64,130 68,140 76,146" stroke="#86EFAC" stroke-width="1.1" stroke-linecap="round" opacity="0.75"/>
+            <path d="M26,132 C11,130 3,138 1,146 C-1,154 7,160 19,157 C31,154 33,142 26,132 Z" fill="url(#leafGradFinB)"/>
+            <path d="M26,132 C17,140 11,144 1,146" stroke="#047857" stroke-width="1.1" stroke-linecap="round" opacity="0.65"/>
+            <circle cx="114" cy="26" r="2.4" fill="#FFFFFF" opacity="0.85"/>
+            <circle cx="86" cy="66" r="2.6" fill="#FFFFFF" opacity="0.85"/>
+            <circle cx="49" cy="111" r="2.2" fill="#FFFFFF" opacity="0.85"/>
+          </g>
+        </svg>
         <div class="dash-group-header">
           <div>
             <div class="dash-group-title">
@@ -6797,6 +6949,47 @@
 
       <!-- SECTION: 45% LIFETIME REFERRAL COMMISSIONS & DOWNLINES HUB -->
       <div class="dash-section-group dash-group-referrals dash-theme-referral" id="dash-referral-section">
+        <!-- Super Green Botanical Leafy Plant Branch -->
+        <svg class="leafy-branch-decor" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="leafGradRefA" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#34D399"/>
+              <stop offset="45%" stop-color="#10B981"/>
+              <stop offset="100%" stop-color="#059669"/>
+            </linearGradient>
+            <linearGradient id="leafGradRefB" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#86EFAC"/>
+              <stop offset="35%" stop-color="#22C55E"/>
+              <stop offset="100%" stop-color="#15803D"/>
+            </linearGradient>
+            <linearGradient id="leafGradRefC" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#A7F3D0"/>
+              <stop offset="50%" stop-color="#059669"/>
+              <stop offset="100%" stop-color="#064E3B"/>
+            </linearGradient>
+          </defs>
+          <g>
+            <path d="M165,-5 C142,22 112,62 52,108 C32,123 12,138 -5,148" stroke="#047857" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M165,-5 C142,22 112,62 52,108 C32,123 12,138 -5,148" stroke="#22C55E" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+            <path d="M146,16 C131,5 116,2 106,8 C96,14 101,28 116,32 C131,36 143,28 146,16 Z" fill="url(#leafGradRefB)"/>
+            <path d="M146,16 C133,19 121,21 106,8" stroke="#047857" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M136,36 C146,46 156,56 153,66 C150,76 136,76 126,66 C116,56 123,43 136,36 Z" fill="url(#leafGradRefA)"/>
+            <path d="M136,36 C138,49 141,59 153,66" stroke="#064E3B" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M112,52 C94,44 80,47 74,57 C68,67 76,80 92,82 C108,84 116,70 112,52 Z" fill="url(#leafGradRefC)"/>
+            <path d="M112,52 C100,60 90,64 74,57" stroke="#86EFAC" stroke-width="1.1" stroke-linecap="round" opacity="0.75"/>
+            <path d="M100,76 C110,89 122,96 124,106 C126,116 112,121 100,113 C88,105 90,91 100,76 Z" fill="url(#leafGradRefB)"/>
+            <path d="M100,76 C104,91 110,101 124,106" stroke="#047857" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M74,94 C54,87 42,94 37,104 C32,114 42,126 57,126 C72,126 80,110 74,94 Z" fill="url(#leafGradRefA)"/>
+            <path d="M74,94 C64,104 54,110 37,104" stroke="#064E3B" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M60,117 C67,130 77,137 76,146 C75,155 64,157 54,150 C44,143 48,130 60,117 Z" fill="url(#leafGradRefC)"/>
+            <path d="M60,117 C64,130 68,140 76,146" stroke="#86EFAC" stroke-width="1.1" stroke-linecap="round" opacity="0.75"/>
+            <path d="M26,132 C11,130 3,138 1,146 C-1,154 7,160 19,157 C31,154 33,142 26,132 Z" fill="url(#leafGradRefB)"/>
+            <path d="M26,132 C17,140 11,144 1,146" stroke="#047857" stroke-width="1.1" stroke-linecap="round" opacity="0.65"/>
+            <circle cx="114" cy="26" r="2.4" fill="#FFFFFF" opacity="0.85"/>
+            <circle cx="86" cy="66" r="2.6" fill="#FFFFFF" opacity="0.85"/>
+            <circle cx="49" cy="111" r="2.2" fill="#FFFFFF" opacity="0.85"/>
+          </g>
+        </svg>
         <div class="dash-group-header">
           <div>
             <div class="dash-group-title">
@@ -6819,8 +7012,49 @@
         </div>
 
         <!-- Referral Link & Sharing Box -->
-        <div class="referral-share-card">
-          <div class="referral-share-content">
+        <div class="referral-share-card" style="position: relative; overflow: hidden;">
+          <!-- Super Green Botanical Leafy Plant Branch -->
+          <svg class="leafy-branch-decor" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="leafGradRscA" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#34D399"/>
+                <stop offset="45%" stop-color="#10B981"/>
+                <stop offset="100%" stop-color="#059669"/>
+              </linearGradient>
+              <linearGradient id="leafGradRscB" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#86EFAC"/>
+                <stop offset="35%" stop-color="#22C55E"/>
+                <stop offset="100%" stop-color="#15803D"/>
+              </linearGradient>
+              <linearGradient id="leafGradRscC" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#A7F3D0"/>
+                <stop offset="50%" stop-color="#059669"/>
+                <stop offset="100%" stop-color="#064E3B"/>
+              </linearGradient>
+            </defs>
+            <g>
+              <path d="M165,-5 C142,22 112,62 52,108 C32,123 12,138 -5,148" stroke="#047857" stroke-width="4.5" stroke-linecap="round"/>
+              <path d="M165,-5 C142,22 112,62 52,108 C32,123 12,138 -5,148" stroke="#22C55E" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+              <path d="M146,16 C131,5 116,2 106,8 C96,14 101,28 116,32 C131,36 143,28 146,16 Z" fill="url(#leafGradRscB)"/>
+              <path d="M146,16 C133,19 121,21 106,8" stroke="#047857" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+              <path d="M136,36 C146,46 156,56 153,66 C150,76 136,76 126,66 C116,56 123,43 136,36 Z" fill="url(#leafGradRscA)"/>
+              <path d="M136,36 C138,49 141,59 153,66" stroke="#064E3B" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+              <path d="M112,52 C94,44 80,47 74,57 C68,67 76,80 92,82 C108,84 116,70 112,52 Z" fill="url(#leafGradRscC)"/>
+              <path d="M112,52 C100,60 90,64 74,57" stroke="#86EFAC" stroke-width="1.1" stroke-linecap="round" opacity="0.75"/>
+              <path d="M100,76 C110,89 122,96 124,106 C126,116 112,121 100,113 C88,105 90,91 100,76 Z" fill="url(#leafGradRscB)"/>
+              <path d="M100,76 C104,91 110,101 124,106" stroke="#047857" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+              <path d="M74,94 C54,87 42,94 37,104 C32,114 42,126 57,126 C72,126 80,110 74,94 Z" fill="url(#leafGradRscA)"/>
+              <path d="M74,94 C64,104 54,110 37,104" stroke="#064E3B" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+              <path d="M60,117 C67,130 77,137 76,146 C75,155 64,157 54,150 C44,143 48,130 60,117 Z" fill="url(#leafGradRscC)"/>
+              <path d="M60,117 C64,130 68,140 76,146" stroke="#86EFAC" stroke-width="1.1" stroke-linecap="round" opacity="0.75"/>
+              <path d="M26,132 C11,130 3,138 1,146 C-1,154 7,160 19,157 C31,154 33,142 26,132 Z" fill="url(#leafGradRscB)"/>
+              <path d="M26,132 C17,140 11,144 1,146" stroke="#047857" stroke-width="1.1" stroke-linecap="round" opacity="0.65"/>
+              <circle cx="114" cy="26" r="2.4" fill="#FFFFFF" opacity="0.85"/>
+              <circle cx="86" cy="66" r="2.6" fill="#FFFFFF" opacity="0.85"/>
+              <circle cx="49" cy="111" r="2.2" fill="#FFFFFF" opacity="0.85"/>
+            </g>
+          </svg>
+          <div class="referral-share-content" style="position: relative; z-index: 2;">
             <div class="referral-code-badge-wrap">
               <span class="referral-code-label">YOUR UNIQUE REFERRAL ID:</span>
               <span class="referral-code-value" id="dash-referral-code-display">ALM-PARTNER</span>
@@ -6982,6 +7216,47 @@
 
       <!-- SECTION 2: WHATSAPP VIEWS & PERFORMANCE METRICS -->
       <div class="dash-section-group dash-group-views dash-theme-blue">
+        <!-- Super Green Botanical Leafy Plant Branch -->
+        <svg class="leafy-branch-decor" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="leafGradVwA" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#34D399"/>
+              <stop offset="45%" stop-color="#10B981"/>
+              <stop offset="100%" stop-color="#059669"/>
+            </linearGradient>
+            <linearGradient id="leafGradVwB" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#86EFAC"/>
+              <stop offset="35%" stop-color="#22C55E"/>
+              <stop offset="100%" stop-color="#15803D"/>
+            </linearGradient>
+            <linearGradient id="leafGradVwC" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#A7F3D0"/>
+              <stop offset="50%" stop-color="#059669"/>
+              <stop offset="100%" stop-color="#064E3B"/>
+            </linearGradient>
+          </defs>
+          <g>
+            <path d="M165,-5 C142,22 112,62 52,108 C32,123 12,138 -5,148" stroke="#047857" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M165,-5 C142,22 112,62 52,108 C32,123 12,138 -5,148" stroke="#22C55E" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+            <path d="M146,16 C131,5 116,2 106,8 C96,14 101,28 116,32 C131,36 143,28 146,16 Z" fill="url(#leafGradVwB)"/>
+            <path d="M146,16 C133,19 121,21 106,8" stroke="#047857" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M136,36 C146,46 156,56 153,66 C150,76 136,76 126,66 C116,56 123,43 136,36 Z" fill="url(#leafGradVwA)"/>
+            <path d="M136,36 C138,49 141,59 153,66" stroke="#064E3B" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M112,52 C94,44 80,47 74,57 C68,67 76,80 92,82 C108,84 116,70 112,52 Z" fill="url(#leafGradVwC)"/>
+            <path d="M112,52 C100,60 90,64 74,57" stroke="#86EFAC" stroke-width="1.1" stroke-linecap="round" opacity="0.75"/>
+            <path d="M100,76 C110,89 122,96 124,106 C126,116 112,121 100,113 C88,105 90,91 100,76 Z" fill="url(#leafGradVwB)"/>
+            <path d="M100,76 C104,91 110,101 124,106" stroke="#047857" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M74,94 C54,87 42,94 37,104 C32,114 42,126 57,126 C72,126 80,110 74,94 Z" fill="url(#leafGradVwA)"/>
+            <path d="M74,94 C64,104 54,110 37,104" stroke="#064E3B" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M60,117 C67,130 77,137 76,146 C75,155 64,157 54,150 C44,143 48,130 60,117 Z" fill="url(#leafGradVwC)"/>
+            <path d="M60,117 C64,130 68,140 76,146" stroke="#86EFAC" stroke-width="1.1" stroke-linecap="round" opacity="0.75"/>
+            <path d="M26,132 C11,130 3,138 1,146 C-1,154 7,160 19,157 C31,154 33,142 26,132 Z" fill="url(#leafGradVwB)"/>
+            <path d="M26,132 C17,140 11,144 1,146" stroke="#047857" stroke-width="1.1" stroke-linecap="round" opacity="0.65"/>
+            <circle cx="114" cy="26" r="2.4" fill="#FFFFFF" opacity="0.85"/>
+            <circle cx="86" cy="66" r="2.6" fill="#FFFFFF" opacity="0.85"/>
+            <circle cx="49" cy="111" r="2.2" fill="#FFFFFF" opacity="0.85"/>
+          </g>
+        </svg>
         <div class="dash-group-header">
           <div>
             <div class="dash-group-title">
@@ -7048,6 +7323,47 @@
 
       <!-- SECTION 3: 18-HOUR TASK MISSION STATION (SUPER COLORED GREEN THEME) -->
       <div class="dash-section dash-theme-green">
+        <!-- Super Green Botanical Leafy Plant Branch -->
+        <svg class="leafy-branch-decor" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="leafGradCdnA" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#34D399"/>
+              <stop offset="45%" stop-color="#10B981"/>
+              <stop offset="100%" stop-color="#059669"/>
+            </linearGradient>
+            <linearGradient id="leafGradCdnB" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#86EFAC"/>
+              <stop offset="35%" stop-color="#22C55E"/>
+              <stop offset="100%" stop-color="#15803D"/>
+            </linearGradient>
+            <linearGradient id="leafGradCdnC" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#A7F3D0"/>
+              <stop offset="50%" stop-color="#059669"/>
+              <stop offset="100%" stop-color="#064E3B"/>
+            </linearGradient>
+          </defs>
+          <g>
+            <path d="M165,-5 C142,22 112,62 52,108 C32,123 12,138 -5,148" stroke="#047857" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M165,-5 C142,22 112,62 52,108 C32,123 12,138 -5,148" stroke="#22C55E" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+            <path d="M146,16 C131,5 116,2 106,8 C96,14 101,28 116,32 C131,36 143,28 146,16 Z" fill="url(#leafGradCdnB)"/>
+            <path d="M146,16 C133,19 121,21 106,8" stroke="#047857" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M136,36 C146,46 156,56 153,66 C150,76 136,76 126,66 C116,56 123,43 136,36 Z" fill="url(#leafGradCdnA)"/>
+            <path d="M136,36 C138,49 141,59 153,66" stroke="#064E3B" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M112,52 C94,44 80,47 74,57 C68,67 76,80 92,82 C108,84 116,70 112,52 Z" fill="url(#leafGradCdnC)"/>
+            <path d="M112,52 C100,60 90,64 74,57" stroke="#86EFAC" stroke-width="1.1" stroke-linecap="round" opacity="0.75"/>
+            <path d="M100,76 C110,89 122,96 124,106 C126,116 112,121 100,113 C88,105 90,91 100,76 Z" fill="url(#leafGradCdnB)"/>
+            <path d="M100,76 C104,91 110,101 124,106" stroke="#047857" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M74,94 C54,87 42,94 37,104 C32,114 42,126 57,126 C72,126 80,110 74,94 Z" fill="url(#leafGradCdnA)"/>
+            <path d="M74,94 C64,104 54,110 37,104" stroke="#064E3B" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M60,117 C67,130 77,137 76,146 C75,155 64,157 54,150 C44,143 48,130 60,117 Z" fill="url(#leafGradCdnC)"/>
+            <path d="M60,117 C64,130 68,140 76,146" stroke="#86EFAC" stroke-width="1.1" stroke-linecap="round" opacity="0.75"/>
+            <path d="M26,132 C11,130 3,138 1,146 C-1,154 7,160 19,157 C31,154 33,142 26,132 Z" fill="url(#leafGradCdnB)"/>
+            <path d="M26,132 C17,140 11,144 1,146" stroke="#047857" stroke-width="1.1" stroke-linecap="round" opacity="0.65"/>
+            <circle cx="114" cy="26" r="2.4" fill="#FFFFFF" opacity="0.85"/>
+            <circle cx="86" cy="66" r="2.6" fill="#FFFFFF" opacity="0.85"/>
+            <circle cx="49" cy="111" r="2.2" fill="#FFFFFF" opacity="0.85"/>
+          </g>
+        </svg>
         <div class="dash-section-header" style="margin-bottom: 18px;">
           <div>
             <div class="dash-section-title">
@@ -7090,9 +7406,49 @@
       </div>
       </div>
 
-      </div>
       <!-- SECTION 5: TODAY'S WHATSAPP STATUS PRODUCTS TO DOWNLOAD -->
       <div class="dash-section dash-group-products dash-theme-purple">
+        <!-- Super Green Botanical Leafy Plant Branch -->
+        <svg class="leafy-branch-decor" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="leafGradPrdA" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#34D399"/>
+              <stop offset="45%" stop-color="#10B981"/>
+              <stop offset="100%" stop-color="#059669"/>
+            </linearGradient>
+            <linearGradient id="leafGradPrdB" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#86EFAC"/>
+              <stop offset="35%" stop-color="#22C55E"/>
+              <stop offset="100%" stop-color="#15803D"/>
+            </linearGradient>
+            <linearGradient id="leafGradPrdC" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#A7F3D0"/>
+              <stop offset="50%" stop-color="#059669"/>
+              <stop offset="100%" stop-color="#064E3B"/>
+            </linearGradient>
+          </defs>
+          <g>
+            <path d="M165,-5 C142,22 112,62 52,108 C32,123 12,138 -5,148" stroke="#047857" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M165,-5 C142,22 112,62 52,108 C32,123 12,138 -5,148" stroke="#22C55E" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+            <path d="M146,16 C131,5 116,2 106,8 C96,14 101,28 116,32 C131,36 143,28 146,16 Z" fill="url(#leafGradPrdB)"/>
+            <path d="M146,16 C133,19 121,21 106,8" stroke="#047857" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M136,36 C146,46 156,56 153,66 C150,76 136,76 126,66 C116,56 123,43 136,36 Z" fill="url(#leafGradPrdA)"/>
+            <path d="M136,36 C138,49 141,59 153,66" stroke="#064E3B" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M112,52 C94,44 80,47 74,57 C68,67 76,80 92,82 C108,84 116,70 112,52 Z" fill="url(#leafGradPrdC)"/>
+            <path d="M112,52 C100,60 90,64 74,57" stroke="#86EFAC" stroke-width="1.1" stroke-linecap="round" opacity="0.75"/>
+            <path d="M100,76 C110,89 122,96 124,106 C126,116 112,121 100,113 C88,105 90,91 100,76 Z" fill="url(#leafGradPrdB)"/>
+            <path d="M100,76 C104,91 110,101 124,106" stroke="#047857" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M74,94 C54,87 42,94 37,104 C32,114 42,126 57,126 C72,126 80,110 74,94 Z" fill="url(#leafGradPrdA)"/>
+            <path d="M74,94 C64,104 54,110 37,104" stroke="#064E3B" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M60,117 C67,130 77,137 76,146 C75,155 64,157 54,150 C44,143 48,130 60,117 Z" fill="url(#leafGradPrdC)"/>
+            <path d="M60,117 C64,130 68,140 76,146" stroke="#86EFAC" stroke-width="1.1" stroke-linecap="round" opacity="0.75"/>
+            <path d="M26,132 C11,130 3,138 1,146 C-1,154 7,160 19,157 C31,154 33,142 26,132 Z" fill="url(#leafGradPrdB)"/>
+            <path d="M26,132 C17,140 11,144 1,146" stroke="#047857" stroke-width="1.1" stroke-linecap="round" opacity="0.65"/>
+            <circle cx="114" cy="26" r="2.4" fill="#FFFFFF" opacity="0.85"/>
+            <circle cx="86" cy="66" r="2.6" fill="#FFFFFF" opacity="0.85"/>
+            <circle cx="49" cy="111" r="2.2" fill="#FFFFFF" opacity="0.85"/>
+          </g>
+        </svg>
         <div class="dash-section-header">
           <div>
             <div class="dash-section-title">
@@ -7115,6 +7471,47 @@
 
       <!-- SECTION 6: ARRANGED ACTIVITY & FINANCIAL HISTORY (TABBED) -->
       <div class="dash-section dash-group-history dash-theme-yellow">
+        <!-- Super Green Botanical Leafy Plant Branch -->
+        <svg class="leafy-branch-decor" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="leafGradHstA" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#34D399"/>
+              <stop offset="45%" stop-color="#10B981"/>
+              <stop offset="100%" stop-color="#059669"/>
+            </linearGradient>
+            <linearGradient id="leafGradHstB" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#86EFAC"/>
+              <stop offset="35%" stop-color="#22C55E"/>
+              <stop offset="100%" stop-color="#15803D"/>
+            </linearGradient>
+            <linearGradient id="leafGradHstC" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#A7F3D0"/>
+              <stop offset="50%" stop-color="#059669"/>
+              <stop offset="100%" stop-color="#064E3B"/>
+            </linearGradient>
+          </defs>
+          <g>
+            <path d="M165,-5 C142,22 112,62 52,108 C32,123 12,138 -5,148" stroke="#047857" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M165,-5 C142,22 112,62 52,108 C32,123 12,138 -5,148" stroke="#22C55E" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+            <path d="M146,16 C131,5 116,2 106,8 C96,14 101,28 116,32 C131,36 143,28 146,16 Z" fill="url(#leafGradHstB)"/>
+            <path d="M146,16 C133,19 121,21 106,8" stroke="#047857" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M136,36 C146,46 156,56 153,66 C150,76 136,76 126,66 C116,56 123,43 136,36 Z" fill="url(#leafGradHstA)"/>
+            <path d="M136,36 C138,49 141,59 153,66" stroke="#064E3B" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M112,52 C94,44 80,47 74,57 C68,67 76,80 92,82 C108,84 116,70 112,52 Z" fill="url(#leafGradHstC)"/>
+            <path d="M112,52 C100,60 90,64 74,57" stroke="#86EFAC" stroke-width="1.1" stroke-linecap="round" opacity="0.75"/>
+            <path d="M100,76 C110,89 122,96 124,106 C126,116 112,121 100,113 C88,105 90,91 100,76 Z" fill="url(#leafGradHstB)"/>
+            <path d="M100,76 C104,91 110,101 124,106" stroke="#047857" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M74,94 C54,87 42,94 37,104 C32,114 42,126 57,126 C72,126 80,110 74,94 Z" fill="url(#leafGradHstA)"/>
+            <path d="M74,94 C64,104 54,110 37,104" stroke="#064E3B" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M60,117 C67,130 77,137 76,146 C75,155 64,157 54,150 C44,143 48,130 60,117 Z" fill="url(#leafGradHstC)"/>
+            <path d="M60,117 C64,130 68,140 76,146" stroke="#86EFAC" stroke-width="1.1" stroke-linecap="round" opacity="0.75"/>
+            <path d="M26,132 C11,130 3,138 1,146 C-1,154 7,160 19,157 C31,154 33,142 26,132 Z" fill="url(#leafGradHstB)"/>
+            <path d="M26,132 C17,140 11,144 1,146" stroke="#047857" stroke-width="1.1" stroke-linecap="round" opacity="0.65"/>
+            <circle cx="114" cy="26" r="2.4" fill="#FFFFFF" opacity="0.85"/>
+            <circle cx="86" cy="66" r="2.6" fill="#FFFFFF" opacity="0.85"/>
+            <circle cx="49" cy="111" r="2.2" fill="#FFFFFF" opacity="0.85"/>
+          </g>
+        </svg>
         <div class="dash-section-header">
           <div>
             <div class="dash-section-title">
@@ -8620,23 +9017,48 @@
       const title = document.getElementById('cooldown-title');
       const desc = document.getElementById('cooldown-desc');
 
-      if (cooldown && !cooldown.canSubmitTask && cooldown.secondsRemaining > 0) {
+      if (cooldown && cooldown.waivedByTicket) {
         badge.style.display = 'inline-flex';
+        badge.style.background = 'linear-gradient(135deg, #DCFCE7, #BBF7D0)';
+        badge.style.border = '1.5px solid #22C55E';
+        badge.style.color = '#15803D';
+        const tCount = cooldown.submissionTickets || 1;
+        badgeText.textContent = `🎟️ 18h Cooldown Waived (${tCount} Ticket${tCount > 1 ? 's' : ''})`;
+
+        title.textContent = '🎟️ 18-Hour Rule Waived with Submission Ticket';
+        desc.textContent = `An administrator has granted you a submission ticket waiving the 18-hour cooldown rule! You can submit your WhatsApp Status proof immediately without waiting. (${tCount} ticket${tCount > 1 ? 's' : ''} available)`;
+        triggerBtn.disabled = false;
+        triggerBtn.style.opacity = '1';
+        triggerBtn.style.background = 'linear-gradient(135deg, #10B981 0%, #059669 100%)';
+        triggerBtn.innerHTML = `
+          <span style="font-size: 16px; margin-right: 6px;">🎟️</span>
+          Submit 18h WhatsApp Proof (Using Ticket)
+        `;
+      } else if (cooldown && !cooldown.canSubmitTask && cooldown.secondsRemaining > 0) {
+        badge.style.display = 'inline-flex';
+        badge.style.background = '';
+        badge.style.border = '';
+        badge.style.color = '';
         const hours = Math.floor(cooldown.secondsRemaining / 3600);
         const mins = Math.floor((cooldown.secondsRemaining % 3600) / 60);
         badgeText.textContent = `Cooldown: ${hours}h ${mins}m left`;
 
         title.textContent = '18h Task Cooldown in Progress';
-        desc.textContent = `You can submit your next WhatsApp Status proof in ${hours} hours and ${mins} minutes (submissions allowed every 18 hours).`;
+        desc.textContent = `You can submit your next WhatsApp Status proof in ${hours} hours and ${mins} minutes (submissions allowed every 18 hours). Admin can grant a submission ticket to waive this wait.`;
         triggerBtn.disabled = true;
         triggerBtn.style.opacity = '0.6';
-        triggerBtn.textContent = 'Submission Locked';
+        triggerBtn.style.background = '';
+        triggerBtn.textContent = 'Submission Locked (18h Rule)';
       } else {
         badge.style.display = 'none';
+        badge.style.background = '';
+        badge.style.border = '';
+        badge.style.color = '';
         title.textContent = 'Daily WhatsApp Campaign Ready';
         desc.textContent = 'Post the live Almai campaign to your WhatsApp Status for 18 hours to earn rewards.';
         triggerBtn.disabled = false;
         triggerBtn.style.opacity = '1';
+        triggerBtn.style.background = '';
         triggerBtn.innerHTML = `
           <span class="svg-icon" style="width: 16px; height: 16px; margin-right: 4px;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
@@ -10651,6 +11073,8 @@
           tbody.innerHTML = data.users.map(u => {
             const dateStr = new Date(u.created_at * 1000).toLocaleDateString('en-KE');
             const pkgInfo = u.active_package_name ? `<span class="user-pkg-tag" style="background:#DCFCE7; color:#166534;">${escapeHTML(u.active_package_name)}</span>` : (u.pending_package_name ? `<span class="user-pkg-tag" style="background:#F3E8FF; color:#6B21A8;">Pending: ${escapeHTML(u.pending_package_name)}</span>` : `<span style="color: var(--charcoal-muted); font-size: 12px;">No Package</span>`);
+            const tickets = u.submission_tickets || 0;
+            const ticketBadge = `<span class="status-badge" style="background: ${tickets > 0 ? '#DCFCE7' : '#F1F5F9'}; color: ${tickets > 0 ? '#15803D' : '#64748B'}; border: 1.5px solid ${tickets > 0 ? '#86EFAC' : '#CBD5E1'}; font-weight: 850; font-size: 11px; padding: 2px 8px; border-radius: 99px; display: inline-flex; align-items: center; gap: 3px;" title="18h Cooldown Waiver Tickets">🎟️ ${tickets} Ticket${tickets === 1 ? '' : 's'}</span>`;
 
             return `
               <tr>
@@ -10659,8 +11083,13 @@
                   <span style="font-size: 12px; color: var(--charcoal-muted);">${escapeHTML(u.email)} | ${escapeHTML(u.phone || 'No phone')}</span>
                 </td>
                 <td>
-                  <span class="status-badge ${u.role === 'admin' ? 'status-completed' : 'status-approved'}">${escapeHTML(u.role)}</span>
-                  <span class="status-badge ${u.status === 'active' ? 'status-approved' : 'status-rejected'}">${escapeHTML(u.status)}</span>
+                  <div style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start;">
+                    <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+                      <span class="status-badge ${u.role === 'admin' ? 'status-completed' : 'status-approved'}">${escapeHTML(u.role)}</span>
+                      <span class="status-badge ${u.status === 'active' ? 'status-approved' : 'status-rejected'}">${escapeHTML(u.status)}</span>
+                    </div>
+                    ${ticketBadge}
+                  </div>
                 </td>
                 <td>${pkgInfo}</td>
                 <td style="font-weight: 700; color: var(--primary-purple);">KSh ${(u.available_balance_ksh || 0).toLocaleString()}</td>
@@ -10670,6 +11099,12 @@
                   <div style="display: flex; gap: 6px; flex-wrap: wrap;">
                     <button class="btn btn-secondary btn-sm" onclick="adminAssignPackage('${u.id}', '${escapeHTML(u.name)}')">
                       Assign Package
+                    </button>
+                    <button class="btn btn-sm" style="background: #FAF5FF; color: #6D28D9; border: 1.5px solid #C4B5FD; font-weight: 800; padding: 5px 10px; border-radius: 8px;" onclick="adminModifyUserViews('${u.id}', '${escapeHTML(u.name)}', ${u.active_package_rate || 20})">
+                      Modify Views
+                    </button>
+                    <button class="btn btn-sm" style="background: #ECFDF5; color: #15803D; border: 1.5px solid #86EFAC; font-weight: 800; padding: 5px 10px; border-radius: 8px;" onclick="adminGrantSubmissionTicket('${u.id}', '${escapeHTML(u.name)}', ${u.submission_tickets || 0})">
+                      🎟️ +Ticket (18h)
                     </button>
                     ${u.role !== 'admin' ? `
                       <button class="btn ${u.status === 'active' ? 'btn-danger' : 'btn-success'} btn-sm" onclick="adminToggleUserStatus('${u.id}', '${u.status}')">
@@ -10741,6 +11176,92 @@
         }
       } catch (err) {
         alert('Network error while toggling status.');
+      }
+    }
+
+    async function adminModifyUserViews(userId, userName, currentRate = 20) {
+      const viewsInput = prompt(`Adjust WhatsApp Views for ${userName}:\nEnter views count to add (e.g. 50) or deduct (e.g. -20):`, '50');
+      if (viewsInput === null) return;
+      const views = parseInt(viewsInput.trim(), 10);
+      if (isNaN(views) || views === 0) {
+        alert('Please enter a valid non-zero integer for views.');
+        return;
+      }
+
+      const rateInput = prompt(`Enter reward rate per view in KSh (default: KSh ${currentRate}):`, String(currentRate));
+      if (rateInput === null) return;
+      const rate = parseFloat(rateInput.trim());
+      if (isNaN(rate) || rate <= 0) {
+        alert('Please enter a valid positive number for the reward rate.');
+        return;
+      }
+
+      const note = prompt(`Enter admin audit note/reason for this modification:`, 'Admin manual views adjustment');
+      if (note === null) return;
+
+      const totalReward = Math.round(views * rate);
+      const confirmMsg = views > 0 
+        ? `Confirm crediting ${views} views @ KSh ${rate}/view (+KSh ${totalReward.toLocaleString()}) to ${userName}?`
+        : `Confirm deducting ${Math.abs(views)} views @ KSh ${rate}/view (-KSh ${Math.abs(totalReward).toLocaleString()}) from ${userName}?`;
+
+      if (!confirm(confirmMsg)) return;
+
+      try {
+        const res = await fetch('/api/admin/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'modify_views',
+            targetUserId: userId,
+            views,
+            rate,
+            note: note.trim()
+          })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert(`✓ ${data.message}`);
+          loadAdminUsers();
+        } else {
+          alert(data.error || 'Failed to modify views');
+        }
+      } catch (err) {
+        alert('Network error while modifying views.');
+      }
+    }
+
+    async function adminGrantSubmissionTicket(userId, userName, currentTickets = 0) {
+      const ticketsInput = prompt(`Grant 18-Hour Rule Submission Tickets to ${userName}:\nUser currently has: ${currentTickets} ticket(s).\n\nEach ticket allows the user to immediately waive the 18-hour task cooldown rule once.\n\nEnter number of tickets to add:`, '1');
+      if (ticketsInput === null) return;
+      const tickets = parseInt(ticketsInput.trim(), 10);
+      if (isNaN(tickets) || tickets <= 0) {
+        alert('Please enter a valid positive number of tickets.');
+        return;
+      }
+
+      const note = prompt(`Enter reason / note for granting ticket (optional):`, '18-hour cooldown rule waiver');
+      if (note === null) return;
+
+      try {
+        const res = await fetch('/api/admin/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'grant_submission_ticket',
+            targetUserId: userId,
+            tickets,
+            note: note ? note.trim() : '18-hour cooldown rule waiver'
+          })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert(`✓ ${data.message}`);
+          loadAdminUsers();
+        } else {
+          alert(data.error || 'Failed to grant ticket');
+        }
+      } catch (err) {
+        alert('Network error while granting submission ticket.');
       }
     }
 

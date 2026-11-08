@@ -39,21 +39,31 @@ export async function onRequestGet(context) {
       LIMIT 20
     `).bind(user.id).all();
 
-    // 3. Cooldown calculation (18 hours)
+    // 3. Cooldown calculation (18 hours with submission ticket waiver)
     const now = Math.floor(Date.now() / 1000);
     const latest = submissions && submissions.length > 0 ? submissions[0] : null;
+
+    // Fetch user submission tickets defensively
+    const userRow = await env.DB.prepare('SELECT COALESCE(submission_tickets, 0) as submission_tickets FROM users WHERE id = ?').bind(user.id).first().catch(() => null);
+    const submissionTickets = userRow ? (userRow.submission_tickets || 0) : 0;
 
     let canSubmit = true;
     let secondsRemaining = 0;
     let nextAllowedAt = now;
+    let waivedByTicket = false;
 
     if (latest) {
       const cooldownSeconds = 18 * 60 * 60; // 18 hours
       const nextTime = latest.created_at + cooldownSeconds;
       if (now < nextTime) {
-        canSubmit = false;
         secondsRemaining = nextTime - now;
         nextAllowedAt = nextTime;
+        if (submissionTickets > 0) {
+          canSubmit = true;
+          waivedByTicket = true;
+        } else {
+          canSubmit = false;
+        }
       }
     }
 
@@ -64,7 +74,9 @@ export async function onRequestGet(context) {
         canSubmit,
         secondsRemaining,
         nextAllowedAt,
-        lastSubmittedAt: latest ? latest.created_at : null
+        lastSubmittedAt: latest ? latest.created_at : null,
+        waivedByTicket,
+        submissionTickets
       }
     });
 
@@ -119,21 +131,32 @@ export async function onRequestPost(context) {
     return jsonError('Reported views exceeds maximum allowable threshold for verification', 400);
   }
 
-  // 3. Enforce 18-hour Cooldown on server
+  // 3. Enforce 18-hour Cooldown on server (waived if user has a submission ticket)
   const now = Math.floor(Date.now() / 1000);
+  const userRow = await env.DB.prepare('SELECT COALESCE(submission_tickets, 0) as submission_tickets FROM users WHERE id = ?').bind(user.id).first().catch(() => null);
+  const submissionTickets = userRow ? (userRow.submission_tickets || 0) : 0;
+
   const latestSubmission = await env.DB.prepare(`
     SELECT created_at FROM task_submissions WHERE user_id = ? ORDER BY created_at DESC LIMIT 1
   `).bind(user.id).first();
 
+  let ticketUsed = false;
   if (latestSubmission) {
     const elapsed = now - latestSubmission.created_at;
     const cooldownDuration = 18 * 60 * 60; // 18 hours
     if (elapsed < cooldownDuration) {
-      const waitMinutes = Math.ceil((cooldownDuration - elapsed) / 60);
-      const waitHours = (waitMinutes / 60).toFixed(1);
-      return jsonError(`18-hour submission cooldown active. You can submit another WhatsApp task in approximately ${waitHours} hours (${waitMinutes} minutes).`, 429, {
-        secondsRemaining: cooldownDuration - elapsed
-      });
+      if (submissionTickets > 0) {
+        // Waive 18-hour rule using 1 ticket
+        ticketUsed = true;
+        await env.DB.prepare('UPDATE users SET submission_tickets = MAX(0, submission_tickets - 1), updated_at = ? WHERE id = ?')
+          .bind(now, user.id).run().catch(() => {});
+      } else {
+        const waitMinutes = Math.ceil((cooldownDuration - elapsed) / 60);
+        const waitHours = (waitMinutes / 60).toFixed(1);
+        return jsonError(`18-hour submission cooldown active. You can submit another WhatsApp task in approximately ${waitHours} hours (${waitMinutes} minutes), or contact support/admin for a submission ticket.`, 429, {
+          secondsRemaining: cooldownDuration - elapsed
+        });
+      }
     }
   }
 
@@ -189,12 +212,16 @@ export async function onRequestPost(context) {
     ).run();
 
     return jsonSuccess({
-      message: `Task submitted successfully! Your submission of ${views} WhatsApp views is awaiting administrator approval. Your wallet balance will be updated once approved by an administrator.`,
+      message: ticketUsed
+        ? `Task submitted successfully! Your submission of ${views} WhatsApp views is awaiting administrator approval. (18-hour cooldown was waived using your submission ticket; ${Math.max(0, submissionTickets - 1)} ticket(s) remaining).`
+        : `Task submitted successfully! Your submission of ${views} WhatsApp views is awaiting administrator approval. Your wallet balance will be updated once approved by an administrator.`,
       taskId,
       reportedViews: views,
       estimatedRewardKsh,
       packageRateKsh: activePackage.reward_per_view_ksh,
-      status: 'pending'
+      status: 'pending',
+      ticketUsed,
+      remainingTickets: ticketUsed ? Math.max(0, submissionTickets - 1) : submissionTickets
     }, 201);
 
   } catch (err) {

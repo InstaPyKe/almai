@@ -75,7 +75,10 @@ export async function onRequestGet(context) {
       LIMIT 1
     `).bind(user.id).first();
 
-    // 3. Check 18h task submission cooldown
+    // 3. Check 18h task submission cooldown & tickets
+    const userRow = await env.DB.prepare('SELECT COALESCE(submission_tickets, 0) as submission_tickets FROM users WHERE id = ?').bind(user.id).first().catch(() => null);
+    const submissionTickets = userRow ? (userRow.submission_tickets || 0) : 0;
+
     const latestTask = await env.DB.prepare(`
       SELECT created_at, status
       FROM task_submissions
@@ -88,14 +91,20 @@ export async function onRequestGet(context) {
     let canSubmitTask = true;
     let nextSubmissionAllowedAt = now;
     let secondsRemaining = 0;
+    let waivedByTicket = false;
 
     if (latestTask) {
       const cooldownPeriod = 18 * 60 * 60; // 18 hours
       const nextTime = latestTask.created_at + cooldownPeriod;
       if (now < nextTime) {
-        canSubmitTask = false;
-        nextSubmissionAllowedAt = nextTime;
         secondsRemaining = nextTime - now;
+        nextSubmissionAllowedAt = nextTime;
+        if (submissionTickets > 0) {
+          canSubmitTask = true;
+          waivedByTicket = true;
+        } else {
+          canSubmitTask = false;
+        }
       }
     }
 
@@ -119,7 +128,8 @@ export async function onRequestGet(context) {
         email: user.email,
         phone: user.phone,
         role: user.role,
-        referralCode: user.referralCode
+        referralCode: user.referralCode,
+        submissionTickets
       },
       wallet,
       activePackage: activePackage || null,
@@ -129,7 +139,9 @@ export async function onRequestGet(context) {
         canSubmitTask,
         nextSubmissionAllowedAt,
         secondsRemaining,
-        lastSubmittedAt: latestTask ? latestTask.created_at : null
+        lastSubmittedAt: latestTask ? latestTask.created_at : null,
+        waivedByTicket,
+        submissionTickets
       },
       stats: {
         reportedViews: taskStats?.total_reported_views || 0,
