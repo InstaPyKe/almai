@@ -1721,7 +1721,7 @@
        ==================================================================== */
     .dashboard-header {
       background: linear-gradient(135deg, #FFFFFF 0%, #FAF7FE 50%, #F5EEFD 100%) !important;
-      border: 2px solid rgba(139, 92, 246, 0.3) !important;
+      border: none !important;
       border-radius: 20px !important;
       padding: 24px 28px !important;
       margin: 20px 0 28px 0 !important;
@@ -1729,7 +1729,7 @@
       align-items: center !important;
       justify-content: space-between !important;
       gap: 24px !important;
-      box-shadow: 0 16px 42px -6px rgba(76, 29, 149, 0.14), 0 4px 16px -2px rgba(16, 185, 129, 0.09), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+      box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.12), 0 8px 24px -4px rgba(76, 29, 149, 0.12), 0 20px 48px -6px rgba(76, 29, 149, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
       position: relative !important;
       overflow: hidden !important;
     }
@@ -1956,21 +1956,20 @@
       }
     }
 
-    /* Section Structure & Arranged Banners with Super Nice Multi-Layer Shadows */
+    /* Section Structure & Arranged Banners with Super Nice Multi-Layer Shadows (Borderless) */
     .dash-section-group {
       background: #FFFFFF;
-      border: 1.5px solid rgba(226, 232, 240, 0.9);
+      border: none !important;
       border-radius: var(--radius-lg);
       padding: 28px 28px 24px 28px;
       margin-bottom: 34px;
-      box-shadow: 0 14px 38px -6px rgba(76, 29, 149, 0.08), 0 4px 14px rgba(15, 23, 42, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+      box-shadow: 0 0 0 1px rgba(76, 29, 149, 0.08), 0 8px 24px -4px rgba(76, 29, 149, 0.08), 0 20px 48px -6px rgba(76, 29, 149, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.95);
       position: relative;
       overflow: hidden;
       transition: var(--transition);
     }
     .dash-section-group:hover {
-      box-shadow: 0 20px 48px -8px rgba(76, 29, 149, 0.13), 0 6px 18px rgba(15, 23, 42, 0.05);
-      border-color: #D8B4FE;
+      box-shadow: 0 0 0 1px rgba(76, 29, 149, 0.14), 0 12px 32px -4px rgba(76, 29, 149, 0.14), 0 26px 56px -8px rgba(76, 29, 149, 0.16);
     }
     .dash-group-header {
       display: flex;
@@ -1979,8 +1978,8 @@
       margin-bottom: 20px;
       flex-wrap: wrap;
       gap: 12px;
-      border-bottom: 2px solid rgba(226, 232, 240, 0.7);
-      padding-bottom: 14px;
+      border-bottom: none !important;
+      padding-bottom: 8px;
       position: relative;
       z-index: 2;
     }
@@ -2225,21 +2224,20 @@
       animation: timerHeartbeat 2.5s infinite ease-in-out;
     }
 
-    /* Dashboard Sections & Luxury Shadow Containers */
+    /* Dashboard Sections & Luxury Shadow Containers (Borderless) */
     .dash-section {
       background: var(--white-card);
-      border: 1.5px solid var(--beige-border);
+      border: none !important;
       border-radius: var(--radius-lg);
       padding: 28px 28px;
       margin-bottom: 30px;
-      box-shadow: 0 14px 38px -6px rgba(76, 29, 149, 0.08), 0 4px 14px rgba(15, 23, 42, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+      box-shadow: 0 0 0 1px rgba(76, 29, 149, 0.08), 0 8px 24px -4px rgba(76, 29, 149, 0.08), 0 20px 48px -6px rgba(76, 29, 149, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.95);
       position: relative;
       overflow: hidden;
       transition: var(--transition);
     }
     .dash-section:hover {
-      box-shadow: 0 22px 50px -8px rgba(76, 29, 149, 0.14), 0 6px 18px rgba(15, 23, 42, 0.05);
-      border-color: #D8B4FE;
+      box-shadow: 0 0 0 1px rgba(76, 29, 149, 0.14), 0 12px 32px -4px rgba(76, 29, 149, 0.14), 0 26px 56px -8px rgba(76, 29, 149, 0.16);
     }
     .dash-section-header {
       display: flex;
@@ -2248,8 +2246,8 @@
       margin-bottom: 20px;
       flex-wrap: wrap;
       gap: 12px;
-      padding-bottom: 14px;
-      border-bottom: 1.5px solid rgba(226, 232, 240, 0.6);
+      padding-bottom: 8px;
+      border-bottom: none !important;
       position: relative;
       z-index: 2;
     }
@@ -4808,35 +4806,163 @@
     }
   
     /* ====================================================================
-       SUPER COLORED ALTERNATING SECTIONS (YELLOW, BLUE, GREEN, PURPLE)
-       WITH ALTERNATING COLORED UI TEXT FONTS
+       SUPER CREAMY ALTERNATING CLASSIFIED SECTIONS
+       (PINK, YELLOW, ORANGE, PURPLE, RED, GREEN)
+       BORDERLESS AESTHETIC POWERED BY LUXURY BORDER SHADOWS
        ==================================================================== */
 
-    /* Theme Yellow (Amber / Gold / Sunshine) */
-    .dash-theme-yellow {
-      background: linear-gradient(145deg, #FFFDF0 0%, #FEF9C3 35%, #FEF08A 100%) !important;
-      border: 2.5px solid #F59E0B !important;
+    /* 1. Theme Creamy Pink (Rose Velvet / Berry Cream) */
+    .dash-theme-creamy-pink,
+    .dash-theme-pink {
+      background: linear-gradient(145deg, #FFF7F9 0%, #FFEBF1 42%, #FFDFE8 100%) !important;
+      border: none !important;
       border-radius: var(--radius-lg) !important;
       padding: 26px 26px 30px !important;
-      box-shadow: 0 14px 34px -4px rgba(245, 158, 11, 0.22), 0 3px 10px rgba(0, 0, 0, 0.04) !important;
+      box-shadow: 0 0 0 1px rgba(244, 114, 182, 0.18),
+                  0 8px 24px -3px rgba(244, 114, 182, 0.20),
+                  0 20px 48px -6px rgba(225, 29, 72, 0.14),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
       margin-bottom: 32px !important;
       position: relative !important;
       overflow: hidden !important;
+      transition: box-shadow 0.3s ease, transform 0.3s ease !important;
     }
+    .dash-theme-creamy-pink:hover,
+    .dash-theme-pink:hover {
+      box-shadow: 0 0 0 1px rgba(244, 114, 182, 0.28),
+                  0 14px 34px -4px rgba(244, 114, 182, 0.26),
+                  0 28px 60px -8px rgba(225, 29, 72, 0.20),
+                  inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+    }
+    .dash-theme-creamy-pink::before,
+    .dash-theme-pink::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 230px;
+      height: 230px;
+      background: radial-gradient(circle, rgba(244, 114, 182, 0.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .dash-theme-creamy-pink .dash-group-header,
+    .dash-theme-creamy-pink .dash-section-header,
+    .dash-theme-pink .dash-group-header,
+    .dash-theme-pink .dash-section-header {
+      border-bottom: none !important;
+    }
+    .dash-theme-creamy-pink .dash-group-title,
+    .dash-theme-creamy-pink .dash-section-title,
+    .dash-theme-creamy-pink h2,
+    .dash-theme-creamy-pink h3,
+    .dash-theme-creamy-pink h4,
+    .dash-theme-pink .dash-group-title,
+    .dash-theme-pink .dash-section-title,
+    .dash-theme-pink h2,
+    .dash-theme-pink h3,
+    .dash-theme-pink h4 {
+      color: #881337 !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+      font-weight: 950 !important;
+      letter-spacing: -0.02em;
+    }
+    .dash-theme-creamy-pink .dash-group-subtitle,
+    .dash-theme-creamy-pink p,
+    .dash-theme-pink .dash-group-subtitle,
+    .dash-theme-pink p {
+      color: #9F1239 !important;
+      font-weight: 750 !important;
+    }
+    .dash-theme-creamy-pink .dash-group-pill,
+    .dash-theme-pink .dash-group-pill {
+      background: #FFE4EC !important;
+      color: #881337 !important;
+      border: none !important;
+      box-shadow: 0 0 0 1px rgba(244, 114, 182, 0.25), 0 2px 6px rgba(136, 19, 55, 0.08) !important;
+      font-weight: 850 !important;
+    }
+    .dash-theme-creamy-pink .dash-metric-card,
+    .dash-theme-pink .dash-metric-card {
+      background: #FFFFFF !important;
+      border: none !important;
+      box-shadow: 0 0 0 1px rgba(244, 114, 182, 0.12),
+                  0 8px 22px rgba(244, 114, 182, 0.12),
+                  0 2px 6px rgba(15, 23, 42, 0.03) !important;
+    }
+    .dash-theme-creamy-pink .dash-metric-card:hover,
+    .dash-theme-pink .dash-metric-card:hover {
+      border: none !important;
+      transform: translateY(-4px) !important;
+      box-shadow: 0 0 0 1px rgba(244, 114, 182, 0.25),
+                  0 14px 28px rgba(244, 114, 182, 0.22) !important;
+    }
+    .dash-theme-creamy-pink .dash-metric-lbl,
+    .dash-theme-pink .dash-metric-lbl {
+      color: #9F1239 !important;
+      font-weight: 850 !important;
+      font-size: 13.5px !important;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .dash-theme-creamy-pink .dash-metric-val,
+    .dash-theme-pink .dash-metric-val {
+      font-family: 'Space Grotesk', sans-serif !important;
+      font-weight: 950 !important;
+      font-size: 38px !important;
+      line-height: 1.15;
+    }
+    .dash-theme-creamy-pink .dash-metric-sub,
+    .dash-theme-pink .dash-metric-sub {
+      color: #881337 !important;
+      font-weight: 750 !important;
+      font-size: 13.5px !important;
+    }
+
+    /* 2. Theme Creamy Yellow (Warm Vanilla / Rich Honey Custard) */
+    .dash-theme-creamy-yellow,
+    .dash-theme-yellow {
+      background: linear-gradient(145deg, #FFFDF5 0%, #FEF9E4 42%, #FEF3CC 100%) !important;
+      border: none !important;
+      border-radius: var(--radius-lg) !important;
+      padding: 26px 26px 30px !important;
+      box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.18),
+                  0 8px 24px -3px rgba(245, 158, 11, 0.20),
+                  0 20px 48px -6px rgba(217, 119, 6, 0.14),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+      margin-bottom: 32px !important;
+      position: relative !important;
+      overflow: hidden !important;
+      transition: box-shadow 0.3s ease, transform 0.3s ease !important;
+    }
+    .dash-theme-creamy-yellow:hover,
+    .dash-theme-yellow:hover {
+      box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.28),
+                  0 14px 34px -4px rgba(245, 158, 11, 0.26),
+                  0 28px 60px -8px rgba(217, 119, 6, 0.20),
+                  inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+    }
+    .dash-theme-creamy-yellow::before,
     .dash-theme-yellow::before {
       content: '';
       position: absolute;
       top: -20px;
       right: -20px;
-      width: 220px;
-      height: 220px;
-      background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, transparent 70%);
+      width: 230px;
+      height: 230px;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, transparent 70%);
       pointer-events: none;
     }
+    .dash-theme-creamy-yellow .dash-group-header,
+    .dash-theme-creamy-yellow .dash-section-header,
     .dash-theme-yellow .dash-group-header,
     .dash-theme-yellow .dash-section-header {
-      border-bottom: 2px solid rgba(217, 119, 6, 0.25) !important;
+      border-bottom: none !important;
     }
+    .dash-theme-creamy-yellow .dash-group-title,
+    .dash-theme-creamy-yellow .dash-section-title,
+    .dash-theme-creamy-yellow h2,
+    .dash-theme-creamy-yellow h3,
+    .dash-theme-creamy-yellow h4,
     .dash-theme-yellow .dash-group-title,
     .dash-theme-yellow .dash-section-title,
     .dash-theme-yellow h2,
@@ -4847,27 +4973,37 @@
       font-weight: 950 !important;
       letter-spacing: -0.02em;
     }
+    .dash-theme-creamy-yellow .dash-group-subtitle,
+    .dash-theme-creamy-yellow p,
     .dash-theme-yellow .dash-group-subtitle,
     .dash-theme-yellow p {
       color: #92400E !important;
       font-weight: 750 !important;
     }
+    .dash-theme-creamy-yellow .dash-group-pill,
     .dash-theme-yellow .dash-group-pill {
       background: #FEF3C7 !important;
-      color: #92400E !important;
-      border: 1.5px solid #F59E0B !important;
+      color: #78350F !important;
+      border: none !important;
+      box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.25), 0 2px 6px rgba(120, 53, 15, 0.08) !important;
       font-weight: 850 !important;
     }
+    .dash-theme-creamy-yellow .dash-metric-card,
     .dash-theme-yellow .dash-metric-card {
       background: #FFFFFF !important;
-      border: 2px solid #FDE68A !important;
-      box-shadow: 0 8px 22px rgba(245, 158, 11, 0.14) !important;
+      border: none !important;
+      box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.12),
+                  0 8px 22px rgba(245, 158, 11, 0.12),
+                  0 2px 6px rgba(15, 23, 42, 0.03) !important;
     }
+    .dash-theme-creamy-yellow .dash-metric-card:hover,
     .dash-theme-yellow .dash-metric-card:hover {
-      border-color: #F59E0B !important;
+      border: none !important;
       transform: translateY(-4px) !important;
-      box-shadow: 0 14px 28px rgba(245, 158, 11, 0.25) !important;
+      box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.25),
+                  0 14px 28px rgba(245, 158, 11, 0.22) !important;
     }
+    .dash-theme-creamy-yellow .dash-metric-lbl,
     .dash-theme-yellow .dash-metric-lbl {
       color: #92400E !important;
       font-weight: 850 !important;
@@ -4875,14 +5011,123 @@
       text-transform: uppercase;
       letter-spacing: 0.04em;
     }
+    .dash-theme-creamy-yellow .dash-metric-val,
     .dash-theme-yellow .dash-metric-val {
       font-family: 'Space Grotesk', sans-serif !important;
       font-weight: 950 !important;
       font-size: 38px !important;
       line-height: 1.15;
     }
+    .dash-theme-creamy-yellow .dash-metric-sub,
     .dash-theme-yellow .dash-metric-sub {
       color: #78350F !important;
+      font-weight: 750 !important;
+      font-size: 13.5px !important;
+    }
+
+    /* 3. Theme Creamy Orange (Apricot Mousse / Papaya Cream) */
+    .dash-theme-creamy-orange,
+    .dash-theme-orange {
+      background: linear-gradient(145deg, #FFF9F5 0%, #FFF0E3 42%, #FEDEC5 100%) !important;
+      border: none !important;
+      border-radius: var(--radius-lg) !important;
+      padding: 26px 26px 30px !important;
+      box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.18),
+                  0 8px 24px -3px rgba(249, 115, 22, 0.20),
+                  0 20px 48px -6px rgba(234, 88, 12, 0.14),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+      margin-bottom: 32px !important;
+      position: relative !important;
+      overflow: hidden !important;
+      transition: box-shadow 0.3s ease, transform 0.3s ease !important;
+    }
+    .dash-theme-creamy-orange:hover,
+    .dash-theme-orange:hover {
+      box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.28),
+                  0 14px 34px -4px rgba(249, 115, 22, 0.26),
+                  0 28px 60px -8px rgba(234, 88, 12, 0.20),
+                  inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+    }
+    .dash-theme-creamy-orange::before,
+    .dash-theme-orange::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 230px;
+      height: 230px;
+      background: radial-gradient(circle, rgba(249, 115, 22, 0.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .dash-theme-creamy-orange .dash-group-header,
+    .dash-theme-creamy-orange .dash-section-header,
+    .dash-theme-orange .dash-group-header,
+    .dash-theme-orange .dash-section-header {
+      border-bottom: none !important;
+    }
+    .dash-theme-creamy-orange .dash-group-title,
+    .dash-theme-creamy-orange .dash-section-title,
+    .dash-theme-creamy-orange h2,
+    .dash-theme-creamy-orange h3,
+    .dash-theme-creamy-orange h4,
+    .dash-theme-orange .dash-group-title,
+    .dash-theme-orange .dash-section-title,
+    .dash-theme-orange h2,
+    .dash-theme-orange h3,
+    .dash-theme-orange h4 {
+      color: #7C2D12 !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+      font-weight: 950 !important;
+      letter-spacing: -0.02em;
+    }
+    .dash-theme-creamy-orange .dash-group-subtitle,
+    .dash-theme-creamy-orange p,
+    .dash-theme-orange .dash-group-subtitle,
+    .dash-theme-orange p {
+      color: #9A3412 !important;
+      font-weight: 750 !important;
+    }
+    .dash-theme-creamy-orange .dash-group-pill,
+    .dash-theme-orange .dash-group-pill {
+      background: #FFEDD5 !important;
+      color: #7C2D12 !important;
+      border: none !important;
+      box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.25), 0 2px 6px rgba(124, 45, 18, 0.08) !important;
+      font-weight: 850 !important;
+    }
+    .dash-theme-creamy-orange .dash-metric-card,
+    .dash-theme-orange .dash-metric-card {
+      background: #FFFFFF !important;
+      border: none !important;
+      box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.12),
+                  0 8px 22px rgba(249, 115, 22, 0.12),
+                  0 2px 6px rgba(15, 23, 42, 0.03) !important;
+    }
+    .dash-theme-creamy-orange .dash-metric-card:hover,
+    .dash-theme-orange .dash-metric-card:hover {
+      border: none !important;
+      transform: translateY(-4px) !important;
+      box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.25),
+                  0 14px 28px rgba(249, 115, 22, 0.22) !important;
+    }
+    .dash-theme-creamy-orange .dash-metric-lbl,
+    .dash-theme-orange .dash-metric-lbl {
+      color: #9A3412 !important;
+      font-weight: 850 !important;
+      font-size: 13.5px !important;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .dash-theme-creamy-orange .dash-metric-val,
+    .dash-theme-orange .dash-metric-val {
+      font-family: 'Space Grotesk', sans-serif !important;
+      font-weight: 950 !important;
+      font-size: 38px !important;
+      line-height: 1.15;
+    }
+    .dash-theme-creamy-orange .dash-metric-sub,
+    .dash-theme-orange .dash-metric-sub {
+      color: #7C2D12 !important;
       font-weight: 750 !important;
       font-size: 13.5px !important;
     }
@@ -4996,7 +5241,7 @@
       align-items: center;
       gap: 9px;
       background: #FFFFFF;
-      border: 1.5px solid #CBD5E1;
+      border: none !important;
       color: #334155;
       padding: 8px 18px;
       border-radius: var(--radius-full);
@@ -5004,48 +5249,84 @@
       font-weight: 800;
       cursor: pointer;
       transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
       user-select: none;
     }
     .btn-read-more-roll:hover {
       background: #F8FAFC;
-      border-color: #94A3B8;
       color: #0F172A;
       transform: translateY(-1px);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.14), 0 4px 14px rgba(0, 0, 0, 0.08);
     }
     .btn-read-more-roll.theme-purple {
-      border-color: #DDD6FE;
       color: #6D28D9;
       background: #FFFFFF;
+      box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.25), 0 2px 6px rgba(109, 40, 217, 0.08);
     }
     .btn-read-more-roll.theme-purple:hover {
       background: #F5F3FF;
-      border-color: #8B5CF6;
       color: #5B21B6;
-      box-shadow: 0 4px 14px rgba(109, 40, 217, 0.15);
+      box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.35), 0 4px 14px rgba(109, 40, 217, 0.15);
     }
     .btn-read-more-roll.theme-emerald {
-      border-color: #A7F3D0;
       color: #047857;
       background: #FFFFFF;
+      box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.25), 0 2px 6px rgba(5, 150, 105, 0.08);
     }
     .btn-read-more-roll.theme-emerald:hover {
       background: #F0FDF4;
-      border-color: #10B981;
       color: #065F46;
-      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.15);
+      box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.35), 0 4px 14px rgba(5, 150, 105, 0.15);
     }
     .btn-read-more-roll.theme-blue {
-      border-color: #BFDBFE;
       color: #1D4ED8;
       background: #FFFFFF;
+      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.25), 0 2px 6px rgba(37, 99, 235, 0.08);
     }
     .btn-read-more-roll.theme-blue:hover {
       background: #EFF6FF;
-      border-color: #3B82F6;
       color: #1E3A8A;
-      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.15);
+      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.35), 0 4px 14px rgba(37, 99, 235, 0.15);
+    }
+    .btn-read-more-roll.theme-pink {
+      color: #881337;
+      background: #FFFFFF;
+      box-shadow: 0 0 0 1px rgba(244, 114, 182, 0.25), 0 2px 6px rgba(136, 19, 55, 0.08);
+    }
+    .btn-read-more-roll.theme-pink:hover {
+      background: #FFF5F7;
+      color: #881337;
+      box-shadow: 0 0 0 1px rgba(244, 114, 182, 0.35), 0 4px 14px rgba(136, 19, 55, 0.15);
+    }
+    .btn-read-more-roll.theme-yellow {
+      color: #78350F;
+      background: #FFFFFF;
+      box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.25), 0 2px 6px rgba(120, 53, 15, 0.08);
+    }
+    .btn-read-more-roll.theme-yellow:hover {
+      background: #FEF3C7;
+      color: #78350F;
+      box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.35), 0 4px 14px rgba(120, 53, 15, 0.15);
+    }
+    .btn-read-more-roll.theme-orange {
+      color: #7C2D12;
+      background: #FFFFFF;
+      box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.25), 0 2px 6px rgba(124, 45, 18, 0.08);
+    }
+    .btn-read-more-roll.theme-orange:hover {
+      background: #FFEDD5;
+      color: #7C2D12;
+      box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.35), 0 4px 14px rgba(124, 45, 18, 0.15);
+    }
+    .btn-read-more-roll.theme-red {
+      color: #7F1D1D;
+      background: #FFFFFF;
+      box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.25), 0 2px 6px rgba(127, 29, 29, 0.08);
+    }
+    .btn-read-more-roll.theme-red:hover {
+      background: #FEE2E2;
+      color: #7F1D1D;
+      box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.35), 0 4px 14px rgba(127, 29, 29, 0.15);
     }
     .btn-read-more-roll .v-chevron-icon {
       display: inline-flex;
@@ -5069,10 +5350,10 @@
     }
     .roll-inner-card {
       background: #FFFFFF;
-      border: 1.5px solid #E2E8F0;
+      border: none !important;
       border-radius: var(--radius-md);
       padding: 20px 22px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 6px 20px rgba(0, 0, 0, 0.05);
     }
     .roll-grid-tiers {
       display: grid;
@@ -5082,19 +5363,20 @@
     }
     .roll-tier-box {
       background: #F8FAFC;
-      border: 1.5px solid #E2E8F0;
+      border: none !important;
       border-radius: 10px;
       padding: 14px 16px;
       text-align: center;
       transition: all 0.2s ease;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 2px 6px rgba(0, 0, 0, 0.03);
     }
     .roll-tier-box:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 6px 14px rgba(0, 0, 0, 0.06);
     }
     .roll-tier-box.highlight {
-      background: #F5F3FF;
-      border-color: #8B5CF6;
+      background: #FFFDF5;
+      box-shadow: 0 0 0 1.5px #F59E0B, 0 4px 14px rgba(245, 158, 11, 0.18);
     }
     .roll-tier-name {
       font-size: 14px;
@@ -5141,112 +5423,290 @@
       color: #FFFFFF !important;
       border-color: #D97706 !important;
     }
-    .dash-theme-yellow table th {
+    /* Table Headers & Active Tab Buttons (Borderless with Border Shadows) */
+    .dash-theme-yellow table th,
+    .dash-theme-creamy-yellow table th {
       background: #FEF3C7 !important;
       color: #78350F !important;
-      border-bottom: 2px solid #F59E0B !important;
+      border-bottom: none !important;
       font-weight: 900 !important;
     }
+    .dash-theme-yellow .dash-tab-btn.active,
+    .dash-theme-creamy-yellow .dash-tab-btn.active {
+      background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+      color: #FFFFFF !important;
+      border: none !important;
+      box-shadow: 0 4px 14px rgba(217, 119, 6, 0.3) !important;
+    }
 
-    /* Theme Blue (Cobalt / Sky / Royal Sapphire) */
+    /* 4. Theme Creamy Purple (Lavender Cream / Taro Milk) */
+    .dash-theme-creamy-purple,
+    .dash-theme-purple,
     .dash-theme-blue {
-      background: linear-gradient(145deg, #F0F9FF 0%, #E0F2FE 35%, #BAE6FD 100%) !important;
-      border: 2.5px solid #3B82F6 !important;
+      background: linear-gradient(145deg, #FAF7FF 0%, #F4EBFF 42%, #EADBFF 100%) !important;
+      border: none !important;
       border-radius: var(--radius-lg) !important;
       padding: 26px 26px 30px !important;
-      box-shadow: 0 14px 34px -4px rgba(59, 130, 246, 0.22), 0 3px 10px rgba(0, 0, 0, 0.04) !important;
+      box-shadow: 0 0 0 1px rgba(168, 85, 247, 0.18),
+                  0 8px 24px -3px rgba(168, 85, 247, 0.20),
+                  0 20px 48px -6px rgba(124, 58, 237, 0.14),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
       margin-bottom: 32px !important;
       position: relative !important;
       overflow: hidden !important;
+      transition: box-shadow 0.3s ease, transform 0.3s ease !important;
     }
+    .dash-theme-creamy-purple:hover,
+    .dash-theme-purple:hover,
+    .dash-theme-blue:hover {
+      box-shadow: 0 0 0 1px rgba(168, 85, 247, 0.28),
+                  0 14px 34px -4px rgba(168, 85, 247, 0.26),
+                  0 28px 60px -8px rgba(124, 58, 237, 0.20),
+                  inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+    }
+    .dash-theme-creamy-purple::before,
+    .dash-theme-purple::before,
     .dash-theme-blue::before {
       content: '';
       position: absolute;
       top: -20px;
       right: -20px;
-      width: 220px;
-      height: 220px;
-      background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%);
+      width: 230px;
+      height: 230px;
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.25) 0%, transparent 70%);
       pointer-events: none;
     }
+    .dash-theme-creamy-purple .dash-group-header,
+    .dash-theme-creamy-purple .dash-section-header,
+    .dash-theme-purple .dash-group-header,
+    .dash-theme-purple .dash-section-header,
     .dash-theme-blue .dash-group-header,
     .dash-theme-blue .dash-section-header {
-      border-bottom: 2px solid rgba(37, 99, 235, 0.25) !important;
+      border-bottom: none !important;
     }
+    .dash-theme-creamy-purple .dash-group-title,
+    .dash-theme-creamy-purple .dash-section-title,
+    .dash-theme-creamy-purple h2,
+    .dash-theme-creamy-purple h3,
+    .dash-theme-creamy-purple h4,
+    .dash-theme-purple .dash-group-title,
+    .dash-theme-purple .dash-section-title,
+    .dash-theme-purple h2,
+    .dash-theme-purple h3,
+    .dash-theme-purple h4,
     .dash-theme-blue .dash-group-title,
     .dash-theme-blue .dash-section-title,
     .dash-theme-blue h2,
     .dash-theme-blue h3,
     .dash-theme-blue h4 {
-      color: #1E3A8A !important;
+      color: #3B0764 !important;
       font-family: 'Space Grotesk', sans-serif !important;
       font-weight: 950 !important;
       letter-spacing: -0.02em;
     }
+    .dash-theme-creamy-purple .dash-group-subtitle,
+    .dash-theme-creamy-purple p,
+    .dash-theme-purple .dash-group-subtitle,
+    .dash-theme-purple p,
     .dash-theme-blue .dash-group-subtitle,
     .dash-theme-blue p {
-      color: #1D4ED8 !important;
+      color: #581C87 !important;
       font-weight: 750 !important;
     }
+    .dash-theme-creamy-purple .dash-group-pill,
+    .dash-theme-purple .dash-group-pill,
     .dash-theme-blue .dash-group-pill {
-      background: #DBEAFE !important;
-      color: #1E40AF !important;
-      border: 1.5px solid #3B82F6 !important;
+      background: #EDE9FE !important;
+      color: #3B0764 !important;
+      border: none !important;
+      box-shadow: 0 0 0 1px rgba(168, 85, 247, 0.25), 0 2px 6px rgba(59, 7, 100, 0.08) !important;
       font-weight: 850 !important;
     }
+    .dash-theme-creamy-purple .dash-metric-card,
+    .dash-theme-purple .dash-metric-card,
     .dash-theme-blue .dash-metric-card {
       background: #FFFFFF !important;
-      border: 2px solid #BFDBFE !important;
-      box-shadow: 0 8px 22px rgba(37, 99, 235, 0.14) !important;
+      border: none !important;
+      box-shadow: 0 0 0 1px rgba(168, 85, 247, 0.12),
+                  0 8px 22px rgba(168, 85, 247, 0.12),
+                  0 2px 6px rgba(15, 23, 42, 0.03) !important;
     }
+    .dash-theme-creamy-purple .dash-metric-card:hover,
+    .dash-theme-purple .dash-metric-card:hover,
     .dash-theme-blue .dash-metric-card:hover {
-      border-color: #3B82F6 !important;
+      border: none !important;
       transform: translateY(-4px) !important;
-      box-shadow: 0 14px 28px rgba(37, 99, 235, 0.25) !important;
+      box-shadow: 0 0 0 1px rgba(168, 85, 247, 0.25),
+                  0 14px 28px rgba(168, 85, 247, 0.22) !important;
     }
+    .dash-theme-creamy-purple .dash-metric-lbl,
+    .dash-theme-purple .dash-metric-lbl,
     .dash-theme-blue .dash-metric-lbl {
-      color: #1E40AF !important;
+      color: #581C87 !important;
       font-weight: 850 !important;
       font-size: 13.5px !important;
       text-transform: uppercase;
       letter-spacing: 0.04em;
     }
+    .dash-theme-creamy-purple .dash-metric-val,
+    .dash-theme-purple .dash-metric-val,
     .dash-theme-blue .dash-metric-val {
-      color: #1E3A8A !important;
+      color: #3B0764 !important;
       font-family: 'Space Grotesk', sans-serif !important;
       font-weight: 950 !important;
       font-size: 32px !important;
     }
+    .dash-theme-creamy-purple .dash-metric-sub,
+    .dash-theme-purple .dash-metric-sub,
     .dash-theme-blue .dash-metric-sub {
-      color: #2563EB !important;
+      color: #6D28D9 !important;
       font-weight: 800 !important;
     }
 
-    /* Theme Green (Emerald / Jade / Mint) */
-    .dash-theme-green {
-      background: linear-gradient(145deg, #F0FDF4 0%, #DCFCE7 35%, #BBF7D0 100%) !important;
-      border: 2.5px solid #10B981 !important;
+    /* 5. Theme Creamy Red (Red Velvet / Cherry Cream) */
+    .dash-theme-creamy-red,
+    .dash-theme-red {
+      background: linear-gradient(145deg, #FFF7F7 0%, #FFEAEA 42%, #FFD7D7 100%) !important;
+      border: none !important;
       border-radius: var(--radius-lg) !important;
       padding: 26px 26px 30px !important;
-      box-shadow: 0 14px 34px -4px rgba(16, 185, 129, 0.22), 0 3px 10px rgba(0, 0, 0, 0.04) !important;
+      box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.18),
+                  0 8px 24px -3px rgba(239, 68, 68, 0.20),
+                  0 20px 48px -6px rgba(185, 28, 28, 0.14),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
       margin-bottom: 32px !important;
       position: relative !important;
       overflow: hidden !important;
+      transition: box-shadow 0.3s ease, transform 0.3s ease !important;
     }
+    .dash-theme-creamy-red:hover,
+    .dash-theme-red:hover {
+      box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.28),
+                  0 14px 34px -4px rgba(239, 68, 68, 0.26),
+                  0 28px 60px -8px rgba(185, 28, 28, 0.20),
+                  inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+    }
+    .dash-theme-creamy-red::before,
+    .dash-theme-red::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 230px;
+      height: 230px;
+      background: radial-gradient(circle, rgba(239, 68, 68, 0.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .dash-theme-creamy-red .dash-group-header,
+    .dash-theme-creamy-red .dash-section-header,
+    .dash-theme-red .dash-group-header,
+    .dash-theme-red .dash-section-header {
+      border-bottom: none !important;
+    }
+    .dash-theme-creamy-red .dash-group-title,
+    .dash-theme-creamy-red .dash-section-title,
+    .dash-theme-creamy-red h2,
+    .dash-theme-creamy-red h3,
+    .dash-theme-creamy-red h4,
+    .dash-theme-red .dash-group-title,
+    .dash-theme-red .dash-section-title,
+    .dash-theme-red h2,
+    .dash-theme-red h3,
+    .dash-theme-red h4 {
+      color: #7F1D1D !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+      font-weight: 950 !important;
+      letter-spacing: -0.02em;
+    }
+    .dash-theme-creamy-red .dash-group-subtitle,
+    .dash-theme-creamy-red p,
+    .dash-theme-red .dash-group-subtitle,
+    .dash-theme-red p {
+      color: #991B1B !important;
+      font-weight: 750 !important;
+    }
+    .dash-theme-creamy-red .dash-group-pill,
+    .dash-theme-red .dash-group-pill {
+      background: #FEE2E2 !important;
+      color: #7F1D1D !important;
+      border: none !important;
+      box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.25), 0 2px 6px rgba(127, 29, 29, 0.08) !important;
+      font-weight: 850 !important;
+    }
+    .dash-theme-creamy-red .cooldown-banner,
+    .dash-theme-red .cooldown-banner {
+      background: #FFFFFF !important;
+      border: none !important;
+      border-radius: var(--radius-md) !important;
+      padding: 24px !important;
+      box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.14),
+                  0 8px 24px rgba(239, 68, 68, 0.12) !important;
+      margin-bottom: 20px !important;
+    }
+    .dash-theme-creamy-red .roadmap-step-item,
+    .dash-theme-red .roadmap-step-item {
+      background: #FFFFFF !important;
+      border: none !important;
+      box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.12),
+                  0 4px 12px rgba(239, 68, 68, 0.10) !important;
+    }
+    .dash-theme-creamy-red .roadmap-step-num,
+    .dash-theme-red .roadmap-step-num {
+      background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%) !important;
+      color: #FFFFFF !important;
+      font-weight: 950 !important;
+    }
+    .dash-theme-creamy-red .roadmap-step-text,
+    .dash-theme-red .roadmap-step-text {
+      color: #7F1D1D !important;
+      font-weight: 850 !important;
+    }
+
+    /* 6. Theme Creamy Green (Pistachio Cream / Matcha Mousse) */
+    .dash-theme-creamy-green,
+    .dash-theme-green {
+      background: linear-gradient(145deg, #F4FBF7 0%, #E6F8EF 42%, #CEF4E0 100%) !important;
+      border: none !important;
+      border-radius: var(--radius-lg) !important;
+      padding: 26px 26px 30px !important;
+      box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.18),
+                  0 8px 24px -3px rgba(16, 185, 129, 0.20),
+                  0 20px 48px -6px rgba(5, 150, 105, 0.14),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+      margin-bottom: 32px !important;
+      position: relative !important;
+      overflow: hidden !important;
+      transition: box-shadow 0.3s ease, transform 0.3s ease !important;
+    }
+    .dash-theme-creamy-green:hover,
+    .dash-theme-green:hover {
+      box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.28),
+                  0 14px 34px -4px rgba(16, 185, 129, 0.26),
+                  0 28px 60px -8px rgba(5, 150, 105, 0.20),
+                  inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+    }
+    .dash-theme-creamy-green::before,
     .dash-theme-green::before {
       content: '';
       position: absolute;
       top: -20px;
       right: -20px;
-      width: 220px;
-      height: 220px;
-      background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, transparent 70%);
+      width: 230px;
+      height: 230px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.25) 0%, transparent 70%);
       pointer-events: none;
     }
+    .dash-theme-creamy-green .dash-group-header,
+    .dash-theme-creamy-green .dash-section-header,
     .dash-theme-green .dash-group-header,
     .dash-theme-green .dash-section-header {
-      border-bottom: 2px solid rgba(5, 150, 105, 0.25) !important;
+      border-bottom: none !important;
     }
+    .dash-theme-creamy-green .dash-group-title,
+    .dash-theme-creamy-green .dash-section-title,
+    .dash-theme-creamy-green h2,
+    .dash-theme-creamy-green h3,
+    .dash-theme-creamy-green h4,
     .dash-theme-green .dash-group-title,
     .dash-theme-green .dash-section-title,
     .dash-theme-green h2,
@@ -5257,99 +5717,69 @@
       font-weight: 950 !important;
       letter-spacing: -0.02em;
     }
+    .dash-theme-creamy-green .dash-group-subtitle,
+    .dash-theme-creamy-green p,
     .dash-theme-green .dash-group-subtitle,
     .dash-theme-green p {
       color: #047857 !important;
       font-weight: 750 !important;
     }
+    .dash-theme-creamy-green .dash-group-pill,
     .dash-theme-green .dash-group-pill {
       background: #D1FAE5 !important;
-      color: #065F46 !important;
-      border: 1.5px solid #10B981 !important;
-      font-weight: 850 !important;
-    }
-    .dash-theme-green .roadmap-step-item {
-      background: #FFFFFF !important;
-      border: 2px solid #A7F3D0 !important;
-      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.12) !important;
-    }
-    .dash-theme-green .roadmap-step-num {
-      background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
-      color: #FFFFFF !important;
-      font-weight: 950 !important;
-    }
-    .dash-theme-green .roadmap-step-text {
       color: #064E3B !important;
+      border: none !important;
+      box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.25), 0 2px 6px rgba(6, 78, 59, 0.08) !important;
       font-weight: 850 !important;
     }
-    .dash-theme-green .cooldown-banner {
+    .dash-theme-creamy-green .dash-metric-card,
+    .dash-theme-green .dash-metric-card {
       background: #FFFFFF !important;
-      border: 2px solid #6EE7B7 !important;
-      border-radius: var(--radius-md) !important;
-      padding: 24px !important;
-      box-shadow: 0 8px 24px rgba(5, 150, 105, 0.1) !important;
-      margin-bottom: 20px !important;
+      border: none !important;
+      box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.12),
+                  0 8px 22px rgba(16, 185, 129, 0.12),
+                  0 2px 6px rgba(15, 23, 42, 0.03) !important;
     }
-
-    /* Theme Purple (Royal Violet / Amethyst / Lavender) */
-    .dash-theme-purple {
-      background: linear-gradient(145deg, #FAF5FF 0%, #F3E8FF 35%, #E9D5FF 100%) !important;
-      border: 2.5px solid #8B5CF6 !important;
-      border-radius: var(--radius-lg) !important;
-      padding: 26px 26px 30px !important;
-      box-shadow: 0 14px 34px -4px rgba(139, 92, 246, 0.22), 0 3px 10px rgba(0, 0, 0, 0.04) !important;
-      margin-bottom: 32px !important;
-      position: relative !important;
-      overflow: hidden !important;
+    .dash-theme-creamy-green .dash-metric-card:hover,
+    .dash-theme-green .dash-metric-card:hover {
+      border: none !important;
+      transform: translateY(-4px) !important;
+      box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.25),
+                  0 14px 28px rgba(16, 185, 129, 0.22) !important;
     }
-    .dash-theme-purple::before {
-      content: '';
-      position: absolute;
-      top: -20px;
-      right: -20px;
-      width: 220px;
-      height: 220px;
-      background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, transparent 70%);
-      pointer-events: none;
+    .dash-theme-creamy-green .product-card-dash {
+      background: #FFFFFF !important;
+      border: none !important;
+      box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.14),
+                  0 8px 24px rgba(16, 185, 129, 0.12) !important;
     }
-    .dash-theme-purple .dash-group-header,
-    .dash-theme-purple .dash-section-header {
-      border-bottom: 2px solid rgba(109, 40, 217, 0.25) !important;
-    }
-    .dash-theme-purple .dash-group-title,
-    .dash-theme-purple .dash-section-title,
-    .dash-theme-purple h2,
-    .dash-theme-purple h3,
-    .dash-theme-purple h4 {
-      color: #3B0764 !important;
-      font-family: 'Space Grotesk', sans-serif !important;
-      font-weight: 950 !important;
-      letter-spacing: -0.02em;
-    }
-    .dash-theme-purple .dash-group-subtitle,
-    .dash-theme-purple p {
-      color: #6D28D9 !important;
-      font-weight: 750 !important;
-    }
-    .dash-theme-purple .dash-group-pill {
-      background: #EDE9FE !important;
-      color: #5B21B6 !important;
-      border: 1.5px solid #8B5CF6 !important;
-      font-weight: 850 !important;
+    .dash-theme-creamy-green .product-card-dash:hover {
+      box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.28),
+                  0 16px 36px rgba(16, 185, 129, 0.22) !important;
     }
 
     /* ====================================================================
        THEME REFERRAL: 45% LIFETIME REFERRAL & DOWNLINES HUB
        ==================================================================== */
     .dash-theme-referral {
-      background: linear-gradient(145deg, #FAF5FF 0%, #F5F3FF 40%, #EDE9FE 100%) !important;
-      border: 2.5px solid #8B5CF6 !important;
+      background: linear-gradient(145deg, #FFFDF5 0%, #FEF9E4 42%, #FEF3CC 100%) !important;
+      border: none !important;
       border-radius: var(--radius-lg) !important;
       padding: 26px 26px 30px !important;
-      box-shadow: 0 16px 38px -6px rgba(124, 58, 237, 0.18), 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+      box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.18),
+                  0 8px 24px -3px rgba(245, 158, 11, 0.20),
+                  0 20px 48px -6px rgba(217, 119, 6, 0.14),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
       margin-bottom: 32px !important;
       position: relative !important;
       overflow: hidden !important;
+      transition: box-shadow 0.3s ease, transform 0.3s ease !important;
+    }
+    .dash-theme-referral:hover {
+      box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.28),
+                  0 14px 34px -4px rgba(245, 158, 11, 0.26),
+                  0 28px 60px -8px rgba(217, 119, 6, 0.20),
+                  inset 0 1px 0 rgba(255, 255, 255, 1) !important;
     }
     .dash-theme-referral::before {
       content: '';
@@ -5358,7 +5788,7 @@
       right: -30px;
       width: 240px;
       height: 240px;
-      background: radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, transparent 70%);
       pointer-events: none;
     }
     .referral-highlight-pill {
@@ -5367,12 +5797,12 @@
       gap: 8px;
       background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
       color: #065F46;
-      border: 1.5px solid #10B981;
+      border: none !important;
       padding: 6px 16px;
       border-radius: var(--radius-full);
       font-size: 13.5px;
       font-weight: 900;
-      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+      box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.25), 0 2px 8px rgba(16, 185, 129, 0.15) !important;
     }
     .referral-highlight-pill .pulsing-dot {
       width: 9px;
@@ -5389,18 +5819,20 @@
     }
     .referral-share-card {
       background: #FFFFFF;
-      border: 2px solid #DDD6FE;
+      border: none !important;
       border-radius: var(--radius-md);
       padding: 22px 24px;
-      box-shadow: 0 14px 36px -6px rgba(109, 40, 217, 0.12), 0 4px 12px rgba(16, 185, 129, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+      box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.16),
+                  0 12px 32px -6px rgba(217, 119, 6, 0.14),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.95);
       margin-top: 14px;
       position: relative;
       overflow: hidden;
       transition: var(--transition);
     }
     .referral-share-card:hover {
-      box-shadow: 0 20px 44px -6px rgba(109, 40, 217, 0.18), 0 6px 18px rgba(16, 185, 129, 0.1);
-      border-color: #8B5CF6;
+      box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.26),
+                  0 18px 42px -6px rgba(217, 119, 6, 0.20);
     }
     .referral-share-content {
       display: flex;
@@ -5629,14 +6061,24 @@
        THEME SURVEYS: PAID CONSUMER SURVEYS & INSTANT M-PESA REWARDS
        ==================================================================== */
     .dash-theme-surveys {
-      background: linear-gradient(145deg, #F0F9FF 0%, #EFF6FF 40%, #DBEAFE 100%) !important;
-      border: 2.5px solid #3B82F6 !important;
+      background: linear-gradient(145deg, #FFF9F5 0%, #FFF0E3 42%, #FEDEC5 100%) !important;
+      border: none !important;
       border-radius: var(--radius-lg) !important;
       padding: 26px 26px 30px !important;
-      box-shadow: 0 16px 38px -6px rgba(37, 99, 235, 0.18), 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+      box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.18),
+                  0 8px 24px -3px rgba(249, 115, 22, 0.20),
+                  0 20px 48px -6px rgba(234, 88, 12, 0.14),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
       margin-bottom: 32px !important;
       position: relative !important;
       overflow: hidden !important;
+      transition: box-shadow 0.3s ease, transform 0.3s ease !important;
+    }
+    .dash-theme-surveys:hover {
+      box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.28),
+                  0 14px 34px -4px rgba(249, 115, 22, 0.26),
+                  0 28px 60px -8px rgba(234, 88, 12, 0.20),
+                  inset 0 1px 0 rgba(255, 255, 255, 1) !important;
     }
     .dash-theme-surveys::before {
       content: '';
@@ -5645,7 +6087,7 @@
       right: -30px;
       width: 240px;
       height: 240px;
-      background: radial-gradient(circle, rgba(59, 130, 246, 0.22) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(249, 115, 22, 0.25) 0%, transparent 70%);
       pointer-events: none;
     }
     .surveys-header-actions {
@@ -5657,7 +6099,8 @@
     .surveys-filter-pills {
       display: inline-flex;
       background: rgba(255, 255, 255, 0.85);
-      border: 1.5px solid #BFDBFE;
+      border: none !important;
+      box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.20), 0 2px 8px rgba(0, 0, 0, 0.04) !important;
       border-radius: var(--radius-full);
       padding: 4px;
       gap: 4px;
@@ -5669,14 +6112,14 @@
       background: transparent;
       font-size: 13px;
       font-weight: 800;
-      color: #1E3A8A;
+      color: #7C2D12;
       cursor: pointer;
       transition: all 0.2s ease;
     }
     .survey-filter-btn.active {
-      background: #2563EB;
+      background: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
       color: #FFFFFF;
-      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+      box-shadow: 0 2px 8px rgba(234, 88, 12, 0.35);
     }
     .surveys-grid {
       display: grid;
@@ -5686,24 +6129,24 @@
     }
     .survey-card {
       background: #FFFFFF;
-      border: 1.5px solid #DBEAFE;
+      border: none !important;
       border-radius: var(--radius-md);
       padding: 20px 22px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
-      transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease, border-color 0.24s ease;
+      box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.14), 0 6px 18px rgba(249, 115, 22, 0.10);
+      transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease;
       position: relative;
     }
     .survey-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 14px 30px -4px rgba(37, 99, 235, 0.16), 0 4px 12px rgba(0, 0, 0, 0.04);
-      border-color: #3B82F6;
+      box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.26), 0 14px 30px -4px rgba(249, 115, 22, 0.20);
     }
     .survey-card.completed {
       background: #F8FAFC;
-      border-color: #CBD5E1;
+      border: none !important;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04);
       opacity: 0.88;
     }
     .survey-card-top {
@@ -7359,8 +7802,8 @@
         </div>
       </div>
 
-      <!-- SECTION 1: FINANCIAL LEDGER & WALLET BALANCES -->
-      <div class="dash-section-group dash-group-financials dash-theme-yellow">
+      <!-- SECTION 1: FINANCIAL LEDGER & WALLET BALANCES (CREAMY PINK THEME) -->
+      <div class="dash-section-group dash-group-financials dash-theme-creamy-pink">
         <!-- Super Green Botanical Leafy Plant Branch -->
         <svg class="leafy-branch-decor" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <defs>
@@ -7577,8 +8020,8 @@
         </div>
       </div>
 
-      <!-- SECTION: 45% LIFETIME REFERRAL COMMISSIONS & DOWNLINES HUB -->
-      <div class="dash-section-group dash-group-referrals dash-theme-referral" id="dash-referral-section">
+      <!-- SECTION 2: 45% LIFETIME REFERRAL COMMISSIONS & DOWNLINES HUB (CREAMY YELLOW THEME) -->
+      <div class="dash-section-group dash-group-referrals dash-theme-creamy-yellow" id="dash-referral-section">
         <!-- Super Green Botanical Leafy Plant Branch -->
         <svg class="leafy-branch-decor" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <defs>
@@ -7886,8 +8329,8 @@
         </div>
       </div>
 
-      <!-- SECTION: PAID CONSUMER SURVEYS & INSTANT M-PESA REWARDS -->
-      <div class="dash-section-group dash-group-surveys dash-theme-surveys" id="dash-surveys-section">
+      <!-- SECTION 3: PAID CONSUMER SURVEYS & INSTANT M-PESA REWARDS (CREAMY ORANGE THEME) -->
+      <div class="dash-section-group dash-group-surveys dash-theme-creamy-orange" id="dash-surveys-section">
         <!-- Super Green Botanical Leafy Plant Branch -->
         <svg class="leafy-branch-decor" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <defs>
@@ -7995,8 +8438,8 @@
         </div>
       </div>
 
-      <!-- SECTION 2: WHATSAPP VIEWS & PERFORMANCE METRICS -->
-      <div class="dash-section-group dash-group-views dash-theme-blue">
+      <!-- SECTION 4: WHATSAPP VIEWS & PERFORMANCE METRICS (CREAMY PURPLE THEME) -->
+      <div class="dash-section-group dash-group-views dash-theme-creamy-purple">
         <!-- Super Green Botanical Leafy Plant Branch -->
         <svg class="leafy-branch-decor" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <defs>
@@ -8102,8 +8545,8 @@
         </div>
       </div>
 
-      <!-- SECTION 3: 18-HOUR TASK MISSION STATION (SUPER COLORED GREEN THEME) -->
-      <div class="dash-section dash-theme-green">
+      <!-- SECTION 5: 18-HOUR TASK MISSION STATION (CREAMY RED THEME) -->
+      <div class="dash-section dash-theme-creamy-red">
         <!-- Super Green Botanical Leafy Plant Branch -->
         <svg class="leafy-branch-decor" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <defs>
@@ -8218,8 +8661,8 @@
       </div>
       </div>
 
-      <!-- SECTION 5: TODAY'S WHATSAPP STATUS PRODUCTS TO DOWNLOAD -->
-      <div class="dash-section dash-group-products dash-theme-purple">
+      <!-- SECTION 6: TODAY'S WHATSAPP STATUS PRODUCTS TO DOWNLOAD (CREAMY GREEN THEME) -->
+      <div class="dash-section dash-group-products dash-theme-creamy-green">
         <!-- Super Green Botanical Leafy Plant Branch -->
         <svg class="leafy-branch-decor" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <defs>
@@ -8281,8 +8724,8 @@
         </div>
       </div>
 
-      <!-- SECTION 6: ARRANGED ACTIVITY & FINANCIAL HISTORY (TABBED) -->
-      <div class="dash-section dash-group-history dash-theme-yellow">
+      <!-- SECTION 7: ARRANGED ACTIVITY & FINANCIAL HISTORY (CREAMY PINK THEME) -->
+      <div class="dash-section dash-group-history dash-theme-creamy-pink">
         <!-- Super Green Botanical Leafy Plant Branch -->
         <svg class="leafy-branch-decor" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <defs>
