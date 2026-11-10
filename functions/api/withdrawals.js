@@ -21,12 +21,26 @@ export async function onRequestGet(context) {
   const user = auth.user;
 
   try {
-    const wallet = await env.DB.prepare(`
-      SELECT available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
-      FROM wallets
-      WHERE user_id = ?
-      LIMIT 1
-    `).bind(user.id).first();
+    // Ensure surveys_balance_ksh column exists
+    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN surveys_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {});
+
+    let wallet = null;
+    try {
+      wallet = await env.DB.prepare(`
+        SELECT available_balance_ksh, views_balance_ksh, referrals_balance_ksh, surveys_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
+        FROM wallets
+        WHERE user_id = ?
+        LIMIT 1
+      `).bind(user.id).first();
+    } catch (e) {
+      wallet = await env.DB.prepare(`
+        SELECT available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
+        FROM wallets
+        WHERE user_id = ?
+        LIMIT 1
+      `).bind(user.id).first();
+      if (wallet) wallet.surveys_balance_ksh = 0;
+    }
 
     const activePackage = await env.DB.prepare(`
       SELECT p.id, p.name, p.slug, p.price_ksh, p.reward_per_view_ksh, p.min_withdrawal_views_ksh
@@ -48,10 +62,11 @@ export async function onRequestGet(context) {
     const minViewsWithdrawal = activePackage?.min_withdrawal_views_ksh || 5000;
 
     return jsonSuccess({
-      wallet: wallet || { available_balance_ksh: 0, views_balance_ksh: 0, referrals_balance_ksh: 0, reserved_balance_ksh: 0, lifetime_withdrawn_ksh: 0 },
+      wallet: wallet || { available_balance_ksh: 0, views_balance_ksh: 0, referrals_balance_ksh: 0, surveys_balance_ksh: 0, reserved_balance_ksh: 0, lifetime_withdrawn_ksh: 0 },
       activePackage: activePackage || null,
       minViewsWithdrawalKsh: minViewsWithdrawal,
       minReferralsWithdrawalKsh: MINIMUM_WITHDRAWAL_KSH,
+      minSurveysWithdrawalKsh: MINIMUM_WITHDRAWAL_KSH,
       withdrawals: requests || []
     });
 
@@ -82,7 +97,12 @@ export async function onRequestPost(context) {
   }
 
   const { amountKsh, phoneNumber, balanceType: rawBalanceType } = body;
-  const balanceType = (rawBalanceType === 'referrals' || rawBalanceType === 'referral') ? 'referrals' : 'views';
+  let balanceType = 'views';
+  if (rawBalanceType === 'referrals' || rawBalanceType === 'referral') {
+    balanceType = 'referrals';
+  } else if (rawBalanceType === 'surveys' || rawBalanceType === 'survey') {
+    balanceType = 'surveys';
+  }
 
   const amount = parseInt(amountKsh, 10);
   if (isNaN(amount) || amount <= 0) {
@@ -95,13 +115,27 @@ export async function onRequestPost(context) {
   }
 
   try {
+    // Ensure column exists
+    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN surveys_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {});
+
     // 1. Fetch current wallet
-    const wallet = await env.DB.prepare(`
-      SELECT id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh
-      FROM wallets
-      WHERE user_id = ?
-      LIMIT 1
-    `).bind(user.id).first();
+    let wallet = null;
+    try {
+      wallet = await env.DB.prepare(`
+        SELECT id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, surveys_balance_ksh, reserved_balance_ksh
+        FROM wallets
+        WHERE user_id = ?
+        LIMIT 1
+      `).bind(user.id).first();
+    } catch (e) {
+      wallet = await env.DB.prepare(`
+        SELECT id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh
+        FROM wallets
+        WHERE user_id = ?
+        LIMIT 1
+      `).bind(user.id).first();
+      if (wallet) wallet.surveys_balance_ksh = 0;
+    }
 
     if (!wallet) {
       return jsonError('Wallet account not found', 404);
@@ -187,6 +221,74 @@ export async function onRequestPost(context) {
           availableBalanceKsh: balanceAfter,
           viewsBalanceKsh: availableViews - amount,
           referralsBalanceKsh: wallet.referrals_balance_ksh || 0,
+          surveysBalanceKsh: wallet.surveys_balance_ksh || 0,
+          reservedBalanceKsh: wallet.reserved_balance_ksh + amount
+        }
+      }, 201);
+
+    } else if (balanceType === 'surveys') {
+      const minSurveyLimit = MINIMUM_WITHDRAWAL_KSH;
+      if (amount < minSurveyLimit) {
+        return jsonError(`Minimum withdrawal amount for Paid Surveys is KSh ${minSurveyLimit}`, 400);
+      }
+
+      const availableSurveys = Number(wallet.surveys_balance_ksh || 0);
+      if (availableSurveys < amount) {
+        return jsonError(`Insufficient Paid Surveys earnings. Your available Surveys balance is KSh ${availableSurveys.toLocaleString()}, requested KSh ${amount.toLocaleString()}.`, 400);
+      }
+
+      const balanceAfter = wallet.available_balance_ksh - amount;
+
+      // Atomically reserve funds from surveys balance
+      const updateResult = await env.DB.prepare(`
+        UPDATE wallets
+        SET surveys_balance_ksh = surveys_balance_ksh - ?,
+            available_balance_ksh = available_balance_ksh - ?,
+            reserved_balance_ksh = reserved_balance_ksh + ?,
+            updated_at = ?
+        WHERE user_id = ? AND surveys_balance_ksh >= ?
+      `).bind(amount, amount, amount, now, user.id, amount).run();
+
+      if (!updateResult.success || (updateResult.meta && updateResult.meta.changes === 0)) {
+        return jsonError('Concurrent balance update conflict or insufficient survey funds. Please refresh and try again.', 409);
+      }
+
+      // Record withdrawal request with balance_type = 'surveys'
+      await env.DB.prepare(`
+        INSERT INTO withdrawal_requests (id, user_id, wallet_id, amount_ksh, phone_number, status, balance_type, created_at)
+        VALUES (?, ?, ?, ?, ?, 'pending', 'surveys', ?)
+      `).bind(withdrawalId, user.id, wallet.id, amount, targetPhone, now).run();
+
+      // Ledger entry
+      await env.DB.prepare(`
+        INSERT INTO wallet_transactions (id, wallet_id, user_id, type, amount_ksh, balance_after_ksh, reference_id, description, created_at)
+        VALUES (?, ?, ?, 'withdrawal_reserve', ?, ?, ?, ?, ?)
+      `).bind(
+        txId,
+        wallet.id,
+        user.id,
+        amount,
+        balanceAfter,
+        withdrawalId,
+        `M-Pesa withdrawal request from Paid Surveys to ${targetPhone} placed on hold pending payout`,
+        now
+      ).run();
+
+      return jsonSuccess({
+        message: `Paid Surveys withdrawal request for KSh ${amount.toLocaleString()} submitted successfully. Funds have been reserved pending M-Pesa disbursement.`,
+        withdrawal: {
+          id: withdrawalId,
+          amountKsh: amount,
+          phoneNumber: targetPhone,
+          balanceType: 'surveys',
+          status: 'pending',
+          createdAt: now
+        },
+        wallet: {
+          availableBalanceKsh: balanceAfter,
+          viewsBalanceKsh: wallet.views_balance_ksh || 0,
+          referralsBalanceKsh: wallet.referrals_balance_ksh || 0,
+          surveysBalanceKsh: availableSurveys - amount,
           reservedBalanceKsh: wallet.reserved_balance_ksh + amount
         }
       }, 201);
@@ -254,6 +356,7 @@ export async function onRequestPost(context) {
           availableBalanceKsh: balanceAfter,
           viewsBalanceKsh: wallet.views_balance_ksh || 0,
           referralsBalanceKsh: availableReferrals - amount,
+          surveysBalanceKsh: wallet.surveys_balance_ksh || 0,
           reservedBalanceKsh: wallet.reserved_balance_ksh + amount
         }
       }, 201);

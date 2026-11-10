@@ -49,6 +49,14 @@ export async function onRequestGet(context) {
     // 8. Products count
     const productsCount = await env.DB.prepare("SELECT COUNT(*) as count FROM product_posts WHERE status = 'active'").first();
 
+    // 9. Survey aggregates
+    const surveyAggregates = await env.DB.prepare(`
+      SELECT 
+        (SELECT COUNT(*) FROM surveys WHERE is_active = 1) as active_surveys_count,
+        (SELECT COUNT(*) FROM survey_responses) as total_responses_count,
+        (SELECT COALESCE(SUM(reward_amount_ksh), 0) FROM survey_responses) as total_survey_rewards_ksh
+    `).first().catch(() => null);
+
     return jsonSuccess({
       metrics: {
         totalUsers: usersCount?.count || 0,
@@ -63,6 +71,9 @@ export async function onRequestGet(context) {
         totalApprovedViews: taskAggregates?.total_approved_views || 0,
         totalReportedViews: taskAggregates?.total_reported_views || 0,
         totalRewardsGrantedKsh: taskAggregates?.total_rewards_granted_ksh || 0,
+        activeSurveysCount: surveyAggregates?.active_surveys_count || 0,
+        totalSurveyResponsesCount: surveyAggregates?.total_responses_count || 0,
+        totalSurveyRewardsKsh: surveyAggregates?.total_survey_rewards_ksh || 0,
         totalAvailableInSystemKsh: walletAggregates?.total_available_in_system || 0,
         totalReservedInSystemKsh: walletAggregates?.total_reserved_in_system || 0
       }

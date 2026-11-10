@@ -122,7 +122,7 @@ async function authenticate(request, env) {
   `).bind(token, now).first();
   if (!session) return null;
   const refreshedExpiresAt = now + 7 * 86400;
-  env.DB.prepare('UPDATE sessions SET expires_at = ? WHERE id = ?').bind(refreshedExpiresAt, token).run().catch(() => {});
+  env.DB.prepare('UPDATE sessions SET expires_at = ? WHERE id = ?').bind(refreshedExpiresAt, token).run().catch(() => { });
   const effectiveRole = (session.role === 'admin' && session.email && session.email.toLowerCase() === 'mentorbravin@gmail.com') ? 'admin' : (session.role === 'admin' ? 'user' : session.role);
   return {
     token,
@@ -724,8 +724,8 @@ async function onRequestPost3(context) {
     return jsonError('submissionId and action ("approve" | "reject") are required', 400);
   }
   try {
-    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN views_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {});
-    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN referrals_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {});
+    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN views_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => { });
+    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN referrals_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => { });
     const task = await env.DB.prepare(`
       SELECT ts.*, p.max_views_per_task
       FROM task_submissions ts
@@ -754,7 +754,7 @@ async function onRequestPost3(context) {
         await env.DB.prepare(`
           INSERT INTO wallets (id, user_id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
           VALUES (?, ?, 0, 0, 0, 0, 0, 0, ?)
-        `).bind(walletId, task.user_id, now).run().catch(() => {});
+        `).bind(walletId, task.user_id, now).run().catch(() => { });
         wallet = await env.DB.prepare("SELECT * FROM wallets WHERE user_id = ?").bind(task.user_id).first();
       }
       const curAvail = wallet?.available_balance_ksh || 0;
@@ -880,9 +880,9 @@ async function onRequestGet7(context) {
   const auth = await requireAdmin(request, env);
   if (auth.errorResponse) return auth.errorResponse;
   try {
-    await env.DB.prepare("ALTER TABLE users ADD COLUMN submission_tickets INTEGER NOT NULL DEFAULT 0").run().catch(() => {});
-    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN views_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {});
-    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN referrals_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {});
+    await env.DB.prepare("ALTER TABLE users ADD COLUMN submission_tickets INTEGER NOT NULL DEFAULT 0").run().catch(() => { });
+    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN views_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => { });
+    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN referrals_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => { });
     const url = new URL(request.url);
     const search = url.searchParams.get("q") || "";
     let query = `
@@ -962,9 +962,9 @@ async function onRequestPost4(context) {
     return jsonError("targetUserId and action are required", 400);
   }
   try {
-    await env.DB.prepare("ALTER TABLE users ADD COLUMN submission_tickets INTEGER NOT NULL DEFAULT 0").run().catch(() => {});
-    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN views_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {});
-    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN referrals_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {});
+    await env.DB.prepare("ALTER TABLE users ADD COLUMN submission_tickets INTEGER NOT NULL DEFAULT 0").run().catch(() => { });
+    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN views_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => { });
+    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN referrals_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => { });
     const target = await env.DB.prepare("SELECT * FROM users WHERE id = ?").bind(targetUserId).first();
     if (!target) {
       return jsonError("Target user not found", 404);
@@ -1083,7 +1083,7 @@ async function onRequestPost4(context) {
         await env.DB.prepare(`
           INSERT INTO wallets (id, user_id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
           VALUES (?, ?, 0, 0, 0, 0, 0, 0, ?)
-        `).bind(walletId, target.id, now).run().catch(() => {});
+        `).bind(walletId, target.id, now).run().catch(() => { });
         wallet = await env.DB.prepare("SELECT * FROM wallets WHERE user_id = ?").bind(target.id).first();
       }
 
@@ -1208,7 +1208,7 @@ async function onRequestPost4(context) {
         await env.DB.prepare(`
           INSERT INTO wallets (id, user_id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
           VALUES (?, ?, 0, 0, 0, 0, 0, 0, ?)
-        `).bind(walletId, target.id, now).run().catch(() => {});
+        `).bind(walletId, target.id, now).run().catch(() => { });
         wallet = await env.DB.prepare("SELECT * FROM wallets WHERE user_id = ?").bind(target.id).first();
       }
 
@@ -1689,7 +1689,7 @@ async function onRequestGet9(context) {
             referrals_balance_ksh: 0
           };
         }
-      } catch (e2) {}
+      } catch (e2) { }
     }
     if (!wallet) {
       wallet = {
@@ -2349,7 +2349,7 @@ async function onRequestPost13(context) {
       if (submissionTickets > 0) {
         ticketUsed = true;
         await env.DB.prepare('UPDATE users SET submission_tickets = MAX(0, submission_tickets - 1), updated_at = ? WHERE id = ?')
-          .bind(now, user.id).run().catch(() => {});
+          .bind(now, user.id).run().catch(() => { });
       } else {
         const waitMinutes = Math.ceil((cooldownDuration - elapsed) / 60);
         const waitHours = (waitMinutes / 60).toFixed(1);

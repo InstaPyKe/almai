@@ -18,7 +18,7 @@ export async function onRequestGet(context) {
     let wallet = null;
     try {
       wallet = await env.DB.prepare(`
-        SELECT available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
+        SELECT available_balance_ksh, views_balance_ksh, referrals_balance_ksh, surveys_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
         FROM wallets
         WHERE user_id = ?
         LIMIT 1
@@ -26,7 +26,7 @@ export async function onRequestGet(context) {
     } catch (e) {
       try {
         const legacyWallet = await env.DB.prepare(`
-          SELECT available_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
+          SELECT available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
           FROM wallets
           WHERE user_id = ?
           LIMIT 1
@@ -34,8 +34,7 @@ export async function onRequestGet(context) {
         if (legacyWallet) {
           wallet = {
             ...legacyWallet,
-            views_balance_ksh: legacyWallet.available_balance_ksh || 0,
-            referrals_balance_ksh: 0
+            surveys_balance_ksh: 0
           };
         }
       } catch (e2) {}
@@ -46,21 +45,24 @@ export async function onRequestGet(context) {
         available_balance_ksh: 0,
         views_balance_ksh: 0,
         referrals_balance_ksh: 0,
+        surveys_balance_ksh: 0,
         reserved_balance_ksh: 0,
         lifetime_earnings_ksh: 0,
         lifetime_withdrawn_ksh: 0
       };
     } else {
       const refBal = Number(wallet.referrals_balance_ksh || 0);
+      const surveysBal = Number(wallet.surveys_balance_ksh || 0);
       let viewsBal = Number(wallet.views_balance_ksh || 0);
       let availBal = Number(wallet.available_balance_ksh || 0);
-      if (viewsBal === 0 && refBal === 0 && availBal > 0) {
+      if (viewsBal === 0 && refBal === 0 && surveysBal === 0 && availBal > 0) {
         viewsBal = availBal;
-      } else if (availBal !== viewsBal + refBal) {
-        availBal = viewsBal + refBal;
+      } else if (availBal !== viewsBal + refBal + surveysBal) {
+        availBal = viewsBal + refBal + surveysBal;
       }
       wallet.views_balance_ksh = viewsBal;
       wallet.referrals_balance_ksh = refBal;
+      wallet.surveys_balance_ksh = surveysBal;
       wallet.available_balance_ksh = availBal;
     }
 
@@ -132,6 +134,13 @@ export async function onRequestGet(context) {
       WHERE user_id = ?
     `).bind(user.id).first();
 
+    // 5. Counts: surveys completed
+    const surveyStats = await env.DB.prepare(`
+      SELECT COUNT(*) as completed_count, COALESCE(SUM(reward_amount_ksh), 0) as total_earned_ksh
+      FROM survey_responses
+      WHERE user_id = ?
+    `).bind(user.id).first().catch(() => null);
+
     return jsonSuccess({
       authenticated: true,
       user: {
@@ -164,6 +173,9 @@ export async function onRequestGet(context) {
         availableBalanceKsh: wallet.available_balance_ksh,
         viewsBalanceKsh: wallet.views_balance_ksh || 0,
         referralsBalanceKsh: wallet.referrals_balance_ksh || 0,
+        surveysBalanceKsh: wallet.surveys_balance_ksh || 0,
+        completedSurveysCount: surveyStats?.completed_count || 0,
+        totalSurveyEarningsKsh: surveyStats?.total_earned_ksh || 0,
         reservedBalanceKsh: wallet.reserved_balance_ksh,
         completedWithdrawalsKsh: wallet.lifetime_withdrawn_ksh
       }

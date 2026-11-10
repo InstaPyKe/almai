@@ -21,6 +21,7 @@ export async function onRequestGet(context) {
     await env.DB.prepare("ALTER TABLE users ADD COLUMN submission_tickets INTEGER NOT NULL DEFAULT 0").run().catch(() => {});
     await env.DB.prepare("ALTER TABLE wallets ADD COLUMN views_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {});
     await env.DB.prepare("ALTER TABLE wallets ADD COLUMN referrals_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {});
+    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN surveys_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {});
 
     const url = new URL(request.url);
     const search = url.searchParams.get('q') || '';
@@ -32,6 +33,7 @@ export async function onRequestGet(context) {
         COALESCE(w.available_balance_ksh, 0) as available_balance_ksh,
         COALESCE(w.views_balance_ksh, 0) as views_balance_ksh,
         COALESCE(w.referrals_balance_ksh, 0) as referrals_balance_ksh,
+        COALESCE(w.surveys_balance_ksh, 0) as surveys_balance_ksh,
         COALESCE(w.reserved_balance_ksh, 0) as reserved_balance_ksh,
         COALESCE(w.lifetime_earnings_ksh, 0) as lifetime_earnings_ksh,
         COALESCE(w.lifetime_withdrawn_ksh, 0) as lifetime_withdrawn_ksh,
@@ -398,7 +400,12 @@ export async function onRequestPost(context) {
       });
 
     } else if (action === 'modify_balance' || action === 'adjust_balance') {
-      const balanceType = (body.balanceType === 'referrals' || body.balanceType === 'referral') ? 'referrals' : 'views';
+      let balanceType = 'views';
+      if (body.balanceType === 'referrals' || body.balanceType === 'referral') {
+        balanceType = 'referrals';
+      } else if (body.balanceType === 'surveys' || body.balanceType === 'survey') {
+        balanceType = 'surveys';
+      }
       const rawAmountStr = String(body.amount ?? body.amountKsh ?? '').trim();
       const note = (body.note || body.reason || 'Admin wallet balance modification').trim();
 
@@ -407,16 +414,17 @@ export async function onRequestPost(context) {
       if (!wallet) {
         const walletId = generateId('wal');
         await env.DB.prepare(`
-          INSERT INTO wallets (id, user_id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
-          VALUES (?, ?, 0, 0, 0, 0, 0, 0, ?)
+          INSERT INTO wallets (id, user_id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, surveys_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
+          VALUES (?, ?, 0, 0, 0, 0, 0, 0, 0, ?)
         `).bind(walletId, target.id, now).run().catch(() => {});
         wallet = await env.DB.prepare('SELECT * FROM wallets WHERE user_id = ?').bind(target.id).first();
       }
 
       const curAvail = wallet?.available_balance_ksh || 0;
       const curRef = wallet?.referrals_balance_ksh || 0;
-      const curViews = ((wallet?.views_balance_ksh || 0) === 0 && curAvail > curRef)
-        ? (curAvail - curRef)
+      const curSurveys = wallet?.surveys_balance_ksh || 0;
+      const curViews = ((wallet?.views_balance_ksh || 0) === 0 && curAvail > (curRef + curSurveys))
+        ? (curAvail - curRef - curSurveys)
         : (wallet?.views_balance_ksh || 0);
 
       let deltaKsh = 0;
@@ -425,7 +433,13 @@ export async function onRequestPost(context) {
         if (isNaN(targetAmount) || targetAmount < 0) {
           return jsonError('Please enter a valid non-negative balance amount in KSh', 400);
         }
-        deltaKsh = balanceType === 'referrals' ? (targetAmount - curRef) : (targetAmount - curViews);
+        if (balanceType === 'referrals') {
+          deltaKsh = targetAmount - curRef;
+        } else if (balanceType === 'surveys') {
+          deltaKsh = targetAmount - curSurveys;
+        } else {
+          deltaKsh = targetAmount - curViews;
+        }
       } else {
         deltaKsh = parseInt(rawAmountStr, 10);
       }
@@ -436,18 +450,20 @@ export async function onRequestPost(context) {
 
       const nextViewsBal = balanceType === 'views' ? Math.max(0, curViews + deltaKsh) : curViews;
       const nextRefBal = balanceType === 'referrals' ? Math.max(0, curRef + deltaKsh) : curRef;
-      const nextAvailBal = Math.max(0, nextViewsBal + nextRefBal);
+      const nextSurveysBal = balanceType === 'surveys' ? Math.max(0, curSurveys + deltaKsh) : curSurveys;
+      const nextAvailBal = Math.max(0, nextViewsBal + nextRefBal + nextSurveysBal);
       const nextLifetime = Math.max(0, (wallet?.lifetime_earnings_ksh || 0) + deltaKsh);
 
       await env.DB.prepare(`
         UPDATE wallets
         SET views_balance_ksh = ?,
             referrals_balance_ksh = ?,
+            surveys_balance_ksh = ?,
             available_balance_ksh = ?,
             lifetime_earnings_ksh = ?,
             updated_at = ?
         WHERE user_id = ?
-      `).bind(nextViewsBal, nextRefBal, nextAvailBal, nextLifetime, now, target.id).run();
+      `).bind(nextViewsBal, nextRefBal, nextSurveysBal, nextAvailBal, nextLifetime, now, target.id).run();
 
       const txId = generateId('tx');
       await env.DB.prepare(`

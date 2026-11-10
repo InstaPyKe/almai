@@ -188,6 +188,15 @@ export async function onRequestPost(context) {
               updated_at = ?
           WHERE id = ? AND reserved_balance_ksh >= ?
         `).bind(withdrawal.amount_ksh, withdrawal.amount_ksh, withdrawal.amount_ksh, now, withdrawal.wallet_id, withdrawal.amount_ksh).run();
+      } else if (withdrawal.balance_type === 'surveys') {
+        await env.DB.prepare(`
+          UPDATE wallets
+          SET reserved_balance_ksh = reserved_balance_ksh - ?,
+              surveys_balance_ksh = surveys_balance_ksh + ?,
+              available_balance_ksh = available_balance_ksh + ?,
+              updated_at = ?
+          WHERE id = ? AND reserved_balance_ksh >= ?
+        `).bind(withdrawal.amount_ksh, withdrawal.amount_ksh, withdrawal.amount_ksh, now, withdrawal.wallet_id, withdrawal.amount_ksh).run();
       } else {
         await env.DB.prepare(`
           UPDATE wallets

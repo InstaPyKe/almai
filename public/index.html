@@ -2569,6 +2569,12 @@
       border-color: #A7F3D0;
       box-shadow: 0 2px 8px rgba(5, 150, 105, 0.12);
     }
+    .withdraw-tab-btn.active.tab-surveys {
+      background: #FFFFFF;
+      color: #1D4ED8;
+      border-color: #93C5FD;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.15);
+    }
     .withdraw-tab-tag {
       background: #10B981;
       color: #FFFFFF;
@@ -2577,6 +2583,10 @@
       border-radius: 99px;
       font-weight: 900;
       letter-spacing: 0.3px;
+    }
+    .withdraw-tab-tag.tag-blue {
+      background: #2563EB;
+      color: #FFFFFF;
     }
 
     /* Separate Balances Breakdown Strip in Dashboard */
@@ -2608,6 +2618,42 @@
     .sub-balance-card.theme-referrals {
       border: 1.5px solid #A7F3D0;
       background: linear-gradient(145deg, #FFFFFF 0%, #F0FDF4 100%);
+    }
+    .sub-balance-card.theme-surveys {
+      border: 1.5px solid #BFDBFE;
+      background: linear-gradient(145deg, #FFFFFF 0%, #EFF6FF 100%);
+    }
+    .btn-outline-blue {
+      background: #FFFFFF;
+      color: #1D4ED8;
+      border: 1.5px solid #93C5FD;
+      font-weight: 750;
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .btn-outline-blue:hover {
+      background: #2563EB;
+      color: #FFFFFF;
+      border-color: #2563EB;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+    .pulsing-blue-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #2563EB;
+      box-shadow: 0 0 0 rgba(37, 99, 235, 0.4);
+      animation: pulseBlueDot 1.8s infinite;
+      margin-right: 6px;
+    }
+    @keyframes pulseBlueDot {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(37, 99, 235, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
     }
     .sub-balance-header {
       display: flex;
@@ -5329,6 +5375,236 @@
     }
 
     /* ====================================================================
+       THEME SURVEYS: PAID CONSUMER SURVEYS & INSTANT M-PESA REWARDS
+       ==================================================================== */
+    .dash-theme-surveys {
+      background: linear-gradient(145deg, #F0F9FF 0%, #EFF6FF 40%, #DBEAFE 100%) !important;
+      border: 2.5px solid #3B82F6 !important;
+      border-radius: var(--radius-lg) !important;
+      padding: 26px 26px 30px !important;
+      box-shadow: 0 16px 38px -6px rgba(37, 99, 235, 0.18), 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+      margin-bottom: 32px !important;
+      position: relative !important;
+      overflow: hidden !important;
+    }
+    .dash-theme-surveys::before {
+      content: '';
+      position: absolute;
+      top: -30px;
+      right: -30px;
+      width: 240px;
+      height: 240px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.22) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .surveys-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .surveys-filter-pills {
+      display: inline-flex;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1.5px solid #BFDBFE;
+      border-radius: var(--radius-full);
+      padding: 4px;
+      gap: 4px;
+    }
+    .survey-filter-btn {
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      border: none;
+      background: transparent;
+      font-size: 13px;
+      font-weight: 800;
+      color: #1E3A8A;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .survey-filter-btn.active {
+      background: #2563EB;
+      color: #FFFFFF;
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+    }
+    .surveys-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 18px;
+      margin-top: 18px;
+    }
+    .survey-card {
+      background: #FFFFFF;
+      border: 1.5px solid #DBEAFE;
+      border-radius: var(--radius-md);
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
+      transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease, border-color 0.24s ease;
+      position: relative;
+    }
+    .survey-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 30px -4px rgba(37, 99, 235, 0.16), 0 4px 12px rgba(0, 0, 0, 0.04);
+      border-color: #3B82F6;
+    }
+    .survey-card.completed {
+      background: #F8FAFC;
+      border-color: #CBD5E1;
+      opacity: 0.88;
+    }
+    .survey-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .survey-cat-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #EFF6FF;
+      color: #1D4ED8;
+      border: 1px solid #BFDBFE;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      font-size: 11.5px;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .survey-reward-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: linear-gradient(135deg, #10B981, #059669);
+      color: #FFFFFF;
+      padding: 4px 11px;
+      border-radius: var(--radius-full);
+      font-size: 13.5px;
+      font-weight: 950;
+      box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);
+    }
+    .survey-card-title {
+      font-size: 16.5px;
+      font-weight: 850;
+      color: #0F172A;
+      line-height: 1.35;
+      margin: 0 0 8px;
+    }
+    .survey-card-desc {
+      font-size: 13px;
+      color: #475569;
+      line-height: 1.5;
+      margin-bottom: 16px;
+      flex-grow: 1;
+    }
+    .survey-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 14px;
+      border-top: 1.5px dashed #E2E8F0;
+    }
+    .survey-meta-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12.5px;
+      color: #64748B;
+      font-weight: 700;
+    }
+    .survey-completed-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ECFDF5;
+      color: #047857;
+      border: 1.5px solid #10B981;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    /* Survey Questionnaire Modal Styling */
+    .survey-question-card {
+      background: #F8FAFC;
+      border: 1.5px solid #E2E8F0;
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-bottom: 16px;
+      transition: border-color 0.2s ease;
+    }
+    .survey-question-card:focus-within {
+      border-color: #3B82F6;
+      background: #FFFFFF;
+    }
+    .survey-question-title {
+      font-size: 14.5px;
+      font-weight: 850;
+      color: #0F172A;
+      margin-bottom: 12px;
+      line-height: 1.4;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .survey-question-num {
+      background: #2563EB;
+      color: #FFFFFF;
+      font-size: 11.5px;
+      font-weight: 950;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .survey-options-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .survey-opt-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: #FFFFFF;
+      border: 1.5px solid #CBD5E1;
+      font-size: 13.5px;
+      font-weight: 650;
+      color: #1E293B;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+    .survey-opt-label:hover {
+      border-color: #3B82F6;
+      background: #EFF6FF;
+    }
+    .survey-opt-label input[type="radio"] {
+      width: 17px;
+      height: 17px;
+      accent-color: #2563EB;
+      cursor: pointer;
+    }
+    .survey-opt-label.selected {
+      border-color: #2563EB;
+      background: #EFF6FF;
+      color: #1E3A8A;
+      font-weight: 800;
+    }
+
+    /* ====================================================================
        ADMIN DASHBOARD SUPER COLORED ALTERNATING SECTIONS
        ==================================================================== */
     .admin-sec-yellow {
@@ -5930,6 +6206,7 @@
           <li class="nav-link-item" id="nav-timetable" onclick="scrollToTasks()">How It Works</li>
           <li class="nav-link-item" id="nav-products" onclick="switchView('products')">Packages & Pricing</li>
           <li class="nav-link-item" id="nav-calc" onclick="scrollToCalculator()">Calculator</li>
+          <li class="nav-link-item" id="nav-surveys-link" onclick="scrollToSurveys()">Paid Surveys</li>
           <li class="nav-link-item" id="nav-dashboard-link" style="display: none;" onclick="switchView('dashboard')">Dashboard</li>
           <li class="nav-link-item" id="nav-admin-link" style="display: none;" onclick="switchView('admin')">Admin Center</li>
         </ul>
@@ -6016,6 +6293,12 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M8 18h.01M12 18h.01"></path></svg>
         </span>
         Earnings Calculator
+      </li>
+      <li class="mobile-nav-item" id="mob-nav-surveys" onclick="mobileNavAction('surveys')">
+        <span class="svg-icon" style="width: 18px; height: 18px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+        </span>
+        Paid Surveys
       </li>
       <li class="mobile-nav-item" id="mob-nav-dashboard" style="display: none;" onclick="mobileNavAction('dashboard')">
         <span class="svg-icon" style="width: 18px; height: 18px;">
@@ -6984,6 +7267,27 @@
               <span>Independent of package views threshold (Min KSh 100)</span>
             </div>
           </div>
+
+          <!-- Paid Consumer Surveys Balance Card -->
+          <div class="sub-balance-card theme-surveys">
+            <div class="sub-balance-header">
+              <div class="sub-balance-title">
+                <span class="sub-balance-icon">📝</span>
+                <div>
+                  <h4>Paid Surveys Balance</h4>
+                  <p class="sub-balance-rule" style="color: #1D4ED8;">Instant M-Pesa Payout • Min KSh 100</p>
+                </div>
+              </div>
+              <button type="button" class="btn btn-outline-blue" onclick="openWithdrawalModal('surveys')">
+                Withdraw Surveys
+              </button>
+            </div>
+            <div class="sub-balance-amount" id="dash-val-surveys" style="color: #1D4ED8;">KSh 0</div>
+            <div class="sub-balance-instant-tag">
+              <span class="pulsing-blue-dot"></span>
+              <span id="dash-surveys-stats-hint">KSh 50 - KSh 250 per survey completed</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -7250,6 +7554,84 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: PAID CONSUMER SURVEYS & INSTANT M-PESA REWARDS -->
+      <div class="dash-section-group dash-group-surveys dash-theme-surveys" id="dash-surveys-section">
+        <!-- Super Green Botanical Leafy Plant Branch -->
+        <svg class="leafy-branch-decor" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="leafGradSrvA" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#34D399"/>
+              <stop offset="45%" stop-color="#10B981"/>
+              <stop offset="100%" stop-color="#059669"/>
+            </linearGradient>
+            <linearGradient id="leafGradSrvB" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#86EFAC"/>
+              <stop offset="35%" stop-color="#22C55E"/>
+              <stop offset="100%" stop-color="#15803D"/>
+            </linearGradient>
+            <linearGradient id="leafGradSrvC" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#A7F3D0"/>
+              <stop offset="50%" stop-color="#059669"/>
+              <stop offset="100%" stop-color="#064E3B"/>
+            </linearGradient>
+          </defs>
+          <g>
+            <path d="M165,-5 C142,22 112,62 52,108 C32,123 12,138 -5,148" stroke="#047857" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M165,-5 C142,22 112,62 52,108 C32,123 12,138 -5,148" stroke="#22C55E" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+            <path d="M146,16 C131,5 116,2 106,8 C96,14 101,28 116,32 C131,36 143,28 146,16 Z" fill="url(#leafGradSrvB)"/>
+            <path d="M146,16 C133,19 121,21 106,8" stroke="#047857" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M136,36 C146,46 156,56 153,66 C150,76 136,76 126,66 C116,56 123,43 136,36 Z" fill="url(#leafGradSrvA)"/>
+            <path d="M136,36 C138,49 141,59 153,66" stroke="#064E3B" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M112,52 C94,44 80,47 74,57 C68,67 76,80 92,82 C108,84 116,70 112,52 Z" fill="url(#leafGradSrvC)"/>
+            <path d="M112,52 C100,60 90,64 74,57" stroke="#86EFAC" stroke-width="1.1" stroke-linecap="round" opacity="0.75"/>
+            <path d="M100,76 C110,89 122,96 124,106 C126,116 112,121 100,113 C88,105 90,91 100,76 Z" fill="url(#leafGradSrvB)"/>
+            <path d="M100,76 C104,91 110,101 124,106" stroke="#047857" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M74,94 C54,87 42,94 37,104 C32,114 42,126 57,126 C72,126 80,110 74,94 Z" fill="url(#leafGradSrvA)"/>
+            <path d="M74,94 C64,104 54,110 37,104" stroke="#064E3B" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+            <circle cx="114" cy="26" r="2.4" fill="#FFFFFF" opacity="0.85"/>
+            <circle cx="86" cy="66" r="2.6" fill="#FFFFFF" opacity="0.85"/>
+            <circle cx="49" cy="111" r="2.2" fill="#FFFFFF" opacity="0.85"/>
+          </g>
+        </svg>
+
+        <div class="dash-group-header">
+          <div>
+            <div class="dash-group-title" style="color: #1D4ED8;">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#2563EB" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              Corporate Consumer Surveys &amp; Paid Opinions
+            </div>
+            <div class="dash-group-subtitle">
+              Voice your genuine opinions on top Kenyan brands, mobile money, fast-moving consumer goods, and telecom services. Earn instant <strong>KSh 50 to KSh 250</strong> credited directly to your Surveys Balance upon completing multiple-choice questions!
+            </div>
+          </div>
+          <div class="surveys-header-actions">
+            <div class="surveys-filter-pills">
+              <button type="button" class="survey-filter-btn active" id="btn-survey-filter-all" onclick="filterSurveys('all')">All (<span id="count-surveys-all">0</span>)</button>
+              <button type="button" class="survey-filter-btn" id="btn-survey-filter-available" onclick="filterSurveys('available')">Available (<span id="count-surveys-avail">0</span>)</button>
+              <button type="button" class="survey-filter-btn" id="btn-survey-filter-completed" onclick="filterSurveys('completed')">Completed (<span id="count-surveys-comp">0</span>)</button>
+            </div>
+            <button type="button" class="btn btn-outline-blue" onclick="openWithdrawalModal('surveys')">
+              Withdraw Surveys
+            </button>
+          </div>
+        </div>
+
+        <!-- Dynamic Surveys Cards Grid -->
+        <div class="surveys-grid" id="surveys-container">
+          <div style="grid-column: 1 / -1; text-align: center; padding: 36px 20px; background: #FFFFFF; border-radius: 12px; border: 1.5px dashed #93C5FD;">
+            <div style="font-size: 26px; margin-bottom: 8px;">⏳</div>
+            <div style="font-weight: 850; font-size: 16px; color: #1E3A8A;">Loading Paid Consumer Surveys...</div>
+            <div style="font-size: 13px; color: #64748B; margin-top: 4px;">Connecting to Almai Brand Sponsorship API...</div>
           </div>
         </div>
       </div>
@@ -7708,14 +8090,18 @@
         </div>
       </div>
 
-      <!-- Segmented Tab Switcher (Views vs Referrals) -->
+      <!-- Segmented Tab Switcher (Views vs Referrals vs Surveys) -->
       <div class="withdraw-type-tabs">
         <button type="button" class="withdraw-tab-btn active tab-views" id="tab-withdraw-views" onclick="setWithdrawalBalanceType('views')">
           <span>📱 Status Views</span>
         </button>
         <button type="button" class="withdraw-tab-btn tab-referrals" id="tab-withdraw-referrals" onclick="setWithdrawalBalanceType('referrals')">
-          <span>👥 45% Referrals</span>
+          <span>👥 Referrals</span>
           <span class="withdraw-tab-tag">Separate</span>
+        </button>
+        <button type="button" class="withdraw-tab-btn tab-surveys" id="tab-withdraw-surveys" onclick="setWithdrawalBalanceType('surveys')">
+          <span>📝 Paid Surveys</span>
+          <span class="withdraw-tab-tag tag-blue">Instant</span>
         </button>
       </div>
 
@@ -7744,6 +8130,17 @@
         </div>
       </div>
 
+      <!-- Dynamic Paid Surveys Info Box -->
+      <div id="withdraw-surveys-box" style="display: none; background: linear-gradient(145deg, #EFF6FF, #DBEAFE); border: 1.5px solid #93C5FD; border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 18px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <span style="font-size: 13.5px; font-weight: 750; color: #1E40AF;">Withdrawable Paid Surveys Balance:</span>
+          <span style="color: #2563EB; font-size: 19px; font-weight: 950;" id="withdraw-modal-surveys-avail">KSh 0</span>
+        </div>
+        <div style="font-size: 12.5px; color: #1E40AF; line-height: 1.45; background: rgba(255,255,255,0.75); padding: 8px 12px; border-radius: 6px;">
+          📝 <strong>Instant Cashout</strong>: Paid consumer survey earnings can be withdrawn separately anytime! Minimum payout is only <strong style="color: #2563EB;">KSh 100</strong> directly to your Safaricom M-Pesa.
+        </div>
+      </div>
+
       <form id="form-withdraw" onsubmit="handleWithdrawalSubmit(event)">
         <div class="form-group">
           <label class="form-label" for="withdraw-amount" id="withdraw-amount-label">Amount to Withdraw (KSh)</label>
@@ -7768,6 +8165,59 @@
         <button type="submit" class="btn btn-success btn-block btn-lg" id="btn-withdraw-submit">
           Confirm M-Pesa Withdrawal
         </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: TAKE PAID CONSUMER SURVEY
+       ==================================================================== -->
+  <div class="modal-backdrop" id="modal-survey-take">
+    <div class="modal-content" style="max-width: 640px;">
+      <button class="modal-close-btn" onclick="closeModal('modal-survey-take')">
+        <span class="svg-icon" style="width: 16px; height: 16px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </span>
+      </button>
+
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1.5px solid #E2E8F0;">
+        <div>
+          <div style="margin-bottom: 4px;">
+            <span class="survey-cat-badge" id="survey-modal-cat">Consumer Habits</span>
+          </div>
+          <h3 style="font-size: 20px; margin: 0; color: #0F172A; font-weight: 900; line-height: 1.35;" id="survey-modal-title">
+            Survey Questionnaire
+          </h3>
+          <p style="color: #64748B; font-size: 13px; margin: 4px 0 0;" id="survey-modal-desc">
+            Answer the following questions to claim your instant reward.
+          </p>
+        </div>
+        <div style="text-align: right; flex-shrink: 0;">
+          <div class="survey-reward-pill" id="survey-modal-reward-badge" style="font-size: 15px; padding: 6px 14px;">
+            +KSh 80
+          </div>
+          <div style="font-size: 11.5px; color: #64748B; margin-top: 4px;" id="survey-modal-time">⏱️ ~3 mins</div>
+        </div>
+      </div>
+
+      <form id="form-survey-take" onsubmit="handleSurveySubmit(event)">
+        <input type="hidden" id="survey-modal-id" value="">
+
+        <!-- Dynamic Questions Render Container -->
+        <div id="survey-modal-questions-container" style="max-height: 55vh; overflow-y: auto; padding-right: 4px; margin-bottom: 16px;">
+          <!-- Populated by JavaScript -->
+        </div>
+
+        <div id="survey-modal-alert" style="display: none;" class="alert"></div>
+
+        <div style="display: flex; gap: 12px; align-items: center; margin-top: 14px;">
+          <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="closeModal('modal-survey-take')">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" style="flex: 2; font-size: 15px; font-weight: 850;" id="btn-survey-submit">
+            Submit Answers &amp; Claim <span id="survey-modal-submit-reward">Reward</span>
+          </button>
+        </div>
       </form>
     </div>
   </div>
@@ -7975,6 +8425,13 @@
               </span>
               <span class="admin-tab-title">WhatsApp Products</span>
               <span class="tab-badge" id="tab-badge-products" style="display: none;">0</span>
+            </button>
+
+            <button class="admin-tab" id="atab-surveys" onclick="switchAdminTab('surveys')">
+              <span class="admin-tab-chip chip-blue">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              </span>
+              <span class="admin-tab-title">Paid Surveys</span>
             </button>
           </div>
 
@@ -8345,6 +8802,96 @@
                 <tbody id="tbody-admin-audit">
                   <tr>
                     <td colspan="5" style="text-align: center; padding: 24px;">Loading audit logs...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tab 8: Paid Consumer Surveys Manager -->
+          <div id="asec-surveys" class="admin-content-section admin-sec-blue" style="display: none;">
+            <div class="admin-section-banner banner-theme-blue">
+              <div class="admin-banner-lead">
+                <div class="admin-banner-chip chip-bg-blue">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                </div>
+                <div>
+                  <div class="admin-banner-title">Paid Consumer Surveys &amp; Opinions Manager</div>
+                  <p class="admin-banner-subtitle">Publish brand research questionnaires, configure cash rewards per response, and review participant analytics.</p>
+                </div>
+              </div>
+              <div class="admin-banner-actions">
+                <button type="button" class="btn btn-primary btn-sm" onclick="toggleAdminSurveyForm()">
+                  <span id="btn-toggle-survey-text">+ Create New Survey</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Survey Creation Form (Collapsible) -->
+            <div id="admin-survey-create-box" style="display: none; background: #FFFFFF; border: 2px solid #93C5FD; border-radius: 12px; padding: 22px 24px; margin-bottom: 22px; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.08);">
+              <h4 style="margin: 0 0 14px; font-size: 17px; font-weight: 850; color: #1E3A8A;">Create Sponsored Consumer Survey</h4>
+              <form id="form-admin-create-survey" onsubmit="handleAdminCreateSurvey(event)">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 14px;">
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Survey Title *</label>
+                    <input type="text" id="asurvey-title" required placeholder="e.g. Daily FMCG Brand Preferences 2026">
+                  </div>
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Category *</label>
+                    <input type="text" id="asurvey-category" required placeholder="e.g. Retail & FMCG" value="Consumer Habits">
+                  </div>
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Reward Amount (KSh per user) *</label>
+                    <input type="number" id="asurvey-reward" required min="10" max="1000" value="80" placeholder="e.g. 80">
+                  </div>
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Estimated Minutes *</label>
+                    <input type="number" id="asurvey-mins" required min="1" max="30" value="3" placeholder="e.g. 3">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Survey Description *</label>
+                  <textarea id="asurvey-desc" rows="2" required placeholder="Brief description explaining why the brand is collecting feedback and what participants should expect..."></textarea>
+                </div>
+
+                <!-- Dynamic Questions Builder -->
+                <div style="margin-top: 18px; margin-bottom: 16px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <label class="form-label" style="margin: 0; font-size: 14.5px; font-weight: 850; color: #1E3A8A;">Survey Questions (Multiple Choice) *</label>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="addAdminSurveyQuestionField()">+ Add Question</button>
+                  </div>
+                  <div id="admin-survey-questions-builder" style="display: flex; flex-direction: column; gap: 12px;">
+                    <!-- Question blocks generated dynamically -->
+                  </div>
+                </div>
+
+                <div id="asurvey-alert" style="display: none;" class="alert"></div>
+
+                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px;">
+                  <button type="button" class="btn btn-secondary" onclick="toggleAdminSurveyForm()">Cancel</button>
+                  <button type="submit" class="btn btn-primary" id="btn-admin-submit-survey">Publish Live Survey</button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Surveys List Table -->
+            <div class="table-responsive-clean">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Survey Campaign</th>
+                    <th>Category</th>
+                    <th>Reward (KSh)</th>
+                    <th>Questions</th>
+                    <th>Completions</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-admin-surveys">
+                  <tr>
+                    <td colspan="7" style="text-align: center; padding: 24px;">Loading surveys...</td>
                   </tr>
                 </tbody>
               </table>
@@ -8840,6 +9387,7 @@
       const avail = AppState.wallet?.available_balance_ksh || 0;
       const viewsAvail = AppState.wallet?.views_balance_ksh ?? 0;
       const refAvail = AppState.wallet?.referrals_balance_ksh ?? 0;
+      const surveysAvail = AppState.wallet?.surveys_balance_ksh ?? 0;
       const reserved = AppState.wallet?.reserved_balance_ksh || 0;
       const earned = AppState.wallet?.lifetime_earnings_ksh || 0;
       const withdrawn = AppState.wallet?.lifetime_withdrawn_ksh || 0;
@@ -8849,12 +9397,15 @@
       document.getElementById('dash-val-earned').textContent = `KSh ${earned.toLocaleString()}`;
       document.getElementById('dash-val-withdrawn').textContent = `KSh ${withdrawn.toLocaleString()}`;
 
-      // Populate separate views and referral sub-ledgers
+      // Populate separate views, referral and surveys sub-ledgers
       const viewsAvailEl = document.getElementById('dash-val-views');
       if (viewsAvailEl) viewsAvailEl.textContent = `KSh ${viewsAvail.toLocaleString()}`;
 
       const refAvailEl = document.getElementById('dash-val-referrals');
       if (refAvailEl) refAvailEl.textContent = `KSh ${refAvail.toLocaleString()}`;
+
+      const surveysAvailEl = document.getElementById('dash-val-surveys');
+      if (surveysAvailEl) surveysAvailEl.textContent = `KSh ${surveysAvail.toLocaleString()}`;
 
       const pkg = AppState.activePackage;
       const minViews = pkg?.min_withdrawal_views_ksh || (pkg?.slug === 'premium' ? 12000 : (pkg?.slug === 'exclusive' ? 8000 : 5000));
@@ -8875,6 +9426,8 @@
       if (modalViewsAvail) modalViewsAvail.textContent = `KSh ${viewsAvail.toLocaleString()}`;
       const modalRefAvail = document.getElementById('withdraw-modal-referrals-avail');
       if (modalRefAvail) modalRefAvail.textContent = `KSh ${refAvail.toLocaleString()}`;
+      const modalSurveysAvail = document.getElementById('withdraw-modal-surveys-avail');
+      if (modalSurveysAvail) modalSurveysAvail.textContent = `KSh ${surveysAvail.toLocaleString()}`;
 
       // View counts
       document.getElementById('dash-views-reported').textContent = (AppState.stats?.reportedViews || 0).toLocaleString();
@@ -9244,6 +9797,8 @@
         scrollToTasks(); 
       } else if (action === 'calc') {
         scrollToCalculator();
+      } else if (action === 'surveys') {
+        scrollToSurveys();
       } else if (action === 'dash-products') {
         switchView('dashboard');
         setTimeout(() => {
@@ -9258,6 +9813,18 @@
       } else {
         switchView(action);
       }
+    }
+
+    function scrollToSurveys() {
+      if (!AppState.user) {
+        showAuthModal('login');
+        return;
+      }
+      switchView('dashboard');
+      setTimeout(() => {
+        const el = document.getElementById('dash-surveys-section');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 150);
     }
 
     
@@ -10352,7 +10919,8 @@
         fetchUserTasks(),
         fetchUserWithdrawals(),
         fetchProductsPosts(),
-        fetchReferralData()
+        fetchReferralData(),
+        fetchUserSurveys()
       ]);
     }
 
@@ -10562,7 +11130,7 @@
     }
 
     // ====================================================================
-    // WITHDRAWAL MODAL & LOGIC (DUAL BALANCES: VIEWS & REFERRALS)
+    // WITHDRAWAL MODAL & LOGIC (SEPARATE BALANCES: VIEWS, REFERRALS & SURVEYS)
     // ====================================================================
     function openWithdrawalModal(defaultTab = 'views') {
       if (!AppState.user) {
@@ -10576,12 +11144,16 @@
 
       const viewsAvail = AppState.wallet?.views_balance_ksh ?? 0;
       const refAvail = AppState.wallet?.referrals_balance_ksh ?? 0;
+      const surveysAvail = AppState.wallet?.surveys_balance_ksh ?? 0;
 
       const viewsAvailEl = document.getElementById('withdraw-modal-views-avail');
       if (viewsAvailEl) viewsAvailEl.textContent = `KSh ${viewsAvail.toLocaleString()}`;
 
       const refAvailEl = document.getElementById('withdraw-modal-referrals-avail');
       if (refAvailEl) refAvailEl.textContent = `KSh ${refAvail.toLocaleString()}`;
+
+      const surveysAvailEl = document.getElementById('withdraw-modal-surveys-avail');
+      if (surveysAvailEl) surveysAvailEl.textContent = `KSh ${surveysAvail.toLocaleString()}`;
 
       const pkg = AppState.activePackage;
       const minViews = pkg?.min_withdrawal_views_ksh || (pkg?.slug === 'premium' ? 12000 : (pkg?.slug === 'exclusive' ? 8000 : 5000));
@@ -10602,8 +11174,12 @@
 
       const tabViews = document.getElementById('tab-withdraw-views');
       const tabRefs = document.getElementById('tab-withdraw-referrals');
+      const tabSurveys = document.getElementById('tab-withdraw-surveys');
+
       const boxViews = document.getElementById('withdraw-views-box');
       const boxRefs = document.getElementById('withdraw-referrals-box');
+      const boxSurveys = document.getElementById('withdraw-surveys-box');
+
       const amountInput = document.getElementById('withdraw-amount');
       const hint = document.getElementById('withdraw-amount-hint');
       const label = document.getElementById('withdraw-amount-label');
@@ -10612,11 +11188,35 @@
       const minViews = pkg?.min_withdrawal_views_ksh || (pkg?.slug === 'premium' ? 12000 : (pkg?.slug === 'exclusive' ? 8000 : 5000));
       const viewsAvail = AppState.wallet?.views_balance_ksh ?? 0;
       const refAvail = AppState.wallet?.referrals_balance_ksh ?? 0;
+      const surveysAvail = AppState.wallet?.surveys_balance_ksh ?? 0;
 
-      if (type === 'referrals') {
+      if (type === 'surveys') {
         if (tabViews) tabViews.classList.remove('active');
-        if (tabRefs) tabRefs.classList.add('active');
+        if (tabRefs) tabRefs.classList.remove('active');
+        if (tabSurveys) tabSurveys.classList.add('active');
+
         if (boxViews) boxViews.style.display = 'none';
+        if (boxRefs) boxRefs.style.display = 'none';
+        if (boxSurveys) boxSurveys.style.display = 'block';
+
+        if (label) label.textContent = 'Amount to Withdraw from Paid Surveys (KSh)';
+        if (amountInput) {
+          amountInput.min = '100';
+          amountInput.placeholder = 'Min KSh 100';
+          if (surveysAvail >= 100) amountInput.value = surveysAvail;
+          else amountInput.value = '';
+        }
+        if (hint) {
+          hint.textContent = `Minimum withdrawal: KSh 100 • You have KSh ${surveysAvail.toLocaleString()} survey earnings withdrawable separately anytime!`;
+          hint.style.color = '#1D4ED8';
+        }
+      } else if (type === 'referrals') {
+        if (tabViews) tabViews.classList.remove('active');
+        if (tabSurveys) tabSurveys.classList.remove('active');
+        if (tabRefs) tabRefs.classList.add('active');
+
+        if (boxViews) boxViews.style.display = 'none';
+        if (boxSurveys) boxSurveys.style.display = 'none';
         if (boxRefs) boxRefs.style.display = 'block';
 
         if (label) label.textContent = 'Amount to Withdraw from Referral Commissions (KSh)';
@@ -10633,8 +11233,11 @@
       } else {
         // default: views
         if (tabRefs) tabRefs.classList.remove('active');
+        if (tabSurveys) tabSurveys.classList.remove('active');
         if (tabViews) tabViews.classList.add('active');
+
         if (boxRefs) boxRefs.style.display = 'none';
+        if (boxSurveys) boxSurveys.style.display = 'none';
         if (boxViews) boxViews.style.display = 'block';
 
         if (label) label.textContent = 'Amount to Withdraw from Status Views (KSh)';
@@ -10893,7 +11496,7 @@
         return;
       }
 
-      const tabs = ['payments', 'users', 'products', 'tasks', 'withdrawals', 'stats', 'audit'];
+      const tabs = ['payments', 'users', 'products', 'tasks', 'withdrawals', 'surveys', 'stats', 'audit'];
       tabs.forEach(t => {
         const btn = document.getElementById(`atab-${t}`);
         const sec = document.getElementById(`asec-${t}`);
@@ -10913,6 +11516,7 @@
       if (tab === 'products') loadAdminProducts();
       if (tab === 'tasks') loadAdminTasks();
       if (tab === 'withdrawals') loadAdminWithdrawals();
+      if (tab === 'surveys') loadAdminSurveys();
       if (tab === 'stats') loadAdminStats();
       if (tab === 'audit') loadAdminAudit();
     }
@@ -12236,7 +12840,8 @@
         await Promise.allSettled([
           fetchUserTasks(),
           fetchUserWithdrawals(),
-          fetchReferralData()
+          fetchReferralData(),
+          fetchUserSurveys()
         ]);
       }
     }
@@ -12259,6 +12864,465 @@
         }
       }
     }, 15000);
+
+    // ====================================================================
+    // PAID CONSUMER SURVEYS & OPINIONS SYSTEM
+    // ====================================================================
+    AppState.surveys = [];
+    AppState.activeSurveyFilter = 'all';
+
+    async function fetchUserSurveys() {
+      try {
+        const res = await fetch('/api/surveys', { cache: 'no-store' });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.success && Array.isArray(data.surveys)) {
+          AppState.surveys = data.surveys;
+          AppState.surveyStats = data.stats || {};
+
+          // Update badge counters
+          const countAll = document.getElementById('count-surveys-all');
+          if (countAll) countAll.textContent = data.surveys.length;
+
+          const availCount = data.surveys.filter(s => !s.isCompleted).length;
+          const compCount = data.surveys.filter(s => s.isCompleted).length;
+
+          const countAvail = document.getElementById('count-surveys-avail');
+          if (countAvail) countAvail.textContent = availCount;
+
+          const countComp = document.getElementById('count-surveys-comp');
+          if (countComp) countComp.textContent = compCount;
+
+          const statsHint = document.getElementById('dash-surveys-stats-hint');
+          if (statsHint && data.stats) {
+            statsHint.textContent = `${availCount} Available • KSh ${(data.stats.totalSurveyEarningsKsh || 0).toLocaleString()} earned`;
+          }
+
+          renderUserSurveys(AppState.activeSurveyFilter || 'all');
+        }
+      } catch (err) {
+        console.error('fetchUserSurveys error:', err);
+      }
+    }
+
+    function filterSurveys(filter = 'all') {
+      AppState.activeSurveyFilter = filter;
+      ['all', 'available', 'completed'].forEach(f => {
+        const btn = document.getElementById(`btn-survey-filter-${f}`);
+        if (btn) btn.classList.toggle('active', f === filter);
+      });
+      renderUserSurveys(filter);
+    }
+
+    function renderUserSurveys(filter = 'all') {
+      const container = document.getElementById('surveys-container');
+      if (!container) return;
+
+      const surveys = AppState.surveys || [];
+      let list = surveys;
+      if (filter === 'available') {
+        list = surveys.filter(s => !s.isCompleted);
+      } else if (filter === 'completed') {
+        list = surveys.filter(s => s.isCompleted);
+      }
+
+      if (!list.length) {
+        let msg = 'No paid consumer surveys available right now. Check back soon for new corporate campaigns!';
+        if (filter === 'available') msg = '🎉 Outstanding work! You have completed all active surveys. New campaigns launch daily!';
+        if (filter === 'completed') msg = 'You have not completed any surveys yet. Choose an available survey above to start earning instant cash!';
+
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 36px 20px; background: #FFFFFF; border-radius: 12px; border: 1.5px dashed #CBD5E1;">
+            <div style="font-size: 32px; margin-bottom: 8px;">📝</div>
+            <div style="font-weight: 850; font-size: 16px; color: #1E293B;">${msg}</div>
+            <div style="margin-top: 14px;">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="filterSurveys('all')">View All Surveys</button>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(s => {
+        const isComp = Boolean(s.isCompleted);
+        return `
+          <div class="survey-card ${isComp ? 'completed' : ''}">
+            <div>
+              <div class="survey-card-top">
+                <span class="survey-cat-badge">${escapeHTML(s.category || 'Consumer Pulse')}</span>
+                <span class="survey-reward-pill">+KSh ${Number(s.rewardKsh).toLocaleString()}</span>
+              </div>
+              <h4 class="survey-card-title">${escapeHTML(s.title)}</h4>
+              <p class="survey-card-desc">${escapeHTML(s.description)}</p>
+            </div>
+            <div class="survey-card-footer">
+              <div class="survey-meta-chip">
+                <span>⏱️ ~${s.estimatedMinutes || 3} mins</span>
+                <span>•</span>
+                <span>${s.questionsCount || (s.questions ? s.questions.length : 4)} Qs</span>
+              </div>
+              <div>
+                ${isComp ? `
+                  <span class="survey-completed-badge">
+                    ✓ Completed (+KSh ${Number(s.userEarnedRewardKsh || s.rewardKsh).toLocaleString()})
+                  </span>
+                ` : `
+                  <button type="button" class="btn btn-primary btn-sm" onclick="openSurveyModal('${s.id}')">
+                    Take Survey &rarr;
+                  </button>
+                `}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openSurveyModal(surveyId) {
+      if (!AppState.user) {
+        showAuthModal('login');
+        return;
+      }
+
+      const survey = (AppState.surveys || []).find(s => s.id === surveyId);
+      if (!survey) return;
+
+      document.getElementById('survey-modal-id').value = survey.id;
+      document.getElementById('survey-modal-cat').textContent = survey.category || 'Consumer Habits';
+      document.getElementById('survey-modal-title').textContent = survey.title;
+      document.getElementById('survey-modal-desc').textContent = survey.description;
+      document.getElementById('survey-modal-reward-badge').textContent = `+KSh ${Number(survey.rewardKsh).toLocaleString()}`;
+      document.getElementById('survey-modal-time').textContent = `⏱️ ~${survey.estimatedMinutes || 3} mins`;
+      document.getElementById('survey-modal-submit-reward').textContent = `KSh ${Number(survey.rewardKsh).toLocaleString()}`;
+
+      const alertEl = document.getElementById('survey-modal-alert');
+      if (alertEl) alertEl.style.display = 'none';
+
+      const qContainer = document.getElementById('survey-modal-questions-container');
+      const questions = Array.isArray(survey.questions) ? survey.questions : [];
+
+      qContainer.innerHTML = questions.map((q, idx) => {
+        const qId = q.id || `q${idx + 1}`;
+        const optionsHtml = (q.options || []).map((opt, optIdx) => `
+          <label class="survey-opt-label" onclick="this.parentElement.querySelectorAll('.survey-opt-label').forEach(l => l.classList.remove('selected')); this.classList.add('selected');">
+            <input type="radio" name="sq_${qId}" value="${escapeHTML(opt)}" required>
+            <span>${escapeHTML(opt)}</span>
+          </label>
+        `).join('');
+
+        return `
+          <div class="survey-question-card">
+            <div class="survey-question-title">
+              <span class="survey-question-num">${idx + 1}</span>
+              <span>${escapeHTML(q.text)}</span>
+            </div>
+            <div class="survey-options-group">
+              ${optionsHtml}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      openModal('modal-survey-take');
+    }
+
+    async function handleSurveySubmit(e) {
+      e.preventDefault();
+      const surveyId = document.getElementById('survey-modal-id').value;
+      const alertEl = document.getElementById('survey-modal-alert');
+      const btn = document.getElementById('btn-survey-submit');
+
+      const survey = (AppState.surveys || []).find(s => s.id === surveyId);
+      if (!survey) return;
+
+      const questions = Array.isArray(survey.questions) ? survey.questions : [];
+      const answers = {};
+
+      for (let i = 0; i < questions.length; i++) {
+        const q = questions[i];
+        const qId = q.id || `q${i + 1}`;
+        const selected = document.querySelector(`input[name="sq_${qId}"]:checked`);
+        if (!selected) {
+          alertEl.className = 'alert alert-error';
+          alertEl.textContent = `Please answer question #${i + 1}: "${q.text}"`;
+          alertEl.style.display = 'flex';
+          return;
+        }
+        answers[qId] = selected.value;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Submitting & Crediting...';
+      alertEl.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/surveys', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ surveyId, answers })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alertEl.className = 'alert alert-success';
+          alertEl.textContent = data.message;
+          alertEl.style.display = 'flex';
+
+          showReferralToast(`🎉 +KSh ${data.rewardAmountKsh.toLocaleString()} credited to your Surveys Balance!`);
+
+          setTimeout(() => {
+            closeModal('modal-survey-take');
+            btn.disabled = false;
+            btn.textContent = 'Submit Answers & Claim Reward';
+            loadDashboardData();
+          }, 1600);
+        } else {
+          alertEl.className = 'alert alert-error';
+          alertEl.textContent = data.error || 'Failed to submit survey. Please try again.';
+          alertEl.style.display = 'flex';
+          btn.disabled = false;
+          btn.textContent = 'Submit Answers & Claim Reward';
+        }
+      } catch (err) {
+        alertEl.className = 'alert alert-error';
+        alertEl.textContent = 'Network error while submitting survey.';
+        alertEl.style.display = 'flex';
+        btn.disabled = false;
+        btn.textContent = 'Submit Answers & Claim Reward';
+      }
+    }
+
+    // ====================================================================
+    // ADMIN PAID SURVEYS MANAGER
+    // ====================================================================
+    let adminSurveyQuestionsCount = 0;
+
+    async function loadAdminSurveys() {
+      const tbody = document.getElementById('tbody-admin-surveys');
+      if (tbody) tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 24px;">Loading surveys...</td></tr>';
+
+      try {
+        const res = await fetch('/api/admin/surveys', { cache: 'no-store' });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.success && Array.isArray(data.surveys)) {
+          if (!data.surveys.length) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 26px; color: var(--charcoal-muted);">No surveys created yet. Click "+ Create New Survey" above to launch one.</td></tr>';
+            return;
+          }
+
+          tbody.innerHTML = data.surveys.map(s => {
+            const isActive = s.is_active === 1;
+            return `
+              <tr>
+                <td>
+                  <strong>${escapeHTML(s.title)}</strong><br>
+                  <span style="font-size: 12px; color: #64748B;">ID: ${escapeHTML(s.id)}</span>
+                </td>
+                <td><span class="survey-cat-badge" style="font-size: 11px;">${escapeHTML(s.category)}</span></td>
+                <td><strong style="color: #059669;">KSh ${Number(s.reward_ksh).toLocaleString()}</strong></td>
+                <td>${s.questionsCount || (s.questions ? s.questions.length : 0)} questions</td>
+                <td><strong>${s.completions_count || 0}</strong> / ${s.max_completions || 5000}</td>
+                <td>
+                  <span class="status-badge ${isActive ? 'status-approved' : 'status-rejected'}" style="font-size: 11.5px;">
+                    ${isActive ? 'Active' : 'Paused'}
+                  </span>
+                </td>
+                <td>
+                  <div style="display: flex; gap: 6px;">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="toggleAdminSurveyStatus('${s.id}')">
+                      ${isActive ? 'Pause' : 'Activate'}
+                    </button>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteAdminSurvey('${s.id}')">
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            `;
+          }).join('');
+        }
+      } catch (err) {
+        console.error('loadAdminSurveys error:', err);
+      }
+    }
+
+    function toggleAdminSurveyForm() {
+      const box = document.getElementById('admin-survey-create-box');
+      const btnText = document.getElementById('btn-toggle-survey-text');
+      if (!box) return;
+      const isHidden = box.style.display === 'none';
+      box.style.display = isHidden ? 'block' : 'none';
+      if (btnText) btnText.textContent = isHidden ? '✕ Close Form' : '+ Create New Survey';
+
+      if (isHidden && adminSurveyQuestionsCount === 0) {
+        addAdminSurveyQuestionField({
+          text: '',
+          options: ['Option A', 'Option B', 'Option C', 'Option D']
+        });
+        addAdminSurveyQuestionField({
+          text: '',
+          options: ['Option A', 'Option B', 'Option C', 'Option D']
+        });
+      }
+    }
+
+    function addAdminSurveyQuestionField(initialData = null) {
+      adminSurveyQuestionsCount++;
+      const builder = document.getElementById('admin-survey-questions-builder');
+      if (!builder) return;
+
+      const qIdx = adminSurveyQuestionsCount;
+      const qDiv = document.createElement('div');
+      qDiv.className = 'admin-survey-q-block';
+      qDiv.id = `asq-block-${qIdx}`;
+      qDiv.style.cssText = 'background: #F8FAFC; border: 1.5px solid #CBD5E1; border-radius: 8px; padding: 14px; position: relative;';
+
+      const defaultText = initialData?.text || '';
+      const defaultOpts = initialData?.options?.join(', ') || 'Very Satisfied, Somewhat Satisfied, Neutral, Dissatisfied';
+
+      qDiv.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <strong style="color: #1E3A8A; font-size: 13.5px;">Question #${qIdx}</strong>
+          <button type="button" class="btn btn-danger btn-sm" style="font-size: 11px; padding: 2px 8px;" onclick="removeAdminSurveyQuestion(${qIdx})">Remove</button>
+        </div>
+        <div style="margin-bottom: 8px;">
+          <input type="text" class="asq-text" placeholder="Question text (e.g. Which telecom service do you prefer?)" value="${escapeHTML(defaultText)}" required style="width: 100%; margin-bottom: 6px;">
+        </div>
+        <div>
+          <label style="font-size: 11.5px; font-weight: 700; color: #64748B;">Comma-separated options (at least 2):</label>
+          <input type="text" class="asq-options" placeholder="Option 1, Option 2, Option 3, Option 4" value="${escapeHTML(defaultOpts)}" required style="width: 100%;">
+        </div>
+      `;
+
+      builder.appendChild(qDiv);
+    }
+
+    function removeAdminSurveyQuestion(idx) {
+      const block = document.getElementById(`asq-block-${idx}`);
+      if (block) block.remove();
+    }
+
+    async function handleAdminCreateSurvey(e) {
+      e.preventDefault();
+      const title = document.getElementById('asurvey-title').value.trim();
+      const category = document.getElementById('asurvey-category').value.trim();
+      const rewardKsh = parseInt(document.getElementById('asurvey-reward').value, 10);
+      const estimatedMinutes = parseInt(document.getElementById('asurvey-mins').value, 10);
+      const description = document.getElementById('asurvey-desc').value.trim();
+      const alertEl = document.getElementById('asurvey-alert');
+      const submitBtn = document.getElementById('btn-admin-submit-survey');
+
+      const qBlocks = document.querySelectorAll('.admin-survey-q-block');
+      if (!qBlocks.length) {
+        alertEl.className = 'alert alert-error';
+        alertEl.textContent = 'Please add at least one question to the survey.';
+        alertEl.style.display = 'flex';
+        return;
+      }
+
+      const questions = [];
+      qBlocks.forEach((block, idx) => {
+        const text = block.querySelector('.asq-text')?.value.trim();
+        const optsRaw = block.querySelector('.asq-options')?.value.trim();
+        const options = optsRaw ? optsRaw.split(',').map(o => o.trim()).filter(Boolean) : [];
+        if (text && options.length >= 2) {
+          questions.push({
+            id: `q${idx + 1}`,
+            text,
+            options
+          });
+        }
+      });
+
+      if (questions.length < qBlocks.length) {
+        alertEl.className = 'alert alert-error';
+        alertEl.textContent = 'Please make sure every question has text and at least 2 comma-separated options.';
+        alertEl.style.display = 'flex';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Publishing...';
+      alertEl.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/admin/surveys', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'create',
+            title,
+            category,
+            rewardKsh,
+            estimatedMinutes,
+            description,
+            questions
+          })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alertEl.className = 'alert alert-success';
+          alertEl.textContent = data.message;
+          alertEl.style.display = 'flex';
+          document.getElementById('form-admin-create-survey').reset();
+          setTimeout(() => {
+            toggleAdminSurveyForm();
+            loadAdminSurveys();
+            fetchUserSurveys();
+          }, 1200);
+        } else {
+          alertEl.className = 'alert alert-error';
+          alertEl.textContent = data.error || 'Failed to create survey';
+          alertEl.style.display = 'flex';
+        }
+      } catch (err) {
+        alertEl.className = 'alert alert-error';
+        alertEl.textContent = 'Network error while creating survey';
+        alertEl.style.display = 'flex';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Publish Live Survey';
+      }
+    }
+
+    async function toggleAdminSurveyStatus(surveyId) {
+      try {
+        const res = await fetch('/api/admin/surveys', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'toggle', surveyId })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          loadAdminSurveys();
+          fetchUserSurveys();
+        } else {
+          alert(data.error || 'Failed to update survey status');
+        }
+      } catch (err) {
+        alert('Network error updating survey status');
+      }
+    }
+
+    async function deleteAdminSurvey(surveyId) {
+      if (!confirm('Are you sure you want to delete this survey campaign?')) return;
+      try {
+        const res = await fetch('/api/admin/surveys', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'delete', surveyId })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          loadAdminSurveys();
+          fetchUserSurveys();
+        } else {
+          alert(data.error || 'Failed to delete survey');
+        }
+      } catch (err) {
+        alert('Network error deleting survey');
+      }
+    }
 
   </script>
 
