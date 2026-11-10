@@ -23,6 +23,7 @@ export async function onRequestGet(context) {
   try {
     // Ensure surveys_balance_ksh column exists
     await env.DB.prepare("ALTER TABLE wallets ADD COLUMN surveys_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {});
+    await env.DB.prepare("ALTER TABLE withdrawal_requests ADD COLUMN payment_method TEXT DEFAULT 'mpesa'").run().catch(() => {});
 
     let wallet = null;
     try {
@@ -96,7 +97,10 @@ export async function onRequestPost(context) {
     return jsonError('Invalid JSON request body', 400);
   }
 
-  const { amountKsh, phoneNumber, balanceType: rawBalanceType } = body;
+  const { amountKsh, phoneNumber, balanceType: rawBalanceType, paymentMethod: rawMethod, paypalEmail } = body;
+  
+  const paymentMethod = (rawMethod === 'paypal') ? 'paypal' : 'mpesa';
+
   let balanceType = 'views';
   if (rawBalanceType === 'referrals' || rawBalanceType === 'referral') {
     balanceType = 'referrals';
@@ -109,9 +113,20 @@ export async function onRequestPost(context) {
     return jsonError('Please enter a valid withdrawal amount', 400);
   }
 
-  const targetPhone = phoneNumber ? phoneNumber.trim().replace(/\s+/g, '') : user.phone;
-  if (!targetPhone || targetPhone.length < 9) {
-    return jsonError('Valid M-Pesa phone number is required for payout', 400);
+  let targetDestination = '';
+  if (paymentMethod === 'paypal') {
+    const emailCandidate = (paypalEmail || phoneNumber || '').trim();
+    if (!emailCandidate || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailCandidate)) {
+      return jsonError('Valid PayPal email address is required for payout', 400);
+    }
+    targetDestination = emailCandidate;
+  } else {
+    // M-Pesa
+    const targetPhone = phoneNumber ? phoneNumber.trim().replace(/\s+/g, '') : user.phone;
+    if (!targetPhone || targetPhone.length < 9) {
+      return jsonError('Valid M-Pesa phone number is required for payout', 400);
+    }
+    targetDestination = targetPhone;
   }
 
   try {
@@ -188,9 +203,14 @@ export async function onRequestPost(context) {
 
       // Record withdrawal request with balance_type = 'views'
       await env.DB.prepare(`
-        INSERT INTO withdrawal_requests (id, user_id, wallet_id, amount_ksh, phone_number, status, balance_type, created_at)
-        VALUES (?, ?, ?, ?, ?, 'pending', 'views', ?)
-      `).bind(withdrawalId, user.id, wallet.id, amount, targetPhone, now).run();
+        INSERT INTO withdrawal_requests (id, user_id, wallet_id, amount_ksh, phone_number, status, balance_type, payment_method, created_at)
+        VALUES (?, ?, ?, ?, ?, 'pending', 'views', ?, ?)
+      `).bind(withdrawalId, user.id, wallet.id, amount, targetDestination, paymentMethod, now).run().catch(async () => {
+        await env.DB.prepare(`
+          INSERT INTO withdrawal_requests (id, user_id, wallet_id, amount_ksh, phone_number, status, balance_type, created_at)
+          VALUES (?, ?, ?, ?, ?, 'pending', 'views', ?)
+        `).bind(withdrawalId, user.id, wallet.id, amount, targetDestination, now).run();
+      });
 
       // Ledger entry
       await env.DB.prepare(`
@@ -203,16 +223,17 @@ export async function onRequestPost(context) {
         amount,
         balanceAfter,
         withdrawalId,
-        `M-Pesa withdrawal request from Status Views (${activePackage.name}) to ${targetPhone} placed on hold pending payout`,
+        `${paymentMethod === "paypal" ? "PayPal" : "M-Pesa"} payout request from Status Views (${activePackage.name}) to ${targetDestination} placed on hold pending disbursement`,
         now
       ).run();
 
       return jsonSuccess({
-        message: `Status Views withdrawal request for KSh ${amount.toLocaleString()} submitted successfully. Funds have been reserved pending M-Pesa disbursement.`,
+        message: `Status Views payout request for KSh ${amount.toLocaleString()} submitted successfully via ${paymentMethod === "paypal" ? "PayPal" : "M-Pesa"}. Funds have been reserved.`,
         withdrawal: {
           id: withdrawalId,
           amountKsh: amount,
-          phoneNumber: targetPhone,
+          phoneNumber: targetDestination,
+          paymentMethod,
           balanceType: 'views',
           status: 'pending',
           createdAt: now
@@ -255,9 +276,14 @@ export async function onRequestPost(context) {
 
       // Record withdrawal request with balance_type = 'surveys'
       await env.DB.prepare(`
-        INSERT INTO withdrawal_requests (id, user_id, wallet_id, amount_ksh, phone_number, status, balance_type, created_at)
-        VALUES (?, ?, ?, ?, ?, 'pending', 'surveys', ?)
-      `).bind(withdrawalId, user.id, wallet.id, amount, targetPhone, now).run();
+        INSERT INTO withdrawal_requests (id, user_id, wallet_id, amount_ksh, phone_number, status, balance_type, payment_method, created_at)
+        VALUES (?, ?, ?, ?, ?, 'pending', 'surveys', ?, ?)
+      `).bind(withdrawalId, user.id, wallet.id, amount, targetDestination, paymentMethod, now).run().catch(async () => {
+        await env.DB.prepare(`
+          INSERT INTO withdrawal_requests (id, user_id, wallet_id, amount_ksh, phone_number, status, balance_type, created_at)
+          VALUES (?, ?, ?, ?, ?, 'pending', 'surveys', ?)
+        `).bind(withdrawalId, user.id, wallet.id, amount, targetDestination, now).run();
+      });
 
       // Ledger entry
       await env.DB.prepare(`
@@ -270,16 +296,17 @@ export async function onRequestPost(context) {
         amount,
         balanceAfter,
         withdrawalId,
-        `M-Pesa withdrawal request from Paid Surveys to ${targetPhone} placed on hold pending payout`,
+        `${paymentMethod === "paypal" ? "PayPal" : "M-Pesa"} payout request from Paid Surveys to ${targetDestination} placed on hold pending disbursement`,
         now
       ).run();
 
       return jsonSuccess({
-        message: `Paid Surveys withdrawal request for KSh ${amount.toLocaleString()} submitted successfully. Funds have been reserved pending M-Pesa disbursement.`,
+        message: `Paid Surveys payout request for KSh ${amount.toLocaleString()} submitted successfully via ${paymentMethod === "paypal" ? "PayPal" : "M-Pesa"}. Funds have been reserved.`,
         withdrawal: {
           id: withdrawalId,
           amountKsh: amount,
-          phoneNumber: targetPhone,
+          phoneNumber: targetDestination,
+          paymentMethod,
           balanceType: 'surveys',
           status: 'pending',
           createdAt: now
@@ -323,9 +350,14 @@ export async function onRequestPost(context) {
 
       // Record withdrawal request with balance_type = 'referrals'
       await env.DB.prepare(`
-        INSERT INTO withdrawal_requests (id, user_id, wallet_id, amount_ksh, phone_number, status, balance_type, created_at)
-        VALUES (?, ?, ?, ?, ?, 'pending', 'referrals', ?)
-      `).bind(withdrawalId, user.id, wallet.id, amount, targetPhone, now).run();
+        INSERT INTO withdrawal_requests (id, user_id, wallet_id, amount_ksh, phone_number, status, balance_type, payment_method, created_at)
+        VALUES (?, ?, ?, ?, ?, 'pending', 'referrals', ?, ?)
+      `).bind(withdrawalId, user.id, wallet.id, amount, targetDestination, paymentMethod, now).run().catch(async () => {
+        await env.DB.prepare(`
+          INSERT INTO withdrawal_requests (id, user_id, wallet_id, amount_ksh, phone_number, status, balance_type, created_at)
+          VALUES (?, ?, ?, ?, ?, 'pending', 'referrals', ?)
+        `).bind(withdrawalId, user.id, wallet.id, amount, targetDestination, now).run();
+      });
 
       // Ledger entry
       await env.DB.prepare(`
@@ -338,16 +370,17 @@ export async function onRequestPost(context) {
         amount,
         balanceAfter,
         withdrawalId,
-        `M-Pesa withdrawal request from Referral Commissions to ${targetPhone} placed on hold pending payout`,
+        `${paymentMethod === "paypal" ? "PayPal" : "M-Pesa"} payout request from Referral Commissions to ${targetDestination} placed on hold pending disbursement`,
         now
       ).run();
 
       return jsonSuccess({
-        message: `Referral Commission withdrawal request for KSh ${amount.toLocaleString()} submitted successfully. Funds have been reserved pending M-Pesa disbursement.`,
+        message: `Referral Commission payout request for KSh ${amount.toLocaleString()} submitted successfully via ${paymentMethod === "paypal" ? "PayPal" : "M-Pesa"}. Funds have been reserved.`,
         withdrawal: {
           id: withdrawalId,
           amountKsh: amount,
-          phoneNumber: targetPhone,
+          phoneNumber: targetDestination,
+          paymentMethod,
           balanceType: 'referrals',
           status: 'pending',
           createdAt: now

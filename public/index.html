@@ -2533,61 +2533,168 @@
       color: var(--charcoal-text);
     }
 
-    /* Withdrawal Modal Category Tabs & Dynamic Info Cards */
+    /* Withdrawal Modal Category Tabs & Dynamic Info Cards (Clean & Uniform Creamy Style) */
     .withdraw-type-tabs {
-      display: flex;
-      gap: 8px;
-      margin: 18px 0 14px;
-      background: #F1F5F9;
-      padding: 5px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin: 14px 0 12px;
+      background: #F8FAFC;
+      padding: 4px;
       border-radius: 12px;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
     }
     .withdraw-tab-btn {
-      flex: 1;
-      padding: 10px 10px;
-      border: 1.5px solid transparent;
+      padding: 9px 8px;
+      border: none !important;
       border-radius: 9px;
       font-weight: 800;
-      font-size: 13.5px;
+      font-size: 13px;
       cursor: pointer;
       background: transparent;
-      color: #475569;
+      color: #64748B;
       transition: all 0.2s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 5px;
+      white-space: nowrap;
     }
     .withdraw-tab-btn.active.tab-views {
       background: #FFFFFF;
       color: #6D28D9;
-      border-color: #DDD6FE;
-      box-shadow: 0 2px 8px rgba(109, 40, 217, 0.12);
+      box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.2), 0 3px 10px rgba(109, 40, 217, 0.12);
     }
     .withdraw-tab-btn.active.tab-referrals {
       background: #FFFFFF;
       color: #047857;
-      border-color: #A7F3D0;
-      box-shadow: 0 2px 8px rgba(5, 150, 105, 0.12);
+      box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.22), 0 3px 10px rgba(5, 150, 105, 0.12);
     }
     .withdraw-tab-btn.active.tab-surveys {
       background: #FFFFFF;
       color: #1D4ED8;
-      border-color: #93C5FD;
-      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.15);
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.2), 0 3px 10px rgba(37, 99, 235, 0.12);
     }
-    .withdraw-tab-tag {
+
+    /* Payout Method Grid & Radio Toggle (PayPal + M-Pesa) */
+    .payout-method-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .payout-method-btn {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      border: none !important;
+      background: #F8FAFC;
+      color: #334155;
+      font-weight: 750;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 2px 5px rgba(0,0,0,0.02);
+    }
+    .payout-method-btn:hover {
+      background: #FFFFFF;
+      box-shadow: 0 0 0 1px rgba(109, 40, 217, 0.22), 0 4px 12px rgba(109, 40, 217, 0.08);
+    }
+    .payout-method-btn.active {
+      background: #FFFFFF;
+      color: #1E1B4B;
+      box-shadow: 0 0 0 1.5px #10B981, 0 4px 14px rgba(16, 185, 129, 0.14) !important;
+    }
+    .payout-method-radio {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1.5px solid #CBD5E1;
+      display: inline-block;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+    .payout-method-btn.active .payout-method-radio {
+      border-color: #10B981;
       background: #10B981;
-      color: #FFFFFF;
-      font-size: 10.5px;
-      padding: 1px 7px;
-      border-radius: 99px;
-      font-weight: 900;
-      letter-spacing: 0.3px;
+      box-shadow: inset 0 0 0 2.5px #FFFFFF;
     }
-    .withdraw-tab-tag.tag-blue {
-      background: #2563EB;
-      color: #FFFFFF;
+    .payout-method-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Streamlined Unified Balance Display Card */
+    .withdraw-balance-display-card {
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      margin-bottom: 16px;
+      border: none !important;
+      transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .withdraw-balance-display-card.theme-views {
+      background: linear-gradient(145deg, #FAF5FF 0%, #F5EEFE 100%);
+      box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.14), 0 4px 14px rgba(76, 29, 149, 0.06);
+    }
+    .withdraw-balance-display-card.theme-referrals {
+      background: linear-gradient(145deg, #F0FDF4 0%, #DCFCE7 100%);
+      box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.16), 0 4px 14px rgba(5, 150, 105, 0.06);
+    }
+    .withdraw-balance-display-card.theme-surveys {
+      background: linear-gradient(145deg, #EFF6FF 0%, #DBEAFE 100%);
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.15), 0 4px 14px rgba(37, 99, 235, 0.06);
+    }
+    .withdraw-balance-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .withdraw-balance-lbl {
+      font-size: 13px;
+      font-weight: 750;
+      color: #475569;
+    }
+    .withdraw-avail-val {
+      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 24px;
+      font-weight: 950;
+      letter-spacing: -0.02em;
+    }
+    .withdraw-balance-display-card.theme-views .withdraw-avail-val { color: #6D28D9; }
+    .withdraw-balance-display-card.theme-referrals .withdraw-avail-val { color: #047857; }
+    .withdraw-balance-display-card.theme-surveys .withdraw-avail-val { color: #1D4ED8; }
+    .withdraw-balance-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 750;
+      padding-top: 4px;
+    }
+    .withdraw-min-pill {
+      color: #64748B;
+    }
+    .withdraw-service-tag {
+      color: #059669;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .withdraw-security-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #64748B;
+      margin-bottom: 14px;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      background: rgba(241, 245, 249, 0.7);
     }
 
     /* Separate Balances Breakdown Strip in Dashboard */
@@ -8873,21 +8980,22 @@
        MODAL 2: REQUEST WITHDRAWAL (DUAL BALANCES: VIEWS & REFERRALS)
        ==================================================================== -->
   <div class="modal-backdrop" id="modal-withdraw">
-    <div class="modal-content" style="max-width: 520px;">
+    <div class="modal-content" style="max-width: 500px;">
       <button class="modal-close-btn" onclick="closeModal('modal-withdraw')">
         <span class="svg-icon" style="width: 16px; height: 16px;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </span>
       </button>
 
-      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-        <div style="background: linear-gradient(135deg, #10B981, #059669); color: white; width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+      <!-- Modal Header (Compact & Premium) -->
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+        <div style="background: linear-gradient(135deg, #10B981, #059669); color: white; width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.22);">
           <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
         </div>
         <div>
-          <h3 style="font-size: 20.5px; margin: 0; color: #1E1B4B; font-weight: 900;">Request M-Pesa Payout</h3>
-          <p style="color: var(--charcoal-muted); font-size: 13px; margin: 2px 0 0;">
-            Disbursed instantly to your verified Safaricom M-Pesa line
+          <h3 style="font-size: 20px; margin: 0; color: #1E1B4B; font-weight: 900; letter-spacing: -0.02em;">Request Payout</h3>
+          <p style="color: var(--charcoal-muted); font-size: 12.5px; margin: 2px 0 0; font-weight: 600;">
+            Disbursed directly via M-Pesa or PayPal
           </p>
         </div>
       </div>
@@ -8895,75 +9003,88 @@
       <!-- Segmented Tab Switcher (Views vs Referrals vs Surveys) -->
       <div class="withdraw-type-tabs">
         <button type="button" class="withdraw-tab-btn active tab-views" id="tab-withdraw-views" onclick="setWithdrawalBalanceType('views')">
-          <span>📱 Status Views</span>
+          <span>📱 Views</span>
         </button>
         <button type="button" class="withdraw-tab-btn tab-referrals" id="tab-withdraw-referrals" onclick="setWithdrawalBalanceType('referrals')">
           <span>👥 Referrals</span>
-          <span class="withdraw-tab-tag">Separate</span>
         </button>
         <button type="button" class="withdraw-tab-btn tab-surveys" id="tab-withdraw-surveys" onclick="setWithdrawalBalanceType('surveys')">
-          <span>📝 Paid Surveys</span>
-          <span class="withdraw-tab-tag tag-blue">Instant</span>
+          <span>📝 Surveys</span>
         </button>
       </div>
 
       <input type="hidden" id="withdraw-balance-type" value="views">
 
-      <!-- Dynamic Views Info Box -->
-      <div id="withdraw-views-box" style="background: linear-gradient(145deg, #FAF5FF, #F3E8FF); border: none; box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.18), 0 4px 14px rgba(124, 58, 237, 0.08); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 18px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          <span style="font-size: 13.5px; font-weight: 750; color: #581C87;">Withdrawable Views Balance:</span>
-          <span style="color: #6D28D9; font-size: 19px; font-weight: 950;" id="withdraw-modal-views-avail">KSh 0</span>
+      <!-- Streamlined Single Unified Balance Display Card -->
+      <div class="withdraw-balance-display-card theme-views" id="withdraw-balance-display-card">
+        <div class="withdraw-balance-top">
+          <span class="withdraw-balance-lbl" id="withdraw-avail-label">Status Views Balance</span>
+          <span class="withdraw-avail-val" id="withdraw-modal-avail-val">KSh 0</span>
         </div>
-        <div style="font-size: 12.5px; color: #581C87; line-height: 1.45; background: rgba(255,255,255,0.85); padding: 8px 12px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-          ⚡ <strong>M-Pesa Payout Status</strong>: Minimum withdrawal across all company services is <strong>KSh 1,200</strong> (Package Views Threshold: <strong id="withdraw-modal-views-limit" style="color: #6D28D9;">KSh 5,000</strong>).
-        </div>
-      </div>
-
-      <!-- Dynamic Referrals Info Box -->
-      <div id="withdraw-referrals-box" style="display: none; background: linear-gradient(145deg, #ECFDF5, #D1FAE5); border: none; box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.2), 0 4px 14px rgba(16, 185, 129, 0.08); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 18px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          <span style="font-size: 13.5px; font-weight: 750; color: #065F46;">Withdrawable Referral Commissions:</span>
-          <span style="color: #059669; font-size: 19px; font-weight: 950;" id="withdraw-modal-referrals-avail">KSh 0</span>
-        </div>
-        <div style="font-size: 12.5px; color: #065F46; line-height: 1.45; background: rgba(255,255,255,0.85); padding: 8px 12px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-          ⚡ <strong>M-Pesa Payout Status</strong>: Minimum withdrawal across all company services is <strong>KSh 1,200</strong> disbursed directly to Safaricom M-Pesa.
+        <div class="withdraw-balance-meta">
+          <span class="withdraw-min-pill" id="withdraw-modal-min-pill">Min: KSh 1,200</span>
+          <span class="withdraw-service-tag">
+            <span class="pulsing-green-dot" style="margin-right: 2px;"></span>
+            Instant Processing
+          </span>
         </div>
       </div>
 
-      <!-- Dynamic Paid Surveys Info Box -->
-      <div id="withdraw-surveys-box" style="display: none; background: linear-gradient(145deg, #EFF6FF, #DBEAFE); border: none; box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.18), 0 4px 14px rgba(37, 99, 235, 0.08); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 18px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          <span style="font-size: 13.5px; font-weight: 750; color: #1E40AF;">Withdrawable Paid Surveys Balance:</span>
-          <span style="color: #2563EB; font-size: 19px; font-weight: 950;" id="withdraw-modal-surveys-avail">KSh 0</span>
-        </div>
-        <div style="font-size: 12.5px; color: #1E40AF; line-height: 1.45; background: rgba(255,255,255,0.85); padding: 8px 12px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-          ⚡ <strong>M-Pesa Payout Status</strong>: Minimum withdrawal across all company services is <strong>KSh 1,200</strong> disbursed directly to Safaricom M-Pesa.
-        </div>
+      <!-- Hidden elements to preserve JS compatibility -->
+      <div style="display: none;" aria-hidden="true">
+        <span id="withdraw-modal-views-avail">KSh 0</span>
+        <span id="withdraw-modal-referrals-avail">KSh 0</span>
+        <span id="withdraw-modal-surveys-avail">KSh 0</span>
+        <span id="withdraw-modal-views-tier">Starter Pro</span>
+        <span id="withdraw-modal-views-limit">KSh 5,000</span>
+        <div id="withdraw-views-box"></div>
+        <div id="withdraw-referrals-box"></div>
+        <div id="withdraw-surveys-box"></div>
       </div>
 
       <form id="form-withdraw" onsubmit="handleWithdrawalSubmit(event)">
-        <div class="form-group">
-          <label class="form-label" for="withdraw-amount" id="withdraw-amount-label">Amount to Withdraw (KSh)</label>
-          <input type="number" id="withdraw-amount" min="5000" required placeholder="Min KSh 5,000">
-          <div class="form-hint" id="withdraw-amount-hint" style="font-size: 12px; color: #6D28D9; font-weight: 700; margin-top: 4px;">
-            Minimum withdrawal: KSh 5,000 for your active package views
+        <!-- Payout Method Selector (M-Pesa and PayPal) -->
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label" style="margin-bottom: 6px; font-size: 13px;">Payout Method</label>
+          <div class="payout-method-grid">
+            <button type="button" class="payout-method-btn active" id="method-btn-mpesa" onclick="setPayoutMethod('mpesa')">
+              <span class="payout-method-radio"></span>
+              <span class="payout-method-icon">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#059669" stroke-width="2.3"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+              </span>
+              <span>Safaricom M-Pesa</span>
+            </button>
+            <button type="button" class="payout-method-btn" id="method-btn-paypal" onclick="setPayoutMethod('paypal')">
+              <span class="payout-method-radio"></span>
+              <span class="payout-method-icon">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#0284C7" stroke-width="2.3"><path d="M18 6H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2z"></path><path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path></svg>
+              </span>
+              <span>PayPal</span>
+            </button>
           </div>
         </div>
 
-        <div class="form-group">
-          <label class="form-label" for="withdraw-phone">M-Pesa Phone Number</label>
-          <input type="tel" id="withdraw-phone" required placeholder="07XXXXXXXX or 254XXXXXXXX">
-          <div class="form-hint">Double check your Safaricom number. Funds cannot be reversed once disbursed.</div>
+        <!-- Destination Input (Phone for M-Pesa, Email for PayPal) -->
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label" for="withdraw-phone" id="withdraw-destination-label" style="font-size: 13px;">M-Pesa Phone Number</label>
+          <input type="text" id="withdraw-phone" required placeholder="07XXXXXXXX or 254XXXXXXXX" style="font-weight: 750;">
+        </div>
+
+        <!-- Amount Input -->
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" for="withdraw-amount" id="withdraw-amount-label" style="font-size: 13px;">Amount to Withdraw (KSh)</label>
+          <input type="number" id="withdraw-amount" min="1200" required placeholder="Min KSh 1,200" style="font-weight: 750;">
+          <div id="withdraw-amount-hint" style="display: none;"></div>
         </div>
 
         <div id="withdraw-alert" style="display: none;" class="alert"></div>
 
-        <div style="font-size: 12px; color: var(--charcoal-muted); margin-bottom: 18px; line-height: 1.5;">
-          Almai will never ask you for your M-Pesa PIN. Standard Safaricom M-Pesa transaction fees may apply upon disbursement.
+        <div class="withdraw-security-bar">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#059669" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <span>Instant processing • Zero hidden withdrawal fees</span>
         </div>
 
-        <button type="submit" class="btn btn-success btn-block btn-lg" id="btn-withdraw-submit">
+        <button type="submit" class="btn btn-success btn-block btn-lg" id="btn-withdraw-submit" style="font-weight: 850; padding: 13px;">
           Confirm M-Pesa Withdrawal
         </button>
       </form>
@@ -11921,6 +12042,41 @@
     // ====================================================================
     // WITHDRAWAL MODAL & LOGIC (SEPARATE BALANCES: VIEWS, REFERRALS & SURVEYS)
     // ====================================================================
+    let currentPayoutMethod = 'mpesa';
+
+    function setPayoutMethod(method) {
+      currentPayoutMethod = method === 'paypal' ? 'paypal' : 'mpesa';
+      const btnMpesa = document.getElementById('method-btn-mpesa');
+      const btnPaypal = document.getElementById('method-btn-paypal');
+      const destLabel = document.getElementById('withdraw-destination-label');
+      const destInput = document.getElementById('withdraw-phone');
+      const submitBtn = document.getElementById('btn-withdraw-submit');
+
+      if (currentPayoutMethod === 'paypal') {
+        if (btnMpesa) btnMpesa.classList.remove('active');
+        if (btnPaypal) btnPaypal.classList.add('active');
+        if (destLabel) destLabel.textContent = 'PayPal Account Email';
+        if (destInput) {
+          destInput.placeholder = 'e.g. name@paypal.com';
+          if (AppState.user && AppState.user.email) {
+            destInput.value = AppState.user.email;
+          }
+        }
+        if (submitBtn) submitBtn.textContent = 'Confirm PayPal Withdrawal';
+      } else {
+        if (btnPaypal) btnPaypal.classList.remove('active');
+        if (btnMpesa) btnMpesa.classList.add('active');
+        if (destLabel) destLabel.textContent = 'M-Pesa Phone Number';
+        if (destInput) {
+          destInput.placeholder = '07XXXXXXXX or 254XXXXXXXX';
+          if (AppState.user && AppState.user.phone) {
+            destInput.value = AppState.user.phone;
+          }
+        }
+        if (submitBtn) submitBtn.textContent = 'Confirm M-Pesa Withdrawal';
+      }
+    }
+
     function openWithdrawalModal(defaultTab = 'views') {
       if (!AppState.user) {
         showAuthModal('login');
@@ -11929,7 +12085,6 @@
 
       document.getElementById('withdraw-alert').style.display = 'none';
       document.getElementById('form-withdraw').reset();
-      document.getElementById('withdraw-phone').value = AppState.user.phone || '';
 
       const viewsAvail = AppState.wallet?.views_balance_ksh ?? 0;
       const refAvail = AppState.wallet?.referrals_balance_ksh ?? 0;
@@ -11954,6 +12109,7 @@
       if (viewsLimitEl) viewsLimitEl.textContent = `KSh ${minViews.toLocaleString()}`;
 
       setWithdrawalBalanceType(defaultTab);
+      setPayoutMethod('mpesa');
       openModal('modal-withdraw');
     }
 
@@ -11965,12 +12121,12 @@
       const tabRefs = document.getElementById('tab-withdraw-referrals');
       const tabSurveys = document.getElementById('tab-withdraw-surveys');
 
-      const boxViews = document.getElementById('withdraw-views-box');
-      const boxRefs = document.getElementById('withdraw-referrals-box');
-      const boxSurveys = document.getElementById('withdraw-surveys-box');
+      const card = document.getElementById('withdraw-balance-display-card');
+      const availVal = document.getElementById('withdraw-modal-avail-val');
+      const availLbl = document.getElementById('withdraw-avail-label');
+      const minPill = document.getElementById('withdraw-modal-min-pill');
 
       const amountInput = document.getElementById('withdraw-amount');
-      const hint = document.getElementById('withdraw-amount-hint');
       const label = document.getElementById('withdraw-amount-label');
 
       const pkg = AppState.activePackage;
@@ -11980,66 +12136,50 @@
       const refAvail = AppState.wallet?.referrals_balance_ksh ?? 0;
       const surveysAvail = AppState.wallet?.surveys_balance_ksh ?? 0;
 
+      if (tabViews) tabViews.classList.remove('active');
+      if (tabRefs) tabRefs.classList.remove('active');
+      if (tabSurveys) tabSurveys.classList.remove('active');
+
+      if (card) {
+        card.classList.remove('theme-views', 'theme-referrals', 'theme-surveys');
+      }
+
       if (type === 'surveys') {
-        if (tabViews) tabViews.classList.remove('active');
-        if (tabRefs) tabRefs.classList.remove('active');
         if (tabSurveys) tabSurveys.classList.add('active');
-
-        if (boxViews) boxViews.style.display = 'none';
-        if (boxRefs) boxRefs.style.display = 'none';
-        if (boxSurveys) boxSurveys.style.display = 'block';
-
-        if (label) label.textContent = 'Amount to Withdraw from Paid Surveys (KSh)';
+        if (card) card.classList.add('theme-surveys');
+        if (availLbl) availLbl.textContent = 'Surveys Balance';
+        if (availVal) availVal.textContent = `KSh ${surveysAvail.toLocaleString()}`;
+        if (minPill) minPill.textContent = 'Min Payout: KSh 1,200';
+        if (label) label.textContent = 'Amount to Withdraw (KSh)';
         if (amountInput) {
           amountInput.min = '1200';
           amountInput.placeholder = 'Min KSh 1,200';
-          if (surveysAvail >= 1200) amountInput.value = surveysAvail;
-          else amountInput.value = '';
-        }
-        if (hint) {
-          hint.textContent = `⚡ M-Pesa Payout Status: Minimum withdrawal across all company services is KSh 1,200 • Available Survey Balance: KSh ${surveysAvail.toLocaleString()}`;
-          hint.style.color = '#1D4ED8';
+          amountInput.value = surveysAvail >= 1200 ? surveysAvail : '';
         }
       } else if (type === 'referrals') {
-        if (tabViews) tabViews.classList.remove('active');
-        if (tabSurveys) tabSurveys.classList.remove('active');
         if (tabRefs) tabRefs.classList.add('active');
-
-        if (boxViews) boxViews.style.display = 'none';
-        if (boxSurveys) boxSurveys.style.display = 'none';
-        if (boxRefs) boxRefs.style.display = 'block';
-
-        if (label) label.textContent = 'Amount to Withdraw from Referral Commissions (KSh)';
+        if (card) card.classList.add('theme-referrals');
+        if (availLbl) availLbl.textContent = 'Referrals Balance';
+        if (availVal) availVal.textContent = `KSh ${refAvail.toLocaleString()}`;
+        if (minPill) minPill.textContent = 'Min Payout: KSh 1,200';
+        if (label) label.textContent = 'Amount to Withdraw (KSh)';
         if (amountInput) {
           amountInput.min = '1200';
           amountInput.placeholder = 'Min KSh 1,200';
-          if (refAvail >= 1200) amountInput.value = refAvail;
-          else amountInput.value = '';
-        }
-        if (hint) {
-          hint.textContent = `⚡ M-Pesa Payout Status: Minimum withdrawal across all company services is KSh 1,200 • Available Referral Balance: KSh ${refAvail.toLocaleString()}`;
-          hint.style.color = '#047857';
+          amountInput.value = refAvail >= 1200 ? refAvail : '';
         }
       } else {
         // default: views
-        if (tabRefs) tabRefs.classList.remove('active');
-        if (tabSurveys) tabSurveys.classList.remove('active');
         if (tabViews) tabViews.classList.add('active');
-
-        if (boxRefs) boxRefs.style.display = 'none';
-        if (boxSurveys) boxSurveys.style.display = 'none';
-        if (boxViews) boxViews.style.display = 'block';
-
-        if (label) label.textContent = 'Amount to Withdraw from Status Views (KSh)';
+        if (card) card.classList.add('theme-views');
+        if (availLbl) availLbl.textContent = 'Status Views Balance';
+        if (availVal) availVal.textContent = `KSh ${viewsAvail.toLocaleString()}`;
+        if (minPill) minPill.textContent = `Min: KSh ${effectiveMinViews.toLocaleString()} (${pkg ? pkg.name : 'Views'})`;
+        if (label) label.textContent = 'Amount to Withdraw (KSh)';
         if (amountInput) {
           amountInput.min = String(effectiveMinViews);
           amountInput.placeholder = `Min KSh ${effectiveMinViews.toLocaleString()}`;
-          if (viewsAvail >= effectiveMinViews) amountInput.value = viewsAvail;
-          else amountInput.value = '';
-        }
-        if (hint) {
-          hint.textContent = `⚡ M-Pesa Payout Status: Minimum withdrawal across all company services is KSh 1,200 (Package Views Threshold: KSh ${effectiveMinViews.toLocaleString()}) • Available Views Balance: KSh ${viewsAvail.toLocaleString()}`;
-          hint.style.color = '#6D28D9';
+          amountInput.value = viewsAvail >= effectiveMinViews ? viewsAvail : '';
         }
       }
     }
@@ -12047,20 +12187,27 @@
     async function handleWithdrawalSubmit(e) {
       e.preventDefault();
       const amountKsh = document.getElementById('withdraw-amount').value;
-      const phoneNumber = document.getElementById('withdraw-phone').value;
+      const destination = document.getElementById('withdraw-phone').value;
       const balanceType = document.getElementById('withdraw-balance-type')?.value || 'views';
+      const paymentMethod = currentPayoutMethod || 'mpesa';
       const alert = document.getElementById('withdraw-alert');
       const btn = document.getElementById('btn-withdraw-submit');
 
       btn.disabled = true;
-      btn.textContent = 'Reserving Funds...';
+      btn.textContent = 'Processing Payout...';
       alert.style.display = 'none';
 
       try {
         const res = await fetch('/api/withdrawals', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ amountKsh, phoneNumber, balanceType })
+          body: JSON.stringify({ 
+            amountKsh, 
+            phoneNumber: destination,
+            paypalEmail: paymentMethod === 'paypal' ? destination : '',
+            paymentMethod,
+            balanceType 
+          })
         });
 
         const data = await res.json();
@@ -12083,7 +12230,7 @@
         alert.style.display = 'flex';
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Confirm M-Pesa Withdrawal';
+        btn.textContent = paymentMethod === 'paypal' ? 'Confirm PayPal Withdrawal' : 'Confirm M-Pesa Withdrawal';
       }
     }
 
