@@ -149,7 +149,7 @@ export async function onRequestPost(context) {
         // Waive 18-hour rule using 1 ticket
         ticketUsed = true;
         await env.DB.prepare('UPDATE users SET submission_tickets = MAX(0, submission_tickets - 1), updated_at = ? WHERE id = ?')
-          .bind(now, user.id).run().catch(() => {});
+          .bind(now, user.id).run().catch(() => { });
       } else {
         const waitMinutes = Math.ceil((cooldownDuration - elapsed) / 60);
         const waitHours = (waitMinutes / 60).toFixed(1);

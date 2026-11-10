@@ -185,7 +185,7 @@ const SEED_SURVEYS = [
  */
 async function ensureSurveysSchema(env) {
   try {
-    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN surveys_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {});
+    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN surveys_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => { });
     await env.DB.prepare(`
       CREATE TABLE IF NOT EXISTS surveys (
         id TEXT PRIMARY KEY,
@@ -201,7 +201,7 @@ async function ensureSurveysSchema(env) {
         max_completions INTEGER DEFAULT 5000,
         created_at INTEGER NOT NULL
       )
-    `).run().catch(() => {});
+    `).run().catch(() => { });
 
     await env.DB.prepare(`
       CREATE TABLE IF NOT EXISTS survey_responses (
@@ -213,7 +213,7 @@ async function ensureSurveysSchema(env) {
         completed_at INTEGER NOT NULL,
         UNIQUE(survey_id, user_id)
       )
-    `).run().catch(() => {});
+    `).run().catch(() => { });
 
     // Check if initial surveys exist, seed if empty
     const countRow = await env.DB.prepare("SELECT COUNT(*) as cnt FROM surveys").first().catch(() => null);
@@ -225,7 +225,7 @@ async function ensureSurveysSchema(env) {
           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `).bind(
           s.id, s.title, s.category, s.description, s.reward_ksh, s.estimated_minutes, s.questions, s.target_package_id, s.is_active, s.completions_count, s.max_completions, now
-        ).run().catch(() => {});
+        ).run().catch(() => { });
       }
     }
   } catch (e) {
@@ -432,7 +432,7 @@ export async function onRequestPost(context) {
       await env.DB.prepare(`
         INSERT INTO wallets (id, user_id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, surveys_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
         VALUES (?, ?, 0, 0, 0, 0, 0, 0, 0, ?)
-      `).bind(walId, user.id, now).run().catch(() => {});
+      `).bind(walId, user.id, now).run().catch(() => { });
       wallet = await env.DB.prepare(`
         SELECT id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, surveys_balance_ksh, lifetime_earnings_ksh
         FROM wallets
@@ -463,7 +463,7 @@ export async function onRequestPost(context) {
       UPDATE surveys
       SET completions_count = completions_count + 1
       WHERE id = ?
-    `).bind(surveyId).run().catch(() => {});
+    `).bind(surveyId).run().catch(() => { });
 
     // 7. Atomically credit wallet surveys balance, available balance & lifetime earnings
     const currentSurveysBal = Number(wallet?.surveys_balance_ksh || 0);
@@ -512,7 +512,7 @@ export async function onRequestPost(context) {
         responseId,
         `Paid Survey Reward: ${survey.title} (+KSh ${rewardKsh})`,
         now
-      ).run().catch(() => {});
+      ).run().catch(() => { });
     });
 
     return jsonSuccess({
@@ -534,3 +534,4 @@ export async function onRequestPost(context) {
     return jsonError('Failed to submit survey. Please try again.', 500);
   }
 }
+

@@ -4876,14 +4876,265 @@
       letter-spacing: 0.04em;
     }
     .dash-theme-yellow .dash-metric-val {
-      color: #78350F !important;
       font-family: 'Space Grotesk', sans-serif !important;
       font-weight: 950 !important;
-      font-size: 32px !important;
+      font-size: 38px !important;
+      line-height: 1.15;
     }
     .dash-theme-yellow .dash-metric-sub {
-      color: #B45309 !important;
+      color: #78350F !important;
+      font-weight: 750 !important;
+      font-size: 13.5px !important;
+    }
+
+    /* Magnified & Color-Matched Wallet Metrics Typography */
+    #dash-val-avail {
+      color: #047857 !important;
+      font-size: 42px !important;
+      font-weight: 950 !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+      letter-spacing: -0.04em !important;
+      line-height: 1.1 !important;
+    }
+    #dash-val-reserved {
+      color: #D97706 !important;
+      font-size: 38px !important;
+      font-weight: 950 !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+      letter-spacing: -0.03em !important;
+      line-height: 1.1 !important;
+    }
+    #dash-val-earned {
+      color: #6D28D9 !important;
+      font-size: 38px !important;
+      font-weight: 950 !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+      letter-spacing: -0.03em !important;
+      line-height: 1.1 !important;
+    }
+    #dash-val-withdrawn {
+      color: #047857 !important;
+      font-size: 38px !important;
+      font-weight: 950 !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+      letter-spacing: -0.03em !important;
+      line-height: 1.1 !important;
+    }
+    #dash-val-views {
+      color: #6D28D9 !important;
+      font-size: 36px !important;
+      font-weight: 950 !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+      letter-spacing: -0.03em !important;
+      line-height: 1.1 !important;
+    }
+    #dash-val-referrals {
+      color: #047857 !important;
+      font-size: 36px !important;
+      font-weight: 950 !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+      letter-spacing: -0.03em !important;
+      line-height: 1.1 !important;
+    }
+    #dash-val-surveys {
+      color: #1D4ED8 !important;
+      font-size: 36px !important;
+      font-weight: 950 !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+      letter-spacing: -0.03em !important;
+      line-height: 1.1 !important;
+    }
+    #dash-ref-earnings {
+      color: #047857 !important;
+      font-size: 40px !important;
+      font-weight: 950 !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+      letter-spacing: -0.03em !important;
+    }
+
+    /* Sub-Balance Card Titles & Typography Enhancements */
+    .sub-balance-card {
+      padding: 24px 26px !important;
+    }
+    .sub-balance-title h4 {
+      font-size: 17.5px !important;
+      font-weight: 900 !important;
+      margin: 0 !important;
+      line-height: 1.3 !important;
+    }
+    .sub-balance-rule {
+      font-size: 13px !important;
       font-weight: 800 !important;
+      margin: 3px 0 0 !important;
+    }
+    .sub-balance-amount {
+      font-size: 36px !important;
+      font-weight: 950 !important;
+      letter-spacing: -0.03em !important;
+      line-height: 1.15 !important;
+      margin: 8px 0 10px !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+    }
+    .sub-balance-instant-tag {
+      font-size: 13px !important;
+      font-weight: 800 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+    }
+
+    /* ====================================================================
+       READ MORE ROLL V-SHAPED CHEVRON ACCORDION BUTTONS & CONTENT
+       ==================================================================== */
+    .roll-trigger-wrap {
+      display: flex;
+      justify-content: flex-start;
+      margin: 12px 0 4px;
+    }
+    .btn-read-more-roll {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: #FFFFFF;
+      border: 1.5px solid #CBD5E1;
+      color: #334155;
+      padding: 8px 18px;
+      border-radius: var(--radius-full);
+      font-size: 13.5px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      user-select: none;
+    }
+    .btn-read-more-roll:hover {
+      background: #F8FAFC;
+      border-color: #94A3B8;
+      color: #0F172A;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    }
+    .btn-read-more-roll.theme-purple {
+      border-color: #DDD6FE;
+      color: #6D28D9;
+      background: #FFFFFF;
+    }
+    .btn-read-more-roll.theme-purple:hover {
+      background: #F5F3FF;
+      border-color: #8B5CF6;
+      color: #5B21B6;
+      box-shadow: 0 4px 14px rgba(109, 40, 217, 0.15);
+    }
+    .btn-read-more-roll.theme-emerald {
+      border-color: #A7F3D0;
+      color: #047857;
+      background: #FFFFFF;
+    }
+    .btn-read-more-roll.theme-emerald:hover {
+      background: #F0FDF4;
+      border-color: #10B981;
+      color: #065F46;
+      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.15);
+    }
+    .btn-read-more-roll.theme-blue {
+      border-color: #BFDBFE;
+      color: #1D4ED8;
+      background: #FFFFFF;
+    }
+    .btn-read-more-roll.theme-blue:hover {
+      background: #EFF6FF;
+      border-color: #3B82F6;
+      color: #1E3A8A;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.15);
+    }
+    .btn-read-more-roll .v-chevron-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      width: 18px;
+      height: 18px;
+    }
+    .btn-read-more-roll.expanded .v-chevron-icon {
+      transform: rotate(180deg);
+    }
+    .dashboard-roll-content {
+      animation: rollSlideDown 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+      margin-top: 14px;
+      margin-bottom: 10px;
+    }
+    @keyframes rollSlideDown {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .roll-inner-card {
+      background: #FFFFFF;
+      border: 1.5px solid #E2E8F0;
+      border-radius: var(--radius-md);
+      padding: 20px 22px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    }
+    .roll-grid-tiers {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .roll-tier-box {
+      background: #F8FAFC;
+      border: 1.5px solid #E2E8F0;
+      border-radius: 10px;
+      padding: 14px 16px;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+    .roll-tier-box:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    .roll-tier-box.highlight {
+      background: #F5F3FF;
+      border-color: #8B5CF6;
+    }
+    .roll-tier-name {
+      font-size: 14px;
+      font-weight: 850;
+      color: #1E293B;
+      margin-bottom: 4px;
+    }
+    .roll-tier-price {
+      font-size: 12px;
+      color: #64748B;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    .roll-tier-earn {
+      font-size: 16px;
+      color: #047857;
+      font-weight: 950;
+    }
+    .roll-rules-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-top: 12px;
+      border-top: 1px solid #E2E8F0;
+      font-size: 13px;
+      color: #475569;
+      line-height: 1.5;
+    }
+    .roll-rule-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .roll-rule-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10B981;
+      margin-top: 6px;
+      flex-shrink: 0;
     }
     .dash-theme-yellow .dash-tab-btn.active {
       background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
@@ -7289,6 +7540,41 @@
             </div>
           </div>
         </div>
+
+        <!-- Read More Multi-Ledger & Payout Timetable Roll Button -->
+        <div class="roll-trigger-wrap" style="margin-top: 20px;">
+          <button type="button" class="btn-read-more-roll theme-purple" onclick="toggleDashboardRoll('roll-fin-details', this)" aria-expanded="false">
+            <span>Read More: M-Pesa Payout Rules &amp; Multi-Ledger Guide</span>
+            <span class="v-chevron-icon">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </span>
+          </button>
+        </div>
+
+        <div id="roll-fin-details" class="dashboard-roll-content" style="display: none;">
+          <div class="roll-inner-card">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px;">
+              <div style="background: #FAF5FF; border: 1.5px solid #DDD6FE; border-radius: 10px; padding: 14px 16px;">
+                <h5 style="margin: 0 0 6px; font-size: 14px; font-weight: 850; color: #581C87;">📱 Status Views Ledger</h5>
+                <p style="margin: 0; font-size: 12.5px; color: #6D28D9; line-height: 1.5;">Accumulates rewards from your verified 18h WhatsApp status impressions. Payout threshold matches your active package (Starter Pro: KSh 5,000 | Exclusive: KSh 8,000 | Premium: KSh 12,000).</p>
+              </div>
+              <div style="background: #F0FDF4; border: 1.5px solid #A7F3D0; border-radius: 10px; padding: 14px 16px;">
+                <h5 style="margin: 0 0 6px; font-size: 14px; font-weight: 850; color: #065F46;">👥 45% Referral Ledger</h5>
+                <p style="margin: 0; font-size: 12.5px; color: #047857; line-height: 1.5;">Direct commissions earned whenever your invited partners activate any tier. Withdrawable separately anytime directly via M-Pesa (Min KSh 100).</p>
+              </div>
+              <div style="background: #EFF6FF; border: 1.5px solid #BFDBFE; border-radius: 10px; padding: 14px 16px;">
+                <h5 style="margin: 0 0 6px; font-size: 14px; font-weight: 850; color: #1E40AF;">📝 Paid Consumer Surveys</h5>
+                <p style="margin: 0; font-size: 12.5px; color: #1D4ED8; line-height: 1.5;">Instant cash rewards from completed brand questionnaires (KSh 50 - KSh 250). Withdrawable separately anytime directly via M-Pesa (Min KSh 100).</p>
+              </div>
+            </div>
+            <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid #E2E8F0; font-size: 12.5px; color: #64748B; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+              <span>⚡ M-Pesa Disbursements: Disbursed promptly to your registered Safaricom line.</span>
+              <span style="color: #059669; font-weight: 800;">✓ Almai will never ask for your M-Pesa PIN</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- SECTION: 45% LIFETIME REFERRAL COMMISSIONS & DOWNLINES HUB -->
@@ -7429,11 +7715,53 @@
             </div>
           </div>
 
-          <!-- Commission breakdown rates -->
-          <div class="commission-tiers-pill-row">
-            <span class="commission-tier-pill">Starter Z (KSh 250): Earn <span class="badge-earning-ksh">KSh 113</span> (45%)</span>
-            <span class="commission-tier-pill highlight">Exclusive Tier (KSh 500): Earn <span class="badge-earning-ksh">KSh 225</span> (45%)</span>
-            <span class="commission-tier-pill">Premium Tier (KSh 1,200): Earn <span class="badge-earning-ksh">KSh 540</span> (45%)</span>
+          <!-- Read More Collapsible Roll Button (v-shaped chevron) -->
+          <div class="roll-trigger-wrap" style="margin-top: 14px;">
+            <button type="button" class="btn-read-more-roll theme-purple" onclick="toggleDashboardRoll('roll-ref-details', this)" aria-expanded="false">
+              <span>Read More: 45% Commission Rates &amp; Downline Rules</span>
+              <span class="v-chevron-icon">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </span>
+            </button>
+          </div>
+
+          <!-- Roll Expandable Content Box -->
+          <div id="roll-ref-details" class="dashboard-roll-content" style="display: none;">
+            <div class="roll-inner-card">
+              <div class="roll-grid-tiers">
+                <div class="roll-tier-box">
+                  <div class="roll-tier-name">Starter Z</div>
+                  <div class="roll-tier-price">KSh 250 Activation</div>
+                  <div class="roll-tier-earn">Earn <strong>KSh 113</strong> (45%)</div>
+                </div>
+                <div class="roll-tier-box highlight">
+                  <div class="roll-tier-name">Exclusive Tier</div>
+                  <div class="roll-tier-price">KSh 500 Activation</div>
+                  <div class="roll-tier-earn">Earn <strong>KSh 225</strong> (45%)</div>
+                </div>
+                <div class="roll-tier-box">
+                  <div class="roll-tier-name">Premium Tier</div>
+                  <div class="roll-tier-price">KSh 1,200 Activation</div>
+                  <div class="roll-tier-earn">Earn <strong>KSh 540</strong> (45%)</div>
+                </div>
+              </div>
+              <div class="roll-rules-list">
+                <div class="roll-rule-item">
+                  <span class="roll-rule-dot"></span>
+                  <span><strong>Instant Crediting</strong>: Guaranteed 45% cash commission is automatically deposited to your Referral ledger immediately upon downline M-Pesa payment.</span>
+                </div>
+                <div class="roll-rule-item">
+                  <span class="roll-rule-dot"></span>
+                  <span><strong>Independent Cashout (Min KSh 100)</strong>: No views tier limit. Cash out your referral commissions anytime directly to M-Pesa.</span>
+                </div>
+                <div class="roll-rule-item">
+                  <span class="roll-rule-dot"></span>
+                  <span><strong>Lifetime Upgrade Protection</strong>: Earn on initial activations and every future upgrade made by your partners.</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -7634,6 +7962,37 @@
             <div style="font-size: 13px; color: #64748B; margin-top: 4px;">Connecting to Almai Brand Sponsorship API...</div>
           </div>
         </div>
+
+        <!-- Read More Surveys Roll Button -->
+        <div class="roll-trigger-wrap" style="margin-top: 18px;">
+          <button type="button" class="btn-read-more-roll theme-blue" onclick="toggleDashboardRoll('roll-srv-details', this)" aria-expanded="false">
+            <span>Read More: Survey Eligibility &amp; Payout Guidelines</span>
+            <span class="v-chevron-icon">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </span>
+          </button>
+        </div>
+
+        <div id="roll-srv-details" class="dashboard-roll-content" style="display: none;">
+          <div class="roll-inner-card">
+            <div class="roll-rules-list" style="border-top: none; padding-top: 0;">
+              <div class="roll-rule-item">
+                <span class="roll-rule-dot" style="background: #2563EB;"></span>
+                <span><strong>Instant Sub-Ledger Crediting</strong>: Rewards (KSh 50 - KSh 250) are instantly credited to your Paid Surveys balance upon submitting all questions.</span>
+              </div>
+              <div class="roll-rule-item">
+                <span class="roll-rule-dot" style="background: #2563EB;"></span>
+                <span><strong>Independent M-Pesa Payout</strong>: Minimum withdrawal is KSh 100. Disbursed directly to your Safaricom line separately from Status Views.</span>
+              </div>
+              <div class="roll-rule-item">
+                <span class="roll-rule-dot" style="background: #2563EB;"></span>
+                <span><strong>Authentic Responses</strong>: One completion allowed per verified partner per campaign to ensure high-quality feedback for corporate sponsors.</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- SECTION 2: WHATSAPP VIEWS & PERFORMANCE METRICS -->
@@ -7822,6 +8181,37 @@
               </span>
               Submit 18h WhatsApp Proof
             </button>
+          </div>
+        </div>
+
+        <!-- Read More WhatsApp Task Roll Button -->
+        <div class="roll-trigger-wrap" style="margin-top: 14px;">
+          <button type="button" class="btn-read-more-roll theme-emerald" onclick="toggleDashboardRoll('roll-task-details', this)" aria-expanded="false">
+            <span>Read More: 18-Hour Rule &amp; Screenshot Guidelines</span>
+            <span class="v-chevron-icon">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </span>
+          </button>
+        </div>
+
+        <div id="roll-task-details" class="dashboard-roll-content" style="display: none;">
+          <div class="roll-inner-card">
+            <div class="roll-rules-list" style="border-top: none; padding-top: 0;">
+              <div class="roll-rule-item">
+                <span class="roll-rule-dot"></span>
+                <span><strong>18-Hour Elapsed Rule</strong>: Maintain the sponsor creative on your WhatsApp Status for at least 18 hours before taking your screenshot to capture full organic impressions.</span>
+              </div>
+              <div class="roll-rule-item">
+                <span class="roll-rule-dot"></span>
+                <span><strong>Clear Proof Screenshot</strong>: Ensure the view count eye icon (👁️) and elapsed status time (e.g., "18 hours ago") are clearly visible in the image.</span>
+              </div>
+              <div class="roll-rule-item">
+                <span class="roll-rule-dot"></span>
+                <span><strong>Submission Tickets</strong>: If you hold admin-granted submission tickets, you can submit before 18 hours have elapsed without waiting for the cooldown timer.</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -12540,6 +12930,25 @@
       const el = document.getElementById(modalId);
       if (el) el.classList.remove('open');
       document.body.style.overflow = '';
+    }
+
+    function toggleDashboardRoll(contentId, btn) {
+      const content = document.getElementById(contentId);
+      if (!content) return;
+      const isHidden = content.style.display === 'none' || !content.style.display;
+      if (isHidden) {
+        content.style.display = 'block';
+        if (btn) {
+          btn.classList.add('expanded');
+          btn.setAttribute('aria-expanded', 'true');
+        }
+      } else {
+        content.style.display = 'none';
+        if (btn) {
+          btn.classList.remove('expanded');
+          btn.setAttribute('aria-expanded', 'false');
+        }
+      }
     }
 
     window.addEventListener('click', (e) => {

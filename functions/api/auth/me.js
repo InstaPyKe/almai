@@ -37,7 +37,7 @@ export async function onRequestGet(context) {
             surveys_balance_ksh: 0
           };
         }
-      } catch (e2) {}
+      } catch (e2) { }
     }
 
     if (!wallet) {
