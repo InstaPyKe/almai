@@ -1791,14 +1791,16 @@
     }
     .user-greeting h2,
     .user-greeting-heading {
-      font-size: 24px !important;
+      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif !important;
+      font-size: 34px !important;
       font-weight: 950 !important;
       color: #1E1B4B !important;
-      letter-spacing: -0.025em !important;
-      line-height: 1.3 !important;
-      margin: 0 0 8px 0 !important;
+      letter-spacing: -0.035em !important;
+      line-height: 1.15 !important;
+      margin: 0 0 10px 0 !important;
       display: block !important;
       word-break: break-word;
+      text-shadow: 0 2px 10px rgba(109, 40, 217, 0.08);
     }
     .greeting-highlight-name {
       color: #6D28D9 !important;
@@ -1828,16 +1830,16 @@
     .user-pkg-tag {
       display: inline-flex !important;
       align-items: center !important;
-      gap: 5px !important;
-      padding: 4px 12px !important;
+      gap: 6px !important;
+      padding: 5px 14px !important;
       background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%) !important;
       color: #78350F !important;
-      border: 1.5px solid #F59E0B !important;
+      border: none !important;
       border-radius: var(--radius-full) !important;
-      font-size: 12.5px !important;
+      font-size: 13px !important;
       font-weight: 900 !important;
       letter-spacing: 0.02em !important;
-      box-shadow: 0 2px 6px rgba(245, 158, 11, 0.15) !important;
+      box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.28), 0 4px 12px rgba(245, 158, 11, 0.16) !important;
       white-space: nowrap !important;
     }
     .partner-verified-badge {
@@ -1949,7 +1951,8 @@
       }
       .user-greeting h2,
       .user-greeting-heading {
-        font-size: 20px !important;
+        font-size: 24px !important;
+        line-height: 1.2 !important;
       }
       .dash-header-actions {
         grid-template-columns: 1fr !important;
@@ -2610,21 +2613,25 @@
       box-shadow: 0 16px 36px -6px rgba(76, 29, 149, 0.16), 0 4px 12px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255, 255, 255, 1);
     }
     .sub-balance-card.theme-views {
-      border: 1.5px solid #DDD6FE;
+      border: none !important;
+      box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.14), 0 8px 24px -4px rgba(76, 29, 149, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.9);
       background: linear-gradient(145deg, #FFFFFF 0%, #FAF5FF 100%);
     }
     .sub-balance-card.theme-referrals {
-      border: 1.5px solid #A7F3D0;
+      border: none !important;
+      box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.18), 0 8px 24px -4px rgba(5, 150, 105, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.9);
       background: linear-gradient(145deg, #FFFFFF 0%, #F0FDF4 100%);
     }
     .sub-balance-card.theme-surveys {
-      border: 1.5px solid #BFDBFE;
+      border: none !important;
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.16), 0 8px 24px -4px rgba(37, 99, 235, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.9);
       background: linear-gradient(145deg, #FFFFFF 0%, #EFF6FF 100%);
     }
     .btn-outline-blue {
       background: #FFFFFF;
       color: #1D4ED8;
-      border: 1.5px solid #93C5FD;
+      border: none !important;
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25), 0 2px 6px rgba(37, 99, 235, 0.08);
       font-weight: 750;
       font-size: 13px;
       padding: 6px 14px;
@@ -2635,8 +2642,7 @@
     .btn-outline-blue:hover {
       background: #2563EB;
       color: #FFFFFF;
-      border-color: #2563EB;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.28);
     }
     .pulsing-blue-dot {
       display: inline-block;
@@ -2737,7 +2743,8 @@
     .btn-outline-purple {
       background: #FAF5FF;
       color: #6D28D9;
-      border: 1.5px solid #C084FC;
+      border: none !important;
+      box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.22), 0 2px 6px rgba(124, 58, 237, 0.08);
       font-weight: 800;
       border-radius: var(--radius-sm);
       padding: 7px 14px;
@@ -2748,12 +2755,13 @@
     .btn-outline-purple:hover {
       background: #6D28D9;
       color: #FFFFFF;
-      border-color: #6D28D9;
+      box-shadow: 0 4px 14px rgba(109, 40, 217, 0.28);
     }
     .btn-outline-emerald {
       background: #ECFDF5;
       color: #047857;
-      border: 1.5px solid #6EE7B7;
+      border: none !important;
+      box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.22), 0 2px 6px rgba(16, 185, 129, 0.08);
       font-weight: 800;
       border-radius: var(--radius-sm);
       padding: 7px 14px;
@@ -2764,7 +2772,7 @@
     .btn-outline-emerald:hover {
       background: #059669;
       color: #FFFFFF;
-      border-color: #059669;
+      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.28);
     }
 
     /* ====================================================================
@@ -7322,7 +7330,7 @@
             <span class="faq-arrow">▼</span>
           </div>
           <div class="faq-answer">
-            <p>Each partner package has a unique minimum withdrawal limit for <strong>Status Views</strong> earnings: <strong>KSh 5,000</strong> for Starter Pro, <strong>KSh 8,000</strong> for Exclusive, and <strong>KSh 12,000</strong> for Premium. However, your <strong>45% Referral Commissions</strong> can be withdrawn separately anytime with a low minimum of only <strong>KSh 100</strong>, completely independent of your views tier threshold!</p>
+            <p>Earnings from verified WhatsApp status impressions accumulate in your Views Ledger according to your active package. Your <strong>45% Referral Commissions</strong> and <strong>Paid Survey Rewards</strong> are tracked separately in their respective sub-ledgers, with all company disbursements paid directly to your Safaricom M-Pesa line.</p>
           </div>
         </div>
 
@@ -7397,17 +7405,6 @@
             </div>
           </div>
 
-          <!-- Unique Status Views Limit Callout -->
-          <div style="background: linear-gradient(135deg, #FAF5FF, #F3E8FF); border: 1.5px dashed #C084FC; border-radius: 8px; padding: 10px 14px; margin: 12px 0;">
-            <div style="font-size: 13px; font-weight: 850; color: #581C87; display: flex; align-items: center; justify-content: space-between;">
-              <span>📱 Views Payout Limit:</span>
-              <span style="font-size: 14px; color: #6D28D9; font-weight: 950;">Min KSh 5,000</span>
-            </div>
-            <div style="font-size: 11px; color: #047857; font-weight: 750; margin-top: 4px; display: flex; align-items: center; gap: 4px;">
-              <span>👥 45% Referral earnings withdrawable separately anytime (min KSh 100)</span>
-            </div>
-          </div>
-
           <ul class="pkg-feature-list">
             <li class="pkg-feature-item">
               <span class="svg-icon check-icon" style="width: 16px; height: 16px;">
@@ -7468,17 +7465,6 @@
             </div>
           </div>
 
-          <!-- Unique Status Views Limit Callout -->
-          <div style="background: linear-gradient(135deg, #FAF5FF, #F3E8FF); border: 1.5px dashed #C084FC; border-radius: 8px; padding: 10px 14px; margin: 12px 0;">
-            <div style="font-size: 13px; font-weight: 850; color: #581C87; display: flex; align-items: center; justify-content: space-between;">
-              <span>📱 Views Payout Limit:</span>
-              <span style="font-size: 14px; color: #6D28D9; font-weight: 950;">Min KSh 8,000</span>
-            </div>
-            <div style="font-size: 11px; color: #047857; font-weight: 750; margin-top: 4px; display: flex; align-items: center; gap: 4px;">
-              <span>👥 45% Referral earnings withdrawable separately anytime (min KSh 100)</span>
-            </div>
-          </div>
-
           <ul class="pkg-feature-list">
             <li class="pkg-feature-item">
               <span class="svg-icon check-icon" style="width: 16px; height: 16px;">
@@ -7536,17 +7522,6 @@
             <div class="pkg-reward-text">
               KSh 100 per approved view
               <div style="font-size: 12px; font-weight: 500; color: var(--charcoal-muted);">Up to 200 views per 18h task</div>
-            </div>
-          </div>
-
-          <!-- Unique Status Views Limit Callout -->
-          <div style="background: linear-gradient(135deg, #FAF5FF, #F3E8FF); border: 1.5px dashed #C084FC; border-radius: 8px; padding: 10px 14px; margin: 12px 0;">
-            <div style="font-size: 13px; font-weight: 850; color: #581C87; display: flex; align-items: center; justify-content: space-between;">
-              <span>📱 Views Payout Limit:</span>
-              <span style="font-size: 14px; color: #6D28D9; font-weight: 950;">Min KSh 12,000</span>
-            </div>
-            <div style="font-size: 11px; color: #047857; font-weight: 750; margin-top: 4px; display: flex; align-items: center; gap: 4px;">
-              <span>👥 45% Referral earnings withdrawable separately anytime (min KSh 100)</span>
             </div>
           </div>
 
@@ -7769,7 +7744,7 @@
             <span class="dash-avatar-status" title="Account Active"></span>
           </div>
 
-          <!-- User Info & Greeting Group -->
+          <!-- User Info & Greeting Group (Magnified & Cleaned) -->
           <div class="user-greeting">
             <h2 class="user-greeting-heading">Welcome back, <span id="dash-user-name" class="greeting-highlight-name">Partner</span>! <span class="wave-emoji" aria-label="waving hand">👋</span></h2>
             <div class="user-greeting-meta">
@@ -7777,14 +7752,8 @@
                 <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                 Starter Pro
               </span>
-              <span class="partner-verified-badge">
-                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
-                Verified Active Partner
-              </span>
-              <span class="user-email-chip">
-                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                <span id="dash-user-email">user@almai.co.ke</span>
-              </span>
+              <!-- Retained hidden in DOM to ensure no script errors on element lookup -->
+              <span id="dash-user-email" style="display: none;"></span>
             </div>
           </div>
         </div>
@@ -7925,7 +7894,7 @@
                 <span class="sub-balance-icon">📱</span>
                 <div>
                   <h4>Status Views Balance</h4>
-                  <p class="sub-balance-rule" id="dash-views-rule-hint">Starter Pro Min Limit: KSh 5,000</p>
+                  <p class="sub-balance-rule" id="dash-views-rule-hint">Verified 18h Impressions</p>
                 </div>
               </div>
               <button type="button" class="btn btn-outline-purple" onclick="openWithdrawalModal('views')">
@@ -7948,7 +7917,7 @@
                 <span class="sub-balance-icon">👥</span>
                 <div>
                   <h4>45% Referral Commissions</h4>
-                  <p class="sub-balance-rule" style="color: #047857;">Withdrawable Separately Anytime • Min KSh 100</p>
+                  <p class="sub-balance-rule" style="color: #047857;">Instant M-Pesa Disbursement</p>
                 </div>
               </div>
               <button type="button" class="btn btn-outline-emerald" onclick="openWithdrawalModal('referrals')">
@@ -7958,7 +7927,7 @@
             <div class="sub-balance-amount" id="dash-val-referrals" style="color: #047857;">KSh 0</div>
             <div class="sub-balance-instant-tag">
               <span class="pulsing-green-dot"></span>
-              <span>Independent of package views threshold (Min KSh 100)</span>
+              <span>Direct Cash Earnings • Ready for Payout</span>
             </div>
           </div>
 
@@ -7969,7 +7938,7 @@
                 <span class="sub-balance-icon">📝</span>
                 <div>
                   <h4>Paid Surveys Balance</h4>
-                  <p class="sub-balance-rule" style="color: #1D4ED8;">Instant M-Pesa Payout • Min KSh 100</p>
+                  <p class="sub-balance-rule" style="color: #1D4ED8;">Market Research Rewards</p>
                 </div>
               </div>
               <button type="button" class="btn btn-outline-blue" onclick="openWithdrawalModal('surveys')">
@@ -7999,17 +7968,17 @@
         <div id="roll-fin-details" class="dashboard-roll-content" style="display: none;">
           <div class="roll-inner-card">
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px;">
-              <div style="background: #FAF5FF; border: 1.5px solid #DDD6FE; border-radius: 10px; padding: 14px 16px;">
+              <div style="background: #FAF5FF; border: none; box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.18), 0 4px 12px rgba(124, 58, 237, 0.06); border-radius: 10px; padding: 14px 16px;">
                 <h5 style="margin: 0 0 6px; font-size: 14px; font-weight: 850; color: #581C87;">📱 Status Views Ledger</h5>
                 <p style="margin: 0; font-size: 12.5px; color: #6D28D9; line-height: 1.5;">Accumulates rewards from your verified 18h WhatsApp status impressions. Payout threshold matches your active package (Starter Pro: KSh 5,000 | Exclusive: KSh 8,000 | Premium: KSh 12,000).</p>
               </div>
-              <div style="background: #F0FDF4; border: 1.5px solid #A7F3D0; border-radius: 10px; padding: 14px 16px;">
+              <div style="background: #F0FDF4; border: none; box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.2), 0 4px 12px rgba(16, 185, 129, 0.06); border-radius: 10px; padding: 14px 16px;">
                 <h5 style="margin: 0 0 6px; font-size: 14px; font-weight: 850; color: #065F46;">👥 45% Referral Ledger</h5>
-                <p style="margin: 0; font-size: 12.5px; color: #047857; line-height: 1.5;">Direct commissions earned whenever your invited partners activate any tier. Withdrawable separately anytime directly via M-Pesa (Min KSh 100).</p>
+                <p style="margin: 0; font-size: 12.5px; color: #047857; line-height: 1.5;">Direct commissions earned whenever your invited partners activate any tier. Disbursed directly to your registered Safaricom M-Pesa line.</p>
               </div>
-              <div style="background: #EFF6FF; border: 1.5px solid #BFDBFE; border-radius: 10px; padding: 14px 16px;">
+              <div style="background: #EFF6FF; border: none; box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.18), 0 4px 12px rgba(37, 99, 235, 0.06); border-radius: 10px; padding: 14px 16px;">
                 <h5 style="margin: 0 0 6px; font-size: 14px; font-weight: 850; color: #1E40AF;">📝 Paid Consumer Surveys</h5>
-                <p style="margin: 0; font-size: 12.5px; color: #1D4ED8; line-height: 1.5;">Instant cash rewards from completed brand questionnaires (KSh 50 - KSh 250). Withdrawable separately anytime directly via M-Pesa (Min KSh 100).</p>
+                <p style="margin: 0; font-size: 12.5px; color: #1D4ED8; line-height: 1.5;">Instant cash rewards from completed brand questionnaires (KSh 50 - KSh 250). Disbursed directly to your registered Safaricom M-Pesa line.</p>
               </div>
             </div>
             <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid #E2E8F0; font-size: 12.5px; color: #64748B; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
@@ -8197,7 +8166,7 @@
                 </div>
                 <div class="roll-rule-item">
                   <span class="roll-rule-dot"></span>
-                  <span><strong>Independent Cashout (Min KSh 100)</strong>: No views tier limit. Cash out your referral commissions anytime directly to M-Pesa.</span>
+                  <span><strong>Direct Cashout</strong>: Cash out your referral commissions directly to your registered Safaricom M-Pesa line.</span>
                 </div>
                 <div class="roll-rule-item">
                   <span class="roll-rule-dot"></span>
@@ -8220,7 +8189,7 @@
             </div>
             <div class="dash-metric-val" id="dash-ref-earnings" style="color: #059669 !important;">KSh 0</div>
             <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 6px; flex-wrap: wrap; gap: 6px;">
-              <span class="badge" id="dash-ref-withdrawable-badge" style="background: #ECFDF5; color: #047857; font-weight: 800; font-size: 11px; padding: 3px 8px; border-radius: 99px; border: 1px solid #A7F3D0;">
+              <span class="badge" id="dash-ref-withdrawable-badge" style="background: #ECFDF5; color: #047857; font-weight: 800; font-size: 11px; padding: 4px 10px; border-radius: 99px; border: none; box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.25);">
                 Withdrawable Separately
               </span>
               <button type="button" class="btn btn-outline-emerald" onclick="openWithdrawalModal('referrals')" style="font-size: 11px; padding: 4px 10px; border-radius: 6px;">
@@ -8229,7 +8198,7 @@
             </div>
             <div class="dash-metric-sub" style="margin-top: 8px;">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#059669" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              Withdrawable separately anytime (Min KSh 100)
+              Disbursed directly via M-Pesa
             </div>
           </div>
 
@@ -8427,7 +8396,7 @@
               </div>
               <div class="roll-rule-item">
                 <span class="roll-rule-dot" style="background: #2563EB;"></span>
-                <span><strong>Independent M-Pesa Payout</strong>: Minimum withdrawal is KSh 100. Disbursed directly to your Safaricom line separately from Status Views.</span>
+                <span><strong>Direct M-Pesa Payout</strong>: Survey rewards are disbursed directly to your registered Safaricom line.</span>
               </div>
               <div class="roll-rule-item">
                 <span class="roll-rule-dot" style="background: #2563EB;"></span>
@@ -8941,36 +8910,35 @@
       <input type="hidden" id="withdraw-balance-type" value="views">
 
       <!-- Dynamic Views Info Box -->
-      <div id="withdraw-views-box" style="background: linear-gradient(145deg, #FAF5FF, #F3E8FF); border: 1.5px solid #DDD6FE; border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 18px;">
+      <div id="withdraw-views-box" style="background: linear-gradient(145deg, #FAF5FF, #F3E8FF); border: none; box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.18), 0 4px 14px rgba(124, 58, 237, 0.08); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 18px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
           <span style="font-size: 13.5px; font-weight: 750; color: #581C87;">Withdrawable Views Balance:</span>
           <span style="color: #6D28D9; font-size: 19px; font-weight: 950;" id="withdraw-modal-views-avail">KSh 0</span>
         </div>
-        <div style="font-size: 12.5px; color: #581C87; line-height: 1.45; background: rgba(255,255,255,0.75); padding: 8px 12px; border-radius: 6px;">
-          🔒 <strong id="withdraw-modal-views-tier">Starter Pro Package</strong>: Status views payout requires your active tier minimum of <strong id="withdraw-modal-views-limit" style="color: #6D28D9;">KSh 5,000</strong>.
-          <div style="font-size: 11px; color: #64748B; margin-top: 3px;">(Starter Pro: KSh 5,000 | Exclusive: KSh 8,000 | Premium: KSh 12,000)</div>
+        <div style="font-size: 12.5px; color: #581C87; line-height: 1.45; background: rgba(255,255,255,0.85); padding: 8px 12px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+          ⚡ <strong>M-Pesa Payout Status</strong>: Minimum withdrawal across all company services is <strong>KSh 1,200</strong> (Package Views Threshold: <strong id="withdraw-modal-views-limit" style="color: #6D28D9;">KSh 5,000</strong>).
         </div>
       </div>
 
       <!-- Dynamic Referrals Info Box -->
-      <div id="withdraw-referrals-box" style="display: none; background: linear-gradient(145deg, #ECFDF5, #D1FAE5); border: 1.5px solid #A7F3D0; border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 18px;">
+      <div id="withdraw-referrals-box" style="display: none; background: linear-gradient(145deg, #ECFDF5, #D1FAE5); border: none; box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.2), 0 4px 14px rgba(16, 185, 129, 0.08); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 18px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
           <span style="font-size: 13.5px; font-weight: 750; color: #065F46;">Withdrawable Referral Commissions:</span>
           <span style="color: #059669; font-size: 19px; font-weight: 950;" id="withdraw-modal-referrals-avail">KSh 0</span>
         </div>
-        <div style="font-size: 12.5px; color: #065F46; line-height: 1.45; background: rgba(255,255,255,0.75); padding: 8px 12px; border-radius: 6px;">
-          🎉 <strong>Independent Payout</strong>: Referral commissions can be withdrawn separately anytime! Minimum payout is only <strong style="color: #059669;">KSh 100</strong> with no views restriction.
+        <div style="font-size: 12.5px; color: #065F46; line-height: 1.45; background: rgba(255,255,255,0.85); padding: 8px 12px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+          ⚡ <strong>M-Pesa Payout Status</strong>: Minimum withdrawal across all company services is <strong>KSh 1,200</strong> disbursed directly to Safaricom M-Pesa.
         </div>
       </div>
 
       <!-- Dynamic Paid Surveys Info Box -->
-      <div id="withdraw-surveys-box" style="display: none; background: linear-gradient(145deg, #EFF6FF, #DBEAFE); border: 1.5px solid #93C5FD; border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 18px;">
+      <div id="withdraw-surveys-box" style="display: none; background: linear-gradient(145deg, #EFF6FF, #DBEAFE); border: none; box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.18), 0 4px 14px rgba(37, 99, 235, 0.08); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 18px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
           <span style="font-size: 13.5px; font-weight: 750; color: #1E40AF;">Withdrawable Paid Surveys Balance:</span>
           <span style="color: #2563EB; font-size: 19px; font-weight: 950;" id="withdraw-modal-surveys-avail">KSh 0</span>
         </div>
-        <div style="font-size: 12.5px; color: #1E40AF; line-height: 1.45; background: rgba(255,255,255,0.75); padding: 8px 12px; border-radius: 6px;">
-          📝 <strong>Instant Cashout</strong>: Paid consumer survey earnings can be withdrawn separately anytime! Minimum payout is only <strong style="color: #2563EB;">KSh 100</strong> directly to your Safaricom M-Pesa.
+        <div style="font-size: 12.5px; color: #1E40AF; line-height: 1.45; background: rgba(255,255,255,0.85); padding: 8px 12px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+          ⚡ <strong>M-Pesa Payout Status</strong>: Minimum withdrawal across all company services is <strong>KSh 1,200</strong> disbursed directly to Safaricom M-Pesa.
         </div>
       </div>
 
@@ -10244,7 +10212,7 @@
       const minViews = pkg?.min_withdrawal_views_ksh || (pkg?.slug === 'premium' ? 12000 : (pkg?.slug === 'exclusive' ? 8000 : 5000));
 
       const viewsRuleEl = document.getElementById('dash-views-rule-hint');
-      if (viewsRuleEl) viewsRuleEl.textContent = `${pkg ? pkg.name : 'Starter Pro'} Min Limit: KSh ${minViews.toLocaleString()}`;
+      if (viewsRuleEl) viewsRuleEl.textContent = `${pkg ? pkg.name : 'Starter Pro'} Verified Impressions`;
 
       const viewsFillEl = document.getElementById('dash-views-progress-fill');
       const viewsTextEl = document.getElementById('dash-views-progress-text');
@@ -10812,8 +10780,7 @@
 
       container.innerHTML = packages.map(pkg => {
         const isFeatured = pkg.slug === 'exclusive' || pkg.slug === 'growth';
-        const minViewsLimit = pkg.min_withdrawal_views_ksh || (pkg.slug === 'premium' ? 12000 : (pkg.slug === 'exclusive' ? 8000 : 5000));
-        return `
+                return `
           <div class="pkg-card ${isFeatured ? 'featured' : ''}">
             ${pkg.badge ? `<span class="pkg-badge">${escapeHTML(pkg.badge)}</span>` : ''}
             <h3 class="pkg-name">${escapeHTML(pkg.name)}</h3>
@@ -10832,17 +10799,6 @@
               <div class="pkg-reward-text">
                 KSh ${pkg.reward_per_view_ksh} per approved view
                 <div style="font-size: 12px; font-weight: 500; color: var(--charcoal-muted);">Up to ${pkg.max_views_per_task} views per 18h task</div>
-              </div>
-            </div>
-
-            <!-- Unique Status Views Limit Callout -->
-            <div style="background: linear-gradient(135deg, #FAF5FF, #F3E8FF); border: 1.5px dashed #C084FC; border-radius: 8px; padding: 10px 14px; margin: 12px 0;">
-              <div style="font-size: 13px; font-weight: 850; color: #581C87; display: flex; align-items: center; justify-content: space-between;">
-                <span>📱 Views Payout Limit:</span>
-                <span style="font-size: 14px; color: #6D28D9; font-weight: 950;">Min KSh ${minViewsLimit.toLocaleString()}</span>
-              </div>
-              <div style="font-size: 11px; color: #047857; font-weight: 750; margin-top: 4px; display: flex; align-items: center; gap: 4px;">
-                <span>👥 45% Referral earnings withdrawable separately anytime (min KSh 100)</span>
               </div>
             </div>
 
@@ -12019,6 +11975,7 @@
 
       const pkg = AppState.activePackage;
       const minViews = pkg?.min_withdrawal_views_ksh || (pkg?.slug === 'premium' ? 12000 : (pkg?.slug === 'exclusive' ? 8000 : 5000));
+      const effectiveMinViews = Math.max(1200, minViews);
       const viewsAvail = AppState.wallet?.views_balance_ksh ?? 0;
       const refAvail = AppState.wallet?.referrals_balance_ksh ?? 0;
       const surveysAvail = AppState.wallet?.surveys_balance_ksh ?? 0;
@@ -12034,13 +11991,13 @@
 
         if (label) label.textContent = 'Amount to Withdraw from Paid Surveys (KSh)';
         if (amountInput) {
-          amountInput.min = '100';
-          amountInput.placeholder = 'Min KSh 100';
-          if (surveysAvail >= 100) amountInput.value = surveysAvail;
+          amountInput.min = '1200';
+          amountInput.placeholder = 'Min KSh 1,200';
+          if (surveysAvail >= 1200) amountInput.value = surveysAvail;
           else amountInput.value = '';
         }
         if (hint) {
-          hint.textContent = `Minimum withdrawal: KSh 100 • You have KSh ${surveysAvail.toLocaleString()} survey earnings withdrawable separately anytime!`;
+          hint.textContent = `⚡ M-Pesa Payout Status: Minimum withdrawal across all company services is KSh 1,200 • Available Survey Balance: KSh ${surveysAvail.toLocaleString()}`;
           hint.style.color = '#1D4ED8';
         }
       } else if (type === 'referrals') {
@@ -12054,13 +12011,13 @@
 
         if (label) label.textContent = 'Amount to Withdraw from Referral Commissions (KSh)';
         if (amountInput) {
-          amountInput.min = '100';
-          amountInput.placeholder = 'Min KSh 100';
-          if (refAvail >= 100) amountInput.value = refAvail;
+          amountInput.min = '1200';
+          amountInput.placeholder = 'Min KSh 1,200';
+          if (refAvail >= 1200) amountInput.value = refAvail;
           else amountInput.value = '';
         }
         if (hint) {
-          hint.textContent = `Minimum withdrawal: KSh 100 • You have KSh ${refAvail.toLocaleString()} referral commission withdrawable separately anytime!`;
+          hint.textContent = `⚡ M-Pesa Payout Status: Minimum withdrawal across all company services is KSh 1,200 • Available Referral Balance: KSh ${refAvail.toLocaleString()}`;
           hint.style.color = '#047857';
         }
       } else {
@@ -12075,13 +12032,13 @@
 
         if (label) label.textContent = 'Amount to Withdraw from Status Views (KSh)';
         if (amountInput) {
-          amountInput.min = String(minViews);
-          amountInput.placeholder = `Min KSh ${minViews.toLocaleString()}`;
-          if (viewsAvail >= minViews) amountInput.value = viewsAvail;
+          amountInput.min = String(effectiveMinViews);
+          amountInput.placeholder = `Min KSh ${effectiveMinViews.toLocaleString()}`;
+          if (viewsAvail >= effectiveMinViews) amountInput.value = viewsAvail;
           else amountInput.value = '';
         }
         if (hint) {
-          hint.textContent = `Minimum withdrawal: KSh ${minViews.toLocaleString()} for your ${pkg ? pkg.name : 'active'} package views • Views balance: KSh ${viewsAvail.toLocaleString()}`;
+          hint.textContent = `⚡ M-Pesa Payout Status: Minimum withdrawal across all company services is KSh 1,200 (Package Views Threshold: KSh ${effectiveMinViews.toLocaleString()}) • Available Views Balance: KSh ${viewsAvail.toLocaleString()}`;
           hint.style.color = '#6D28D9';
         }
       }

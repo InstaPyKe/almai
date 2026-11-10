@@ -6,7 +6,7 @@
 
 import { jsonError, jsonSuccess, requireAuth, generateId } from './_utils.js';
 
-const MINIMUM_WITHDRAWAL_KSH = 100;
+const MINIMUM_WITHDRAWAL_KSH = 1200;
 
 /**
  * GET /api/withdrawals
@@ -160,9 +160,9 @@ export async function onRequestPost(context) {
         return jsonError('You must have an active partner package to withdraw status views earnings. If you have referral earnings, you can withdraw them separately.', 400);
       }
 
-      const minViewsLimit = activePackage.min_withdrawal_views_ksh || 5000;
+      const minViewsLimit = Math.max(MINIMUM_WITHDRAWAL_KSH, activePackage.min_withdrawal_views_ksh || 5000);
       if (amount < minViewsLimit) {
-        return jsonError(`Minimum withdrawal amount for Status Views on your ${activePackage.name} package is KSh ${minViewsLimit.toLocaleString()} (requested KSh ${amount.toLocaleString()}). Note: Referral commissions can be withdrawn separately without this limit.`, 400);
+        return jsonError(`Minimum withdrawal amount for Status Views is KSh ${minViewsLimit.toLocaleString()} (requested KSh ${amount.toLocaleString()}).`, 400);
       }
 
       const availableViews = typeof wallet.views_balance_ksh === 'number' ? wallet.views_balance_ksh : wallet.available_balance_ksh;
@@ -229,7 +229,7 @@ export async function onRequestPost(context) {
     } else if (balanceType === 'surveys') {
       const minSurveyLimit = MINIMUM_WITHDRAWAL_KSH;
       if (amount < minSurveyLimit) {
-        return jsonError(`Minimum withdrawal amount for Paid Surveys is KSh ${minSurveyLimit}`, 400);
+        return jsonError(`Minimum withdrawal amount across all company services is KSh ${minSurveyLimit.toLocaleString()}`, 400);
       }
 
       const availableSurveys = Number(wallet.surveys_balance_ksh || 0);
@@ -297,7 +297,7 @@ export async function onRequestPost(context) {
       // balanceType === 'referrals'
       const minReferralLimit = MINIMUM_WITHDRAWAL_KSH;
       if (amount < minReferralLimit) {
-        return jsonError(`Minimum withdrawal amount for Referral Commissions is KSh ${minReferralLimit}`, 400);
+        return jsonError(`Minimum withdrawal amount across all company services is KSh ${minReferralLimit.toLocaleString()}`, 400);
       }
 
       const availableReferrals = wallet.referrals_balance_ksh || 0;

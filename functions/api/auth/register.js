@@ -21,6 +21,7 @@ export async function onRequestPost(context) {
   }
 
   let body;
+
   try {
     body = await request.json();
   } catch (e) {

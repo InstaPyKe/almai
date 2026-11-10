@@ -131,7 +131,7 @@ export async function onRequestGet(context) {
     activePaidCount,
     totalEarningsKsh,
     withdrawableReferralsKsh,
-    minWithdrawalReferralsKsh: 100,
+    minWithdrawalReferralsKsh: 1200,
     activeReferrals: activeReferrals || [],
     allReferrals: allReferrals || []
   });
