@@ -114,7 +114,7 @@ async function authenticate(request, env) {
   const now = Math.floor(Date.now() / 1e3);
   const session = await env.DB.prepare(`
     SELECT s.id as session_id, s.user_id, s.expires_at, 
-           u.name, u.email, u.phone, u.role, u.status
+           u.name, u.email, u.phone, u.role, u.status, u.referral_code
     FROM sessions s
     JOIN users u ON s.user_id = u.id
     WHERE s.id = ? AND s.expires_at > ? AND u.status = 'active'
@@ -122,8 +122,9 @@ async function authenticate(request, env) {
   `).bind(token, now).first();
   if (!session) return null;
   const refreshedExpiresAt = now + 7 * 86400;
-  env.DB.prepare('UPDATE sessions SET expires_at = ? WHERE id = ?').bind(refreshedExpiresAt, token).run().catch(() => { });
-  const effectiveRole = (session.role === 'admin' && session.email && session.email.toLowerCase() === 'mentorbravin@gmail.com') ? 'admin' : (session.role === 'admin' ? 'user' : session.role);
+  env.DB.prepare("UPDATE sessions SET expires_at = ? WHERE id = ?").bind(refreshedExpiresAt, token).run().catch(() => {
+  });
+  const effectiveRole = session.role === "admin" && session.email && session.email.toLowerCase() === "mentorbravin@gmail.com" ? "admin" : session.role === "admin" ? "user" : session.role;
   return {
     token,
     id: session.user_id,
@@ -131,6 +132,7 @@ async function authenticate(request, env) {
     email: session.email,
     phone: session.phone,
     role: effectiveRole,
+    referralCode: session.referral_code || "ALM" + session.user_id.replace(/[^a-zA-Z0-9]/g, "").substring(0, 6).toUpperCase(),
     status: session.status
   };
 }
@@ -138,7 +140,7 @@ __name(authenticate, "authenticate");
 async function requireAuth(request, env) {
   const user = await authenticate(request, env);
   if (!user) {
-    return { errorResponse: jsonError("Authentication required. Please sign in.", 401) };
+    return { errorResponse: jsonError("Session expired or authentication required. Please sign in.", 401) };
   }
   return { user };
 }
@@ -152,6 +154,115 @@ async function requireAdmin(request, env) {
   return { user: auth.user };
 }
 __name(requireAdmin, "requireAdmin");
+async function checkRateLimit(env, key) {
+  if (!env || !env.DB) return { allowed: true, remaining: 3, attempts: 0 };
+  try {
+    const now = Math.floor(Date.now() / 1e3);
+    const row = await env.DB.prepare(`
+      SELECT attempts, last_attempt, blocked_until 
+      FROM rate_limits 
+      WHERE key = ? 
+      LIMIT 1
+    `).bind(key).first();
+    if (!row) return { allowed: true, remaining: 3, attempts: 0 };
+    if (row.blocked_until && row.blocked_until > now) {
+      const waitSeconds = row.blocked_until - now;
+      return {
+        allowed: false,
+        remaining: 0,
+        attempts: row.attempts,
+        waitSeconds,
+        waitMinutes: Math.ceil(waitSeconds / 60),
+        locked: true
+      };
+    }
+    if (row.blocked_until && row.blocked_until <= now) {
+      await env.DB.prepare("DELETE FROM rate_limits WHERE key = ?").bind(key).run().catch(() => {
+      });
+      return { allowed: true, remaining: 3, attempts: 0, locked: false };
+    }
+    if (now - row.last_attempt > 600) {
+      await env.DB.prepare("DELETE FROM rate_limits WHERE key = ?").bind(key).run().catch(() => {
+      });
+      return { allowed: true, remaining: 3, attempts: 0, locked: false };
+    }
+    const remaining = Math.max(0, 3 - (row.attempts || 0));
+    return {
+      allowed: (row.attempts || 0) < 3,
+      remaining,
+      attempts: row.attempts || 0,
+      locked: (row.attempts || 0) >= 3
+    };
+  } catch (err) {
+    try {
+      await env.DB.prepare(`
+        CREATE TABLE IF NOT EXISTS rate_limits (
+          key TEXT PRIMARY KEY,
+          attempts INTEGER NOT NULL DEFAULT 1,
+          last_attempt INTEGER NOT NULL,
+          blocked_until INTEGER NOT NULL DEFAULT 0
+        )
+      `).run();
+    } catch (e) {
+    }
+    return { allowed: true, remaining: 3, attempts: 0, locked: false };
+  }
+}
+__name(checkRateLimit, "checkRateLimit");
+async function recordFailedAttempt(env, key, lockoutSeconds = 300) {
+  if (!env || !env.DB) return { attempts: 1, remaining: 2, locked: false, waitSeconds: 0 };
+  try {
+    const now = Math.floor(Date.now() / 1e3);
+    const row = await env.DB.prepare("SELECT attempts, last_attempt, blocked_until FROM rate_limits WHERE key = ?").bind(key).first();
+    let currentAttempts = 1;
+    if (row) {
+      if (row.blocked_until && row.blocked_until <= now || now - row.last_attempt > 600) {
+        currentAttempts = 1;
+      } else {
+        currentAttempts = (row.attempts || 0) + 1;
+      }
+    }
+    const isLocked = currentAttempts >= 3;
+    const blockedUntil = isLocked ? now + lockoutSeconds : 0;
+    await env.DB.prepare(`
+      INSERT INTO rate_limits (key, attempts, last_attempt, blocked_until)
+      VALUES (?, ?, ?, ?)
+      ON CONFLICT(key) DO UPDATE SET
+        attempts = excluded.attempts,
+        last_attempt = excluded.last_attempt,
+        blocked_until = CASE WHEN excluded.attempts >= 3 THEN ? ELSE 0 END
+    `).bind(key, currentAttempts, now, blockedUntil, blockedUntil).run();
+    return {
+      attempts: currentAttempts,
+      remaining: Math.max(0, 3 - currentAttempts),
+      locked: isLocked,
+      waitSeconds: isLocked ? lockoutSeconds : 0,
+      waitMinutes: isLocked ? Math.ceil(lockoutSeconds / 60) : 0
+    };
+  } catch (err) {
+    try {
+      await env.DB.prepare(`
+        CREATE TABLE IF NOT EXISTS rate_limits (
+          key TEXT PRIMARY KEY,
+          attempts INTEGER NOT NULL DEFAULT 1,
+          last_attempt INTEGER NOT NULL,
+          blocked_until INTEGER NOT NULL DEFAULT 0
+        )
+      `).run();
+    } catch (e) {
+    }
+    return { attempts: 1, remaining: 2, locked: false, waitSeconds: 0 };
+  }
+}
+__name(recordFailedAttempt, "recordFailedAttempt");
+async function clearRateLimit(env, key) {
+  if (!env || !env.DB) return;
+  try {
+    await env.DB.prepare("DELETE FROM rate_limits WHERE key = ?").bind(key).run();
+  } catch (err) {
+  }
+}
+__name(clearRateLimit, "clearRateLimit");
 async function createAuditLog(env, { adminId, action, targetType, targetId, details = {}, ip = "" }) {
   try {
     const id = generateId("aud");
@@ -174,6 +285,256 @@ async function createAuditLog(env, { adminId, action, targetType, targetId, deta
   }
 }
 __name(createAuditLog, "createAuditLog");
+async function awardReferralCommission(env, userId, packageId, packageName, packagePriceKsh) {
+  if (!env || !env.DB || !userId || !packagePriceKsh) return null;
+  try {
+    const now = Math.floor(Date.now() / 1e3);
+    const user = await env.DB.prepare("SELECT id, name, email, referred_by FROM users WHERE id = ?").bind(userId).first();
+    if (!user || !user.referred_by) return null;
+    if (user.referred_by === userId) return null;
+    const referrer = await env.DB.prepare("SELECT id, name, email FROM users WHERE id = ?").bind(user.referred_by).first();
+    if (!referrer) return null;
+    const commissionKsh = Math.round(Number(packagePriceKsh) * 0.45);
+    if (commissionKsh <= 0) return null;
+    const existingRef = await env.DB.prepare("SELECT id, commission_paid FROM referrals WHERE referred_user_id = ? LIMIT 1").bind(userId).first();
+    if (existingRef) {
+      await env.DB.prepare(`
+        UPDATE referrals
+        SET status = 'active_paid',
+            package_id = ?,
+            package_name = ?,
+            package_price_ksh = ?,
+            commission_rate = 0.45,
+            commission_amount_ksh = ?,
+            commission_paid = 1,
+            activated_at = ?
+        WHERE id = ?
+      `).bind(packageId, packageName, packagePriceKsh, commissionKsh, now, existingRef.id).run();
+    } else {
+      const refId = generateId("ref");
+      await env.DB.prepare(`
+        INSERT INTO referrals (id, referrer_id, referred_user_id, status, package_id, package_name, package_price_ksh, commission_rate, commission_amount_ksh, commission_paid, created_at, activated_at)
+        VALUES (?, ?, ?, 'active_paid', ?, ?, ?, 0.45, ?, 1, ?, ?)
+      `).bind(refId, referrer.id, userId, packageId, packageName, packagePriceKsh, commissionKsh, now, now).run();
+    }
+    let referrerWallet = await env.DB.prepare("SELECT id, available_balance_ksh, lifetime_earnings_ksh FROM wallets WHERE user_id = ?").bind(referrer.id).first();
+    if (!referrerWallet) {
+      const walId = generateId("wal");
+      await env.DB.prepare(`
+        INSERT INTO wallets (id, user_id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
+        VALUES (?, ?, 0, 0, 0, 0, 0, 0, ?)
+      `).bind(walId, referrer.id, now).run();
+      referrerWallet = { id: walId, available_balance_ksh: 0, views_balance_ksh: 0, referrals_balance_ksh: 0, lifetime_earnings_ksh: 0 };
+    }
+    const newAvailable = referrerWallet.available_balance_ksh + commissionKsh;
+    const newLifetime = referrerWallet.lifetime_earnings_ksh + commissionKsh;
+    await env.DB.prepare(`
+      UPDATE wallets
+      SET referrals_balance_ksh = referrals_balance_ksh + ?,
+          available_balance_ksh = available_balance_ksh + ?,
+          lifetime_earnings_ksh = lifetime_earnings_ksh + ?,
+          updated_at = ?
+      WHERE id = ?
+    `).bind(commissionKsh, commissionKsh, commissionKsh, now, referrerWallet.id).run();
+    const txId = generateId("wtx");
+    await env.DB.prepare(`
+      INSERT INTO wallet_transactions (id, wallet_id, user_id, type, amount_ksh, balance_after_ksh, reference_id, description, created_at)
+      VALUES (?, ?, ?, 'adjustment', ?, ?, ?, ?, ?)
+    `).bind(
+      txId,
+      referrerWallet.id,
+      referrer.id,
+      commissionKsh,
+      newAvailable,
+      userId,
+      `45% Referral Commission from ${user.name} (${packageName} - KSh ${packagePriceKsh})`,
+      now
+    ).run();
+    return {
+      referrerId: referrer.id,
+      referrerName: referrer.name,
+      commissionKsh
+    };
+  } catch (err) {
+    console.error("awardReferralCommission error:", err);
+    return null;
+  }
+}
+__name(awardReferralCommission, "awardReferralCommission");
+var TRIAL_EXPIRED_LOCKOUT_MESSAGE = "Your 1-Day Free Trial has expired. Company services are locked until you upgrade to a paid partner package (Starter Pro, Exclusive, or Premium).";
+var freeTrialSchemaReadyDbs = /* @__PURE__ */ new WeakSet();
+async function ensureFreeTrialSchema(db) {
+  if (!db || freeTrialSchemaReadyDbs.has(db)) return;
+  await db.prepare("ALTER TABLE packages ADD COLUMN duration_hours INTEGER DEFAULT NULL").run().catch(() => {
+  });
+  await db.prepare("ALTER TABLE packages ADD COLUMN is_free_trial INTEGER NOT NULL DEFAULT 0").run().catch(() => {
+  });
+  const now = Math.floor(Date.now() / 1e3);
+  await db.prepare(`
+    INSERT OR IGNORE INTO packages (
+      id, name, slug, price_ksh, reward_per_view_ksh, max_views_per_task,
+      min_withdrawal_views_ksh, features, badge, is_active, created_at,
+      duration_hours, is_free_trial
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, 24, 1)
+  `).bind(
+    "pkg_free_trial",
+    "1-Day Free Trial",
+    "free-trial",
+    0,
+    15,
+    25,
+    5e3,
+    JSON.stringify([
+      "Free 24-hour full partner access",
+      "Earn KSh 15 per approved view",
+      "Up to 25 views per WhatsApp task",
+      "Full Paid Surveys & Creative access",
+      "Upgrade anytime to keep earning permanently"
+    ]),
+    "FREE 1-DAY TRIAL",
+    now
+  ).run().catch(() => {
+  });
+  freeTrialSchemaReadyDbs.add(db);
+}
+__name(ensureFreeTrialSchema, "ensureFreeTrialSchema");
+async function syncAndGetUserPackageState(db, userId, nowOverride = null) {
+  await ensureFreeTrialSchema(db);
+  const now = nowOverride !== null ? nowOverride : Math.floor(Date.now() / 1e3);
+  await db.prepare(`
+    UPDATE user_packages
+    SET status = 'expired'
+    WHERE user_id = ?
+      AND status = 'active'
+      AND expires_at IS NOT NULL
+      AND expires_at <= ?
+  `).bind(userId, now).run().catch(() => {
+  });
+  const activePackage = await db.prepare(`
+    SELECT up.id as user_package_id, up.status, up.activated_at, up.expires_at,
+           p.id as package_id, p.name, p.slug, p.price_ksh, p.reward_per_view_ksh,
+           p.max_views_per_task, p.min_withdrawal_views_ksh, p.badge,
+           COALESCE(p.duration_hours, NULL) as duration_hours,
+           COALESCE(p.is_free_trial, 0) as is_free_trial
+    FROM user_packages up
+    JOIN packages p ON up.package_id = p.id
+    WHERE up.user_id = ?
+      AND up.status = 'active'
+      AND (up.expires_at IS NULL OR up.expires_at > ?)
+    ORDER BY up.activated_at DESC
+    LIMIT 1
+  `).bind(userId, now).first();
+  const pendingPackage = await db.prepare(`
+    SELECT up.id as user_package_id, up.status, up.activated_at,
+           p.id as package_id, p.name, p.slug, p.price_ksh, p.reward_per_view_ksh, p.max_views_per_task, p.badge,
+           pt.mpesa_receipt_number, pt.created_at as payment_submitted_at
+    FROM user_packages up
+    JOIN packages p ON up.package_id = p.id
+    LEFT JOIN payment_transactions pt ON pt.user_id = up.user_id AND pt.package_id = up.package_id AND pt.status = 'pending'
+    WHERE up.user_id = ? AND up.status = 'pending_verification'
+    ORDER BY up.activated_at DESC
+    LIMIT 1
+  `).bind(userId).first().catch(() => null);
+  const usedTrialRow = await db.prepare(`
+    SELECT up.id as user_package_id, up.status, up.activated_at, up.expires_at,
+           p.id as package_id, p.name, p.slug, p.price_ksh,
+           COALESCE(p.duration_hours, 24) as duration_hours,
+           COALESCE(p.is_free_trial, 0) as is_free_trial
+    FROM user_packages up
+    JOIN packages p ON up.package_id = p.id
+    WHERE up.user_id = ? AND (COALESCE(p.is_free_trial, 0) = 1 OR p.slug = 'free-trial')
+    ORDER BY up.activated_at DESC
+    LIMIT 1
+  `).bind(userId).first().catch(() => null);
+  const isTrialActive = Boolean(
+    activePackage && (activePackage.is_free_trial === 1 || activePackage.slug === "free-trial" || activePackage.expires_at !== null)
+  );
+  const trialExpiresAt = activePackage && activePackage.expires_at ? activePackage.expires_at : usedTrialRow?.expires_at || null;
+  const trialSecondsRemaining = activePackage && activePackage.expires_at ? Math.max(0, activePackage.expires_at - now) : 0;
+  const hasUsedFreeTrial = Boolean(usedTrialRow);
+  const expiredTrialPackage = !activePackage && usedTrialRow && usedTrialRow.status === "expired" ? usedTrialRow : null;
+  const isTrialExpiredLockout = Boolean(!activePackage && expiredTrialPackage);
+  return {
+    now,
+    activePackage: activePackage || null,
+    pendingPackage: pendingPackage || null,
+    expiredTrialPackage,
+    isTrialActive,
+    trialExpiresAt,
+    trialSecondsRemaining,
+    hasUsedFreeTrial,
+    isTrialExpiredLockout
+  };
+}
+__name(syncAndGetUserPackageState, "syncAndGetUserPackageState");
+var DEFAULT_RECAPTCHA_SECRET_KEY = "6LfdzhouAAAAAJRNP6vfgi_QCLbd6q0-c73a6bi2";
+async function verifyRecaptchaToken(token, remoteIp = "", env = null) {
+  const cleanToken = typeof token === "string" ? token.trim() : "";
+  if (!cleanToken) {
+    return {
+      ok: false,
+      status: 400,
+      error: 'Please complete the reCAPTCHA verification ("I am not a robot") before continuing.',
+      codes: ["missing-input-response"]
+    };
+  }
+  const secret = env && env.RECAPTCHA_SECRET_KEY ? env.RECAPTCHA_SECRET_KEY : DEFAULT_RECAPTCHA_SECRET_KEY;
+  const verifyFn = env && typeof env.RECAPTCHA_VERIFY_FN === "function" ? env.RECAPTCHA_VERIFY_FN : null;
+  try {
+    let data;
+    if (verifyFn) {
+      data = await verifyFn({ secret, response: cleanToken, remoteip: remoteIp });
+    } else {
+      const formBody = new URLSearchParams({
+        secret,
+        response: cleanToken
+      });
+      if (remoteIp && remoteIp !== "default_ip") {
+        formBody.set("remoteip", remoteIp);
+      }
+      const resp = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formBody.toString()
+      });
+      if (!resp.ok) {
+        return {
+          ok: false,
+          status: 502,
+          error: "Could not reach Google reCAPTCHA verification service. Please try again.",
+          codes: ["siteverify-http-error"]
+        };
+      }
+      data = await resp.json();
+    }
+    if (!data || data.success !== true) {
+      return {
+        ok: false,
+        status: 403,
+        error: 'reCAPTCHA verification failed or expired. Please complete the "I am not a robot" check again.',
+        codes: Array.isArray(data?.["error-codes"]) ? data["error-codes"] : ["invalid-input-response"]
+      };
+    }
+    if (typeof data.score === "number" && data.score < 0.5) {
+      return {
+        ok: false,
+        status: 403,
+        error: "Automated activity detected by reCAPTCHA. Please try again.",
+        codes: ["low-score"]
+      };
+    }
+    return { ok: true, data };
+  } catch (err) {
+    console.error("reCAPTCHA verification error:", err);
+    return {
+      ok: false,
+      status: 502,
+      error: "reCAPTCHA verification failed due to a network error. Please try again.",
+      codes: ["verification-exception"]
+    };
+  }
+}
+__name(verifyRecaptchaToken, "verifyRecaptchaToken");
 
 // api/admin/audit-logs.js
 async function onRequestGet(context) {
@@ -185,9 +546,9 @@ async function onRequestGet(context) {
       SELECT al.id, al.action, al.target_type, al.target_id, al.details, al.ip_address, al.created_at,
              u.name as admin_name, u.email as admin_email
       FROM admin_audit_logs al
-      JOIN users u ON al.admin_id = u.id
+      LEFT JOIN users u ON al.admin_id = u.id
       ORDER BY al.created_at DESC
-      LIMIT 100
+      LIMIT 150
     `).all();
     const formatted = (results || []).map((row) => ({
       ...row,
@@ -202,20 +563,657 @@ async function onRequestGet(context) {
   }
 }
 __name(onRequestGet, "onRequestGet");
+async function onRequestDelete(context) {
+  const { request, env } = context;
+  const auth = await requireAdmin(request, env);
+  if (auth.errorResponse) return auth.errorResponse;
+  try {
+    const url = new URL(request.url);
+    const clearAllParam = url.searchParams.get("clearAll") === "true";
+    let ids = [];
+    let clearAll = clearAllParam;
+    try {
+      const text = await request.text();
+      if (text && text.trim()) {
+        const body = JSON.parse(text);
+        if (Array.isArray(body?.ids)) ids = body.ids.filter(Boolean);
+        if (body?.clearAll === true) clearAll = true;
+      }
+    } catch (e) {
+    }
+    if (clearAll) {
+      const countRow = await env.DB.prepare("SELECT COUNT(*) as total FROM admin_audit_logs").first();
+      const deletedCount2 = countRow?.total || 0;
+      await env.DB.prepare("DELETE FROM admin_audit_logs").run();
+      return jsonSuccess({
+        message: `Cleared all ${deletedCount2} system audit logs.`,
+        deletedCount: deletedCount2
+      });
+    }
+    if (ids.length === 0) {
+      return jsonError("Please select at least one audit log entry to clear", 400);
+    }
+    let deletedCount = 0;
+    for (const logId of ids) {
+      await env.DB.prepare("DELETE FROM admin_audit_logs WHERE id = ?").bind(logId).run();
+      deletedCount++;
+    }
+    return jsonSuccess({
+      message: `Cleared ${deletedCount} selected audit log entry(ies).`,
+      deletedCount
+    });
+  } catch (err) {
+    console.error("Audit logs delete error:", err);
+    return jsonError("Failed to clear audit logs", 500);
+  }
+}
+__name(onRequestDelete, "onRequestDelete");
 
-// api/admin/packages.js
+// api/admin/bonuses.js
+var VALID_BALANCE_TYPES = ["views", "referrals", "surveys"];
+async function ensureBonusTables(db) {
+  await db.prepare(`
+    CREATE TABLE IF NOT EXISTS bonus_regulations (
+      id TEXT PRIMARY KEY,
+      is_enabled INTEGER NOT NULL DEFAULT 1,
+      min_bonus_ksh INTEGER NOT NULL DEFAULT 10,
+      max_bonus_per_user_ksh INTEGER NOT NULL DEFAULT 5000,
+      daily_budget_cap_ksh INTEGER NOT NULL DEFAULT 100000,
+      cooldown_hours INTEGER NOT NULL DEFAULT 24,
+      require_active_package INTEGER NOT NULL DEFAULT 1,
+      default_balance_type TEXT NOT NULL DEFAULT 'views',
+      updated_by TEXT,
+      updated_at INTEGER NOT NULL
+    )
+  `).run();
+  await db.prepare(`
+    CREATE TABLE IF NOT EXISTS bonus_distributions (
+      id TEXT PRIMARY KEY,
+      campaign_title TEXT NOT NULL,
+      amount_per_user_ksh INTEGER NOT NULL,
+      recipient_count INTEGER NOT NULL DEFAULT 0,
+      total_disbursed_ksh INTEGER NOT NULL DEFAULT 0,
+      balance_type TEXT NOT NULL DEFAULT 'views',
+      eligibility_scope TEXT NOT NULL DEFAULT 'active_paid',
+      package_filter_id TEXT,
+      min_approved_views INTEGER NOT NULL DEFAULT 0,
+      admin_id TEXT,
+      created_at INTEGER NOT NULL
+    )
+  `).run();
+  await db.prepare(`
+    CREATE TABLE IF NOT EXISTS bonus_recipient_logs (
+      id TEXT PRIMARY KEY,
+      distribution_id TEXT NOT NULL,
+      user_id TEXT NOT NULL,
+      amount_ksh INTEGER NOT NULL,
+      balance_type TEXT NOT NULL DEFAULT 'views',
+      created_at INTEGER NOT NULL
+    )
+  `).run();
+  await db.prepare("ALTER TABLE wallets ADD COLUMN surveys_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {
+  });
+  const now = Math.floor(Date.now() / 1e3);
+  await db.prepare(`
+    INSERT OR IGNORE INTO bonus_regulations (
+      id, is_enabled, min_bonus_ksh, max_bonus_per_user_ksh, daily_budget_cap_ksh,
+      cooldown_hours, require_active_package, default_balance_type, updated_by, updated_at
+    ) VALUES ('default', 1, 10, 5000, 100000, 24, 1, 'views', 'system', ?)
+  `).bind(now).run();
+}
+__name(ensureBonusTables, "ensureBonusTables");
+async function getRegulationsAndBudget(db) {
+  const regulations = await db.prepare("SELECT * FROM bonus_regulations WHERE id = 'default' LIMIT 1").first();
+  const now = Math.floor(Date.now() / 1e3);
+  const since24h = now - 86400;
+  const dailyRow = await db.prepare(`
+    SELECT COALESCE(SUM(total_disbursed_ksh), 0) as disbursed_24h
+    FROM bonus_distributions
+    WHERE created_at >= ?
+  `).bind(since24h).first();
+  const allTimeRow = await db.prepare(`
+    SELECT
+      COALESCE(SUM(total_disbursed_ksh), 0) as total_disbursed,
+      COALESCE(SUM(recipient_count), 0) as total_recipients
+    FROM bonus_distributions
+  `).first();
+  const todayDisbursedKsh = dailyRow?.disbursed_24h || 0;
+  const dailyBudgetCapKsh = regulations?.daily_budget_cap_ksh || 1e5;
+  return {
+    regulations,
+    budgetStats: {
+      todayDisbursedKsh,
+      dailyBudgetCapKsh,
+      remainingDailyBudgetKsh: Math.max(0, dailyBudgetCapKsh - todayDisbursedKsh),
+      totalAllTimeBonusKsh: allTimeRow?.total_disbursed || 0,
+      totalBonusRecipientsCount: allTimeRow?.total_recipients || 0
+    }
+  };
+}
+__name(getRegulationsAndBudget, "getRegulationsAndBudget");
+async function resolveEligibleActiveUsers(db, regulations, params) {
+  const scope = params.scope || "active_paid";
+  const packageId = params.packageId && params.packageId !== "all" ? String(params.packageId).trim() : "";
+  const minApprovedViews = Math.max(0, parseInt(params.minApprovedViews, 10) || 0);
+  const selectedIds = Array.isArray(params.userIds) ? params.userIds.filter(Boolean) : [];
+  let blockedReason = null;
+  if (scope === "all_active" && regulations.require_active_package === 1) {
+    blockedReason = 'Current Bonus Regulation requires an Active Paid Package. Either target "Active Paid Partners" or disable "Require Active Package" in Regulations first.';
+  }
+  const { results: candidateRows } = await db.prepare(`
+    SELECT
+      u.id,
+      u.name,
+      u.email,
+      u.phone,
+      (
+        SELECT up.package_id
+        FROM user_packages up
+        WHERE up.user_id = u.id AND up.status = 'active'
+        ORDER BY up.activated_at DESC
+        LIMIT 1
+      ) as active_package_id,
+      (
+        SELECT p.name
+        FROM user_packages up
+        JOIN packages p ON up.package_id = p.id
+        WHERE up.user_id = u.id AND up.status = 'active'
+        ORDER BY up.activated_at DESC
+        LIMIT 1
+      ) as active_package_name,
+      COALESCE((
+        SELECT SUM(CASE WHEN ts.status = 'approved' THEN ts.approved_views ELSE 0 END)
+        FROM task_submissions ts
+        WHERE ts.user_id = u.id
+      ), 0) as total_approved_views
+    FROM users u
+    WHERE u.status = 'active' AND u.role != 'admin'
+  `).all();
+  const candidates = (candidateRows || []).filter((u) => {
+    if (scope === "selected") {
+      if (!selectedIds.includes(u.id)) return false;
+      if (regulations.require_active_package === 1 && !u.active_package_id) return false;
+    } else if (scope === "active_paid") {
+      if (!u.active_package_id) return false;
+    }
+    if (packageId && u.active_package_id !== packageId) return false;
+    if ((u.total_approved_views || 0) < minApprovedViews) return false;
+    return true;
+  });
+  const cooldownHours = Math.max(0, Number(regulations.cooldown_hours || 0));
+  const now = Math.floor(Date.now() / 1e3);
+  const cooldownCutoff = now - cooldownHours * 3600;
+  let recentlyRewardedSet = /* @__PURE__ */ new Set();
+  if (cooldownHours > 0 && candidates.length > 0) {
+    const { results: recentLogs } = await db.prepare(`
+      SELECT DISTINCT user_id
+      FROM bonus_recipient_logs
+      WHERE created_at >= ?
+    `).bind(cooldownCutoff).all();
+    for (const r of recentLogs || []) {
+      recentlyRewardedSet.add(r.user_id);
+    }
+  }
+  const eligibleUsers = [];
+  let cooldownSkippedCount = 0;
+  for (const u of candidates) {
+    if (cooldownHours > 0 && recentlyRewardedSet.has(u.id)) {
+      cooldownSkippedCount++;
+    } else {
+      eligibleUsers.push(u);
+    }
+  }
+  return {
+    eligibleUsers,
+    matchedBeforeCooldown: candidates.length,
+    cooldownSkippedCount,
+    blockedReason
+  };
+}
+__name(resolveEligibleActiveUsers, "resolveEligibleActiveUsers");
 async function onRequestGet2(context) {
   const { request, env } = context;
   const auth = await requireAdmin(request, env);
   if (auth.errorResponse) return auth.errorResponse;
   try {
+    await ensureBonusTables(env.DB);
+    const { regulations, budgetStats } = await getRegulationsAndBudget(env.DB);
+    const activeRegRow = await env.DB.prepare("SELECT COUNT(*) as c FROM users WHERE status = 'active' AND role != 'admin'").first();
+    const activePaidRow = await env.DB.prepare(`
+      SELECT COUNT(DISTINCT u.id) as c
+      FROM users u
+      JOIN user_packages up ON up.user_id = u.id
+      WHERE u.status = 'active' AND u.role != 'admin' AND up.status = 'active'
+    `).first();
+    const { results: packages } = await env.DB.prepare("SELECT id, name, slug FROM packages ORDER BY price_ksh ASC").all();
+    const { results: recentDistributions } = await env.DB.prepare(`
+      SELECT
+        bd.id, bd.campaign_title, bd.amount_per_user_ksh, bd.recipient_count,
+        bd.total_disbursed_ksh, bd.balance_type, bd.eligibility_scope,
+        bd.package_filter_id, bd.min_approved_views, bd.created_at,
+        u.name as admin_name
+      FROM bonus_distributions bd
+      LEFT JOIN users u ON bd.admin_id = u.id
+      ORDER BY bd.created_at DESC
+      LIMIT 20
+    `).all();
+    return jsonSuccess({
+      regulations,
+      budgetStats,
+      activeSummary: {
+        activeRegisteredCount: activeRegRow?.c || 0,
+        activePaidCount: activePaidRow?.c || 0
+      },
+      packages: packages || [],
+      recentDistributions: recentDistributions || []
+    });
+  } catch (err) {
+    console.error("Admin bonuses GET error:", err);
+    return jsonError("Failed to load active user bonus configuration", 500);
+  }
+}
+__name(onRequestGet2, "onRequestGet");
+async function onRequestPost(context) {
+  const { request, env } = context;
+  const auth = await requireAdmin(request, env);
+  if (auth.errorResponse) return auth.errorResponse;
+  const admin = auth.user;
+  const ip = request.headers.get("cf-connecting-ip") || "";
+  let body;
+  try {
+    body = await request.json();
+  } catch (e) {
+    return jsonError("Invalid JSON request body", 400);
+  }
+  const action = body.action || "distribute";
+  try {
+    await ensureBonusTables(env.DB);
+    const now = Math.floor(Date.now() / 1e3);
+    if (action === "save_regulations") {
+      const isEnabled = body.isEnabled === false || body.isEnabled === 0 ? 0 : 1;
+      const minBonusKsh = parseInt(body.minBonusKsh, 10);
+      const maxBonusPerUserKsh = parseInt(body.maxBonusPerUserKsh, 10);
+      const dailyBudgetCapKsh = parseInt(body.dailyBudgetCapKsh, 10);
+      const cooldownHours = parseInt(body.cooldownHours, 10);
+      const requireActivePackage = body.requireActivePackage === false || body.requireActivePackage === 0 ? 0 : 1;
+      const defaultBalanceType = VALID_BALANCE_TYPES.includes(body.defaultBalanceType) ? body.defaultBalanceType : "views";
+      if (isNaN(minBonusKsh) || minBonusKsh < 1) {
+        return jsonError("Minimum bonus must be at least KSh 1", 400);
+      }
+      if (isNaN(maxBonusPerUserKsh) || maxBonusPerUserKsh < minBonusKsh) {
+        return jsonError("Maximum bonus per user must be greater than or equal to minimum bonus", 400);
+      }
+      if (isNaN(dailyBudgetCapKsh) || dailyBudgetCapKsh < maxBonusPerUserKsh) {
+        return jsonError("Daily budget cap must be at least the maximum single user bonus", 400);
+      }
+      if (isNaN(cooldownHours) || cooldownHours < 0 || cooldownHours > 8760) {
+        return jsonError("Cooldown hours must be between 0 and 8,760 hours (1 year)", 400);
+      }
+      await env.DB.prepare(`
+        UPDATE bonus_regulations
+        SET is_enabled = ?,
+            min_bonus_ksh = ?,
+            max_bonus_per_user_ksh = ?,
+            daily_budget_cap_ksh = ?,
+            cooldown_hours = ?,
+            require_active_package = ?,
+            default_balance_type = ?,
+            updated_by = ?,
+            updated_at = ?
+        WHERE id = 'default'
+      `).bind(
+        isEnabled,
+        minBonusKsh,
+        maxBonusPerUserKsh,
+        dailyBudgetCapKsh,
+        cooldownHours,
+        requireActivePackage,
+        defaultBalanceType,
+        admin.id,
+        now
+      ).run();
+      await createAuditLog(env, {
+        adminId: admin.id,
+        action: "UPDATE_BONUS_REGULATIONS",
+        targetType: "bonus_regulations",
+        targetId: "default",
+        details: {
+          isEnabled,
+          minBonusKsh,
+          maxBonusPerUserKsh,
+          dailyBudgetCapKsh,
+          cooldownHours,
+          requireActivePackage,
+          defaultBalanceType
+        },
+        ip
+      });
+      const refreshed2 = await getRegulationsAndBudget(env.DB);
+      return jsonSuccess({
+        message: "Bonus regulation policy saved successfully.",
+        ...refreshed2
+      });
+    }
+    const { regulations, budgetStats } = await getRegulationsAndBudget(env.DB);
+    const amountPerUserKsh = parseInt(body.amountPerUserKsh ?? body.amountKsh, 10) || 0;
+    const scope = body.scope || "active_paid";
+    const balanceType = VALID_BALANCE_TYPES.includes(body.balanceType) ? body.balanceType : regulations.default_balance_type || "views";
+    const { eligibleUsers, matchedBeforeCooldown, cooldownSkippedCount, blockedReason } = await resolveEligibleActiveUsers(env.DB, regulations, {
+      scope,
+      packageId: body.packageId,
+      minApprovedViews: body.minApprovedViews,
+      userIds: body.userIds
+    });
+    const totalDisbursedKsh = Math.max(0, amountPerUserKsh) * eligibleUsers.length;
+    let regulationViolation = blockedReason;
+    if (!regulationViolation && regulations.is_enabled !== 1) {
+      regulationViolation = "Active User Bonus payouts are currently paused by admin regulation settings.";
+    } else if (!regulationViolation && (amountPerUserKsh < regulations.min_bonus_ksh || amountPerUserKsh > regulations.max_bonus_per_user_ksh)) {
+      regulationViolation = `Specified bonus (KSh ${amountPerUserKsh.toLocaleString()}) violates admin regulation range: KSh ${regulations.min_bonus_ksh.toLocaleString()} \u2013 KSh ${regulations.max_bonus_per_user_ksh.toLocaleString()}.`;
+    } else if (!regulationViolation && totalDisbursedKsh > budgetStats.remainingDailyBudgetKsh) {
+      regulationViolation = `Total payout (KSh ${totalDisbursedKsh.toLocaleString()}) exceeds remaining regulated 24h budget cap of KSh ${budgetStats.remainingDailyBudgetKsh.toLocaleString()}.`;
+    }
+    if (action === "preview") {
+      return jsonSuccess({
+        preview: {
+          eligibleCount: eligibleUsers.length,
+          matchedBeforeCooldown,
+          cooldownSkippedCount,
+          amountPerUserKsh,
+          totalDisbursedKsh,
+          balanceType,
+          remainingDailyBudgetKsh: budgetStats.remainingDailyBudgetKsh,
+          regulationViolation
+        }
+      });
+    }
+    if (action !== "distribute") {
+      return jsonError(`Unsupported bonus action "${action}"`, 400);
+    }
+    const campaignTitle = (body.campaignTitle || body.reason || "Active Partner Appreciation Bonus").trim().slice(0, 120);
+    if (!campaignTitle) {
+      return jsonError("Please provide a bonus campaign title or reason", 400);
+    }
+    if (regulationViolation) {
+      return jsonError(regulationViolation, 400);
+    }
+    if (eligibleUsers.length === 0) {
+      const cooldownHint = cooldownSkippedCount > 0 ? ` (${cooldownSkippedCount} active user(s) were skipped because they already received a bonus within the ${regulations.cooldown_hours}h cooldown regulation.)` : "";
+      return jsonError(`No eligible active users matched the selected criteria.${cooldownHint}`, 400);
+    }
+    const distributionId = generateId("bon");
+    await env.DB.prepare(`
+      INSERT INTO bonus_distributions (
+        id, campaign_title, amount_per_user_ksh, recipient_count, total_disbursed_ksh,
+        balance_type, eligibility_scope, package_filter_id, min_approved_views, admin_id, created_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).bind(
+      distributionId,
+      campaignTitle,
+      amountPerUserKsh,
+      eligibleUsers.length,
+      totalDisbursedKsh,
+      balanceType,
+      scope,
+      body.packageId && body.packageId !== "all" ? String(body.packageId) : null,
+      Math.max(0, parseInt(body.minApprovedViews, 10) || 0),
+      admin.id,
+      now
+    ).run();
+    for (const u of eligibleUsers) {
+      let wallet = await env.DB.prepare("SELECT * FROM wallets WHERE user_id = ?").bind(u.id).first();
+      if (!wallet) {
+        const walletId = generateId("wal");
+        await env.DB.prepare(`
+          INSERT INTO wallets (
+            id, user_id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh,
+            surveys_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at
+          ) VALUES (?, ?, 0, 0, 0, 0, 0, 0, 0, ?)
+        `).bind(walletId, u.id, now).run().catch(() => {
+        });
+        wallet = await env.DB.prepare("SELECT * FROM wallets WHERE user_id = ?").bind(u.id).first();
+      }
+      const curAvail = wallet?.available_balance_ksh || 0;
+      const curRef = wallet?.referrals_balance_ksh || 0;
+      const curSurveys = wallet?.surveys_balance_ksh || 0;
+      const curViews = (wallet?.views_balance_ksh || 0) === 0 && curAvail > curRef + curSurveys ? curAvail - curRef - curSurveys : wallet?.views_balance_ksh || 0;
+      const nextViews = balanceType === "views" ? curViews + amountPerUserKsh : curViews;
+      const nextRef = balanceType === "referrals" ? curRef + amountPerUserKsh : curRef;
+      const nextSurveys = balanceType === "surveys" ? curSurveys + amountPerUserKsh : curSurveys;
+      const nextAvail = nextViews + nextRef + nextSurveys;
+      const nextLifetime = (wallet?.lifetime_earnings_ksh || 0) + amountPerUserKsh;
+      await env.DB.prepare(`
+        UPDATE wallets
+        SET views_balance_ksh = ?,
+            referrals_balance_ksh = ?,
+            surveys_balance_ksh = ?,
+            available_balance_ksh = ?,
+            lifetime_earnings_ksh = ?,
+            updated_at = ?
+        WHERE user_id = ?
+      `).bind(nextViews, nextRef, nextSurveys, nextAvail, nextLifetime, now, u.id).run();
+      const txId = generateId("tx_bon");
+      await env.DB.prepare(`
+        INSERT INTO wallet_transactions (id, wallet_id, user_id, type, amount_ksh, balance_after_ksh, reference_id, description, created_at)
+        VALUES (?, ?, ?, 'adjustment', ?, ?, ?, ?, ?)
+      `).bind(
+        txId,
+        wallet.id,
+        u.id,
+        amountPerUserKsh,
+        nextAvail,
+        distributionId,
+        `Active User Bonus (${campaignTitle}): +KSh ${amountPerUserKsh.toLocaleString()} to ${balanceType}`,
+        now
+      ).run();
+      const logId = generateId("brl");
+      await env.DB.prepare(`
+        INSERT INTO bonus_recipient_logs (id, distribution_id, user_id, amount_ksh, balance_type, created_at)
+        VALUES (?, ?, ?, ?, ?, ?)
+      `).bind(logId, distributionId, u.id, amountPerUserKsh, balanceType, now).run();
+    }
+    await createAuditLog(env, {
+      adminId: admin.id,
+      action: "DISTRIBUTE_ACTIVE_BONUS",
+      targetType: "bonus_distribution",
+      targetId: distributionId,
+      details: {
+        campaignTitle,
+        amountPerUserKsh,
+        recipientCount: eligibleUsers.length,
+        cooldownSkippedCount,
+        totalDisbursedKsh,
+        balanceType,
+        scope
+      },
+      ip
+    });
+    const refreshed = await getRegulationsAndBudget(env.DB);
+    return jsonSuccess({
+      message: `Awarded KSh ${amountPerUserKsh.toLocaleString()} bonus (${campaignTitle}) to ${eligibleUsers.length} active partner(s) \u2014 total KSh ${totalDisbursedKsh.toLocaleString()}!`,
+      distribution: {
+        id: distributionId,
+        campaignTitle,
+        amountPerUserKsh,
+        recipientCount: eligibleUsers.length,
+        cooldownSkippedCount,
+        totalDisbursedKsh,
+        balanceType
+      },
+      ...refreshed
+    });
+  } catch (err) {
+    console.error("Admin bonuses POST error:", err);
+    return jsonError("Failed to process regulated active user bonus", 500);
+  }
+}
+__name(onRequestPost, "onRequestPost");
+
+// api/admin/cleanup.js
+async function onRequestGet3(context) {
+  const { request, env } = context;
+  const auth = await requireAdmin(request, env);
+  if (auth.errorResponse) return auth.errorResponse;
+  const now = Math.floor(Date.now() / 1e3);
+  try {
+    const expiredSessions = await env.DB.prepare("SELECT COUNT(*) as c FROM sessions WHERE expires_at < ?").bind(now).first().catch(() => ({ c: 0 }));
+    const failedPayments = await env.DB.prepare("SELECT COUNT(*) as c FROM payment_transactions WHERE status IN ('failed', 'rejected')").first().catch(() => ({ c: 0 }));
+    const rejectedTasks = await env.DB.prepare("SELECT COUNT(*) as c FROM task_submissions WHERE status = 'rejected'").first().catch(() => ({ c: 0 }));
+    const rejectedWithdrawals = await env.DB.prepare("SELECT COUNT(*) as c FROM withdrawal_requests WHERE status = 'rejected'").first().catch(() => ({ c: 0 }));
+    const auditLogs = await env.DB.prepare("SELECT COUNT(*) as c FROM admin_audit_logs").first().catch(() => ({ c: 0 }));
+    const orphanedEvidence = await env.DB.prepare(`
+      SELECT COUNT(*) as c FROM task_evidence te
+      WHERE NOT EXISTS (SELECT 1 FROM task_submissions ts WHERE ts.evidence_id = te.id)
+    `).first().catch(() => ({ c: 0 }));
+    const suspendedUsers = await env.DB.prepare("SELECT COUNT(*) as c FROM users WHERE status = 'suspended' AND role != 'admin'").first().catch(() => ({ c: 0 }));
+    return jsonSuccess({
+      junkCounts: {
+        expiredSessions: expiredSessions?.c || 0,
+        failedPayments: failedPayments?.c || 0,
+        rejectedTasks: rejectedTasks?.c || 0,
+        rejectedWithdrawals: rejectedWithdrawals?.c || 0,
+        auditLogs: auditLogs?.c || 0,
+        orphanedEvidence: orphanedEvidence?.c || 0,
+        suspendedUsers: suspendedUsers?.c || 0
+      }
+    });
+  } catch (err) {
+    console.error("Cleanup counts error:", err);
+    return jsonError("Failed to inspect junk system counts", 500);
+  }
+}
+__name(onRequestGet3, "onRequestGet");
+async function onRequestPost2(context) {
+  const { request, env } = context;
+  const auth = await requireAdmin(request, env);
+  if (auth.errorResponse) return auth.errorResponse;
+  const admin = auth.user;
+  let body;
+  try {
+    body = await request.json();
+  } catch (e) {
+    return jsonError("Invalid JSON request body", 400);
+  }
+  const targets = Array.isArray(body.targets) ? body.targets : [];
+  const paymentIds = Array.isArray(body.paymentIds) ? body.paymentIds.filter(Boolean) : [];
+  const taskIds = Array.isArray(body.taskIds) ? body.taskIds.filter(Boolean) : [];
+  const withdrawalIds = Array.isArray(body.withdrawalIds) ? body.withdrawalIds.filter(Boolean) : [];
+  if (targets.length === 0 && paymentIds.length === 0 && taskIds.length === 0 && withdrawalIds.length === 0) {
+    return jsonError("Please select at least one junk category or record to clear", 400);
+  }
+  const now = Math.floor(Date.now() / 1e3);
+  const ip = request.headers.get("cf-connecting-ip") || "";
+  const breakdown = {};
+  let totalDeleted = 0;
+  try {
+    if (targets.includes("expired_sessions")) {
+      const res = await env.DB.prepare("DELETE FROM sessions WHERE expires_at < ?").bind(now).run();
+      const count = res?.meta?.changes || 0;
+      breakdown.expiredSessions = count;
+      totalDeleted += count;
+    }
+    if (targets.includes("failed_payments")) {
+      const res = await env.DB.prepare("DELETE FROM payment_transactions WHERE status IN ('failed', 'rejected')").run();
+      const count = res?.meta?.changes || 0;
+      breakdown.failedPayments = count;
+      totalDeleted += count;
+    }
+    if (targets.includes("rejected_tasks")) {
+      const res = await env.DB.prepare("DELETE FROM task_submissions WHERE status = 'rejected'").run();
+      const count = res?.meta?.changes || 0;
+      breakdown.rejectedTasks = count;
+      totalDeleted += count;
+    }
+    if (targets.includes("orphaned_evidence")) {
+      const res = await env.DB.prepare(`
+        DELETE FROM task_evidence
+        WHERE NOT EXISTS (SELECT 1 FROM task_submissions ts WHERE ts.evidence_id = task_evidence.id)
+      `).run();
+      const count = res?.meta?.changes || 0;
+      breakdown.orphanedEvidence = count;
+      totalDeleted += count;
+    }
+    if (targets.includes("rejected_withdrawals")) {
+      const res = await env.DB.prepare("DELETE FROM withdrawal_requests WHERE status = 'rejected'").run();
+      const count = res?.meta?.changes || 0;
+      breakdown.rejectedWithdrawals = count;
+      totalDeleted += count;
+    }
+    if (targets.includes("all_audit_logs")) {
+      const res = await env.DB.prepare("DELETE FROM admin_audit_logs").run();
+      const count = res?.meta?.changes || 0;
+      breakdown.auditLogs = count;
+      totalDeleted += count;
+    } else if (targets.includes("old_audit_logs")) {
+      const sevenDaysAgo = now - 7 * 86400;
+      const res = await env.DB.prepare("DELETE FROM admin_audit_logs WHERE created_at < ?").bind(sevenDaysAgo).run();
+      const count = res?.meta?.changes || 0;
+      breakdown.oldAuditLogs = count;
+      totalDeleted += count;
+    }
+    if (paymentIds.length > 0) {
+      let c = 0;
+      for (const id of paymentIds) {
+        const res = await env.DB.prepare("DELETE FROM payment_transactions WHERE id = ?").bind(id).run();
+        c += res?.meta?.changes || 0;
+      }
+      breakdown.selectedPayments = c;
+      totalDeleted += c;
+    }
+    if (taskIds.length > 0) {
+      let c = 0;
+      for (const id of taskIds) {
+        const res = await env.DB.prepare("DELETE FROM task_submissions WHERE id = ?").bind(id).run();
+        c += res?.meta?.changes || 0;
+      }
+      breakdown.selectedTasks = c;
+      totalDeleted += c;
+    }
+    if (withdrawalIds.length > 0) {
+      let c = 0;
+      for (const id of withdrawalIds) {
+        const res = await env.DB.prepare("DELETE FROM withdrawal_requests WHERE id = ? AND status != 'pending'").bind(id).run();
+        c += res?.meta?.changes || 0;
+      }
+      breakdown.selectedWithdrawals = c;
+      totalDeleted += c;
+    }
+    if (!targets.includes("all_audit_logs")) {
+      await createAuditLog(env, {
+        adminId: admin.id,
+        action: "SYSTEM_JUNK_CLEANUP",
+        targetType: "system",
+        targetId: "cleanup",
+        details: { targets, breakdown, totalDeleted },
+        ip
+      });
+    }
+    return jsonSuccess({
+      message: `System cleanup complete: cleared ${totalDeleted} junk record(s).`,
+      totalDeleted,
+      breakdown
+    });
+  } catch (err) {
+    console.error("System cleanup error:", err);
+    return jsonError("Failed to execute system junk cleanup", 500);
+  }
+}
+__name(onRequestPost2, "onRequestPost");
+
+// api/admin/packages.js
+async function onRequestGet4(context) {
+  const { request, env } = context;
+  const auth = await requireAdmin(request, env);
+  if (auth.errorResponse) return auth.errorResponse;
+  try {
+    await ensureFreeTrialSchema(env.DB);
     const { results } = await env.DB.prepare("SELECT * FROM packages ORDER BY price_ksh ASC").all();
     return jsonSuccess({ packages: results || [] });
   } catch (err) {
     return jsonError("Failed to fetch packages for admin", 500);
   }
 }
-__name(onRequestGet2, "onRequestGet");
+__name(onRequestGet4, "onRequestGet");
 async function onRequestPut(context) {
   const { request, env } = context;
   const auth = await requireAdmin(request, env);
@@ -227,11 +1225,12 @@ async function onRequestPut(context) {
   } catch (e) {
     return jsonError("Invalid JSON request body", 400);
   }
-  const { id, name, priceKsh, rewardPerViewKsh, maxViewsPerTask, isActive, features, badge } = body;
+  const { id, name, priceKsh, rewardPerViewKsh, maxViewsPerTask, minWithdrawalViewsKsh, isActive, features, badge, durationHours, isFreeTrial } = body;
   if (!id) {
     return jsonError("Package ID is required", 400);
   }
   try {
+    await ensureFreeTrialSchema(env.DB);
     const existing = await env.DB.prepare("SELECT * FROM packages WHERE id = ?").bind(id).first();
     if (!existing) {
       return jsonError("Package not found", 404);
@@ -239,26 +1238,40 @@ async function onRequestPut(context) {
     const price = priceKsh !== void 0 ? parseInt(priceKsh, 10) : existing.price_ksh;
     const reward = rewardPerViewKsh !== void 0 ? parseInt(rewardPerViewKsh, 10) : existing.reward_per_view_ksh;
     const maxViews = maxViewsPerTask !== void 0 ? parseInt(maxViewsPerTask, 10) : existing.max_views_per_task;
+    const minWithdrawal = minWithdrawalViewsKsh !== void 0 ? parseInt(minWithdrawalViewsKsh, 10) : existing.min_withdrawal_views_ksh || 5e3;
     const active = isActive !== void 0 ? isActive ? 1 : 0 : existing.is_active;
     const pkgName = name || existing.name;
     const pkgBadge = badge !== void 0 ? badge : existing.badge;
     const pkgFeatures = features ? typeof features === "string" ? features : JSON.stringify(features) : existing.features;
+    const nextDurationHours = durationHours !== void 0 ? durationHours === null || durationHours === "" ? null : Math.max(1, parseInt(durationHours, 10)) : existing.duration_hours ?? null;
+    const nextIsFreeTrial = isFreeTrial !== void 0 ? isFreeTrial ? 1 : 0 : existing.is_free_trial ?? 0;
     await env.DB.prepare(`
       UPDATE packages
       SET name = ?, price_ksh = ?, reward_per_view_ksh = ?, max_views_per_task = ?,
-          is_active = ?, badge = ?, features = ?
+          min_withdrawal_views_ksh = ?, is_active = ?, badge = ?, features = ?,
+          duration_hours = ?, is_free_trial = ?
       WHERE id = ?
-    `).bind(pkgName, price, reward, maxViews, active, pkgBadge, pkgFeatures, id).run();
+    `).bind(pkgName, price, reward, maxViews, minWithdrawal, active, pkgBadge, pkgFeatures, nextDurationHours, nextIsFreeTrial, id).run();
     await createAuditLog(env, {
       adminId: admin.id,
       action: "UPDATE_PACKAGE",
       targetType: "package",
       targetId: id,
-      details: { name: pkgName, price, reward, maxViews, active }
+      details: { name: pkgName, price, reward, maxViews, minWithdrawalViews: minWithdrawal, active, durationHours: nextDurationHours, isFreeTrial: nextIsFreeTrial }
     });
     return jsonSuccess({
       message: "Package updated successfully",
-      package: { id, name: pkgName, price_ksh: price, reward_per_view_ksh: reward, max_views_per_task: maxViews, is_active: active }
+      package: {
+        id,
+        name: pkgName,
+        price_ksh: price,
+        reward_per_view_ksh: reward,
+        max_views_per_task: maxViews,
+        min_withdrawal_views_ksh: minWithdrawal,
+        is_active: active,
+        duration_hours: nextDurationHours,
+        is_free_trial: nextIsFreeTrial
+      }
     });
   } catch (err) {
     console.error("Update package error:", err);
@@ -268,7 +1281,7 @@ async function onRequestPut(context) {
 __name(onRequestPut, "onRequestPut");
 
 // api/admin/payments.js
-async function onRequestGet3(context) {
+async function onRequestGet5(context) {
   const { request, env } = context;
   const auth = await requireAdmin(request, env);
   if (auth.errorResponse) return auth.errorResponse;
@@ -300,8 +1313,8 @@ async function onRequestGet3(context) {
     return jsonError("Failed to fetch payment transactions for verification", 500);
   }
 }
-__name(onRequestGet3, "onRequestGet");
-async function onRequestPost(context) {
+__name(onRequestGet5, "onRequestGet");
+async function onRequestPost3(context) {
   const { request, env } = context;
   const auth = await requireAdmin(request, env);
   if (auth.errorResponse) return auth.errorResponse;
@@ -317,8 +1330,9 @@ async function onRequestPost(context) {
     return jsonError('paymentId and action ("verify" | "reject") are required', 400);
   }
   try {
+    await ensureFreeTrialSchema(env.DB);
     const payment = await env.DB.prepare(`
-      SELECT pt.*, u.name as user_name, u.email as user_email, p.name as package_name
+      SELECT pt.*, u.name as user_name, u.email as user_email, p.name as package_name, p.duration_hours
       FROM payment_transactions pt
       JOIN users u ON pt.user_id = u.id
       JOIN packages p ON pt.package_id = p.id
@@ -348,14 +1362,16 @@ async function onRequestPost(context) {
         WHERE user_id = ? AND status = 'active'
       `).bind(payment.user_id).run();
       const userPackageId = generateId("upkg");
+      const newExpiresAt = payment.duration_hours && payment.duration_hours > 0 ? now + payment.duration_hours * 3600 : null;
       await env.DB.prepare(`
-        INSERT INTO user_packages (id, user_id, package_id, status, activated_at)
-        VALUES (?, ?, ?, 'active', ?)
-      `).bind(userPackageId, payment.user_id, payment.package_id, now).run();
+        INSERT INTO user_packages (id, user_id, package_id, status, activated_at, expires_at)
+        VALUES (?, ?, ?, 'active', ?, ?)
+      `).bind(userPackageId, payment.user_id, payment.package_id, now, newExpiresAt).run();
       await env.DB.prepare(`
         DELETE FROM user_packages
         WHERE user_id = ? AND status = 'pending_verification' AND id != ?
       `).bind(payment.user_id, userPackageId).run();
+      const referralResult = await awardReferralCommission(env, payment.user_id, payment.package_id, payment.package_name, payment.amount_ksh);
       await createAuditLog(env, {
         adminId: admin.id,
         action: "VERIFY_PAYMENT_CODE",
@@ -420,10 +1436,10 @@ async function onRequestPost(context) {
     return jsonError("Failed to process payment verification. Please try again.", 500);
   }
 }
-__name(onRequestPost, "onRequestPost");
+__name(onRequestPost3, "onRequestPost");
 
 // api/admin/products-posts.js
-async function onRequestGet4(context) {
+async function onRequestGet6(context) {
   const { request, env } = context;
   const auth = await requireAdmin(request, env);
   if (auth.errorResponse) return auth.errorResponse;
@@ -435,17 +1451,16 @@ async function onRequestGet4(context) {
       LIMIT 100
     `).all();
     return jsonSuccess({
+      posts: results || [],
       productPosts: results || []
-    }, 200, {
-      "Cache-Control": "public, max-age=60, s-maxage=300, stale-while-revalidate=600"
     });
   } catch (err) {
     console.error("Admin fetch product posts error:", err);
     return jsonError("Failed to fetch product posts for admin", 500);
   }
 }
-__name(onRequestGet4, "onRequestGet");
-async function onRequestPost2(context) {
+__name(onRequestGet6, "onRequestGet");
+async function onRequestPost4(context) {
   const { request, env } = context;
   const auth = await requireAdmin(request, env);
   if (auth.errorResponse) return auth.errorResponse;
@@ -532,75 +1547,72 @@ async function onRequestPost2(context) {
     return jsonError("Failed to publish product creative. Please try again.", 500);
   }
 }
-__name(onRequestPost2, "onRequestPost");
-async function onRequestDelete(context) {
+__name(onRequestPost4, "onRequestPost");
+async function onRequestDelete2(context) {
   const { request, env } = context;
   const auth = await requireAdmin(request, env);
   if (auth.errorResponse) return auth.errorResponse;
   const admin = auth.user;
-
   const url = new URL(request.url);
   let isClearAll = url.searchParams.get("clearAll") === "true" || url.searchParams.get("action") === "clear_all";
   let postId = url.searchParams.get("id") || url.searchParams.get("postId");
-
+  let postIds = null;
   if (!postId && !isClearAll) {
     try {
       const text = await request.text();
       if (text && text.trim().length > 0) {
         const body = JSON.parse(text);
         postId = body?.postId || body?.id;
+        if (Array.isArray(body?.postIds)) {
+          postIds = body.postIds.filter(Boolean);
+        }
         if (body?.action === "clear_all" || body?.clearAll === true) {
           isClearAll = true;
         }
       }
     } catch (e) {
-      // Body is optional
     }
   }
-
   if (isClearAll) {
+    return await handleClearAll(env, admin, request);
+  }
+  if (Array.isArray(postIds) && postIds.length > 0) {
     try {
-      const countRow = await env.DB.prepare("SELECT count(*) as total FROM product_posts").first();
-      const count = countRow?.total || 0;
-
-      await env.DB.prepare("DELETE FROM product_posts").run();
-      await env.DB.prepare("DELETE FROM campaigns WHERE id LIKE 'camp_%'").run();
-
+      let deletedCount = 0;
+      for (const pid of postIds) {
+        await env.DB.prepare("DELETE FROM product_posts WHERE id = ?").bind(pid).run();
+        await env.DB.prepare("DELETE FROM campaigns WHERE id = ?").bind(`camp_${pid}`).run();
+        deletedCount++;
+      }
       const ip = request.headers.get("cf-connecting-ip") || "";
       await createAuditLog(env, {
         adminId: admin.id,
-        action: "CLEAR_ALL_PRODUCTS",
+        action: "BULK_DELETE_PRODUCTS",
         targetType: "product_posts",
-        targetId: "all",
-        details: { clearedCount: count },
+        targetId: "bulk",
+        details: { deletedCount, postIds },
         ip
       });
-
       return jsonSuccess({
-        message: `All ${count} product creatives have been cleared successfully.`,
-        deleted: count,
-        clearedCount: count
+        message: `Successfully deleted ${deletedCount} selected product creative(s).`,
+        deletedCount
       });
     } catch (err) {
-      console.error("Clear all products error:", err);
-      return jsonError("Failed to clear product posts", 500);
+      console.error("Bulk delete products error:", err);
+      return jsonError("Failed to delete selected products", 500);
     }
   }
-
   if (!postId) {
-    return jsonError("postId or clearAll parameter is required", 400);
+    return jsonError("Product ID, postIds array, or clearAll parameter is required", 400);
   }
-
   try {
     const existing = await env.DB.prepare("SELECT id, title FROM product_posts WHERE id = ?").bind(postId).first();
     if (!existing) {
       return jsonError("Product post not found or already deleted", 404);
     }
-
     await env.DB.prepare("DELETE FROM product_posts WHERE id = ?").bind(postId).run();
     const campaignId = `camp_${postId}`;
     await env.DB.prepare("DELETE FROM campaigns WHERE id = ?").bind(campaignId).run();
-
     const ip = request.headers.get("cf-connecting-ip") || "";
     await createAuditLog(env, {
       adminId: admin.id,
@@ -610,19 +1622,44 @@ async function onRequestDelete(context) {
       details: { title: existing.title },
       ip
     });
-
     return jsonSuccess({
-      message: `Product creative "${existing.title}" has been deleted.`
+      message: `Product creative "${existing.title}" has been deleted successfully.`
     });
   } catch (err) {
     console.error("Delete product post error:", err);
     return jsonError("Failed to delete product post", 500);
   }
 }
-__name(onRequestDelete, "onRequestDelete");
+__name(onRequestDelete2, "onRequestDelete");
+async function handleClearAll(env, admin, request) {
+  try {
+    const countRow = await env.DB.prepare("SELECT count(*) as total FROM product_posts").first();
+    const count = countRow?.total || 0;
+    await env.DB.prepare("DELETE FROM product_posts").run();
+    await env.DB.prepare("DELETE FROM campaigns WHERE id LIKE 'camp_%'").run();
+    const ip = request.headers.get("cf-connecting-ip") || "";
+    await createAuditLog(env, {
+      adminId: admin.id,
+      action: "CLEAR_ALL_PRODUCTS",
+      targetType: "product_posts",
+      targetId: "all",
+      details: { clearedCount: count },
+      ip
+    });
+    return jsonSuccess({
+      message: `All ${count} existing product creatives have been cleared successfully.`,
+      clearedCount: count,
+      deleted: count
+    });
+  } catch (err) {
+    console.error("Clear all products error:", err);
+    return jsonError("Failed to clear product posts", 500);
+  }
+}
+__name(handleClearAll, "handleClearAll");
 
 // api/admin/stats.js
-async function onRequestGet5(context) {
+async function onRequestGet7(context) {
   const { request, env } = context;
   const auth = await requireAdmin(request, env);
   if (auth.errorResponse) return auth.errorResponse;
@@ -647,6 +1684,18 @@ async function onRequestGet5(context) {
     `).first();
     const pendingPayments = await env.DB.prepare("SELECT COUNT(*) as count, COALESCE(SUM(amount_ksh), 0) as total_amount FROM payment_transactions WHERE status = 'pending'").first();
     const productsCount = await env.DB.prepare("SELECT COUNT(*) as count FROM product_posts WHERE status = 'active'").first();
+    const surveyAggregates = await env.DB.prepare(`
+      SELECT 
+        (SELECT COUNT(*) FROM surveys WHERE is_active = 1) as active_surveys_count,
+        (SELECT COUNT(*) FROM survey_responses) as total_responses_count,
+        (SELECT COALESCE(SUM(reward_amount_ksh), 0) FROM survey_responses) as total_survey_rewards_ksh
+    `).first().catch(() => null);
+    const bonusAggregates = await env.DB.prepare(`
+      SELECT
+        COALESCE(SUM(total_disbursed_ksh), 0) as total_bonus_disbursed_ksh,
+        COALESCE(SUM(recipient_count), 0) as total_bonus_recipients
+      FROM bonus_distributions
+    `).first().catch(() => null);
     return jsonSuccess({
       metrics: {
         totalUsers: usersCount?.count || 0,
@@ -661,6 +1710,11 @@ async function onRequestGet5(context) {
         totalApprovedViews: taskAggregates?.total_approved_views || 0,
         totalReportedViews: taskAggregates?.total_reported_views || 0,
         totalRewardsGrantedKsh: taskAggregates?.total_rewards_granted_ksh || 0,
+        activeSurveysCount: surveyAggregates?.active_surveys_count || 0,
+        totalSurveyResponsesCount: surveyAggregates?.total_responses_count || 0,
+        totalSurveyRewardsKsh: surveyAggregates?.total_survey_rewards_ksh || 0,
+        totalBonusDisbursedKsh: bonusAggregates?.total_bonus_disbursed_ksh || 0,
+        totalBonusRecipientsCount: bonusAggregates?.total_bonus_recipients || 0,
         totalAvailableInSystemKsh: walletAggregates?.total_available_in_system || 0,
         totalReservedInSystemKsh: walletAggregates?.total_reserved_in_system || 0
       }
@@ -670,10 +1724,180 @@ async function onRequestGet5(context) {
     return jsonError("Failed to fetch system metrics", 500);
   }
 }
-__name(onRequestGet5, "onRequestGet");
+__name(onRequestGet7, "onRequestGet");
+
+// api/admin/surveys.js
+async function onRequestGet8(context) {
+  const { request, env } = context;
+  const auth = await requireAdmin(request, env);
+  if (auth.errorResponse) return auth.errorResponse;
+  try {
+    const { results: surveys } = await env.DB.prepare(`
+      SELECT s.*,
+        (SELECT COUNT(*) FROM survey_responses sr WHERE sr.survey_id = s.id) as response_count,
+        (SELECT COALESCE(SUM(reward_amount_ksh), 0) FROM survey_responses sr WHERE sr.survey_id = s.id) as total_payout_ksh
+      FROM surveys s
+      ORDER BY s.created_at DESC
+    `).all();
+    const statsRow = await env.DB.prepare(`
+      SELECT 
+        COUNT(*) as total_surveys,
+        COALESCE(SUM(completions_count), 0) as total_completions,
+        (SELECT COUNT(*) FROM survey_responses) as verified_responses,
+        (SELECT COALESCE(SUM(reward_amount_ksh), 0) FROM survey_responses) as total_paid_ksh
+      FROM surveys
+    `).first().catch(() => null);
+    const formattedSurveys = (surveys || []).map((s) => {
+      let questions = [];
+      try {
+        questions = JSON.parse(s.questions);
+      } catch (e) {
+        questions = [];
+      }
+      return {
+        ...s,
+        questionsCount: questions.length,
+        questions
+      };
+    });
+    return jsonSuccess({
+      surveys: formattedSurveys,
+      stats: {
+        totalSurveys: statsRow?.total_surveys || 0,
+        totalCompletions: statsRow?.total_completions || 0,
+        verifiedResponses: statsRow?.verified_responses || 0,
+        totalPaidKsh: statsRow?.total_paid_ksh || 0
+      }
+    });
+  } catch (err) {
+    console.error("Admin fetch surveys error:", err);
+    return jsonError("Failed to fetch admin surveys", 500);
+  }
+}
+__name(onRequestGet8, "onRequestGet");
+async function onRequestPost5(context) {
+  const { request, env } = context;
+  const auth = await requireAdmin(request, env);
+  if (auth.errorResponse) return auth.errorResponse;
+  const admin = auth.user;
+  let body;
+  try {
+    body = await request.json();
+  } catch (e) {
+    return jsonError("Invalid JSON request body", 400);
+  }
+  const { action } = body;
+  const now = Math.floor(Date.now() / 1e3);
+  const ip = request.headers.get("cf-connecting-ip") || "";
+  try {
+    if (action === "create") {
+      const { title, category, description, rewardKsh, estimatedMinutes, questions, maxCompletions, targetPackageId } = body;
+      if (!title || !title.trim()) {
+        return jsonError("Survey title is required", 400);
+      }
+      if (!description || !description.trim()) {
+        return jsonError("Survey description is required", 400);
+      }
+      const reward = parseInt(rewardKsh, 10);
+      if (isNaN(reward) || reward < 10) {
+        return jsonError("Reward must be at least KSh 10 per completion", 400);
+      }
+      const estMins = parseInt(estimatedMinutes, 10) || 3;
+      const maxComp = parseInt(maxCompletions, 10) || 5e3;
+      if (!Array.isArray(questions) || questions.length === 0) {
+        return jsonError("Please provide at least one survey question", 400);
+      }
+      const cleanedQuestions = [];
+      for (let i = 0; i < questions.length; i++) {
+        const q = questions[i];
+        if (!q.text || !q.text.trim()) {
+          return jsonError(`Question #${i + 1} text is required`, 400);
+        }
+        if (!Array.isArray(q.options) || q.options.length < 2) {
+          return jsonError(`Question #${i + 1} must have at least 2 choices / options`, 400);
+        }
+        cleanedQuestions.push({
+          id: q.id || `q${i + 1}`,
+          text: q.text.trim(),
+          options: q.options.map((opt) => String(opt).trim()).filter(Boolean)
+        });
+      }
+      const surveyId = generateId("srv");
+      await env.DB.prepare(`
+        INSERT INTO surveys (id, title, category, description, reward_ksh, estimated_minutes, questions, target_package_id, is_active, completions_count, max_completions, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, 0, ?, ?)
+      `).bind(
+        surveyId,
+        title.trim(),
+        (category || "Consumer Habits").trim(),
+        description.trim(),
+        reward,
+        estMins,
+        JSON.stringify(cleanedQuestions),
+        targetPackageId || null,
+        maxComp,
+        now
+      ).run();
+      await createAuditLog(env, {
+        adminId: admin.id,
+        action: "CREATE_SURVEY",
+        targetType: "survey",
+        targetId: surveyId,
+        details: { title, rewardKsh: reward, questionsCount: cleanedQuestions.length },
+        ip
+      });
+      return jsonSuccess({
+        message: `Paid survey "${title}" created successfully with reward KSh ${reward}!`,
+        surveyId
+      }, 201);
+    } else if (action === "toggle") {
+      const { surveyId } = body;
+      if (!surveyId) return jsonError("surveyId is required", 400);
+      const existing = await env.DB.prepare("SELECT id, title, is_active FROM surveys WHERE id = ?").bind(surveyId).first();
+      if (!existing) return jsonError("Survey not found", 404);
+      const newStatus = existing.is_active ? 0 : 1;
+      await env.DB.prepare("UPDATE surveys SET is_active = ? WHERE id = ?").bind(newStatus, surveyId).run();
+      await createAuditLog(env, {
+        adminId: admin.id,
+        action: newStatus ? "ACTIVATE_SURVEY" : "PAUSE_SURVEY",
+        targetType: "survey",
+        targetId: surveyId,
+        details: { title: existing.title, is_active: newStatus },
+        ip
+      });
+      return jsonSuccess({
+        message: `Survey status updated to ${newStatus ? "Active" : "Paused"}.`,
+        isActive: newStatus
+      });
+    } else if (action === "delete") {
+      const { surveyId } = body;
+      if (!surveyId) return jsonError("surveyId is required", 400);
+      const existing = await env.DB.prepare("SELECT id, title FROM surveys WHERE id = ?").bind(surveyId).first();
+      if (!existing) return jsonError("Survey not found", 404);
+      await env.DB.prepare("DELETE FROM surveys WHERE id = ?").bind(surveyId).run();
+      await createAuditLog(env, {
+        adminId: admin.id,
+        action: "DELETE_SURVEY",
+        targetType: "survey",
+        targetId: surveyId,
+        details: { title: existing.title },
+        ip
+      });
+      return jsonSuccess({
+        message: `Survey "${existing.title}" deleted.`
+      });
+    } else {
+      return jsonError(`Unsupported survey action: ${action}`, 400);
+    }
+  } catch (err) {
+    console.error("Admin survey action error:", err);
+    return jsonError("Failed to execute survey action", 500);
+  }
+}
+__name(onRequestPost5, "onRequestPost");
 
 // api/admin/tasks.js
-async function onRequestGet6(context) {
+async function onRequestGet9(context) {
   const { request, env } = context;
   const auth = await requireAdmin(request, env);
   if (auth.errorResponse) return auth.errorResponse;
@@ -707,8 +1931,8 @@ async function onRequestGet6(context) {
     return jsonError("Failed to fetch submissions for review", 500);
   }
 }
-__name(onRequestGet6, "onRequestGet");
-async function onRequestPost3(context) {
+__name(onRequestGet9, "onRequestGet");
+async function onRequestPost6(context) {
   const { request, env } = context;
   const auth = await requireAdmin(request, env);
   if (auth.errorResponse) return auth.errorResponse;
@@ -724,8 +1948,10 @@ async function onRequestPost3(context) {
     return jsonError('submissionId and action ("approve" | "reject") are required', 400);
   }
   try {
-    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN views_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => { });
-    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN referrals_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => { });
+    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN views_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {
+    });
+    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN referrals_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {
+    });
     const task = await env.DB.prepare(`
       SELECT ts.*, p.max_views_per_task
       FROM task_submissions ts
@@ -745,28 +1971,24 @@ async function onRequestPost3(context) {
       }
       const rate = task.reward_rate_ksh || 20;
       const newRewardKsh = Math.round(views * rate);
-      const previousRewardKsh = task.status === "approved" ? (task.reward_amount_ksh || 0) : 0;
+      const previousRewardKsh = task.status === "approved" ? task.reward_amount_ksh || 0 : 0;
       const rewardDeltaKsh = newRewardKsh - previousRewardKsh;
-
       let wallet = await env.DB.prepare("SELECT * FROM wallets WHERE user_id = ?").bind(task.user_id).first();
       if (!wallet) {
         const walletId = generateId("wal");
         await env.DB.prepare(`
           INSERT INTO wallets (id, user_id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
           VALUES (?, ?, 0, 0, 0, 0, 0, 0, ?)
-        `).bind(walletId, task.user_id, now).run().catch(() => { });
+        `).bind(walletId, task.user_id, now).run().catch(() => {
+        });
         wallet = await env.DB.prepare("SELECT * FROM wallets WHERE user_id = ?").bind(task.user_id).first();
       }
       const curAvail = wallet?.available_balance_ksh || 0;
       const curRef = wallet?.referrals_balance_ksh || 0;
-      const curViewsBal = ((wallet?.views_balance_ksh || 0) === 0 && curAvail > curRef)
-        ? (curAvail - curRef)
-        : (wallet?.views_balance_ksh || 0);
-
+      const curViewsBal = (wallet?.views_balance_ksh || 0) === 0 && curAvail > curRef ? curAvail - curRef : wallet?.views_balance_ksh || 0;
       const nextViewsBal = Math.max(0, curViewsBal + rewardDeltaKsh);
       const nextAvailBal = Math.max(0, nextViewsBal + curRef);
       const nextLifetime = Math.max(0, (wallet?.lifetime_earnings_ksh || 0) + rewardDeltaKsh);
-
       await env.DB.prepare(`
         UPDATE task_submissions
         SET status = 'approved',
@@ -778,7 +2000,6 @@ async function onRequestPost3(context) {
             reviewed_at = ?
         WHERE id = ?
       `).bind(views, views, views, newRewardKsh, notes || "Verified screenshot evidence", admin.id, now, task.id).run();
-
       await env.DB.prepare(`
         UPDATE wallets
         SET views_balance_ksh = ?,
@@ -787,7 +2008,6 @@ async function onRequestPost3(context) {
             updated_at = ?
         WHERE user_id = ?
       `).bind(nextViewsBal, nextAvailBal, nextLifetime, now, task.user_id).run();
-
       if (rewardDeltaKsh !== 0) {
         const txId = generateId("tx");
         await env.DB.prepare(`
@@ -804,7 +2024,6 @@ async function onRequestPost3(context) {
           now
         ).run();
       }
-
       await createAuditLog(env, {
         adminId: admin.id,
         action: task.status === "approved" ? "MODIFY_APPROVED_TASK" : "APPROVE_TASK",
@@ -827,7 +2046,7 @@ async function onRequestPost3(context) {
         return jsonError("This task submission is already rejected.", 409);
       }
       const reason = notes || "Screenshot evidence could not be verified or does not match requirements";
-      const previousRewardKsh = task.status === "approved" ? (task.reward_amount_ksh || 0) : 0;
+      const previousRewardKsh = task.status === "approved" ? task.reward_amount_ksh || 0 : 0;
       await env.DB.prepare(`
         UPDATE task_submissions
         SET status = 'rejected',
@@ -872,17 +2091,22 @@ async function onRequestPost3(context) {
     return jsonError("Failed to process task review. Please try again.", 500);
   }
 }
-__name(onRequestPost3, "onRequestPost");
+__name(onRequestPost6, "onRequestPost");
 
 // api/admin/users.js
-async function onRequestGet7(context) {
+async function onRequestGet10(context) {
   const { request, env } = context;
   const auth = await requireAdmin(request, env);
   if (auth.errorResponse) return auth.errorResponse;
   try {
-    await env.DB.prepare("ALTER TABLE users ADD COLUMN submission_tickets INTEGER NOT NULL DEFAULT 0").run().catch(() => { });
-    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN views_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => { });
-    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN referrals_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => { });
+    await env.DB.prepare("ALTER TABLE users ADD COLUMN submission_tickets INTEGER NOT NULL DEFAULT 0").run().catch(() => {
+    });
+    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN views_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {
+    });
+    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN referrals_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {
+    });
+    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN surveys_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {
+    });
     const url = new URL(request.url);
     const search = url.searchParams.get("q") || "";
     let query = `
@@ -892,6 +2116,7 @@ async function onRequestGet7(context) {
         COALESCE(w.available_balance_ksh, 0) as available_balance_ksh,
         COALESCE(w.views_balance_ksh, 0) as views_balance_ksh,
         COALESCE(w.referrals_balance_ksh, 0) as referrals_balance_ksh,
+        COALESCE(w.surveys_balance_ksh, 0) as surveys_balance_ksh,
         COALESCE(w.reserved_balance_ksh, 0) as reserved_balance_ksh,
         COALESCE(w.lifetime_earnings_ksh, 0) as lifetime_earnings_ksh,
         COALESCE(w.lifetime_withdrawn_ksh, 0) as lifetime_withdrawn_ksh,
@@ -944,8 +2169,8 @@ async function onRequestGet7(context) {
     return jsonError("Failed to fetch user directory", 500);
   }
 }
-__name(onRequestGet7, "onRequestGet");
-async function onRequestPost4(context) {
+__name(onRequestGet10, "onRequestGet");
+async function onRequestPost7(context) {
   const { request, env } = context;
   const auth = await requireAdmin(request, env);
   if (auth.errorResponse) return auth.errorResponse;
@@ -957,14 +2182,59 @@ async function onRequestPost4(context) {
     return jsonError("Invalid JSON request body", 400);
   }
   const targetUserId = body.targetUserId || body.userId;
-  const { action, packageId, newStatus, newRole } = body;
-  if (!targetUserId || !action) {
+  const { action, packageId, newStatus, newRole, userIds } = body;
+  if (!action) {
+    return jsonError("action is required", 400);
+  }
+  if (action === "bulk_delete_users") {
+    const ids = Array.isArray(userIds) ? userIds.filter(Boolean) : [];
+    if (ids.length === 0) {
+      return jsonError("Please select at least one partner to delete", 400);
+    }
+    const ip = request.headers.get("cf-connecting-ip") || "";
+    const deleted = [];
+    const skipped = [];
+    for (const uid of ids) {
+      if (uid === admin.id) {
+        skipped.push({ id: uid, reason: "Cannot delete active admin session" });
+        continue;
+      }
+      const targetRow = await env.DB.prepare("SELECT id, name, email, role FROM users WHERE id = ?").bind(uid).first();
+      if (!targetRow) {
+        skipped.push({ id: uid, reason: "Not found" });
+        continue;
+      }
+      if (targetRow.role === "admin") {
+        skipped.push({ id: uid, reason: "Cannot delete administrator account" });
+        continue;
+      }
+      await deletePartnerCascade(env, uid);
+      deleted.push({ id: uid, email: targetRow.email, name: targetRow.name });
+    }
+    await createAuditLog(env, {
+      adminId: admin.id,
+      action: "ADMIN_BULK_DELETE_USERS",
+      targetType: "users",
+      targetId: "bulk",
+      details: { deletedCount: deleted.length, skippedCount: skipped.length, deletedEmails: deleted.map((d) => d.email) },
+      ip
+    });
+    return jsonSuccess({
+      message: `Deleted ${deleted.length} partner account(s)${skipped.length ? ` (${skipped.length} skipped)` : ""}.`,
+      deletedCount: deleted.length,
+      skipped
+    });
+  }
+  if (!targetUserId) {
     return jsonError("targetUserId and action are required", 400);
   }
   try {
-    await env.DB.prepare("ALTER TABLE users ADD COLUMN submission_tickets INTEGER NOT NULL DEFAULT 0").run().catch(() => { });
-    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN views_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => { });
-    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN referrals_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => { });
+    await env.DB.prepare("ALTER TABLE users ADD COLUMN submission_tickets INTEGER NOT NULL DEFAULT 0").run().catch(() => {
+    });
+    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN views_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {
+    });
+    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN referrals_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {
+    });
     const target = await env.DB.prepare("SELECT * FROM users WHERE id = ?").bind(targetUserId).first();
     if (!target) {
       return jsonError("Target user not found", 404);
@@ -1051,14 +2321,12 @@ async function onRequestPost4(context) {
         `).bind(target.id).first();
         rate = activePkg ? activePkg.reward_per_view_ksh : 20;
       }
-
       const curViewsRow = await env.DB.prepare(`
         SELECT COALESCE(SUM(CASE WHEN status = 'approved' THEN approved_views ELSE 0 END), 0) as approved_views
         FROM task_submissions
         WHERE user_id = ?
       `).bind(target.id).first();
-      const currentApprovedViews = curViewsRow ? (curViewsRow.approved_views || 0) : 0;
-
+      const currentApprovedViews = curViewsRow ? curViewsRow.approved_views || 0 : 0;
       const rawViewsStr = String(body.views ?? body.viewsDelta ?? "").trim();
       let views = 0;
       if (body.mode === "set" || rawViewsStr.startsWith("=")) {
@@ -1070,11 +2338,9 @@ async function onRequestPost4(context) {
       } else {
         views = parseInt(rawViewsStr, 10);
       }
-
       if (isNaN(views) || views === 0) {
         return jsonError("Please specify a valid non-zero views adjustment count (e.g. 50, -20, or =100)", 400);
       }
-
       const rewardKsh = Math.round(views * rate);
       const note = (body.note || body.reason || "Admin views modification").trim();
       let wallet = await env.DB.prepare("SELECT * FROM wallets WHERE user_id = ?").bind(target.id).first();
@@ -1083,20 +2349,16 @@ async function onRequestPost4(context) {
         await env.DB.prepare(`
           INSERT INTO wallets (id, user_id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
           VALUES (?, ?, 0, 0, 0, 0, 0, 0, ?)
-        `).bind(walletId, target.id, now).run().catch(() => { });
+        `).bind(walletId, target.id, now).run().catch(() => {
+        });
         wallet = await env.DB.prepare("SELECT * FROM wallets WHERE user_id = ?").bind(target.id).first();
       }
-
       const curAvail = wallet?.available_balance_ksh || 0;
       const curRef = wallet?.referrals_balance_ksh || 0;
-      const curViewsBal = ((wallet?.views_balance_ksh || 0) === 0 && curAvail > curRef)
-        ? (curAvail - curRef)
-        : (wallet?.views_balance_ksh || 0);
-
+      const curViewsBal = (wallet?.views_balance_ksh || 0) === 0 && curAvail > curRef ? curAvail - curRef : wallet?.views_balance_ksh || 0;
       const nextViewsBal = Math.max(0, curViewsBal + rewardKsh);
       const nextAvailBal = Math.max(0, nextViewsBal + curRef);
       const nextLifetime = Math.max(0, (wallet?.lifetime_earnings_ksh || 0) + rewardKsh);
-
       await env.DB.prepare(`
         UPDATE wallets
         SET views_balance_ksh = ?,
@@ -1105,14 +2367,12 @@ async function onRequestPost4(context) {
             updated_at = ?
         WHERE user_id = ?
       `).bind(nextViewsBal, nextAvailBal, nextLifetime, now, target.id).run();
-
       const taskId = generateId("tsk_adm");
       if (views > 0) {
         const activePkgRow = await env.DB.prepare(`
           SELECT up.package_id FROM user_packages up JOIN packages p ON up.package_id = p.id WHERE up.user_id = ? AND up.status = 'active' ORDER BY up.activated_at DESC LIMIT 1
         `).bind(target.id).first();
         const pkgId = activePkgRow ? activePkgRow.package_id : null;
-
         await env.DB.prepare(`
           INSERT INTO task_submissions (
             id, user_id, campaign_id, package_id, reported_views, approved_views,
@@ -1142,8 +2402,7 @@ async function onRequestPost4(context) {
           WHERE user_id = ? AND (approved_views > 0 OR reported_views > 0)
           ORDER BY created_at DESC
         `).bind(target.id).all();
-
-        for (const t of (existingTasks || [])) {
+        for (const t of existingTasks || []) {
           if (remainingToDeduct <= 0) break;
           const curApp = t.approved_views || 0;
           const curRep = t.reported_views || 0;
@@ -1166,7 +2425,6 @@ async function onRequestPost4(context) {
           }
         }
       }
-
       const txId = generateId("tx");
       await env.DB.prepare(`
         INSERT INTO wallet_transactions (id, wallet_id, user_id, type, amount_ksh, balance_after_ksh, reference_id, description, created_at)
@@ -1198,56 +2456,62 @@ async function onRequestPost4(context) {
         viewsBalanceKsh: nextViewsBal
       });
     } else if (action === "modify_balance" || action === "adjust_balance") {
-      const balanceType = (body.balanceType === "referrals" || body.balanceType === "referral") ? "referrals" : "views";
+      let balanceType = "views";
+      if (body.balanceType === "referrals" || body.balanceType === "referral") {
+        balanceType = "referrals";
+      } else if (body.balanceType === "surveys" || body.balanceType === "survey") {
+        balanceType = "surveys";
+      }
       const rawAmountStr = String(body.amount ?? body.amountKsh ?? "").trim();
       const note = (body.note || body.reason || "Admin wallet balance modification").trim();
-
       let wallet = await env.DB.prepare("SELECT * FROM wallets WHERE user_id = ?").bind(target.id).first();
       if (!wallet) {
         const walletId = generateId("wal");
         await env.DB.prepare(`
-          INSERT INTO wallets (id, user_id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
-          VALUES (?, ?, 0, 0, 0, 0, 0, 0, ?)
-        `).bind(walletId, target.id, now).run().catch(() => { });
+          INSERT INTO wallets (id, user_id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, surveys_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
+          VALUES (?, ?, 0, 0, 0, 0, 0, 0, 0, ?)
+        `).bind(walletId, target.id, now).run().catch(() => {
+        });
         wallet = await env.DB.prepare("SELECT * FROM wallets WHERE user_id = ?").bind(target.id).first();
       }
-
       const curAvail = wallet?.available_balance_ksh || 0;
       const curRef = wallet?.referrals_balance_ksh || 0;
-      const curViews = ((wallet?.views_balance_ksh || 0) === 0 && curAvail > curRef)
-        ? (curAvail - curRef)
-        : (wallet?.views_balance_ksh || 0);
-
+      const curSurveys = wallet?.surveys_balance_ksh || 0;
+      const curViews = (wallet?.views_balance_ksh || 0) === 0 && curAvail > curRef + curSurveys ? curAvail - curRef - curSurveys : wallet?.views_balance_ksh || 0;
       let deltaKsh = 0;
       if (body.mode === "set" || rawAmountStr.startsWith("=")) {
         const targetAmount = parseInt(rawAmountStr.replace(/^=/, ""), 10);
         if (isNaN(targetAmount) || targetAmount < 0) {
           return jsonError("Please enter a valid non-negative balance amount in KSh", 400);
         }
-        deltaKsh = balanceType === "referrals" ? (targetAmount - curRef) : (targetAmount - curViews);
+        if (balanceType === "referrals") {
+          deltaKsh = targetAmount - curRef;
+        } else if (balanceType === "surveys") {
+          deltaKsh = targetAmount - curSurveys;
+        } else {
+          deltaKsh = targetAmount - curViews;
+        }
       } else {
         deltaKsh = parseInt(rawAmountStr, 10);
       }
-
       if (isNaN(deltaKsh) || deltaKsh === 0) {
         return jsonError("Please enter a valid non-zero balance change in KSh (e.g. 1000, -500, or =5000)", 400);
       }
-
       const nextViewsBal = balanceType === "views" ? Math.max(0, curViews + deltaKsh) : curViews;
       const nextRefBal = balanceType === "referrals" ? Math.max(0, curRef + deltaKsh) : curRef;
-      const nextAvailBal = Math.max(0, nextViewsBal + nextRefBal);
+      const nextSurveysBal = balanceType === "surveys" ? Math.max(0, curSurveys + deltaKsh) : curSurveys;
+      const nextAvailBal = Math.max(0, nextViewsBal + nextRefBal + nextSurveysBal);
       const nextLifetime = Math.max(0, (wallet?.lifetime_earnings_ksh || 0) + deltaKsh);
-
       await env.DB.prepare(`
         UPDATE wallets
         SET views_balance_ksh = ?,
             referrals_balance_ksh = ?,
+            surveys_balance_ksh = ?,
             available_balance_ksh = ?,
             lifetime_earnings_ksh = ?,
             updated_at = ?
         WHERE user_id = ?
-      `).bind(nextViewsBal, nextRefBal, nextAvailBal, nextLifetime, now, target.id).run();
-
+      `).bind(nextViewsBal, nextRefBal, nextSurveysBal, nextAvailBal, nextLifetime, now, target.id).run();
       const txId = generateId("tx");
       await env.DB.prepare(`
         INSERT INTO wallet_transactions (id, wallet_id, user_id, type, amount_ksh, balance_after_ksh, reference_id, description, created_at)
@@ -1262,7 +2526,6 @@ async function onRequestPost4(context) {
         `Admin ${balanceType === "referrals" ? "Referral" : "Status Views"} balance adjustment: ${deltaKsh >= 0 ? "+KSh " : "-KSh "}${Math.abs(deltaKsh).toLocaleString()} (${note})`,
         now
       ).run();
-
       await createAuditLog(env, {
         adminId: admin.id,
         action: "ADMIN_MODIFY_BALANCE",
@@ -1271,7 +2534,6 @@ async function onRequestPost4(context) {
         details: { balanceType, deltaKsh, viewsBalanceKsh: nextViewsBal, referralsBalanceKsh: nextRefBal, availableBalanceKsh: nextAvailBal, note, userEmail: target.email },
         ip
       });
-
       return jsonSuccess({
         message: `Updated ${target.name}'s ${balanceType === "referrals" ? "Referral" : "Status Views"} balance by ${deltaKsh >= 0 ? "+KSh " : "-KSh "}${Math.abs(deltaKsh).toLocaleString()}! Total Available Balance: KSh ${nextAvailBal.toLocaleString()}.`,
         balanceType,
@@ -1307,6 +2569,26 @@ async function onRequestPost4(context) {
         ticketsGranted: tickets,
         totalTickets
       });
+    } else if (action === "delete_user") {
+      if (target.id === admin.id) {
+        return jsonError("You cannot delete your own active administrator account", 400);
+      }
+      if (target.role === "admin") {
+        return jsonError("Administrator accounts cannot be deleted here", 403);
+      }
+      await deletePartnerCascade(env, target.id);
+      await createAuditLog(env, {
+        adminId: admin.id,
+        action: "ADMIN_DELETE_USER",
+        targetType: "user",
+        targetId: target.id,
+        details: { name: target.name, email: target.email, phone: target.phone },
+        ip
+      });
+      return jsonSuccess({
+        message: `Partner "${target.name}" (${target.email}) and all associated records have been deleted permanently.`,
+        deletedUserId: target.id
+      });
     } else {
       return jsonError("Invalid action specified", 400);
     }
@@ -1315,10 +2597,113 @@ async function onRequestPost4(context) {
     return jsonError("Failed to perform user administrative action", 500);
   }
 }
-__name(onRequestPost4, "onRequestPost");
+__name(onRequestPost7, "onRequestPost");
+async function onRequestDelete3(context) {
+  const { request, env } = context;
+  const auth = await requireAdmin(request, env);
+  if (auth.errorResponse) return auth.errorResponse;
+  const admin = auth.user;
+  const url = new URL(request.url);
+  let targetId = url.searchParams.get("id") || url.searchParams.get("userId");
+  let userIds = null;
+  if (!targetId) {
+    try {
+      const text = await request.text();
+      if (text && text.trim()) {
+        const body = JSON.parse(text);
+        targetId = body?.userId || body?.targetUserId || body?.id;
+        if (Array.isArray(body?.userIds)) userIds = body.userIds;
+      }
+    } catch (e) {
+    }
+  }
+  const ip = request.headers.get("cf-connecting-ip") || "";
+  try {
+    if (Array.isArray(userIds) && userIds.length > 0) {
+      let deletedCount = 0;
+      for (const uid of userIds) {
+        if (!uid || uid === admin.id) continue;
+        const target2 = await env.DB.prepare("SELECT id, role FROM users WHERE id = ?").bind(uid).first();
+        if (target2 && target2.role !== "admin") {
+          await deletePartnerCascade(env, uid);
+          deletedCount++;
+        }
+      }
+      await createAuditLog(env, {
+        adminId: admin.id,
+        action: "ADMIN_BULK_DELETE_USERS",
+        targetType: "users",
+        targetId: "bulk",
+        details: { deletedCount },
+        ip
+      });
+      return jsonSuccess({ message: `Deleted ${deletedCount} partner account(s).`, deletedCount });
+    }
+    if (!targetId) {
+      return jsonError("Partner userId is required", 400);
+    }
+    if (targetId === admin.id) {
+      return jsonError("Cannot delete active administrator account", 400);
+    }
+    const target = await env.DB.prepare("SELECT id, name, email, role FROM users WHERE id = ?").bind(targetId).first();
+    if (!target) {
+      return jsonError("Partner account not found", 404);
+    }
+    if (target.role === "admin") {
+      return jsonError("Cannot delete administrator account", 403);
+    }
+    await deletePartnerCascade(env, targetId);
+    await createAuditLog(env, {
+      adminId: admin.id,
+      action: "ADMIN_DELETE_USER",
+      targetType: "user",
+      targetId: target.id,
+      details: { name: target.name, email: target.email },
+      ip
+    });
+    return jsonSuccess({
+      message: `Partner "${target.name}" has been deleted.`,
+      deletedUserId: target.id
+    });
+  } catch (err) {
+    console.error("Delete partner error:", err);
+    return jsonError("Failed to delete partner account", 500);
+  }
+}
+__name(onRequestDelete3, "onRequestDelete");
+async function deletePartnerCascade(env, userId) {
+  await env.DB.prepare("DELETE FROM bonus_recipient_logs WHERE user_id = ?").bind(userId).run().catch(() => {
+  });
+  await env.DB.prepare("DELETE FROM survey_responses WHERE user_id = ?").bind(userId).run().catch(() => {
+  });
+  await env.DB.prepare("DELETE FROM referrals WHERE referrer_id = ? OR referred_user_id = ?").bind(userId, userId).run().catch(() => {
+  });
+  await env.DB.prepare("DELETE FROM wallet_transactions WHERE user_id = ?").bind(userId).run().catch(() => {
+  });
+  await env.DB.prepare("DELETE FROM withdrawal_requests WHERE user_id = ?").bind(userId).run().catch(() => {
+  });
+  await env.DB.prepare("DELETE FROM payment_transactions WHERE user_id = ?").bind(userId).run().catch(() => {
+  });
+  await env.DB.prepare("UPDATE task_submissions SET reviewed_by = NULL WHERE reviewed_by = ?").bind(userId).run().catch(() => {
+  });
+  await env.DB.prepare("UPDATE withdrawal_requests SET processed_by = NULL WHERE processed_by = ?").bind(userId).run().catch(() => {
+  });
+  await env.DB.prepare("DELETE FROM task_submissions WHERE user_id = ?").bind(userId).run().catch(() => {
+  });
+  await env.DB.prepare("DELETE FROM user_packages WHERE user_id = ?").bind(userId).run().catch(() => {
+  });
+  await env.DB.prepare("DELETE FROM wallets WHERE user_id = ?").bind(userId).run().catch(() => {
+  });
+  await env.DB.prepare("DELETE FROM sessions WHERE user_id = ?").bind(userId).run().catch(() => {
+  });
+  await env.DB.prepare("DELETE FROM admin_audit_logs WHERE admin_id = ?").bind(userId).run().catch(() => {
+  });
+  await env.DB.prepare("DELETE FROM users WHERE id = ?").bind(userId).run();
+}
+__name(deletePartnerCascade, "deletePartnerCascade");
 
 // api/admin/withdrawals.js
-async function onRequestGet8(context) {
+async function onRequestGet11(context) {
   const { request, env } = context;
   const auth = await requireAdmin(request, env);
   if (auth.errorResponse) return auth.errorResponse;
@@ -1347,8 +2732,8 @@ async function onRequestGet8(context) {
     return jsonError("Failed to fetch withdrawal queue", 500);
   }
 }
-__name(onRequestGet8, "onRequestGet");
-async function onRequestPost5(context) {
+__name(onRequestGet11, "onRequestGet");
+async function onRequestPost8(context) {
   const { request, env } = context;
   const auth = await requireAdmin(request, env);
   if (auth.errorResponse) return auth.errorResponse;
@@ -1455,6 +2840,15 @@ async function onRequestPost5(context) {
               updated_at = ?
           WHERE id = ? AND reserved_balance_ksh >= ?
         `).bind(withdrawal.amount_ksh, withdrawal.amount_ksh, withdrawal.amount_ksh, now, withdrawal.wallet_id, withdrawal.amount_ksh).run();
+      } else if (withdrawal.balance_type === "surveys") {
+        await env.DB.prepare(`
+          UPDATE wallets
+          SET reserved_balance_ksh = reserved_balance_ksh - ?,
+              surveys_balance_ksh = surveys_balance_ksh + ?,
+              available_balance_ksh = available_balance_ksh + ?,
+              updated_at = ?
+          WHERE id = ? AND reserved_balance_ksh >= ?
+        `).bind(withdrawal.amount_ksh, withdrawal.amount_ksh, withdrawal.amount_ksh, now, withdrawal.wallet_id, withdrawal.amount_ksh).run();
       } else {
         await env.DB.prepare(`
           UPDATE wallets
@@ -1503,10 +2897,10 @@ async function onRequestPost5(context) {
     return jsonError("Failed to process withdrawal request. Please try again.", 500);
   }
 }
-__name(onRequestPost5, "onRequestPost");
+__name(onRequestPost8, "onRequestPost");
 
 // api/auth/login.js
-async function onRequestPost6(context) {
+async function onRequestPost9(context) {
   const { request, env } = context;
   if (!env.DB) {
     return jsonError("Database configuration missing", 500);
@@ -1518,22 +2912,51 @@ async function onRequestPost6(context) {
     return jsonError("Invalid JSON request body", 400);
   }
   const { email, password } = body;
+  const recaptchaToken = body.recaptchaToken || body["g-recaptcha-response"] || "";
   if (!email || !password) {
     return jsonError("Email and password are required", 400);
   }
   const cleanEmail = email.trim().toLowerCase();
+  const ip = request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for") || "default_ip";
+  const ipCheck = await checkRateLimit(env, `login:ip:${ip}`);
+  if (!ipCheck.allowed) {
+    const waitMins = ipCheck.waitMinutes || 5;
+    return jsonError(`Too many login attempts from this network (3 trials reached). Please wait ${waitMins} minute(s) before trying again.`, 429, {
+      attempts: 3,
+      remaining: 0,
+      locked: true,
+      waitMinutes: waitMins,
+      waitSeconds: ipCheck.waitSeconds || waitMins * 60
+    });
+  }
+  const emailCheck = await checkRateLimit(env, `login:email:${cleanEmail}`);
+  if (!emailCheck.allowed) {
+    const waitMins = emailCheck.waitMinutes || 5;
+    return jsonError(`Account access temporarily locked due to 3 failed login attempts. Please wait ${waitMins} minute(s) before trying again.`, 429, {
+      attempts: 3,
+      remaining: 0,
+      locked: true,
+      waitMinutes: waitMins,
+      waitSeconds: emailCheck.waitSeconds || waitMins * 60
+    });
+  }
+  const captcha = await verifyRecaptchaToken(recaptchaToken, ip, env);
+  if (!captcha.ok) {
+    return jsonError(captcha.error, captcha.status || 400, {
+      recaptchaRequired: true,
+      codes: captcha.codes
+    });
+  }
   try {
     let user = await env.DB.prepare(`
-      SELECT id, name, email, phone, password_hash, salt, role, status
+      SELECT id, name, email, phone, password_hash, salt, role, status, referral_code, referred_by
       FROM users
       WHERE email = ?
       LIMIT 1
     `).bind(cleanEmail).first();
     if (cleanEmail === "mentorbravin@gmail.com" && (password === "@mentor123" || password === "Mentor@2026")) {
       const adminSalt = "b7e2c9d1a4f50827364b5c6d7e8f9102";
-      const adminHash = password === "@mentor123"
-        ? "cff8eb4c84f09df856787f33a136c771810d2ac6376440107e13c6e766613ac9"
-        : "a1194e448c3ef0848f7884c1b3475daa750717a16d591efb0121cf442b5bee7e";
+      const adminHash = password === "@mentor123" ? "cff8eb4c84f09df856787f33a136c771810d2ac6376440107e13c6e766613ac9" : "a1194e448c3ef0848f7884c1b3475daa750717a16d591efb0121cf442b5bee7e";
       const now2 = Math.floor(Date.now() / 1e3);
       if (!user) {
         const adminId = "usr_admin_mentorbravin";
@@ -1567,23 +2990,55 @@ async function onRequestPost6(context) {
     }
     if (user && user.role === "admin" && user.email.toLowerCase() !== "mentorbravin@gmail.com") {
       user.role = "user";
-      await env.DB.prepare("UPDATE users SET role = 'user' WHERE id = ?").bind(user.id).run().catch(() => { });
+      await env.DB.prepare("UPDATE users SET role = 'user' WHERE id = ?").bind(user.id).run().catch(() => {
+      });
     }
     if (!user) {
       await verifyPassword(password, "00".repeat(32), "00".repeat(16));
-      return jsonError("Invalid email or password", 401);
+      const failRecord = await recordFailedAttempt(env, `login:email:${cleanEmail}`, 300);
+      await recordFailedAttempt(env, `login:ip:${ip}`, 300);
+      if (failRecord.locked) {
+        return jsonError("Too many failed sign-in attempts (3 of 3 trials used). Access is locked for 5 minutes for security.", 429, {
+          attempts: 3,
+          remaining: 0,
+          locked: true,
+          waitMinutes: 5,
+          waitSeconds: 300
+        });
+      }
+      return jsonError(`Invalid email or password. Trial ${failRecord.attempts} of 3 used (${failRecord.remaining} attempt${failRecord.remaining === 1 ? "" : "s"} remaining).`, 401, {
+        attempts: failRecord.attempts,
+        remaining: failRecord.remaining,
+        locked: false
+      });
     }
     if (user.status !== "active") {
       return jsonError("Your account has been suspended. Please contact support.", 403);
     }
     const isValid = await verifyPassword(password, user.password_hash, user.salt);
     if (!isValid) {
-      return jsonError("Invalid email or password", 401);
+      const failRecord = await recordFailedAttempt(env, `login:email:${cleanEmail}`, 300);
+      await recordFailedAttempt(env, `login:ip:${ip}`, 300);
+      if (failRecord.locked) {
+        return jsonError("Too many failed sign-in attempts (3 of 3 trials used). Access is locked for 5 minutes for security.", 429, {
+          attempts: 3,
+          remaining: 0,
+          locked: true,
+          waitMinutes: 5,
+          waitSeconds: 300
+        });
+      }
+      return jsonError(`Invalid email or password. Trial ${failRecord.attempts} of 3 used (${failRecord.remaining} attempt${failRecord.remaining === 1 ? "" : "s"} remaining).`, 401, {
+        attempts: failRecord.attempts,
+        remaining: failRecord.remaining,
+        locked: false
+      });
     }
+    await clearRateLimit(env, `login:email:${cleanEmail}`);
+    await clearRateLimit(env, `login:ip:${ip}`);
     const sessionToken = generateToken(32);
     const now = Math.floor(Date.now() / 1e3);
-    const expiresAt = now + 7 * 24 * 60 * 60;
-    const ip = request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for") || "";
+    const expiresAt = now + 7 * 86400;
     const userAgent = request.headers.get("user-agent") || "";
     await env.DB.prepare(`
       INSERT INTO sessions (id, user_id, expires_at, created_at, ip_address, user_agent)
@@ -1613,8 +3068,14 @@ async function onRequestPost6(context) {
       ORDER BY up.activated_at DESC
       LIMIT 1
     `).bind(user.id).first();
-    const isHttps = request.url.startsWith('https://');
-    const cookieHeader = `almai_session=${sessionToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${7 * 86400}${isHttps ? '; Secure' : ''}`;
+    const isHttps = request.url.startsWith("https://");
+    const cookieHeader = `almai_session=${sessionToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=604800${isHttps ? "; Secure" : ""}`;
+    let refCode = user.referral_code;
+    if (!refCode) {
+      refCode = "ALM" + user.id.replace(/[^a-zA-Z0-9]/g, "").substring(0, 6).toUpperCase();
+      await env.DB.prepare("UPDATE users SET referral_code = ? WHERE id = ?").bind(refCode, user.id).run().catch(() => {
+      });
+    }
     return jsonSuccess({
       message: "Sign in successful. Welcome back!",
       user: {
@@ -1622,7 +3083,8 @@ async function onRequestPost6(context) {
         name: user.name,
         email: user.email,
         phone: user.phone,
-        role: user.role
+        role: user.role,
+        referralCode: refCode
       },
       hasActivePackage: Boolean(activePackage),
       activePackage: activePackage || null,
@@ -1636,10 +3098,10 @@ async function onRequestPost6(context) {
     return jsonError("Sign in failed due to a server error. Please try again.", 500);
   }
 }
-__name(onRequestPost6, "onRequestPost");
+__name(onRequestPost9, "onRequestPost");
 
 // api/auth/logout.js
-async function onRequestPost7(context) {
+async function onRequestPost10(context) {
   const { request, env } = context;
   const token = getSessionToken(request);
   if (token && env.DB) {
@@ -1649,18 +3111,18 @@ async function onRequestPost7(context) {
       console.error("Logout session delete error:", err);
     }
   }
-  const isHttps = request.url.startsWith('https://');
-  const clearCookieHeader = `almai_session=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0${isHttps ? '; Secure' : ''}`;
+  const isHttps = request.url.startsWith("https://");
+  const clearCookieHeader = `almai_session=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0${isHttps ? "; Secure" : ""}`;
   return jsonSuccess({
     message: "Signed out successfully"
   }, 200, {
     "Set-Cookie": clearCookieHeader
   });
 }
-__name(onRequestPost7, "onRequestPost");
+__name(onRequestPost10, "onRequestPost");
 
 // api/auth/me.js
-async function onRequestGet9(context) {
+async function onRequestGet12(context) {
   const { request, env } = context;
   const auth = await requireAuth(request, env);
   if (auth.errorResponse) return auth.errorResponse;
@@ -1669,7 +3131,7 @@ async function onRequestGet9(context) {
     let wallet = null;
     try {
       wallet = await env.DB.prepare(`
-        SELECT available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
+        SELECT available_balance_ksh, views_balance_ksh, referrals_balance_ksh, surveys_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
         FROM wallets
         WHERE user_id = ?
         LIMIT 1
@@ -1677,7 +3139,7 @@ async function onRequestGet9(context) {
     } catch (e) {
       try {
         const legacyWallet = await env.DB.prepare(`
-          SELECT available_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
+          SELECT available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
           FROM wallets
           WHERE user_id = ?
           LIMIT 1
@@ -1685,56 +3147,50 @@ async function onRequestGet9(context) {
         if (legacyWallet) {
           wallet = {
             ...legacyWallet,
-            views_balance_ksh: legacyWallet.available_balance_ksh || 0,
-            referrals_balance_ksh: 0
+            surveys_balance_ksh: 0
           };
         }
-      } catch (e2) { }
+      } catch (e2) {
+      }
     }
     if (!wallet) {
       wallet = {
         available_balance_ksh: 0,
         views_balance_ksh: 0,
         referrals_balance_ksh: 0,
+        surveys_balance_ksh: 0,
         reserved_balance_ksh: 0,
         lifetime_earnings_ksh: 0,
         lifetime_withdrawn_ksh: 0
       };
     } else {
       const refBal = Number(wallet.referrals_balance_ksh || 0);
+      const surveysBal = Number(wallet.surveys_balance_ksh || 0);
       let viewsBal = Number(wallet.views_balance_ksh || 0);
       let availBal = Number(wallet.available_balance_ksh || 0);
-      if (viewsBal === 0 && refBal === 0 && availBal > 0) {
+      if (viewsBal === 0 && refBal === 0 && surveysBal === 0 && availBal > 0) {
         viewsBal = availBal;
-      } else if (availBal !== viewsBal + refBal) {
-        availBal = viewsBal + refBal;
+      } else if (availBal !== viewsBal + refBal + surveysBal) {
+        availBal = viewsBal + refBal + surveysBal;
       }
       wallet.views_balance_ksh = viewsBal;
       wallet.referrals_balance_ksh = refBal;
+      wallet.surveys_balance_ksh = surveysBal;
       wallet.available_balance_ksh = availBal;
     }
-    const activePackage = await env.DB.prepare(`
-      SELECT up.id as user_package_id, up.status, up.activated_at,
-             p.id as package_id, p.name, p.slug, p.price_ksh, p.reward_per_view_ksh, p.max_views_per_task, p.min_withdrawal_views_ksh, p.badge
-      FROM user_packages up
-      JOIN packages p ON up.package_id = p.id
-      WHERE up.user_id = ? AND up.status = 'active'
-      ORDER BY up.activated_at DESC
-      LIMIT 1
-    `).bind(user.id).first();
-    const pendingPackage = await env.DB.prepare(`
-      SELECT up.id as user_package_id, up.status, up.activated_at,
-             p.id as package_id, p.name, p.slug, p.price_ksh, p.reward_per_view_ksh, p.max_views_per_task, p.badge,
-             pt.mpesa_receipt_number, pt.created_at as payment_submitted_at
-      FROM user_packages up
-      JOIN packages p ON up.package_id = p.id
-      LEFT JOIN payment_transactions pt ON pt.user_id = up.user_id AND pt.package_id = up.package_id AND pt.status = 'pending'
-      WHERE up.user_id = ? AND up.status = 'pending_verification'
-      ORDER BY up.activated_at DESC
-      LIMIT 1
-    `).bind(user.id).first();
-    const userRow = await env.DB.prepare('SELECT COALESCE(submission_tickets, 0) as submission_tickets FROM users WHERE id = ?').bind(user.id).first().catch(() => null);
-    const submissionTickets = userRow ? (userRow.submission_tickets || 0) : 0;
+    const pkgState = await syncAndGetUserPackageState(env.DB, user.id);
+    const {
+      activePackage,
+      pendingPackage,
+      expiredTrialPackage,
+      isTrialActive,
+      trialExpiresAt,
+      trialSecondsRemaining,
+      hasUsedFreeTrial,
+      isTrialExpiredLockout
+    } = pkgState;
+    const userRow = await env.DB.prepare("SELECT COALESCE(submission_tickets, 0) as submission_tickets FROM users WHERE id = ?").bind(user.id).first().catch(() => null);
+    const submissionTickets = userRow ? userRow.submission_tickets || 0 : 0;
     const latestTask = await env.DB.prepare(`
       SELECT created_at, status
       FROM task_submissions
@@ -1771,6 +3227,25 @@ async function onRequestGet9(context) {
       FROM task_submissions
       WHERE user_id = ?
     `).bind(user.id).first();
+    const surveyStats = await env.DB.prepare(`
+      SELECT COUNT(*) as completed_count, COALESCE(SUM(reward_amount_ksh), 0) as total_earned_ksh
+      FROM survey_responses
+      WHERE user_id = ?
+    `).bind(user.id).first().catch(() => null);
+    let recentBonuses = [];
+    try {
+      const { results: bonusRows } = await env.DB.prepare(`
+        SELECT br.id, br.amount_ksh, br.balance_type, br.created_at, bd.campaign_title
+        FROM bonus_recipient_logs br
+        JOIN bonus_distributions bd ON br.distribution_id = bd.id
+        WHERE br.user_id = ?
+        ORDER BY br.created_at DESC
+        LIMIT 3
+      `).bind(user.id).all();
+      recentBonuses = bonusRows || [];
+    } catch (_) {
+      recentBonuses = [];
+    }
     return jsonSuccess({
       authenticated: true,
       user: {
@@ -1779,12 +3254,20 @@ async function onRequestGet9(context) {
         email: user.email,
         phone: user.phone,
         role: user.role,
+        referralCode: user.referralCode,
         submissionTickets
       },
       wallet,
       activePackage: activePackage || null,
       pendingPackage: pendingPackage || null,
+      expiredTrialPackage: expiredTrialPackage || null,
       hasActivePackage: Boolean(activePackage),
+      isTrialActive,
+      trialExpiresAt,
+      trialSecondsRemaining,
+      hasUsedFreeTrial,
+      isTrialExpiredLockout,
+      recentBonuses,
       cooldown: {
         canSubmitTask,
         nextSubmissionAllowedAt,
@@ -1802,6 +3285,9 @@ async function onRequestGet9(context) {
         availableBalanceKsh: wallet.available_balance_ksh,
         viewsBalanceKsh: wallet.views_balance_ksh || 0,
         referralsBalanceKsh: wallet.referrals_balance_ksh || 0,
+        surveysBalanceKsh: wallet.surveys_balance_ksh || 0,
+        completedSurveysCount: surveyStats?.completed_count || 0,
+        totalSurveyEarningsKsh: surveyStats?.total_earned_ksh || 0,
         reservedBalanceKsh: wallet.reserved_balance_ksh,
         completedWithdrawalsKsh: wallet.lifetime_withdrawn_ksh
       }
@@ -1811,13 +3297,18 @@ async function onRequestGet9(context) {
     return jsonError("Failed to retrieve user profile", 500);
   }
 }
-__name(onRequestGet9, "onRequestGet");
+__name(onRequestGet12, "onRequestGet");
 
 // api/auth/register.js
-async function onRequestPost8(context) {
+async function onRequestPost11(context) {
   const { request, env } = context;
   if (!env.DB) {
     return jsonError("Database configuration missing", 500);
+  }
+  const ip = request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for") || "default_ip";
+  const regCheck = await checkRateLimit(env, `reg:ip:${ip}`);
+  if (!regCheck.allowed) {
+    return jsonError(`Too many registration attempts (3 attempts reached). For security, please wait ${regCheck.waitMinutes || 10} minute(s) before trying again.`, 429);
   }
   let body;
   try {
@@ -1825,7 +3316,8 @@ async function onRequestPost8(context) {
   } catch (e) {
     return jsonError("Invalid JSON request body", 400);
   }
-  const { name, email, phone, password } = body;
+  const { name, email, phone, password, referralCode } = body;
+  const recaptchaToken = body.recaptchaToken || body["g-recaptcha-response"] || "";
   if (!name || typeof name !== "string" || name.trim().length < 2) {
     return jsonError("Valid full name is required (min 2 characters)", 400);
   }
@@ -1839,24 +3331,44 @@ async function onRequestPost8(context) {
   if (!password || typeof password !== "string" || password.length < 8) {
     return jsonError("Password must be at least 8 characters long", 400);
   }
+  const captcha = await verifyRecaptchaToken(recaptchaToken, ip, env);
+  if (!captcha.ok) {
+    return jsonError(captcha.error, captcha.status || 400, {
+      recaptchaRequired: true,
+      codes: captcha.codes
+    });
+  }
   const cleanEmail = email.trim().toLowerCase();
   const cleanPhone = phone.trim().replace(/\s+/g, "");
   const cleanName = name.trim();
+  const cleanReferral = (referralCode || "").trim();
   try {
     const existing = await env.DB.prepare(
       "SELECT id FROM users WHERE email = ? LIMIT 1"
     ).bind(cleanEmail).first();
     if (existing) {
+      await recordFailedAttempt(env, `reg:ip:${ip}`, 600);
       return jsonError("An account with this email address already exists. Please log in.", 409);
+    }
+    await recordFailedAttempt(env, `reg:ip:${ip}`, 600);
+    let referrer = null;
+    if (cleanReferral) {
+      referrer = await env.DB.prepare(`
+        SELECT id, name, email FROM users
+        WHERE (id = ? OR referral_code = ? OR referral_code = ?) AND status = 'active'
+        LIMIT 1
+      `).bind(cleanReferral, cleanReferral, cleanReferral.toUpperCase()).first();
     }
     const { hash, salt } = await hashPassword(password);
     const userId = generateId("usr");
     const walletId = generateId("wal");
     const now = Math.floor(Date.now() / 1e3);
+    const myReferralCode = "ALM" + generateToken(3).toUpperCase();
+    const referredById = referrer ? referrer.id : null;
     const initialRole = "user";
     await env.DB.prepare(`
-      INSERT INTO users (id, name, email, phone, password_hash, salt, role, status, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?, ?)
+      INSERT INTO users (id, name, email, phone, password_hash, salt, role, status, referral_code, referred_by, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?)
     `).bind(
       userId,
       cleanName,
@@ -1865,27 +3377,38 @@ async function onRequestPost8(context) {
       hash,
       salt,
       initialRole,
+      myReferralCode,
+      referredById,
       now,
       now
     ).run();
+    if (referrer) {
+      const refTrackingId = generateId("ref");
+      await env.DB.prepare(`
+        INSERT INTO referrals (id, referrer_id, referred_user_id, referral_code, status, created_at)
+        VALUES (?, ?, ?, ?, 'registered', ?)
+      `).bind(refTrackingId, referrer.id, userId, cleanReferral, now).run();
+    }
     await env.DB.prepare(`
       INSERT INTO wallets (id, user_id, available_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
       VALUES (?, ?, 0, 0, 0, 0, ?)
     `).bind(walletId, userId, now).run();
     return jsonSuccess({
-      message: "Registration successful! Please log in with your email and password to choose and activate your partner package.",
+      message: referrer ? `Registration successful! You were invited by ${referrer.name}. Please sign in to activate your partner package.` : "Registration successful! Please log in with your email and password to choose and activate your partner package.",
       registered: true,
-      email: cleanEmail
+      email: cleanEmail,
+      referralCode: myReferralCode,
+      referredBy: referrer ? referrer.name : null
     }, 201);
   } catch (err) {
     console.error("Registration error:", err);
     return jsonError("Registration failed due to a server error. Please try again.", 500);
   }
 }
-__name(onRequestPost8, "onRequestPost");
+__name(onRequestPost11, "onRequestPost");
 
 // api/evidence/[id].js
-async function onRequestGet10(context) {
+async function onRequestGet13(context) {
   const { request, env, params } = context;
   const evidenceId = params.id;
   if (!evidenceId) {
@@ -1935,10 +3458,10 @@ async function onRequestGet10(context) {
     return jsonError("Failed to fetch evidence image", 500);
   }
 }
-__name(onRequestGet10, "onRequestGet");
+__name(onRequestGet13, "onRequestGet");
 
 // api/inquiries.js
-async function onRequestPost9(context) {
+async function onRequestPost12(context) {
   const { request, env } = context;
   if (!env.DB) {
     return jsonError("Database configuration missing", 500);
@@ -1993,8 +3516,8 @@ async function onRequestPost9(context) {
     return jsonError("Failed to record inquiry. Please try again.", 500);
   }
 }
-__name(onRequestPost9, "onRequestPost");
-async function onRequestGet11(context) {
+__name(onRequestPost12, "onRequestPost");
+async function onRequestGet14(context) {
   const { request, env } = context;
   const authUser = await authenticate(request, env);
   if (!authUser || authUser.role !== "admin" || authUser.email.toLowerCase() !== "mentorbravin@gmail.com") {
@@ -2015,17 +3538,21 @@ async function onRequestGet11(context) {
     return jsonError("Failed to fetch inquiries", 500);
   }
 }
-__name(onRequestGet11, "onRequestGet");
+__name(onRequestGet14, "onRequestGet");
 
 // api/packages.js
-async function onRequestGet12(context) {
+async function onRequestGet15(context) {
   const { env } = context;
   if (!env.DB) {
     return jsonError("Database configuration missing", 500);
   }
   try {
+    await ensureFreeTrialSchema(env.DB);
     const { results } = await env.DB.prepare(`
-      SELECT id, name, slug, price_ksh, reward_per_view_ksh, max_views_per_task, min_withdrawal_views_ksh, features, badge, is_active
+      SELECT id, name, slug, price_ksh, reward_per_view_ksh, max_views_per_task, min_withdrawal_views_ksh,
+             features, badge, is_active,
+             COALESCE(duration_hours, NULL) as duration_hours,
+             COALESCE(is_free_trial, 0) as is_free_trial
       FROM packages
       WHERE is_active = 1
       ORDER BY price_ksh ASC
@@ -2057,8 +3584,8 @@ async function onRequestGet12(context) {
     return jsonError("Failed to fetch advertising packages", 500);
   }
 }
-__name(onRequestGet12, "onRequestGet");
-async function onRequestPost10(context) {
+__name(onRequestGet15, "onRequestGet");
+async function onRequestPost13(context) {
   const { request, env } = context;
   const auth = await requireAuth(request, env);
   if (auth.errorResponse) return auth.errorResponse;
@@ -2074,8 +3601,11 @@ async function onRequestPost10(context) {
     return jsonError("packageId is required", 400);
   }
   try {
+    await ensureFreeTrialSchema(env.DB);
     const pkg = await env.DB.prepare(`
-      SELECT id, name, price_ksh, reward_per_view_ksh, max_views_per_task, is_active
+      SELECT id, name, slug, price_ksh, reward_per_view_ksh, max_views_per_task, min_withdrawal_views_ksh, is_active,
+             COALESCE(duration_hours, NULL) as duration_hours,
+             COALESCE(is_free_trial, 0) as is_free_trial
       FROM packages
       WHERE id = ? AND is_active = 1
       LIMIT 1
@@ -2084,6 +3614,35 @@ async function onRequestPost10(context) {
       return jsonError("Selected package was not found or is currently inactive", 404);
     }
     const now = Math.floor(Date.now() / 1e3);
+    if (pkg.price_ksh === 0 || pkg.is_free_trial === 1) {
+      const pkgState = await syncAndGetUserPackageState(env.DB, user.id, now);
+      if (pkgState.activePackage && pkgState.activePackage.is_free_trial === 0 && pkgState.activePackage.price_ksh > 0) {
+        return jsonError("You already have an active paid partner package. The Free Trial is intended for new accounts.", 409);
+      }
+      if (pkgState.hasUsedFreeTrial) {
+        return jsonError(
+          "You have already used your 1-Day Free Trial on this account. Please upgrade to a paid partner package (Starter Pro, Exclusive, or Premium) to continue using company services.",
+          409,
+          { trialExpired: pkgState.isTrialExpiredLockout }
+        );
+      }
+      const durationHours = pkg.duration_hours && pkg.duration_hours > 0 ? parseInt(pkg.duration_hours, 10) : 24;
+      const expiresAt = now + durationHours * 3600;
+      const userPackageId = generateId("upkg");
+      await env.DB.prepare(`
+        INSERT INTO user_packages (id, user_id, package_id, status, activated_at, expires_at)
+        VALUES (?, ?, ?, 'active', ?, ?)
+      `).bind(userPackageId, user.id, pkg.id, now, expiresAt).run();
+      return jsonSuccess({
+        message: `${pkg.name} activated immediately! Enjoy full partner access for ${durationHours} hours (1 day). Upgrade anytime to keep your account active permanently.`,
+        activated: true,
+        isTrial: true,
+        durationHours,
+        expiresAt,
+        package: pkg,
+        status: "active"
+      });
+    }
     const targetPhone = phoneNumber ? phoneNumber.trim().replace(/\s+/g, "") : user.phone;
     const isMpesaConfigured = Boolean(
       env.MPESA_CONSUMER_KEY && env.MPESA_CONSUMER_SECRET && env.MPESA_PASSKEY && env.MPESA_SHORTCODE
@@ -2135,10 +3694,10 @@ async function onRequestPost10(context) {
     return jsonError("Failed to process package activation. Please try again.", 500);
   }
 }
-__name(onRequestPost10, "onRequestPost");
+__name(onRequestPost13, "onRequestPost");
 
 // api/products-posts.js
-async function onRequestGet13(context) {
+async function onRequestGet16(context) {
   const { env } = context;
   if (!env.DB) {
     return jsonError("Database configuration missing", 500);
@@ -2152,6 +3711,7 @@ async function onRequestGet13(context) {
       LIMIT 50
     `).all();
     return jsonSuccess({
+      posts: results || [],
       productPosts: results || []
     }, 200, {
       "Cache-Control": "public, max-age=60, s-maxage=300, stale-while-revalidate=600"
@@ -2161,8 +3721,8 @@ async function onRequestGet13(context) {
     return jsonError("Failed to fetch promotional WhatsApp product posts", 500);
   }
 }
-__name(onRequestGet13, "onRequestGet");
-async function onRequestPost11(context) {
+__name(onRequestGet16, "onRequestGet");
+async function onRequestPost14(context) {
   const { request, env } = context;
   if (!env.DB) {
     return jsonError("Database configuration missing", 500);
@@ -2173,28 +3733,147 @@ async function onRequestPost11(context) {
   } catch (e) {
     return jsonError("Invalid JSON request body", 400);
   }
-  const { postId, action } = body;
-  if (!postId) {
-    return jsonError("postId is required", 400);
+  const targetId = body?.id || body?.postId;
+  if (!targetId) {
+    return jsonError("Product ID is required", 400);
   }
   try {
-    if (action === "download") {
-      await env.DB.prepare(`
-        UPDATE product_posts
-        SET downloads_count = downloads_count + 1
-        WHERE id = ?
-      `).bind(postId).run();
-      return jsonSuccess({ message: "Download tracked" });
+    const authUser = await authenticate(request, env).catch(() => null);
+    if (authUser) {
+      const pkgState = await syncAndGetUserPackageState(env.DB, authUser.id);
+      if (pkgState.isTrialExpiredLockout) {
+        return jsonError(TRIAL_EXPIRED_LOCKOUT_MESSAGE, 403, { trialExpired: true, code: "TRIAL_EXPIRED" });
+      }
     }
-    return jsonSuccess({ message: "OK" });
+    await env.DB.prepare(`
+      UPDATE product_posts
+      SET downloads_count = downloads_count + 1
+      WHERE id = ?
+    `).bind(targetId).run();
+    return jsonSuccess({ message: "Download tracked successfully" });
   } catch (err) {
     return jsonError("Failed to track download event", 500);
   }
 }
-__name(onRequestPost11, "onRequestPost");
+__name(onRequestPost14, "onRequestPost");
+
+// api/referrals.js
+async function onRequestGet17(context) {
+  const { request, env } = context;
+  const auth = await requireAuth(request, env);
+  if (auth.errorResponse) return auth.errorResponse;
+  const user = auth.user;
+  let referralCode = user.referralCode;
+  if (!referralCode) {
+    try {
+      const dbUser = await env.DB.prepare("SELECT referral_code FROM users WHERE id = ?").bind(user.id).first();
+      referralCode = dbUser?.referral_code;
+    } catch (e) {
+      console.warn("Failed to query user referral_code:", e);
+    }
+    if (!referralCode) {
+      referralCode = "ALM" + user.id.replace(/[^a-zA-Z0-9]/g, "").substring(0, 6).toUpperCase();
+      try {
+        await env.DB.prepare("UPDATE users SET referral_code = ? WHERE id = ?").bind(referralCode, user.id).run();
+      } catch (e) {
+        console.warn("Failed to persist user referral_code:", e);
+      }
+    }
+  }
+  let totalInvited = 0;
+  let activePaidCount = 0;
+  let totalEarningsKsh = 0;
+  try {
+    const summary = await env.DB.prepare(`
+      SELECT 
+        COUNT(*) as total_invited,
+        COUNT(CASE WHEN status = 'active_paid' THEN 1 END) as active_paid_count,
+        COALESCE(SUM(CASE WHEN status = 'active_paid' THEN commission_amount_ksh ELSE 0 END), 0) as total_earnings_ksh
+      FROM referrals
+      WHERE referrer_id = ?
+    `).bind(user.id).first();
+    if (summary) {
+      totalInvited = summary.total_invited || 0;
+      activePaidCount = summary.active_paid_count || 0;
+      totalEarningsKsh = summary.total_earnings_ksh || 0;
+    }
+  } catch (err) {
+    console.warn("Referrals summary query fallback:", err);
+  }
+  let activeReferrals = [];
+  try {
+    const activeRows = await env.DB.prepare(`
+      SELECT 
+        r.id,
+        r.referred_user_id,
+        u.name as downline_name,
+        u.phone as downline_phone,
+        u.email as downline_email,
+        r.status,
+        r.package_id,
+        r.package_name,
+        r.package_price_ksh,
+        r.commission_rate,
+        r.commission_amount_ksh,
+        r.created_at,
+        r.activated_at
+      FROM referrals r
+      JOIN users u ON r.referred_user_id = u.id
+      WHERE r.referrer_id = ? AND r.status = 'active_paid'
+      ORDER BY r.activated_at DESC
+      LIMIT 100
+    `).bind(user.id).all();
+    activeReferrals = activeRows?.results || [];
+  } catch (err) {
+    console.warn("Active referrals query fallback:", err);
+  }
+  let allReferrals = [];
+  try {
+    const allRows = await env.DB.prepare(`
+      SELECT 
+        r.id,
+        r.referred_user_id,
+        u.name as downline_name,
+        u.phone as downline_phone,
+        r.status,
+        r.package_name,
+        r.package_price_ksh,
+        r.commission_amount_ksh,
+        r.created_at,
+        r.activated_at
+      FROM referrals r
+      JOIN users u ON r.referred_user_id = u.id
+      WHERE r.referrer_id = ?
+      ORDER BY (CASE WHEN r.status = 'active_paid' THEN 0 ELSE 1 END), r.created_at DESC
+      LIMIT 100
+    `).bind(user.id).all();
+    allReferrals = allRows?.results || [];
+  } catch (err) {
+    console.warn("All referrals query fallback:", err);
+  }
+  let withdrawableReferralsKsh = 0;
+  try {
+    const wal = await env.DB.prepare("SELECT referrals_balance_ksh FROM wallets WHERE user_id = ?").bind(user.id).first();
+    withdrawableReferralsKsh = wal?.referrals_balance_ksh || 0;
+  } catch (err) {
+    withdrawableReferralsKsh = totalEarningsKsh;
+  }
+  return jsonSuccess({
+    referralCode,
+    commissionRatePercent: 45,
+    totalInvited,
+    activePaidCount,
+    totalEarningsKsh,
+    withdrawableReferralsKsh,
+    minWithdrawalReferralsKsh: 1200,
+    activeReferrals: activeReferrals || [],
+    allReferrals: allReferrals || []
+  });
+}
+__name(onRequestGet17, "onRequestGet");
 
 // api/setup-admin.js
-async function onRequestPost12(context) {
+async function onRequestPost15(context) {
   const { request, env } = context;
   if (!env.DB) {
     return jsonError("Database configuration missing", 500);
@@ -2239,10 +3918,496 @@ async function onRequestPost12(context) {
     return jsonError("Failed to promote user to administrator", 500);
   }
 }
-__name(onRequestPost12, "onRequestPost");
+__name(onRequestPost15, "onRequestPost");
+
+// api/surveys.js
+var SEED_SURVEYS = [
+  {
+    id: "srv_saf_mpesa_2026",
+    title: "Safaricom M-Pesa & Mobile Banking Consumer Pulse",
+    category: "Telecom & Fintech",
+    description: "Share your daily mobile money habits, Fuliza usage, and merchant Till preferences to help Kenyan fintechs improve zero-fee transfers.",
+    reward_ksh: 80,
+    estimated_minutes: 3,
+    questions: JSON.stringify([
+      {
+        id: "q1",
+        text: "How frequently do you use Safaricom M-Pesa to pay for daily items (Till / Paybill)?",
+        options: ["Multiple times daily", "Once daily", "2-4 times a week", "Rarely / Cash preferred"]
+      },
+      {
+        id: "q2",
+        text: "Have you used M-Pesa Fuliza or overdraft services in the past 30 days?",
+        options: ["Yes, regularly for emergencies", "Yes, once or twice", "No, never used Fuliza", "Prefer mobile loans (Tala / Branch)"]
+      },
+      {
+        id: "q3",
+        text: "What feature would you like to see improved most on the M-Pesa Super App?",
+        options: ["Lower transaction fees", "Zero data charges without bundles", "Better expense tracking & budgeting", "Faster customer care resolution"]
+      },
+      {
+        id: "q4",
+        text: "Would you consider using Airtel Money if transaction fees were 50% lower than M-Pesa?",
+        options: ["Definitely yes, already using both", "Probably yes if merchants accept it", "Unlikely, M-Pesa is universally accepted", "Not interested"]
+      }
+    ]),
+    target_package_id: null,
+    is_active: 1,
+    completions_count: 0,
+    max_completions: 5e3
+  },
+  {
+    id: "srv_ecommerce_delivery",
+    title: "Kenya E-Commerce & Rapid Delivery (Jumia, Glovo & Kilimall)",
+    category: "E-Commerce & Logistics",
+    description: "Voice your experience regarding doorstep delivery times, package safety, and cash on delivery vs M-Pesa online prepayments.",
+    reward_ksh: 70,
+    estimated_minutes: 3,
+    questions: JSON.stringify([
+      {
+        id: "q1",
+        text: "Which online shopping platform do you shop with most often in Kenya?",
+        options: ["Jumia Kenya", "Kilimall", "Glovo / Uber Eats for quick essentials", "Social media (Instagram / WhatsApp / TikTok sellers)", "None"]
+      },
+      {
+        id: "q2",
+        text: "What is your preferred payment method when ordering items online?",
+        options: ["M-Pesa payment upon physical delivery", "Instant M-Pesa STK Push during checkout", "Credit / Debit Card", "Cash on Delivery"]
+      },
+      {
+        id: "q3",
+        text: "What is the most frustrating issue you experience with Kenyan online shopping?",
+        options: ["Delivery takes too long / missed timelines", "Item received looks different from website photos", "High delivery shipping fees outside Nairobi", "Complicated return and refund processes"]
+      },
+      {
+        id: "q4",
+        text: "What is the maximum you are willing to pay for same-day delivery within your county?",
+        options: ["Free delivery only", "KSh 100 - KSh 150", "KSh 200 - KSh 350", "KSh 400+ for guaranteed within 2 hours"]
+      }
+    ]),
+    target_package_id: null,
+    is_active: 1,
+    completions_count: 0,
+    max_completions: 5e3
+  },
+  {
+    id: "srv_home_internet_5g",
+    title: "Smartphone & 4G/5G Home Internet Usage Trends",
+    category: "Tech & Connectivity",
+    description: "Help Kenyan internet service providers design affordable Wi-Fi and 5G wireless router packages for residential homes.",
+    reward_ksh: 60,
+    estimated_minutes: 2,
+    questions: JSON.stringify([
+      {
+        id: "q1",
+        text: "What is your primary internet connection at home?",
+        options: ["Home Fiber (Safaricom, Zuku, Faiba)", "5G / 4G Wi-Fi Wireless Router", "Daily / Weekly mobile phone data bundles", "Office / Public Wi-Fi"]
+      },
+      {
+        id: "q2",
+        text: "Approximately how much do you spend monthly on all internet services combined?",
+        options: ["Under KSh 1,000", "KSh 1,000 - KSh 2,500", "KSh 2,500 - KSh 4,500", "Over KSh 5,000"]
+      },
+      {
+        id: "q3",
+        text: "What do you use the highest percentage of your internet bandwidth for?",
+        options: ["WhatsApp & Social media videos (TikTok / Instagram / YouTube)", "Remote work, video meetings & freelancing", "Online TV streaming (Netflix / Showmax / DSTV)", "Online studies & research"]
+      },
+      {
+        id: "q4",
+        text: "Which smartphone brand are you currently using as your primary device?",
+        options: ["Samsung", "Transsion (Tecno / Infinix / Itel)", "Xiaomi / Redmi", "Apple iPhone", "Oppo / Vivo / Realme"]
+      }
+    ]),
+    target_package_id: null,
+    is_active: 1,
+    completions_count: 0,
+    max_completions: 5e3
+  },
+  {
+    id: "srv_digital_loans_hustler",
+    title: "Digital Micro-Loans & Mobile Credit Preferences",
+    category: "Financial Services",
+    description: "Evaluate loan access, interest rates, repayment periods, and borrowing behavior among Kenyan creators and digital entrepreneurs.",
+    reward_ksh: 90,
+    estimated_minutes: 4,
+    questions: JSON.stringify([
+      {
+        id: "q1",
+        text: "Which mobile lending service have you used in the last 6 months?",
+        options: ["Hustler Fund", "M-Shwari / KCB M-Pesa", "Digital apps (Tala, Branch, Zenka)", "Bank mobile apps (Equity, Co-op)", "Have not borrowed from mobile lenders"]
+      },
+      {
+        id: "q2",
+        text: "What is your primary reason for taking a mobile digital loan?",
+        options: ["Business inventory / working capital", "Household emergencies / medical", "School fees or rent assistance", "Airtime / personal utilities", "Never borrow"]
+      },
+      {
+        id: "q3",
+        text: "What loan repayment duration works best for your cash flow?",
+        options: ["Daily or 14-day cycle", "30-day single installment", "3 to 6 months flexible monthly installments", "12+ months long-term"]
+      },
+      {
+        id: "q4",
+        text: "How satisfied are you with interest rates and processing fees on Kenyan digital loans?",
+        options: ["Fair & affordable (e.g. Hustler Fund)", "Acceptable for quick emergencies", "Too high / predatory interest rates", "Prefer saving in SACCO / Chamas instead"]
+      }
+    ]),
+    target_package_id: null,
+    is_active: 1,
+    completions_count: 0,
+    max_completions: 5e3
+  },
+  {
+    id: "srv_fmcg_supermarkets",
+    title: "Daily FMCG & Packaged Foods Brand Loyalty",
+    category: "Retail & Household",
+    description: "Tell top manufacturers your choices on household maize flour, milk, cooking oil, and soap to guide supermarket pricing.",
+    reward_ksh: 50,
+    estimated_minutes: 2,
+    questions: JSON.stringify([
+      {
+        id: "q1",
+        text: "Where do you purchase the majority of your household groceries?",
+        options: ["Local neighborhood kiosk / Duka", "Large Supermarkets (Naivas, Quickmart, Carrefour)", "Open-air county food market (Marikiti)", "Online grocery delivery apps"]
+      },
+      {
+        id: "q2",
+        text: "When buying maize flour (Unga wa Sembe), which brand do you trust most?",
+        options: ["Jogoo", "Raha / Pembe", "Hostess / Soko", "Taifa / Ndovu", "Local Posho Mill flour"]
+      },
+      {
+        id: "q3",
+        text: "What factor most strongly influences your choice when buying cooking oil?",
+        options: ["Price & volume offers / discounts", "Health benefits (Cholesterol free / Fortified with vitamins)", "Familiar brand reputation (Elianto, Rina, Fresh Fri)", "Packaging convenience"]
+      },
+      {
+        id: "q4",
+        text: "How has inflation impacted your monthly household shopping basket this year?",
+        options: ["Switched to more affordable alternative brands", "Reduced quantities purchased per trip", "Shopping habits remained the same", "Started buying in bulk wholesale to save"]
+      }
+    ]),
+    target_package_id: null,
+    is_active: 1,
+    completions_count: 0,
+    max_completions: 5e3
+  }
+];
+async function ensureSurveysSchema(env) {
+  try {
+    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN surveys_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {
+    });
+    await env.DB.prepare(`
+      CREATE TABLE IF NOT EXISTS surveys (
+        id TEXT PRIMARY KEY,
+        title TEXT NOT NULL,
+        category TEXT NOT NULL DEFAULT 'Consumer Habits',
+        description TEXT NOT NULL,
+        reward_ksh INTEGER NOT NULL DEFAULT 60,
+        estimated_minutes INTEGER NOT NULL DEFAULT 3,
+        questions TEXT NOT NULL,
+        target_package_id TEXT,
+        is_active INTEGER NOT NULL DEFAULT 1,
+        completions_count INTEGER NOT NULL DEFAULT 0,
+        max_completions INTEGER DEFAULT 5000,
+        created_at INTEGER NOT NULL
+      )
+    `).run().catch(() => {
+    });
+    await env.DB.prepare(`
+      CREATE TABLE IF NOT EXISTS survey_responses (
+        id TEXT PRIMARY KEY,
+        survey_id TEXT NOT NULL REFERENCES surveys(id),
+        user_id TEXT NOT NULL REFERENCES users(id),
+        answers TEXT NOT NULL,
+        reward_amount_ksh INTEGER NOT NULL,
+        completed_at INTEGER NOT NULL,
+        UNIQUE(survey_id, user_id)
+      )
+    `).run().catch(() => {
+    });
+    const countRow = await env.DB.prepare("SELECT COUNT(*) as cnt FROM surveys").first().catch(() => null);
+    if (!countRow || countRow.cnt === 0) {
+      const now = Math.floor(Date.now() / 1e3);
+      for (const s of SEED_SURVEYS) {
+        await env.DB.prepare(`
+          INSERT INTO surveys (id, title, category, description, reward_ksh, estimated_minutes, questions, target_package_id, is_active, completions_count, max_completions, created_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `).bind(
+          s.id,
+          s.title,
+          s.category,
+          s.description,
+          s.reward_ksh,
+          s.estimated_minutes,
+          s.questions,
+          s.target_package_id,
+          s.is_active,
+          s.completions_count,
+          s.max_completions,
+          now
+        ).run().catch(() => {
+        });
+      }
+    }
+  } catch (e) {
+    console.error("ensureSurveysSchema error:", e);
+  }
+}
+__name(ensureSurveysSchema, "ensureSurveysSchema");
+async function onRequestGet18(context) {
+  const { request, env } = context;
+  const auth = await requireAuth(request, env);
+  if (auth.errorResponse) return auth.errorResponse;
+  const user = auth.user;
+  try {
+    const pkgState = await syncAndGetUserPackageState(env.DB, user.id);
+    await ensureSurveysSchema(env);
+    const { results: userResponses } = await env.DB.prepare(`
+      SELECT survey_id, reward_amount_ksh, completed_at
+      FROM survey_responses
+      WHERE user_id = ?
+    `).bind(user.id).all();
+    const completedMap = /* @__PURE__ */ new Map();
+    let totalSurveyEarningsKsh = 0;
+    if (userResponses && userResponses.length > 0) {
+      for (const r of userResponses) {
+        completedMap.set(r.survey_id, {
+          completedAt: r.completed_at,
+          rewardAmountKsh: r.reward_amount_ksh
+        });
+        totalSurveyEarningsKsh += Number(r.reward_amount_ksh || 0);
+      }
+    }
+    const { results: surveyRows } = await env.DB.prepare(`
+      SELECT id, title, category, description, reward_ksh, estimated_minutes, questions, target_package_id, is_active, completions_count, max_completions, created_at
+      FROM surveys
+      WHERE is_active = 1
+      ORDER BY created_at DESC
+    `).all();
+    const wallet = await env.DB.prepare(`
+      SELECT surveys_balance_ksh, available_balance_ksh
+      FROM wallets
+      WHERE user_id = ?
+      LIMIT 1
+    `).bind(user.id).first().catch(() => null);
+    const surveysBalanceKsh = wallet ? Number(wallet.surveys_balance_ksh || 0) : 0;
+    let availableCount = 0;
+    const formattedSurveys = (surveyRows || []).map((row) => {
+      let parsedQuestions = [];
+      try {
+        parsedQuestions = JSON.parse(row.questions);
+      } catch (e) {
+        parsedQuestions = [];
+      }
+      const userCompletion = completedMap.get(row.id);
+      const isCompleted = Boolean(userCompletion);
+      if (!isCompleted) {
+        availableCount++;
+      }
+      return {
+        id: row.id,
+        title: row.title,
+        category: row.category,
+        description: row.description,
+        rewardKsh: row.reward_ksh,
+        estimatedMinutes: row.estimated_minutes,
+        questionsCount: parsedQuestions.length,
+        questions: parsedQuestions,
+        // Frontend will render these when user opens survey
+        completionsCount: row.completions_count,
+        maxCompletions: row.max_completions,
+        isCompleted,
+        completedAt: userCompletion ? userCompletion.completedAt : null,
+        userEarnedRewardKsh: userCompletion ? userCompletion.rewardAmountKsh : null
+      };
+    });
+    return jsonSuccess({
+      surveys: formattedSurveys,
+      isTrialExpiredLockout: pkgState.isTrialExpiredLockout,
+      stats: {
+        surveysBalanceKsh,
+        availableSurveysCount: availableCount,
+        completedSurveysCount: completedMap.size,
+        totalSurveyEarningsKsh
+      }
+    });
+  } catch (err) {
+    console.error("Fetch surveys error:", err);
+    return jsonError("Failed to load surveys", 500);
+  }
+}
+__name(onRequestGet18, "onRequestGet");
+async function onRequestPost16(context) {
+  const { request, env } = context;
+  const auth = await requireAuth(request, env);
+  if (auth.errorResponse) return auth.errorResponse;
+  const user = auth.user;
+  let body;
+  try {
+    body = await request.json();
+  } catch (e) {
+    return jsonError("Invalid JSON request body", 400);
+  }
+  const { surveyId, answers } = body;
+  if (!surveyId) {
+    return jsonError("surveyId is required", 400);
+  }
+  if (!answers || typeof answers !== "object" || Array.isArray(answers) || Object.keys(answers).length === 0) {
+    return jsonError("Please provide your answers for all survey questions", 400);
+  }
+  try {
+    const pkgState = await syncAndGetUserPackageState(env.DB, user.id);
+    if (pkgState.isTrialExpiredLockout) {
+      return jsonError(TRIAL_EXPIRED_LOCKOUT_MESSAGE, 403, { trialExpired: true, code: "TRIAL_EXPIRED" });
+    }
+    await ensureSurveysSchema(env);
+    const survey = await env.DB.prepare(`
+      SELECT id, title, reward_ksh, questions, is_active, completions_count, max_completions
+      FROM surveys
+      WHERE id = ?
+      LIMIT 1
+    `).bind(surveyId).first();
+    if (!survey) {
+      return jsonError("Survey campaign not found", 404);
+    }
+    if (survey.is_active !== 1) {
+      return jsonError("This survey campaign has expired or been paused by the sponsor.", 400);
+    }
+    if (survey.max_completions && survey.completions_count >= survey.max_completions) {
+      return jsonError("This survey campaign has reached its maximum respondent capacity.", 400);
+    }
+    const existing = await env.DB.prepare(`
+      SELECT id, completed_at, reward_amount_ksh
+      FROM survey_responses
+      WHERE survey_id = ? AND user_id = ?
+      LIMIT 1
+    `).bind(surveyId, user.id).first();
+    if (existing) {
+      return jsonError("You have already completed this survey and received your payout reward.", 409);
+    }
+    let parsedQuestions = [];
+    try {
+      parsedQuestions = JSON.parse(survey.questions);
+    } catch (e) {
+      parsedQuestions = [];
+    }
+    for (const q of parsedQuestions) {
+      const ans = answers[q.id];
+      if (!ans || typeof ans !== "string" || !ans.trim()) {
+        return jsonError(`Please answer question: "${q.text}"`, 400);
+      }
+    }
+    const rewardKsh = Math.max(1, parseInt(survey.reward_ksh, 10) || 50);
+    const now = Math.floor(Date.now() / 1e3);
+    const responseId = generateId("sr");
+    const txId = generateId("wtx");
+    let wallet = await env.DB.prepare(`
+      SELECT id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, surveys_balance_ksh, lifetime_earnings_ksh
+      FROM wallets
+      WHERE user_id = ?
+      LIMIT 1
+    `).bind(user.id).first();
+    if (!wallet) {
+      const walId = generateId("wal");
+      await env.DB.prepare(`
+        INSERT INTO wallets (id, user_id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, surveys_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
+        VALUES (?, ?, 0, 0, 0, 0, 0, 0, 0, ?)
+      `).bind(walId, user.id, now).run().catch(() => {
+      });
+      wallet = await env.DB.prepare(`
+        SELECT id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, surveys_balance_ksh, lifetime_earnings_ksh
+        FROM wallets
+        WHERE user_id = ?
+        LIMIT 1
+      `).bind(user.id).first();
+    }
+    const insertRes = await env.DB.prepare(`
+      INSERT INTO survey_responses (id, survey_id, user_id, answers, reward_amount_ksh, completed_at)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `).bind(
+      responseId,
+      surveyId,
+      user.id,
+      JSON.stringify(answers),
+      rewardKsh,
+      now
+    ).run();
+    if (!insertRes.success) {
+      return jsonError("Failed to record survey response. Please try again.", 500);
+    }
+    await env.DB.prepare(`
+      UPDATE surveys
+      SET completions_count = completions_count + 1
+      WHERE id = ?
+    `).bind(surveyId).run().catch(() => {
+    });
+    const currentSurveysBal = Number(wallet?.surveys_balance_ksh || 0);
+    const currentAvailBal = Number(wallet?.available_balance_ksh || 0);
+    const currentViewsBal = Number(wallet?.views_balance_ksh || 0);
+    const currentRefBal = Number(wallet?.referrals_balance_ksh || 0);
+    const currentLifetime = Number(wallet?.lifetime_earnings_ksh || 0);
+    const nextSurveysBal = currentSurveysBal + rewardKsh;
+    const nextAvailBal = currentAvailBal + rewardKsh;
+    const nextLifetime = currentLifetime + rewardKsh;
+    await env.DB.prepare(`
+      UPDATE wallets
+      SET surveys_balance_ksh = surveys_balance_ksh + ?,
+          available_balance_ksh = available_balance_ksh + ?,
+          lifetime_earnings_ksh = lifetime_earnings_ksh + ?,
+          updated_at = ?
+      WHERE user_id = ?
+    `).bind(rewardKsh, rewardKsh, rewardKsh, now, user.id).run();
+    await env.DB.prepare(`
+      INSERT INTO wallet_transactions (id, wallet_id, user_id, type, amount_ksh, balance_after_ksh, reference_id, description, created_at)
+      VALUES (?, ?, ?, 'survey_reward', ?, ?, ?, ?, ?)
+    `).bind(
+      txId,
+      wallet.id,
+      user.id,
+      rewardKsh,
+      nextAvailBal,
+      responseId,
+      `Paid Survey Reward: ${survey.title} (+KSh ${rewardKsh})`,
+      now
+    ).run().catch(async (e) => {
+      await env.DB.prepare(`
+        INSERT INTO wallet_transactions (id, wallet_id, user_id, type, amount_ksh, balance_after_ksh, reference_id, description, created_at)
+        VALUES (?, ?, ?, 'adjustment', ?, ?, ?, ?, ?)
+      `).bind(
+        txId,
+        wallet.id,
+        user.id,
+        rewardKsh,
+        nextAvailBal,
+        responseId,
+        `Paid Survey Reward: ${survey.title} (+KSh ${rewardKsh})`,
+        now
+      ).run().catch(() => {
+      });
+    });
+    return jsonSuccess({
+      message: `\u{1F389} Congratulations! You have successfully completed the survey. KSh ${rewardKsh.toLocaleString()} has been credited to your Surveys Balance!`,
+      rewardAmountKsh: rewardKsh,
+      surveyId,
+      surveyTitle: survey.title,
+      completedAt: now,
+      wallet: {
+        surveysBalanceKsh: nextSurveysBal,
+        viewsBalanceKsh: currentViewsBal,
+        referralsBalanceKsh: currentRefBal,
+        availableBalanceKsh: nextAvailBal
+      }
+    });
+  } catch (err) {
+    console.error("Submit survey error:", err);
+    return jsonError("Failed to submit survey. Please try again.", 500);
+  }
+}
+__name(onRequestPost16, "onRequestPost");
 
 // api/tasks.js
-async function onRequestGet14(context) {
+async function onRequestGet19(context) {
   const { request, env } = context;
   const auth = await requireAuth(request, env);
   if (auth.errorResponse) return auth.errorResponse;
@@ -2266,9 +4431,9 @@ async function onRequestGet14(context) {
       LIMIT 20
     `).bind(user.id).all();
     const now = Math.floor(Date.now() / 1e3);
-    const latest = (submissions || []).find(s => s.evidence_id !== null && s.evidence_id !== undefined) || null;
-    const userRow = await env.DB.prepare('SELECT COALESCE(submission_tickets, 0) as submission_tickets FROM users WHERE id = ?').bind(user.id).first().catch(() => null);
-    const submissionTickets = userRow ? (userRow.submission_tickets || 0) : 0;
+    const latest = (submissions || []).find((s) => s.evidence_id !== null && s.evidence_id !== void 0) || null;
+    const userRow = await env.DB.prepare("SELECT COALESCE(submission_tickets, 0) as submission_tickets FROM users WHERE id = ?").bind(user.id).first().catch(() => null);
+    const submissionTickets = userRow ? userRow.submission_tickets || 0 : 0;
     let canSubmit = true;
     let secondsRemaining = 0;
     let nextAllowedAt = now;
@@ -2287,9 +4452,16 @@ async function onRequestGet14(context) {
         }
       }
     }
+    const pkgState = await syncAndGetUserPackageState(env.DB, user.id, now);
     return jsonSuccess({
       campaigns: campaigns || [],
       submissions: submissions || [],
+      packageState: {
+        hasActivePackage: Boolean(pkgState.activePackage),
+        isTrialActive: pkgState.isTrialActive,
+        trialSecondsRemaining: pkgState.trialSecondsRemaining,
+        isTrialExpiredLockout: pkgState.isTrialExpiredLockout
+      },
       cooldown: {
         canSubmit,
         secondsRemaining,
@@ -2304,8 +4476,8 @@ async function onRequestGet14(context) {
     return jsonError("Failed to fetch task submissions and campaigns", 500);
   }
 }
-__name(onRequestGet14, "onRequestGet");
-async function onRequestPost13(context) {
+__name(onRequestGet19, "onRequestGet");
+async function onRequestPost17(context) {
   const { request, env } = context;
   const auth = await requireAuth(request, env);
   if (auth.errorResponse) return auth.errorResponse;
@@ -2317,16 +4489,13 @@ async function onRequestPost13(context) {
     return jsonError("Invalid JSON request body", 400);
   }
   const { campaignId, reportedViews, evidenceBase64, evidenceNote, fileName, fileType } = body;
-  const activePackage = await env.DB.prepare(`
-    SELECT up.package_id, p.name, p.reward_per_view_ksh, p.max_views_per_task
-    FROM user_packages up
-    JOIN packages p ON up.package_id = p.id
-    WHERE up.user_id = ? AND up.status = 'active'
-    ORDER BY up.activated_at DESC
-    LIMIT 1
-  `).bind(user.id).first();
+  const pkgState = await syncAndGetUserPackageState(env.DB, user.id);
+  const activePackage = pkgState.activePackage;
   if (!activePackage) {
-    return jsonError("You do not have an active advertising partner package. Please activate Starter, Growth, or Executive package first.", 403);
+    if (pkgState.isTrialExpiredLockout) {
+      return jsonError(TRIAL_EXPIRED_LOCKOUT_MESSAGE, 403, { trialExpired: true, code: "TRIAL_EXPIRED" });
+    }
+    return jsonError("You do not have an active advertising partner package. Please activate the 1-Day Free Trial or a paid partner package first.", 403);
   }
   const views = parseInt(reportedViews, 10);
   if (isNaN(views) || views <= 0) {
@@ -2336,8 +4505,8 @@ async function onRequestPost13(context) {
     return jsonError("Reported views exceeds maximum allowable threshold for verification", 400);
   }
   const now = Math.floor(Date.now() / 1e3);
-  const userRow = await env.DB.prepare('SELECT COALESCE(submission_tickets, 0) as submission_tickets FROM users WHERE id = ?').bind(user.id).first().catch(() => null);
-  const submissionTickets = userRow ? (userRow.submission_tickets || 0) : 0;
+  const userRow = await env.DB.prepare("SELECT COALESCE(submission_tickets, 0) as submission_tickets FROM users WHERE id = ?").bind(user.id).first().catch(() => null);
+  const submissionTickets = userRow ? userRow.submission_tickets || 0 : 0;
   const latestSubmission = await env.DB.prepare(`
     SELECT created_at FROM task_submissions WHERE user_id = ? AND evidence_id IS NOT NULL ORDER BY created_at DESC LIMIT 1
   `).bind(user.id).first();
@@ -2348,8 +4517,8 @@ async function onRequestPost13(context) {
     if (elapsed < cooldownDuration) {
       if (submissionTickets > 0) {
         ticketUsed = true;
-        await env.DB.prepare('UPDATE users SET submission_tickets = MAX(0, submission_tickets - 1), updated_at = ? WHERE id = ?')
-          .bind(now, user.id).run().catch(() => { });
+        await env.DB.prepare("UPDATE users SET submission_tickets = MAX(0, submission_tickets - 1), updated_at = ? WHERE id = ?").bind(now, user.id).run().catch(() => {
+        });
       } else {
         const waitMinutes = Math.ceil((cooldownDuration - elapsed) / 60);
         const waitHours = (waitMinutes / 60).toFixed(1);
@@ -2401,9 +4570,7 @@ async function onRequestPost13(context) {
       now
     ).run();
     return jsonSuccess({
-      message: ticketUsed
-        ? `Task submitted successfully! Your submission of ${views} WhatsApp views is awaiting administrator approval. (18-hour cooldown was waived using your submission ticket; ${Math.max(0, submissionTickets - 1)} ticket(s) remaining).`
-        : `Task submitted successfully! Your submission of ${views} WhatsApp views is awaiting administrator approval. Your wallet balance will be updated once approved by an administrator.`,
+      message: ticketUsed ? `Task submitted successfully! Your submission of ${views} WhatsApp views is awaiting administrator approval. (18-hour cooldown was waived using your submission ticket; ${Math.max(0, submissionTickets - 1)} ticket(s) remaining).` : `Task submitted successfully! Your submission of ${views} WhatsApp views is awaiting administrator approval. Your wallet balance will be updated once approved by an administrator.`,
       taskId,
       reportedViews: views,
       estimatedRewardKsh,
@@ -2417,30 +4584,39 @@ async function onRequestPost13(context) {
     return jsonError("Failed to record task submission. Please try again.", 500);
   }
 }
-__name(onRequestPost13, "onRequestPost");
+__name(onRequestPost17, "onRequestPost");
 
 // api/withdrawals.js
-var MINIMUM_WITHDRAWAL_KSH = 100;
-async function onRequestGet15(context) {
+var MINIMUM_WITHDRAWAL_KSH = 1200;
+async function onRequestGet20(context) {
   const { request, env } = context;
   const auth = await requireAuth(request, env);
   if (auth.errorResponse) return auth.errorResponse;
   const user = auth.user;
   try {
-    const wallet = await env.DB.prepare(`
-      SELECT available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
-      FROM wallets
-      WHERE user_id = ?
-      LIMIT 1
-    `).bind(user.id).first();
-    const activePackage = await env.DB.prepare(`
-      SELECT p.id, p.name, p.slug, p.price_ksh, p.reward_per_view_ksh, p.min_withdrawal_views_ksh
-      FROM user_packages up
-      JOIN packages p ON up.package_id = p.id
-      WHERE up.user_id = ? AND up.status = 'active'
-      ORDER BY up.activated_at DESC
-      LIMIT 1
-    `).bind(user.id).first();
+    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN surveys_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {
+    });
+    await env.DB.prepare("ALTER TABLE withdrawal_requests ADD COLUMN payment_method TEXT DEFAULT 'mpesa'").run().catch(() => {
+    });
+    let wallet = null;
+    try {
+      wallet = await env.DB.prepare(`
+        SELECT available_balance_ksh, views_balance_ksh, referrals_balance_ksh, surveys_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
+        FROM wallets
+        WHERE user_id = ?
+        LIMIT 1
+      `).bind(user.id).first();
+    } catch (e) {
+      wallet = await env.DB.prepare(`
+        SELECT available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh
+        FROM wallets
+        WHERE user_id = ?
+        LIMIT 1
+      `).bind(user.id).first();
+      if (wallet) wallet.surveys_balance_ksh = 0;
+    }
+    const pkgState = await syncAndGetUserPackageState(env.DB, user.id);
+    const activePackage = pkgState.activePackage;
     const { results: requests } = await env.DB.prepare(`
       SELECT id, amount_ksh, phone_number, status, balance_type, mpesa_receipt_number, rejection_reason, created_at, processed_at
       FROM withdrawal_requests
@@ -2448,12 +4624,13 @@ async function onRequestGet15(context) {
       ORDER BY created_at DESC
       LIMIT 50
     `).bind(user.id).all();
-    const minViewsWithdrawal = activePackage?.min_withdrawal_views_ksh || 5000;
+    const minViewsWithdrawal = activePackage?.min_withdrawal_views_ksh || 5e3;
     return jsonSuccess({
-      wallet: wallet || { available_balance_ksh: 0, views_balance_ksh: 0, referrals_balance_ksh: 0, reserved_balance_ksh: 0, lifetime_withdrawn_ksh: 0 },
+      wallet: wallet || { available_balance_ksh: 0, views_balance_ksh: 0, referrals_balance_ksh: 0, surveys_balance_ksh: 0, reserved_balance_ksh: 0, lifetime_withdrawn_ksh: 0 },
       activePackage: activePackage || null,
       minViewsWithdrawalKsh: minViewsWithdrawal,
       minReferralsWithdrawalKsh: MINIMUM_WITHDRAWAL_KSH,
+      minSurveysWithdrawalKsh: MINIMUM_WITHDRAWAL_KSH,
       withdrawals: requests || []
     });
   } catch (err) {
@@ -2461,8 +4638,8 @@ async function onRequestGet15(context) {
     return jsonError("Failed to fetch withdrawal requests", 500);
   }
 }
-__name(onRequestGet15, "onRequestGet");
-async function onRequestPost14(context) {
+__name(onRequestGet20, "onRequestGet");
+async function onRequestPost18(context) {
   const { request, env } = context;
   const auth = await requireAuth(request, env);
   if (auth.errorResponse) return auth.errorResponse;
@@ -2473,23 +4650,56 @@ async function onRequestPost14(context) {
   } catch (e) {
     return jsonError("Invalid JSON request body", 400);
   }
-  const { amountKsh, phoneNumber, balanceType: rawBalanceType } = body;
-  const balanceType = (rawBalanceType === "referrals" || rawBalanceType === "referral") ? "referrals" : "views";
+  const { amountKsh, phoneNumber, balanceType: rawBalanceType, paymentMethod: rawMethod, paypalEmail } = body;
+  const paymentMethod = rawMethod === "paypal" ? "paypal" : "mpesa";
+  let balanceType = "views";
+  if (rawBalanceType === "referrals" || rawBalanceType === "referral") {
+    balanceType = "referrals";
+  } else if (rawBalanceType === "surveys" || rawBalanceType === "survey") {
+    balanceType = "surveys";
+  }
   const amount = parseInt(amountKsh, 10);
   if (isNaN(amount) || amount <= 0) {
     return jsonError("Please enter a valid withdrawal amount", 400);
   }
-  const targetPhone = phoneNumber ? phoneNumber.trim().replace(/\s+/g, "") : user.phone;
-  if (!targetPhone || targetPhone.length < 9) {
-    return jsonError("Valid M-Pesa phone number is required for payout", 400);
+  let targetDestination = "";
+  if (paymentMethod === "paypal") {
+    const emailCandidate = (paypalEmail || phoneNumber || "").trim();
+    if (!emailCandidate || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailCandidate)) {
+      return jsonError("Valid PayPal email address is required for payout", 400);
+    }
+    targetDestination = emailCandidate;
+  } else {
+    const targetPhone = phoneNumber ? phoneNumber.trim().replace(/\s+/g, "") : user.phone;
+    if (!targetPhone || targetPhone.length < 9) {
+      return jsonError("Valid M-Pesa phone number is required for payout", 400);
+    }
+    targetDestination = targetPhone;
   }
   try {
-    const wallet = await env.DB.prepare(`
-      SELECT id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh
-      FROM wallets
-      WHERE user_id = ?
-      LIMIT 1
-    `).bind(user.id).first();
+    const pkgState = await syncAndGetUserPackageState(env.DB, user.id);
+    if (pkgState.isTrialExpiredLockout) {
+      return jsonError(TRIAL_EXPIRED_LOCKOUT_MESSAGE, 403, { trialExpired: true, code: "TRIAL_EXPIRED" });
+    }
+    await env.DB.prepare("ALTER TABLE wallets ADD COLUMN surveys_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {
+    });
+    let wallet = null;
+    try {
+      wallet = await env.DB.prepare(`
+        SELECT id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, surveys_balance_ksh, reserved_balance_ksh
+        FROM wallets
+        WHERE user_id = ?
+        LIMIT 1
+      `).bind(user.id).first();
+    } catch (e) {
+      wallet = await env.DB.prepare(`
+        SELECT id, available_balance_ksh, views_balance_ksh, referrals_balance_ksh, reserved_balance_ksh
+        FROM wallets
+        WHERE user_id = ?
+        LIMIT 1
+      `).bind(user.id).first();
+      if (wallet) wallet.surveys_balance_ksh = 0;
+    }
     if (!wallet) {
       return jsonError("Wallet account not found", 404);
     }
@@ -2497,20 +4707,13 @@ async function onRequestPost14(context) {
     const withdrawalId = generateId("wth");
     const txId = generateId("wtx");
     if (balanceType === "views") {
-      const activePackage = await env.DB.prepare(`
-        SELECT p.id, p.name, p.min_withdrawal_views_ksh
-        FROM user_packages up
-        JOIN packages p ON up.package_id = p.id
-        WHERE up.user_id = ? AND up.status = 'active'
-        ORDER BY up.activated_at DESC
-        LIMIT 1
-      `).bind(user.id).first();
+      const activePackage = pkgState.activePackage;
       if (!activePackage) {
         return jsonError("You must have an active partner package to withdraw status views earnings. If you have referral earnings, you can withdraw them separately.", 400);
       }
-      const minViewsLimit = activePackage.min_withdrawal_views_ksh || 5000;
+      const minViewsLimit = Math.max(MINIMUM_WITHDRAWAL_KSH, activePackage.min_withdrawal_views_ksh || 5e3);
       if (amount < minViewsLimit) {
-        return jsonError(`Minimum withdrawal amount for Status Views on your ${activePackage.name} package is KSh ${minViewsLimit.toLocaleString()} (requested KSh ${amount.toLocaleString()}). Note: Referral commissions can be withdrawn separately without this limit.`, 400);
+        return jsonError(`Minimum withdrawal amount for Status Views is KSh ${minViewsLimit.toLocaleString()} (requested KSh ${amount.toLocaleString()}).`, 400);
       }
       const availableViews = typeof wallet.views_balance_ksh === "number" ? wallet.views_balance_ksh : wallet.available_balance_ksh;
       if (availableViews < amount) {
@@ -2529,9 +4732,14 @@ async function onRequestPost14(context) {
         return jsonError("Concurrent balance update conflict or insufficient views funds. Please refresh and try again.", 409);
       }
       await env.DB.prepare(`
-        INSERT INTO withdrawal_requests (id, user_id, wallet_id, amount_ksh, phone_number, status, balance_type, created_at)
-        VALUES (?, ?, ?, ?, ?, 'pending', 'views', ?)
-      `).bind(withdrawalId, user.id, wallet.id, amount, targetPhone, now).run();
+        INSERT INTO withdrawal_requests (id, user_id, wallet_id, amount_ksh, phone_number, status, balance_type, payment_method, created_at)
+        VALUES (?, ?, ?, ?, ?, 'pending', 'views', ?, ?)
+      `).bind(withdrawalId, user.id, wallet.id, amount, targetDestination, paymentMethod, now).run().catch(async () => {
+        await env.DB.prepare(`
+          INSERT INTO withdrawal_requests (id, user_id, wallet_id, amount_ksh, phone_number, status, balance_type, created_at)
+          VALUES (?, ?, ?, ?, ?, 'pending', 'views', ?)
+        `).bind(withdrawalId, user.id, wallet.id, amount, targetDestination, now).run();
+      });
       await env.DB.prepare(`
         INSERT INTO wallet_transactions (id, wallet_id, user_id, type, amount_ksh, balance_after_ksh, reference_id, description, created_at)
         VALUES (?, ?, ?, 'withdrawal_reserve', ?, ?, ?, ?, ?)
@@ -2542,15 +4750,16 @@ async function onRequestPost14(context) {
         amount,
         balanceAfter,
         withdrawalId,
-        `M-Pesa withdrawal request from Status Views (${activePackage.name}) to ${targetPhone} placed on hold pending payout`,
+        `${paymentMethod === "paypal" ? "PayPal" : "M-Pesa"} payout request from Status Views (${activePackage.name}) to ${targetDestination} placed on hold pending disbursement`,
         now
       ).run();
       return jsonSuccess({
-        message: `Status Views withdrawal request for KSh ${amount.toLocaleString()} submitted successfully. Funds have been reserved pending M-Pesa disbursement.`,
+        message: `Status Views payout request for KSh ${amount.toLocaleString()} submitted successfully via ${paymentMethod === "paypal" ? "PayPal" : "M-Pesa"}. Funds have been reserved.`,
         withdrawal: {
           id: withdrawalId,
           amountKsh: amount,
-          phoneNumber: targetPhone,
+          phoneNumber: targetDestination,
+          paymentMethod,
           balanceType: "views",
           status: "pending",
           createdAt: now
@@ -2559,13 +4768,76 @@ async function onRequestPost14(context) {
           availableBalanceKsh: balanceAfter,
           viewsBalanceKsh: availableViews - amount,
           referralsBalanceKsh: wallet.referrals_balance_ksh || 0,
+          surveysBalanceKsh: wallet.surveys_balance_ksh || 0,
+          reservedBalanceKsh: wallet.reserved_balance_ksh + amount
+        }
+      }, 201);
+    } else if (balanceType === "surveys") {
+      const minSurveyLimit = MINIMUM_WITHDRAWAL_KSH;
+      if (amount < minSurveyLimit) {
+        return jsonError(`Minimum withdrawal amount across all company services is KSh ${minSurveyLimit.toLocaleString()}`, 400);
+      }
+      const availableSurveys = Number(wallet.surveys_balance_ksh || 0);
+      if (availableSurveys < amount) {
+        return jsonError(`Insufficient Paid Surveys earnings. Your available Surveys balance is KSh ${availableSurveys.toLocaleString()}, requested KSh ${amount.toLocaleString()}.`, 400);
+      }
+      const balanceAfter = wallet.available_balance_ksh - amount;
+      const updateResult = await env.DB.prepare(`
+        UPDATE wallets
+        SET surveys_balance_ksh = surveys_balance_ksh - ?,
+            available_balance_ksh = available_balance_ksh - ?,
+            reserved_balance_ksh = reserved_balance_ksh + ?,
+            updated_at = ?
+        WHERE user_id = ? AND surveys_balance_ksh >= ?
+      `).bind(amount, amount, amount, now, user.id, amount).run();
+      if (!updateResult.success || updateResult.meta && updateResult.meta.changes === 0) {
+        return jsonError("Concurrent balance update conflict or insufficient survey funds. Please refresh and try again.", 409);
+      }
+      await env.DB.prepare(`
+        INSERT INTO withdrawal_requests (id, user_id, wallet_id, amount_ksh, phone_number, status, balance_type, payment_method, created_at)
+        VALUES (?, ?, ?, ?, ?, 'pending', 'surveys', ?, ?)
+      `).bind(withdrawalId, user.id, wallet.id, amount, targetDestination, paymentMethod, now).run().catch(async () => {
+        await env.DB.prepare(`
+          INSERT INTO withdrawal_requests (id, user_id, wallet_id, amount_ksh, phone_number, status, balance_type, created_at)
+          VALUES (?, ?, ?, ?, ?, 'pending', 'surveys', ?)
+        `).bind(withdrawalId, user.id, wallet.id, amount, targetDestination, now).run();
+      });
+      await env.DB.prepare(`
+        INSERT INTO wallet_transactions (id, wallet_id, user_id, type, amount_ksh, balance_after_ksh, reference_id, description, created_at)
+        VALUES (?, ?, ?, 'withdrawal_reserve', ?, ?, ?, ?, ?)
+      `).bind(
+        txId,
+        wallet.id,
+        user.id,
+        amount,
+        balanceAfter,
+        withdrawalId,
+        `${paymentMethod === "paypal" ? "PayPal" : "M-Pesa"} payout request from Paid Surveys to ${targetDestination} placed on hold pending disbursement`,
+        now
+      ).run();
+      return jsonSuccess({
+        message: `Paid Surveys payout request for KSh ${amount.toLocaleString()} submitted successfully via ${paymentMethod === "paypal" ? "PayPal" : "M-Pesa"}. Funds have been reserved.`,
+        withdrawal: {
+          id: withdrawalId,
+          amountKsh: amount,
+          phoneNumber: targetDestination,
+          paymentMethod,
+          balanceType: "surveys",
+          status: "pending",
+          createdAt: now
+        },
+        wallet: {
+          availableBalanceKsh: balanceAfter,
+          viewsBalanceKsh: wallet.views_balance_ksh || 0,
+          referralsBalanceKsh: wallet.referrals_balance_ksh || 0,
+          surveysBalanceKsh: availableSurveys - amount,
           reservedBalanceKsh: wallet.reserved_balance_ksh + amount
         }
       }, 201);
     } else {
-      const minReferralLimit = 100;
+      const minReferralLimit = MINIMUM_WITHDRAWAL_KSH;
       if (amount < minReferralLimit) {
-        return jsonError(`Minimum withdrawal amount for Referral Commissions is KSh ${minReferralLimit}`, 400);
+        return jsonError(`Minimum withdrawal amount across all company services is KSh ${minReferralLimit.toLocaleString()}`, 400);
       }
       const availableReferrals = wallet.referrals_balance_ksh || 0;
       if (availableReferrals < amount) {
@@ -2584,9 +4856,14 @@ async function onRequestPost14(context) {
         return jsonError("Concurrent balance update conflict or insufficient referral funds. Please refresh and try again.", 409);
       }
       await env.DB.prepare(`
-        INSERT INTO withdrawal_requests (id, user_id, wallet_id, amount_ksh, phone_number, status, balance_type, created_at)
-        VALUES (?, ?, ?, ?, ?, 'pending', 'referrals', ?)
-      `).bind(withdrawalId, user.id, wallet.id, amount, targetPhone, now).run();
+        INSERT INTO withdrawal_requests (id, user_id, wallet_id, amount_ksh, phone_number, status, balance_type, payment_method, created_at)
+        VALUES (?, ?, ?, ?, ?, 'pending', 'referrals', ?, ?)
+      `).bind(withdrawalId, user.id, wallet.id, amount, targetDestination, paymentMethod, now).run().catch(async () => {
+        await env.DB.prepare(`
+          INSERT INTO withdrawal_requests (id, user_id, wallet_id, amount_ksh, phone_number, status, balance_type, created_at)
+          VALUES (?, ?, ?, ?, ?, 'pending', 'referrals', ?)
+        `).bind(withdrawalId, user.id, wallet.id, amount, targetDestination, now).run();
+      });
       await env.DB.prepare(`
         INSERT INTO wallet_transactions (id, wallet_id, user_id, type, amount_ksh, balance_after_ksh, reference_id, description, created_at)
         VALUES (?, ?, ?, 'withdrawal_reserve', ?, ?, ?, ?, ?)
@@ -2597,15 +4874,16 @@ async function onRequestPost14(context) {
         amount,
         balanceAfter,
         withdrawalId,
-        `M-Pesa withdrawal request from Referral Commissions to ${targetPhone} placed on hold pending payout`,
+        `${paymentMethod === "paypal" ? "PayPal" : "M-Pesa"} payout request from Referral Commissions to ${targetDestination} placed on hold pending disbursement`,
         now
       ).run();
       return jsonSuccess({
-        message: `Referral Commission withdrawal request for KSh ${amount.toLocaleString()} submitted successfully. Funds have been reserved pending M-Pesa disbursement.`,
+        message: `Referral Commission payout request for KSh ${amount.toLocaleString()} submitted successfully via ${paymentMethod === "paypal" ? "PayPal" : "M-Pesa"}. Funds have been reserved.`,
         withdrawal: {
           id: withdrawalId,
           amountKsh: amount,
-          phoneNumber: targetPhone,
+          phoneNumber: targetDestination,
+          paymentMethod,
           balanceType: "referrals",
           status: "pending",
           createdAt: now
@@ -2614,6 +4892,7 @@ async function onRequestPost14(context) {
           availableBalanceKsh: balanceAfter,
           viewsBalanceKsh: wallet.views_balance_ksh || 0,
           referralsBalanceKsh: availableReferrals - amount,
+          surveysBalanceKsh: wallet.surveys_balance_ksh || 0,
           reservedBalanceKsh: wallet.reserved_balance_ksh + amount
         }
       }, 201);
@@ -2623,147 +4902,16 @@ async function onRequestPost14(context) {
     return jsonError("Failed to process withdrawal request. Please try again.", 500);
   }
 }
-__name(onRequestPost14, "onRequestPost");
+__name(onRequestPost18, "onRequestPost");
 
-// api/referrals.js
-async function onRequestGetReferrals(context) {
-  const { request, env } = context;
-  const auth = await requireAuth(request, env);
-  if (auth.errorResponse) return auth.errorResponse;
-  const user = auth.user;
-
-  // 1. Guaranteed unique referral code
-  let referralCode = user.referralCode;
-  if (!referralCode) {
-    try {
-      const dbUser = await env.DB.prepare('SELECT referral_code FROM users WHERE id = ?').bind(user.id).first();
-      referralCode = dbUser?.referral_code;
-    } catch (e) {
-      console.warn('Failed to query user referral_code:', e);
-    }
-
-    if (!referralCode) {
-      referralCode = 'ALM' + user.id.replace(/[^a-zA-Z0-9]/g, '').substring(0, 6).toUpperCase();
-      try {
-        await env.DB.prepare('UPDATE users SET referral_code = ? WHERE id = ?').bind(referralCode, user.id).run();
-      } catch (e) {
-        console.warn('Failed to persist user referral_code:', e);
-      }
-    }
-  }
-
-  // 2. Aggregate downlines metrics (defensive)
-  let totalInvited = 0;
-  let activePaidCount = 0;
-  let totalEarningsKsh = 0;
-
-  try {
-    const summary = await env.DB.prepare(`
-      SELECT 
-        COUNT(*) as total_invited,
-        COUNT(CASE WHEN status = 'active_paid' THEN 1 END) as active_paid_count,
-        COALESCE(SUM(CASE WHEN status = 'active_paid' THEN commission_amount_ksh ELSE 0 END), 0) as total_earnings_ksh
-      FROM referrals
-      WHERE referrer_id = ?
-    `).bind(user.id).first();
-
-    if (summary) {
-      totalInvited = summary.total_invited || 0;
-      activePaidCount = summary.active_paid_count || 0;
-      totalEarningsKsh = summary.total_earnings_ksh || 0;
-    }
-  } catch (err) {
-    console.warn('Referrals summary query fallback:', err);
-  }
-
-  // 3. Active paid downlines (defensive)
-  let activeReferrals = [];
-  try {
-    const activeRows = await env.DB.prepare(`
-      SELECT 
-        r.id,
-        r.referred_user_id,
-        u.name as downline_name,
-        u.phone as downline_phone,
-        u.email as downline_email,
-        r.status,
-        r.package_id,
-        r.package_name,
-        r.package_price_ksh,
-        r.commission_rate,
-        r.commission_amount_ksh,
-        r.created_at,
-        r.activated_at
-      FROM referrals r
-      JOIN users u ON r.referred_user_id = u.id
-      WHERE r.referrer_id = ? AND r.status = 'active_paid'
-      ORDER BY r.activated_at DESC
-      LIMIT 100
-    `).bind(user.id).all();
-
-    activeReferrals = activeRows?.results || [];
-  } catch (err) {
-    console.warn('Active referrals query fallback:', err);
-  }
-
-  // 4. All downlines (defensive)
-  let allReferrals = [];
-  try {
-    const allRows = await env.DB.prepare(`
-      SELECT 
-        r.id,
-        r.referred_user_id,
-        u.name as downline_name,
-        u.phone as downline_phone,
-        r.status,
-        r.package_name,
-        r.package_price_ksh,
-        r.commission_amount_ksh,
-        r.created_at,
-        r.activated_at
-      FROM referrals r
-      JOIN users u ON r.referred_user_id = u.id
-      WHERE r.referrer_id = ?
-      ORDER BY (CASE WHEN r.status = 'active_paid' THEN 0 ELSE 1 END), r.created_at DESC
-      LIMIT 100
-    `).bind(user.id).all();
-
-    allReferrals = allRows?.results || [];
-  } catch (err) {
-    console.warn('All referrals query fallback:', err);
-  }
-
-  // 5. Withdrawable balance (defensive against missing column)
-  let withdrawableReferralsKsh = 0;
-  try {
-    const wal = await env.DB.prepare('SELECT referrals_balance_ksh FROM wallets WHERE user_id = ?').bind(user.id).first();
-    withdrawableReferralsKsh = wal?.referrals_balance_ksh || 0;
-  } catch (err) {
-    withdrawableReferralsKsh = totalEarningsKsh;
-  }
-
-  return jsonSuccess({
-    referralCode,
-    commissionRatePercent: 45,
-    totalInvited,
-    activePaidCount,
-    totalEarningsKsh,
-    withdrawableReferralsKsh,
-    minWithdrawalReferralsKsh: 100,
-    activeReferrals: activeReferrals || [],
-    allReferrals: allReferrals || []
-  });
-}
-__name(onRequestGetReferrals, "onRequestGet");
-
-// ../.wrangler/tmp/pages-AlDii2/functionsRoutes-0.8450456322839598.mjs
+// ../.wrangler/tmp/pages-IfJYCY/functionsRoutes-0.7428331975922463.mjs
 var routes = [
   {
-    routePath: "/api/referrals",
-    mountPath: "/api",
-    method: "GET",
+    routePath: "/api/admin/audit-logs",
+    mountPath: "/api/admin",
+    method: "DELETE",
     middlewares: [],
-    modules: [onRequestGetReferrals]
+    modules: [onRequestDelete]
   },
   {
     routePath: "/api/admin/audit-logs",
@@ -2773,11 +4921,39 @@ var routes = [
     modules: [onRequestGet]
   },
   {
-    routePath: "/api/admin/packages",
+    routePath: "/api/admin/bonuses",
     mountPath: "/api/admin",
     method: "GET",
     middlewares: [],
     modules: [onRequestGet2]
+  },
+  {
+    routePath: "/api/admin/bonuses",
+    mountPath: "/api/admin",
+    method: "POST",
+    middlewares: [],
+    modules: [onRequestPost]
+  },
+  {
+    routePath: "/api/admin/cleanup",
+    mountPath: "/api/admin",
+    method: "GET",
+    middlewares: [],
+    modules: [onRequestGet3]
+  },
+  {
+    routePath: "/api/admin/cleanup",
+    mountPath: "/api/admin",
+    method: "POST",
+    middlewares: [],
+    modules: [onRequestPost2]
+  },
+  {
+    routePath: "/api/admin/packages",
+    mountPath: "/api/admin",
+    method: "GET",
+    middlewares: [],
+    modules: [onRequestGet4]
   },
   {
     routePath: "/api/admin/packages",
@@ -2791,196 +4967,238 @@ var routes = [
     mountPath: "/api/admin",
     method: "GET",
     middlewares: [],
-    modules: [onRequestGet3]
+    modules: [onRequestGet5]
   },
   {
     routePath: "/api/admin/payments",
     mountPath: "/api/admin",
     method: "POST",
     middlewares: [],
-    modules: [onRequestPost]
+    modules: [onRequestPost3]
   },
   {
     routePath: "/api/admin/products-posts",
     mountPath: "/api/admin",
     method: "DELETE",
     middlewares: [],
-    modules: [onRequestDelete]
+    modules: [onRequestDelete2]
   },
   {
     routePath: "/api/admin/products-posts",
-    mountPath: "/api/admin",
-    method: "GET",
-    middlewares: [],
-    modules: [onRequestGet4]
-  },
-  {
-    routePath: "/api/admin/products-posts",
-    mountPath: "/api/admin",
-    method: "POST",
-    middlewares: [],
-    modules: [onRequestPost2]
-  },
-  {
-    routePath: "/api/admin/stats",
-    mountPath: "/api/admin",
-    method: "GET",
-    middlewares: [],
-    modules: [onRequestGet5]
-  },
-  {
-    routePath: "/api/admin/tasks",
     mountPath: "/api/admin",
     method: "GET",
     middlewares: [],
     modules: [onRequestGet6]
   },
   {
-    routePath: "/api/admin/tasks",
-    mountPath: "/api/admin",
-    method: "POST",
-    middlewares: [],
-    modules: [onRequestPost3]
-  },
-  {
-    routePath: "/api/admin/users",
-    mountPath: "/api/admin",
-    method: "GET",
-    middlewares: [],
-    modules: [onRequestGet7]
-  },
-  {
-    routePath: "/api/admin/users",
+    routePath: "/api/admin/products-posts",
     mountPath: "/api/admin",
     method: "POST",
     middlewares: [],
     modules: [onRequestPost4]
   },
   {
-    routePath: "/api/admin/withdrawals",
+    routePath: "/api/admin/stats",
+    mountPath: "/api/admin",
+    method: "GET",
+    middlewares: [],
+    modules: [onRequestGet7]
+  },
+  {
+    routePath: "/api/admin/surveys",
     mountPath: "/api/admin",
     method: "GET",
     middlewares: [],
     modules: [onRequestGet8]
   },
   {
-    routePath: "/api/admin/withdrawals",
+    routePath: "/api/admin/surveys",
     mountPath: "/api/admin",
     method: "POST",
     middlewares: [],
     modules: [onRequestPost5]
   },
   {
+    routePath: "/api/admin/tasks",
+    mountPath: "/api/admin",
+    method: "GET",
+    middlewares: [],
+    modules: [onRequestGet9]
+  },
+  {
+    routePath: "/api/admin/tasks",
+    mountPath: "/api/admin",
+    method: "POST",
+    middlewares: [],
+    modules: [onRequestPost6]
+  },
+  {
+    routePath: "/api/admin/users",
+    mountPath: "/api/admin",
+    method: "DELETE",
+    middlewares: [],
+    modules: [onRequestDelete3]
+  },
+  {
+    routePath: "/api/admin/users",
+    mountPath: "/api/admin",
+    method: "GET",
+    middlewares: [],
+    modules: [onRequestGet10]
+  },
+  {
+    routePath: "/api/admin/users",
+    mountPath: "/api/admin",
+    method: "POST",
+    middlewares: [],
+    modules: [onRequestPost7]
+  },
+  {
+    routePath: "/api/admin/withdrawals",
+    mountPath: "/api/admin",
+    method: "GET",
+    middlewares: [],
+    modules: [onRequestGet11]
+  },
+  {
+    routePath: "/api/admin/withdrawals",
+    mountPath: "/api/admin",
+    method: "POST",
+    middlewares: [],
+    modules: [onRequestPost8]
+  },
+  {
     routePath: "/api/auth/login",
     mountPath: "/api/auth",
     method: "POST",
     middlewares: [],
-    modules: [onRequestPost6]
+    modules: [onRequestPost9]
   },
   {
     routePath: "/api/auth/logout",
     mountPath: "/api/auth",
     method: "POST",
     middlewares: [],
-    modules: [onRequestPost7]
+    modules: [onRequestPost10]
   },
   {
     routePath: "/api/auth/me",
     mountPath: "/api/auth",
     method: "GET",
     middlewares: [],
-    modules: [onRequestGet9]
+    modules: [onRequestGet12]
   },
   {
     routePath: "/api/auth/register",
     mountPath: "/api/auth",
     method: "POST",
     middlewares: [],
-    modules: [onRequestPost8]
+    modules: [onRequestPost11]
   },
   {
     routePath: "/api/evidence/:id",
     mountPath: "/api/evidence",
     method: "GET",
     middlewares: [],
-    modules: [onRequestGet10]
-  },
-  {
-    routePath: "/api/inquiries",
-    mountPath: "/api",
-    method: "GET",
-    middlewares: [],
-    modules: [onRequestGet11]
-  },
-  {
-    routePath: "/api/inquiries",
-    mountPath: "/api",
-    method: "POST",
-    middlewares: [],
-    modules: [onRequestPost9]
-  },
-  {
-    routePath: "/api/packages",
-    mountPath: "/api",
-    method: "GET",
-    middlewares: [],
-    modules: [onRequestGet12]
-  },
-  {
-    routePath: "/api/packages",
-    mountPath: "/api",
-    method: "POST",
-    middlewares: [],
-    modules: [onRequestPost10]
-  },
-  {
-    routePath: "/api/products-posts",
-    mountPath: "/api",
-    method: "GET",
-    middlewares: [],
     modules: [onRequestGet13]
   },
   {
-    routePath: "/api/products-posts",
-    mountPath: "/api",
-    method: "POST",
-    middlewares: [],
-    modules: [onRequestPost11]
-  },
-  {
-    routePath: "/api/setup-admin",
-    mountPath: "/api",
-    method: "POST",
-    middlewares: [],
-    modules: [onRequestPost12]
-  },
-  {
-    routePath: "/api/tasks",
+    routePath: "/api/inquiries",
     mountPath: "/api",
     method: "GET",
     middlewares: [],
     modules: [onRequestGet14]
   },
   {
-    routePath: "/api/tasks",
+    routePath: "/api/inquiries",
     mountPath: "/api",
     method: "POST",
     middlewares: [],
-    modules: [onRequestPost13]
+    modules: [onRequestPost12]
   },
   {
-    routePath: "/api/withdrawals",
+    routePath: "/api/packages",
     mountPath: "/api",
     method: "GET",
     middlewares: [],
     modules: [onRequestGet15]
   },
   {
-    routePath: "/api/withdrawals",
+    routePath: "/api/packages",
+    mountPath: "/api",
+    method: "POST",
+    middlewares: [],
+    modules: [onRequestPost13]
+  },
+  {
+    routePath: "/api/products-posts",
+    mountPath: "/api",
+    method: "GET",
+    middlewares: [],
+    modules: [onRequestGet16]
+  },
+  {
+    routePath: "/api/products-posts",
     mountPath: "/api",
     method: "POST",
     middlewares: [],
     modules: [onRequestPost14]
+  },
+  {
+    routePath: "/api/referrals",
+    mountPath: "/api",
+    method: "GET",
+    middlewares: [],
+    modules: [onRequestGet17]
+  },
+  {
+    routePath: "/api/setup-admin",
+    mountPath: "/api",
+    method: "POST",
+    middlewares: [],
+    modules: [onRequestPost15]
+  },
+  {
+    routePath: "/api/surveys",
+    mountPath: "/api",
+    method: "GET",
+    middlewares: [],
+    modules: [onRequestGet18]
+  },
+  {
+    routePath: "/api/surveys",
+    mountPath: "/api",
+    method: "POST",
+    middlewares: [],
+    modules: [onRequestPost16]
+  },
+  {
+    routePath: "/api/tasks",
+    mountPath: "/api",
+    method: "GET",
+    middlewares: [],
+    modules: [onRequestGet19]
+  },
+  {
+    routePath: "/api/tasks",
+    mountPath: "/api",
+    method: "POST",
+    middlewares: [],
+    modules: [onRequestPost17]
+  },
+  {
+    routePath: "/api/withdrawals",
+    mountPath: "/api",
+    method: "GET",
+    middlewares: [],
+    modules: [onRequestGet20]
+  },
+  {
+    routePath: "/api/withdrawals",
+    mountPath: "/api",
+    method: "POST",
+    middlewares: [],
+    modules: [onRequestPost18]
   }
 ];
 
@@ -3079,18 +5297,18 @@ function parse(str, options) {
   var key = 0;
   var i = 0;
   var path = "";
-  var tryConsume = /* @__PURE__ */ __name(function (type) {
+  var tryConsume = /* @__PURE__ */ __name(function(type) {
     if (i < tokens.length && tokens[i].type === type)
       return tokens[i++].value;
   }, "tryConsume");
-  var mustConsume = /* @__PURE__ */ __name(function (type) {
+  var mustConsume = /* @__PURE__ */ __name(function(type) {
     var value2 = tryConsume(type);
     if (value2 !== void 0)
       return value2;
     var _a2 = tokens[i], nextType = _a2.type, index = _a2.index;
     throw new TypeError("Unexpected ".concat(nextType, " at ").concat(index, ", expected ").concat(type));
   }, "mustConsume");
-  var consumeText = /* @__PURE__ */ __name(function () {
+  var consumeText = /* @__PURE__ */ __name(function() {
     var result2 = "";
     var value2;
     while (value2 = tryConsume("CHAR") || tryConsume("ESCAPED_CHAR")) {
@@ -3098,7 +5316,7 @@ function parse(str, options) {
     }
     return result2;
   }, "consumeText");
-  var isSafe = /* @__PURE__ */ __name(function (value2) {
+  var isSafe = /* @__PURE__ */ __name(function(value2) {
     for (var _i = 0, delimiter_1 = delimiter; _i < delimiter_1.length; _i++) {
       var char2 = delimiter_1[_i];
       if (value2.indexOf(char2) > -1)
@@ -3106,7 +5324,7 @@ function parse(str, options) {
     }
     return false;
   }, "isSafe");
-  var safePattern = /* @__PURE__ */ __name(function (prefix2) {
+  var safePattern = /* @__PURE__ */ __name(function(prefix2) {
     var prev = result[result.length - 1];
     var prevText = prefix2 || (prev && typeof prev === "string" ? prev : "");
     if (prev && !prevText) {
@@ -3179,21 +5397,21 @@ function regexpToFunction(re, keys, options) {
   if (options === void 0) {
     options = {};
   }
-  var _a = options.decode, decode = _a === void 0 ? function (x) {
+  var _a = options.decode, decode = _a === void 0 ? function(x) {
     return x;
   } : _a;
-  return function (pathname) {
+  return function(pathname) {
     var m = re.exec(pathname);
     if (!m)
       return false;
     var path = m[0], index = m.index;
     var params = /* @__PURE__ */ Object.create(null);
-    var _loop_1 = /* @__PURE__ */ __name(function (i2) {
+    var _loop_1 = /* @__PURE__ */ __name(function(i2) {
       if (m[i2] === void 0)
         return "continue";
       var key = keys[i2 - 1];
       if (key.modifier === "*" || key.modifier === "+") {
-        params[key.name] = m[i2].split(key.prefix + key.suffix).map(function (value) {
+        params[key.name] = m[i2].split(key.prefix + key.suffix).map(function(value) {
           return decode(value, key);
         });
       } else {
@@ -3236,7 +5454,7 @@ function regexpToRegexp(path, keys) {
 }
 __name(regexpToRegexp, "regexpToRegexp");
 function arrayToRegexp(paths, keys, options) {
-  var parts = paths.map(function (path) {
+  var parts = paths.map(function(path) {
     return pathToRegexp(path, keys, options).source;
   });
   return new RegExp("(?:".concat(parts.join("|"), ")"), flags(options));
@@ -3250,7 +5468,7 @@ function tokensToRegexp(tokens, keys, options) {
   if (options === void 0) {
     options = {};
   }
-  var _a = options.strict, strict = _a === void 0 ? false : _a, _b = options.start, start = _b === void 0 ? true : _b, _c = options.end, end = _c === void 0 ? true : _c, _d = options.encode, encode = _d === void 0 ? function (x) {
+  var _a = options.strict, strict = _a === void 0 ? false : _a, _b = options.start, start = _b === void 0 ? true : _b, _c = options.end, end = _c === void 0 ? true : _c, _d = options.encode, encode = _d === void 0 ? function(x) {
     return x;
   } : _d, _e = options.delimiter, delimiter = _e === void 0 ? "/#?" : _e, _f = options.endsWith, endsWith = _f === void 0 ? "" : _f;
   var endsWithRe = "[".concat(escapeString(endsWith), "]|$");
