@@ -702,6 +702,7 @@ export async function onRequestDelete(context) {
  * Safely cascade delete all dependent data for a partner account
  */
 async function deletePartnerCascade(env, userId) {
+  await env.DB.prepare('DELETE FROM bonus_recipient_logs WHERE user_id = ?').bind(userId).run().catch(() => {});
   await env.DB.prepare('DELETE FROM survey_responses WHERE user_id = ?').bind(userId).run().catch(() => {});
   await env.DB.prepare('DELETE FROM referrals WHERE referrer_id = ? OR referred_user_id = ?').bind(userId, userId).run().catch(() => {});
   await env.DB.prepare('DELETE FROM wallet_transactions WHERE user_id = ?').bind(userId).run().catch(() => {});

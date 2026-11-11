@@ -3,7 +3,7 @@
 // Route: POST /api/auth/login
 // ====================================================================
 
-import { jsonError, jsonSuccess, verifyPassword, generateToken, checkRateLimit, recordFailedAttempt, clearRateLimit } from '../_utils.js';
+import { jsonError, jsonSuccess, verifyPassword, generateToken, checkRateLimit, recordFailedAttempt, clearRateLimit, verifyRecaptchaToken } from '../_utils.js';
 
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -20,6 +20,7 @@ export async function onRequestPost(context) {
   }
 
   const { email, password } = body;
+  const recaptchaToken = body.recaptchaToken || body['g-recaptcha-response'] || '';
 
   if (!email || !password) {
     return jsonError('Email and password are required', 400);
@@ -50,6 +51,15 @@ export async function onRequestPost(context) {
       locked: true,
       waitMinutes: waitMins,
       waitSeconds: emailCheck.waitSeconds || (waitMins * 60)
+    });
+  }
+
+  // 1b. Verify Google reCAPTCHA response
+  const captcha = await verifyRecaptchaToken(recaptchaToken, ip, env);
+  if (!captcha.ok) {
+    return jsonError(captcha.error, captcha.status || 400, {
+      recaptchaRequired: true,
+      codes: captcha.codes
     });
   }
 

@@ -4,7 +4,7 @@
 // Package Unique Views Limits & Separate Referral Payouts
 // ====================================================================
 
-import { jsonError, jsonSuccess, requireAuth, generateId } from './_utils.js';
+import { jsonError, jsonSuccess, requireAuth, generateId, syncAndGetUserPackageState, TRIAL_EXPIRED_LOCKOUT_MESSAGE } from './_utils.js';
 
 const MINIMUM_WITHDRAWAL_KSH = 1200;
 
@@ -43,14 +43,8 @@ export async function onRequestGet(context) {
       if (wallet) wallet.surveys_balance_ksh = 0;
     }
 
-    const activePackage = await env.DB.prepare(`
-      SELECT p.id, p.name, p.slug, p.price_ksh, p.reward_per_view_ksh, p.min_withdrawal_views_ksh
-      FROM user_packages up
-      JOIN packages p ON up.package_id = p.id
-      WHERE up.user_id = ? AND up.status = 'active'
-      ORDER BY up.activated_at DESC
-      LIMIT 1
-    `).bind(user.id).first();
+    const pkgState = await syncAndGetUserPackageState(env.DB, user.id);
+    const activePackage = pkgState.activePackage;
 
     const { results: requests } = await env.DB.prepare(`
       SELECT id, amount_ksh, phone_number, status, balance_type, mpesa_receipt_number, rejection_reason, created_at, processed_at
@@ -130,6 +124,11 @@ export async function onRequestPost(context) {
   }
 
   try {
+    const pkgState = await syncAndGetUserPackageState(env.DB, user.id);
+    if (pkgState.isTrialExpiredLockout) {
+      return jsonError(TRIAL_EXPIRED_LOCKOUT_MESSAGE, 403, { trialExpired: true, code: 'TRIAL_EXPIRED' });
+    }
+
     // Ensure column exists
     await env.DB.prepare("ALTER TABLE wallets ADD COLUMN surveys_balance_ksh INTEGER NOT NULL DEFAULT 0").run().catch(() => {});
 
@@ -161,15 +160,8 @@ export async function onRequestPost(context) {
     const txId = generateId('wtx');
 
     if (balanceType === 'views') {
-      // Fetch user's active package to enforce unique withdrawal limit for views
-      const activePackage = await env.DB.prepare(`
-        SELECT p.id, p.name, p.min_withdrawal_views_ksh
-        FROM user_packages up
-        JOIN packages p ON up.package_id = p.id
-        WHERE up.user_id = ? AND up.status = 'active'
-        ORDER BY up.activated_at DESC
-        LIMIT 1
-      `).bind(user.id).first();
+      // Use synced active package to enforce unique withdrawal limit for views
+      const activePackage = pkgState.activePackage;
 
       if (!activePackage) {
         return jsonError('You must have an active partner package to withdraw status views earnings. If you have referral earnings, you can withdraw them separately.', 400);

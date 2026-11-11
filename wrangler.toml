@@ -16,3 +16,4 @@ migrations_dir = "./migrations"
 [vars]
 MPESA_TILL_NUMBER = "1870141"
 MPESA_BUSINESS_NAME = "ALMAIZA AGENCIES"
+RECAPTCHA_SITE_KEY = "6LfdzhouAAAAAPxDLqCVpSCr1rcPrW7a4lTcu-D-"

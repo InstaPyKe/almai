@@ -4,7 +4,7 @@
 // WhatsApp Products & Promotional Creatives for Partner Downloads
 // ====================================================================
 
-import { jsonError, jsonSuccess } from './_utils.js';
+import { jsonError, jsonSuccess, authenticate, syncAndGetUserPackageState, TRIAL_EXPIRED_LOCKOUT_MESSAGE } from './_utils.js';
 
 /**
  * GET /api/products-posts
@@ -64,6 +64,14 @@ export async function onRequestPost(context) {
   }
 
   try {
+    const authUser = await authenticate(request, env).catch(() => null);
+    if (authUser) {
+      const pkgState = await syncAndGetUserPackageState(env.DB, authUser.id);
+      if (pkgState.isTrialExpiredLockout) {
+        return jsonError(TRIAL_EXPIRED_LOCKOUT_MESSAGE, 403, { trialExpired: true, code: 'TRIAL_EXPIRED' });
+      }
+    }
+
     await env.DB.prepare(`
       UPDATE product_posts
       SET downloads_count = downloads_count + 1

@@ -3,7 +3,7 @@
 // Route: POST /api/auth/register
 // ====================================================================
 
-import { jsonError, jsonSuccess, hashPassword, generateId, generateToken, checkRateLimit, recordFailedAttempt } from '../_utils.js';
+import { jsonError, jsonSuccess, hashPassword, generateId, generateToken, checkRateLimit, recordFailedAttempt, verifyRecaptchaToken } from '../_utils.js';
 
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -29,6 +29,7 @@ export async function onRequestPost(context) {
   }
 
   const { name, email, phone, password, referralCode } = body;
+  const recaptchaToken = body.recaptchaToken || body['g-recaptcha-response'] || '';
 
   // 1. Validation
   if (!name || typeof name !== 'string' || name.trim().length < 2) {
@@ -46,6 +47,15 @@ export async function onRequestPost(context) {
 
   if (!password || typeof password !== 'string' || password.length < 8) {
     return jsonError('Password must be at least 8 characters long', 400);
+  }
+
+  // 1b. Verify Google reCAPTCHA response
+  const captcha = await verifyRecaptchaToken(recaptchaToken, ip, env);
+  if (!captcha.ok) {
+    return jsonError(captcha.error, captcha.status || 400, {
+      recaptchaRequired: true,
+      codes: captcha.codes
+    });
   }
 
   const cleanEmail = email.trim().toLowerCase();

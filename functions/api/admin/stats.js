@@ -57,6 +57,14 @@ export async function onRequestGet(context) {
         (SELECT COALESCE(SUM(reward_amount_ksh), 0) FROM survey_responses) as total_survey_rewards_ksh
     `).first().catch(() => null);
 
+    // 10. Active user bonus aggregates
+    const bonusAggregates = await env.DB.prepare(`
+      SELECT
+        COALESCE(SUM(total_disbursed_ksh), 0) as total_bonus_disbursed_ksh,
+        COALESCE(SUM(recipient_count), 0) as total_bonus_recipients
+      FROM bonus_distributions
+    `).first().catch(() => null);
+
     return jsonSuccess({
       metrics: {
         totalUsers: usersCount?.count || 0,
@@ -74,6 +82,8 @@ export async function onRequestGet(context) {
         activeSurveysCount: surveyAggregates?.active_surveys_count || 0,
         totalSurveyResponsesCount: surveyAggregates?.total_responses_count || 0,
         totalSurveyRewardsKsh: surveyAggregates?.total_survey_rewards_ksh || 0,
+        totalBonusDisbursedKsh: bonusAggregates?.total_bonus_disbursed_ksh || 0,
+        totalBonusRecipientsCount: bonusAggregates?.total_bonus_recipients || 0,
         totalAvailableInSystemKsh: walletAggregates?.total_available_in_system || 0,
         totalReservedInSystemKsh: walletAggregates?.total_reserved_in_system || 0
       }

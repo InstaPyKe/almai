@@ -4,7 +4,7 @@
 // Paid Consumer Surveys & Instant M-Pesa Rewards System
 // ====================================================================
 
-import { jsonError, jsonSuccess, requireAuth, generateId } from './_utils.js';
+import { jsonError, jsonSuccess, requireAuth, generateId, syncAndGetUserPackageState, TRIAL_EXPIRED_LOCKOUT_MESSAGE } from './_utils.js';
 
 // Default initial corporate surveys seeded into the database
 const SEED_SURVEYS = [
@@ -246,6 +246,8 @@ export async function onRequestGet(context) {
   const user = auth.user;
 
   try {
+    const pkgState = await syncAndGetUserPackageState(env.DB, user.id);
+
     await ensureSurveysSchema(env);
 
     // 1. Fetch user's responses
@@ -321,6 +323,7 @@ export async function onRequestGet(context) {
 
     return jsonSuccess({
       surveys: formattedSurveys,
+      isTrialExpiredLockout: pkgState.isTrialExpiredLockout,
       stats: {
         surveysBalanceKsh,
         availableSurveysCount: availableCount,
@@ -365,6 +368,11 @@ export async function onRequestPost(context) {
   }
 
   try {
+    const pkgState = await syncAndGetUserPackageState(env.DB, user.id);
+    if (pkgState.isTrialExpiredLockout) {
+      return jsonError(TRIAL_EXPIRED_LOCKOUT_MESSAGE, 403, { trialExpired: true, code: 'TRIAL_EXPIRED' });
+    }
+
     await ensureSurveysSchema(env);
 
     // 1. Fetch survey

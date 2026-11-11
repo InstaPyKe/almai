@@ -432,3 +432,215 @@ export async function awardReferralCommission(env, userId, packageId, packageNam
     return null;
   }
 }
+
+export const TRIAL_EXPIRED_LOCKOUT_MESSAGE = 'Your 1-Day Free Trial has expired. Company services are locked until you upgrade to a paid partner package (Starter Pro, Exclusive, or Premium).';
+
+const freeTrialSchemaReadyDbs = new WeakSet();
+
+/**
+ * Idempotently ensure packages table supports flexible timed free trials
+ * without modifying any existing paid package plans.
+ */
+export async function ensureFreeTrialSchema(db) {
+  if (!db || freeTrialSchemaReadyDbs.has(db)) return;
+
+  await db.prepare('ALTER TABLE packages ADD COLUMN duration_hours INTEGER DEFAULT NULL').run().catch(() => {});
+  await db.prepare('ALTER TABLE packages ADD COLUMN is_free_trial INTEGER NOT NULL DEFAULT 0').run().catch(() => {});
+
+  const now = Math.floor(Date.now() / 1000);
+  await db.prepare(`
+    INSERT OR IGNORE INTO packages (
+      id, name, slug, price_ksh, reward_per_view_ksh, max_views_per_task,
+      min_withdrawal_views_ksh, features, badge, is_active, created_at,
+      duration_hours, is_free_trial
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, 24, 1)
+  `).bind(
+    'pkg_free_trial',
+    '1-Day Free Trial',
+    'free-trial',
+    0,
+    15,
+    25,
+    5000,
+    JSON.stringify([
+      'Free 24-hour full partner access',
+      'Earn KSh 15 per approved view',
+      'Up to 25 views per WhatsApp task',
+      'Full Paid Surveys & Creative access',
+      'Upgrade anytime to keep earning permanently'
+    ]),
+    'FREE 1-DAY TRIAL',
+    now
+  ).run().catch(() => {});
+
+  freeTrialSchemaReadyDbs.add(db);
+}
+
+/**
+ * Expire any timed package past expires_at and return the user's current
+ * active/pending/expired-trial package state cleanly.
+ */
+export async function syncAndGetUserPackageState(db, userId, nowOverride = null) {
+  await ensureFreeTrialSchema(db);
+  const now = nowOverride !== null ? nowOverride : Math.floor(Date.now() / 1000);
+
+  // Auto-expire any timed package whose 1-day (or configured) window has elapsed
+  await db.prepare(`
+    UPDATE user_packages
+    SET status = 'expired'
+    WHERE user_id = ?
+      AND status = 'active'
+      AND expires_at IS NOT NULL
+      AND expires_at <= ?
+  `).bind(userId, now).run().catch(() => {});
+
+  const activePackage = await db.prepare(`
+    SELECT up.id as user_package_id, up.status, up.activated_at, up.expires_at,
+           p.id as package_id, p.name, p.slug, p.price_ksh, p.reward_per_view_ksh,
+           p.max_views_per_task, p.min_withdrawal_views_ksh, p.badge,
+           COALESCE(p.duration_hours, NULL) as duration_hours,
+           COALESCE(p.is_free_trial, 0) as is_free_trial
+    FROM user_packages up
+    JOIN packages p ON up.package_id = p.id
+    WHERE up.user_id = ?
+      AND up.status = 'active'
+      AND (up.expires_at IS NULL OR up.expires_at > ?)
+    ORDER BY up.activated_at DESC
+    LIMIT 1
+  `).bind(userId, now).first();
+
+  const pendingPackage = await db.prepare(`
+    SELECT up.id as user_package_id, up.status, up.activated_at,
+           p.id as package_id, p.name, p.slug, p.price_ksh, p.reward_per_view_ksh, p.max_views_per_task, p.badge,
+           pt.mpesa_receipt_number, pt.created_at as payment_submitted_at
+    FROM user_packages up
+    JOIN packages p ON up.package_id = p.id
+    LEFT JOIN payment_transactions pt ON pt.user_id = up.user_id AND pt.package_id = up.package_id AND pt.status = 'pending'
+    WHERE up.user_id = ? AND up.status = 'pending_verification'
+    ORDER BY up.activated_at DESC
+    LIMIT 1
+  `).bind(userId).first().catch(() => null);
+
+  const usedTrialRow = await db.prepare(`
+    SELECT up.id as user_package_id, up.status, up.activated_at, up.expires_at,
+           p.id as package_id, p.name, p.slug, p.price_ksh,
+           COALESCE(p.duration_hours, 24) as duration_hours,
+           COALESCE(p.is_free_trial, 0) as is_free_trial
+    FROM user_packages up
+    JOIN packages p ON up.package_id = p.id
+    WHERE up.user_id = ? AND (COALESCE(p.is_free_trial, 0) = 1 OR p.slug = 'free-trial')
+    ORDER BY up.activated_at DESC
+    LIMIT 1
+  `).bind(userId).first().catch(() => null);
+
+  const isTrialActive = Boolean(
+    activePackage && (
+      activePackage.is_free_trial === 1 ||
+      activePackage.slug === 'free-trial' ||
+      activePackage.expires_at !== null
+    )
+  );
+  const trialExpiresAt = (activePackage && activePackage.expires_at)
+    ? activePackage.expires_at
+    : (usedTrialRow?.expires_at || null);
+  const trialSecondsRemaining = (activePackage && activePackage.expires_at)
+    ? Math.max(0, activePackage.expires_at - now)
+    : 0;
+  const hasUsedFreeTrial = Boolean(usedTrialRow);
+  const expiredTrialPackage = (!activePackage && usedTrialRow && usedTrialRow.status === 'expired')
+    ? usedTrialRow
+    : null;
+  const isTrialExpiredLockout = Boolean(!activePackage && expiredTrialPackage);
+
+  return {
+    now,
+    activePackage: activePackage || null,
+    pendingPackage: pendingPackage || null,
+    expiredTrialPackage,
+    isTrialActive,
+    trialExpiresAt,
+    trialSecondsRemaining,
+    hasUsedFreeTrial,
+    isTrialExpiredLockout
+  };
+}
+
+export const DEFAULT_RECAPTCHA_SITE_KEY = '6LfdzhouAAAAAPxDLqCVpSCr1rcPrW7a4lTcu-D-';
+const DEFAULT_RECAPTCHA_SECRET_KEY = '6LfdzhouAAAAAJRNP6vfgi_QCLbd6q0-c73a6bi2';
+
+/**
+ * Verify Google reCAPTCHA token via Google's siteverify endpoint.
+ */
+export async function verifyRecaptchaToken(token, remoteIp = '', env = null) {
+  const cleanToken = typeof token === 'string' ? token.trim() : '';
+  if (!cleanToken) {
+    return {
+      ok: false,
+      status: 400,
+      error: 'Please complete the reCAPTCHA verification ("I am not a robot") before continuing.',
+      codes: ['missing-input-response']
+    };
+  }
+
+  const secret = (env && env.RECAPTCHA_SECRET_KEY) ? env.RECAPTCHA_SECRET_KEY : DEFAULT_RECAPTCHA_SECRET_KEY;
+  const verifyFn = (env && typeof env.RECAPTCHA_VERIFY_FN === 'function') ? env.RECAPTCHA_VERIFY_FN : null;
+
+  try {
+    let data;
+    if (verifyFn) {
+      data = await verifyFn({ secret, response: cleanToken, remoteip: remoteIp });
+    } else {
+      const formBody = new URLSearchParams({
+        secret,
+        response: cleanToken
+      });
+      if (remoteIp && remoteIp !== 'default_ip') {
+        formBody.set('remoteip', remoteIp);
+      }
+
+      const resp = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: formBody.toString()
+      });
+
+      if (!resp.ok) {
+        return {
+          ok: false,
+          status: 502,
+          error: 'Could not reach Google reCAPTCHA verification service. Please try again.',
+          codes: ['siteverify-http-error']
+        };
+      }
+      data = await resp.json();
+    }
+
+    if (!data || data.success !== true) {
+      return {
+        ok: false,
+        status: 403,
+        error: 'reCAPTCHA verification failed or expired. Please complete the "I am not a robot" check again.',
+        codes: Array.isArray(data?.['error-codes']) ? data['error-codes'] : ['invalid-input-response']
+      };
+    }
+
+    if (typeof data.score === 'number' && data.score < 0.5) {
+      return {
+        ok: false,
+        status: 403,
+        error: 'Automated activity detected by reCAPTCHA. Please try again.',
+        codes: ['low-score']
+      };
+    }
+
+    return { ok: true, data };
+  } catch (err) {
+    console.error('reCAPTCHA verification error:', err);
+    return {
+      ok: false,
+      status: 502,
+      error: 'reCAPTCHA verification failed due to a network error. Please try again.',
+      codes: ['verification-exception']
+    };
+  }
+}

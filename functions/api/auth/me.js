@@ -3,7 +3,7 @@
 // Route: GET /api/auth/me
 // ====================================================================
 
-import { jsonError, jsonSuccess, requireAuth } from '../_utils.js';
+import { jsonError, jsonSuccess, requireAuth, syncAndGetUserPackageState } from '../_utils.js';
 
 export async function onRequestGet(context) {
   const { request, env } = context;
@@ -66,28 +66,18 @@ export async function onRequestGet(context) {
       wallet.available_balance_ksh = availBal;
     }
 
-    // 2. Fetch active and pending user packages
-    const activePackage = await env.DB.prepare(`
-      SELECT up.id as user_package_id, up.status, up.activated_at,
-             p.id as package_id, p.name, p.slug, p.price_ksh, p.reward_per_view_ksh, p.max_views_per_task, p.min_withdrawal_views_ksh, p.badge
-      FROM user_packages up
-      JOIN packages p ON up.package_id = p.id
-      WHERE up.user_id = ? AND up.status = 'active'
-      ORDER BY up.activated_at DESC
-      LIMIT 1
-    `).bind(user.id).first();
-
-    const pendingPackage = await env.DB.prepare(`
-      SELECT up.id as user_package_id, up.status, up.activated_at,
-             p.id as package_id, p.name, p.slug, p.price_ksh, p.reward_per_view_ksh, p.max_views_per_task, p.badge,
-             pt.mpesa_receipt_number, pt.created_at as payment_submitted_at
-      FROM user_packages up
-      JOIN packages p ON up.package_id = p.id
-      LEFT JOIN payment_transactions pt ON pt.user_id = up.user_id AND pt.package_id = up.package_id AND pt.status = 'pending'
-      WHERE up.user_id = ? AND up.status = 'pending_verification'
-      ORDER BY up.activated_at DESC
-      LIMIT 1
-    `).bind(user.id).first();
+    // 2. Sync expirations & fetch active, pending, and expired-trial package state
+    const pkgState = await syncAndGetUserPackageState(env.DB, user.id);
+    const {
+      activePackage,
+      pendingPackage,
+      expiredTrialPackage,
+      isTrialActive,
+      trialExpiresAt,
+      trialSecondsRemaining,
+      hasUsedFreeTrial,
+      isTrialExpiredLockout
+    } = pkgState;
 
     // 3. Check 18h task submission cooldown & tickets (only count user screenshot submissions, not admin credits)
     const userRow = await env.DB.prepare('SELECT COALESCE(submission_tickets, 0) as submission_tickets FROM users WHERE id = ?').bind(user.id).first().catch(() => null);
@@ -141,6 +131,22 @@ export async function onRequestGet(context) {
       WHERE user_id = ?
     `).bind(user.id).first().catch(() => null);
 
+    // 6. Recent regulated active user bonuses received
+    let recentBonuses = [];
+    try {
+      const { results: bonusRows } = await env.DB.prepare(`
+        SELECT br.id, br.amount_ksh, br.balance_type, br.created_at, bd.campaign_title
+        FROM bonus_recipient_logs br
+        JOIN bonus_distributions bd ON br.distribution_id = bd.id
+        WHERE br.user_id = ?
+        ORDER BY br.created_at DESC
+        LIMIT 3
+      `).bind(user.id).all();
+      recentBonuses = bonusRows || [];
+    } catch (_) {
+      recentBonuses = [];
+    }
+
     return jsonSuccess({
       authenticated: true,
       user: {
@@ -155,7 +161,14 @@ export async function onRequestGet(context) {
       wallet,
       activePackage: activePackage || null,
       pendingPackage: pendingPackage || null,
+      expiredTrialPackage: expiredTrialPackage || null,
       hasActivePackage: Boolean(activePackage),
+      isTrialActive,
+      trialExpiresAt,
+      trialSecondsRemaining,
+      hasUsedFreeTrial,
+      isTrialExpiredLockout,
+      recentBonuses,
       cooldown: {
         canSubmitTask,
         nextSubmissionAllowedAt,

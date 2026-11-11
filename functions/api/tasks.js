@@ -3,7 +3,7 @@
 // Route: GET, POST /api/tasks
 // ====================================================================
 
-import { jsonError, jsonSuccess, requireAuth, generateId } from './_utils.js';
+import { jsonError, jsonSuccess, requireAuth, generateId, syncAndGetUserPackageState, TRIAL_EXPIRED_LOCKOUT_MESSAGE } from './_utils.js';
 
 /**
  * GET /api/tasks
@@ -67,9 +67,18 @@ export async function onRequestGet(context) {
       }
     }
 
+    // Fetch active/trial package state cleanly (auto-expires timed packages)
+    const pkgState = await syncAndGetUserPackageState(env.DB, user.id, now);
+
     return jsonSuccess({
       campaigns: campaigns || [],
       submissions: submissions || [],
+      packageState: {
+        hasActivePackage: Boolean(pkgState.activePackage),
+        isTrialActive: pkgState.isTrialActive,
+        trialSecondsRemaining: pkgState.trialSecondsRemaining,
+        isTrialExpiredLockout: pkgState.isTrialExpiredLockout
+      },
       cooldown: {
         canSubmit,
         secondsRemaining,
@@ -107,18 +116,15 @@ export async function onRequestPost(context) {
 
   const { campaignId, reportedViews, evidenceBase64, evidenceNote, fileName, fileType } = body;
 
-  // 1. Verify active package
-  const activePackage = await env.DB.prepare(`
-    SELECT up.package_id, p.name, p.reward_per_view_ksh, p.max_views_per_task
-    FROM user_packages up
-    JOIN packages p ON up.package_id = p.id
-    WHERE up.user_id = ? AND up.status = 'active'
-    ORDER BY up.activated_at DESC
-    LIMIT 1
-  `).bind(user.id).first();
+  // 1. Sync timed package expiration & verify active package
+  const pkgState = await syncAndGetUserPackageState(env.DB, user.id);
+  const activePackage = pkgState.activePackage;
 
   if (!activePackage) {
-    return jsonError('You do not have an active advertising partner package. Please activate Starter, Growth, or Executive package first.', 403);
+    if (pkgState.isTrialExpiredLockout) {
+      return jsonError(TRIAL_EXPIRED_LOCKOUT_MESSAGE, 403, { trialExpired: true, code: 'TRIAL_EXPIRED' });
+    }
+    return jsonError('You do not have an active advertising partner package. Please activate the 1-Day Free Trial or a paid partner package first.', 403);
   }
 
   // 2. Validate views

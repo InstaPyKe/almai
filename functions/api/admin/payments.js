@@ -4,7 +4,7 @@
 // Protected Administrator Payment Code Verification
 // ====================================================================
 
-import { jsonError, jsonSuccess, requireAdmin, createAuditLog, generateId, awardReferralCommission } from '../_utils.js';
+import { jsonError, jsonSuccess, requireAdmin, createAuditLog, generateId, awardReferralCommission, ensureFreeTrialSchema } from '../_utils.js';
 
 /**
  * GET /api/admin/payments
@@ -76,9 +76,10 @@ export async function onRequestPost(context) {
   }
 
   try {
+    await ensureFreeTrialSchema(env.DB);
     // 1. Fetch payment transaction
     const payment = await env.DB.prepare(`
-      SELECT pt.*, u.name as user_name, u.email as user_email, p.name as package_name
+      SELECT pt.*, u.name as user_name, u.email as user_email, p.name as package_name, p.duration_hours
       FROM payment_transactions pt
       JOIN users u ON pt.user_id = u.id
       JOIN packages p ON pt.package_id = p.id
@@ -116,12 +117,15 @@ export async function onRequestPost(context) {
         WHERE user_id = ? AND status = 'active'
       `).bind(payment.user_id).run();
 
-      // 3. Activate the new package
+      // 3. Activate the new package (paid plans use NULL expires_at; timed plans use duration_hours)
       const userPackageId = generateId('upkg');
+      const newExpiresAt = (payment.duration_hours && payment.duration_hours > 0)
+        ? (now + payment.duration_hours * 3600)
+        : null;
       await env.DB.prepare(`
-        INSERT INTO user_packages (id, user_id, package_id, status, activated_at)
-        VALUES (?, ?, ?, 'active', ?)
-      `).bind(userPackageId, payment.user_id, payment.package_id, now).run();
+        INSERT INTO user_packages (id, user_id, package_id, status, activated_at, expires_at)
+        VALUES (?, ?, ?, 'active', ?, ?)
+      `).bind(userPackageId, payment.user_id, payment.package_id, now, newExpiresAt).run();
 
       // 4. Clean up any pending verification records for this user
       await env.DB.prepare(`

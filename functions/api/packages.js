@@ -3,7 +3,7 @@
 // Route: GET, POST /api/packages
 // ====================================================================
 
-import { jsonError, jsonSuccess, requireAuth, generateId } from './_utils.js';
+import { jsonError, jsonSuccess, requireAuth, generateId, ensureFreeTrialSchema, syncAndGetUserPackageState } from './_utils.js';
 
 /**
  * GET /api/packages
@@ -17,8 +17,13 @@ export async function onRequestGet(context) {
   }
 
   try {
+    await ensureFreeTrialSchema(env.DB);
+
     const { results } = await env.DB.prepare(`
-      SELECT id, name, slug, price_ksh, reward_per_view_ksh, max_views_per_task, min_withdrawal_views_ksh, features, badge, is_active
+      SELECT id, name, slug, price_ksh, reward_per_view_ksh, max_views_per_task, min_withdrawal_views_ksh,
+             features, badge, is_active,
+             COALESCE(duration_hours, NULL) as duration_hours,
+             COALESCE(is_free_trial, 0) as is_free_trial
       FROM packages
       WHERE is_active = 1
       ORDER BY price_ksh ASC
@@ -85,9 +90,13 @@ export async function onRequestPost(context) {
   }
 
   try {
+    await ensureFreeTrialSchema(env.DB);
+
     // 1. Fetch package from database (DO NOT trust client prices)
     const pkg = await env.DB.prepare(`
-      SELECT id, name, price_ksh, reward_per_view_ksh, max_views_per_task, is_active
+      SELECT id, name, slug, price_ksh, reward_per_view_ksh, max_views_per_task, min_withdrawal_views_ksh, is_active,
+             COALESCE(duration_hours, NULL) as duration_hours,
+             COALESCE(is_free_trial, 0) as is_free_trial
       FROM packages
       WHERE id = ? AND is_active = 1
       LIMIT 1
@@ -98,6 +107,43 @@ export async function onRequestPost(context) {
     }
 
     const now = Math.floor(Date.now() / 1000);
+
+    // 1b. Flexible 1-Day Free Trial Instant Activation (price_ksh === 0 or is_free_trial === 1)
+    if (pkg.price_ksh === 0 || pkg.is_free_trial === 1) {
+      const pkgState = await syncAndGetUserPackageState(env.DB, user.id, now);
+
+      if (pkgState.activePackage && pkgState.activePackage.is_free_trial === 0 && pkgState.activePackage.price_ksh > 0) {
+        return jsonError('You already have an active paid partner package. The Free Trial is intended for new accounts.', 409);
+      }
+
+      if (pkgState.hasUsedFreeTrial) {
+        return jsonError(
+          'You have already used your 1-Day Free Trial on this account. Please upgrade to a paid partner package (Starter Pro, Exclusive, or Premium) to continue using company services.',
+          409,
+          { trialExpired: pkgState.isTrialExpiredLockout }
+        );
+      }
+
+      const durationHours = (pkg.duration_hours && pkg.duration_hours > 0) ? parseInt(pkg.duration_hours, 10) : 24;
+      const expiresAt = now + durationHours * 3600;
+      const userPackageId = generateId('upkg');
+
+      await env.DB.prepare(`
+        INSERT INTO user_packages (id, user_id, package_id, status, activated_at, expires_at)
+        VALUES (?, ?, ?, 'active', ?, ?)
+      `).bind(userPackageId, user.id, pkg.id, now, expiresAt).run();
+
+      return jsonSuccess({
+        message: `${pkg.name} activated immediately! Enjoy full partner access for ${durationHours} hours (1 day). Upgrade anytime to keep your account active permanently.`,
+        activated: true,
+        isTrial: true,
+        durationHours,
+        expiresAt,
+        package: pkg,
+        status: 'active'
+      });
+    }
+
     const targetPhone = phoneNumber ? phoneNumber.trim().replace(/\s+/g, '') : user.phone;
 
     // Check if live M-Pesa is configured
