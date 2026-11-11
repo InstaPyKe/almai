@@ -93,8 +93,13 @@ export async function hashPassword(password, saltHex = null) {
 }
 
 export async function verifyPassword(password, storedHash, storedSalt) {
-  const { hash } = await hashPassword(password, storedSalt);
-  return hash === storedHash;
+  if (!password || !storedHash || !storedSalt) return false;
+  try {
+    const { hash } = await hashPassword(password, storedSalt);
+    return hash === storedHash;
+  } catch (err) {
+    return false;
+  }
 }
 
 /**
@@ -436,6 +441,42 @@ export async function awardReferralCommission(env, userId, packageId, packageNam
 export const TRIAL_EXPIRED_LOCKOUT_MESSAGE = 'Your 1-Day Free Trial has expired. Company services are locked until you upgrade to a paid partner package (Starter Pro, Exclusive, or Premium).';
 
 const freeTrialSchemaReadyDbs = new WeakSet();
+const authReferralSchemaReadyDbs = new WeakSet();
+
+/**
+ * Idempotently ensure users table has referral_code / referred_by columns
+ * and referrals tracking table exists even on partially migrated D1 instances.
+ */
+export async function ensureAuthReferralSchema(db) {
+  if (!db || authReferralSchemaReadyDbs.has(db)) return;
+
+  await db.prepare('ALTER TABLE users ADD COLUMN referral_code TEXT').run().catch(() => {});
+  await db.prepare('ALTER TABLE users ADD COLUMN referred_by TEXT').run().catch(() => {});
+  await db.prepare(`
+    CREATE TABLE IF NOT EXISTS referrals (
+      id TEXT PRIMARY KEY,
+      referrer_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      referred_user_id TEXT NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+      referral_code TEXT,
+      status TEXT NOT NULL DEFAULT 'registered' CHECK(status IN ('registered', 'active_paid')),
+      package_id TEXT REFERENCES packages(id),
+      package_name TEXT,
+      package_price_ksh INTEGER DEFAULT 0,
+      commission_rate REAL DEFAULT 0.45,
+      commission_amount_ksh INTEGER DEFAULT 0,
+      commission_paid INTEGER DEFAULT 0,
+      created_at INTEGER NOT NULL,
+      activated_at INTEGER
+    )
+  `).run().catch(() => {});
+  await db.prepare(`
+    UPDATE users
+    SET referral_code = 'ALM' || UPPER(SUBSTR(REPLACE(REPLACE(id, 'usr_', ''), 'admin_', ''), 1, 6))
+    WHERE referral_code IS NULL OR referral_code = ''
+  `).run().catch(() => {});
+
+  authReferralSchemaReadyDbs.add(db);
+}
 
 /**
  * Idempotently ensure packages table supports flexible timed free trials
@@ -444,6 +485,7 @@ const freeTrialSchemaReadyDbs = new WeakSet();
 export async function ensureFreeTrialSchema(db) {
   if (!db || freeTrialSchemaReadyDbs.has(db)) return;
 
+  await db.prepare('ALTER TABLE packages ADD COLUMN min_withdrawal_views_ksh INTEGER NOT NULL DEFAULT 5000').run().catch(() => {});
   await db.prepare('ALTER TABLE packages ADD COLUMN duration_hours INTEGER DEFAULT NULL').run().catch(() => {});
   await db.prepare('ALTER TABLE packages ADD COLUMN is_free_trial INTEGER NOT NULL DEFAULT 0').run().catch(() => {});
 

@@ -179,3 +179,83 @@ test('Google reCAPTCHA enforces token verification on register and login', async
   }
 });
 
+test('Legacy D1 users schema without referral_code/referred_by auto-heals on login and register', async () => {
+  const { hashPassword } = await import('../functions/api/_utils.js');
+  const sqliteDb = new DatabaseSync(':memory:');
+  sqliteDb.exec(`
+    CREATE TABLE users (
+      id TEXT PRIMARY KEY, name TEXT, email TEXT UNIQUE, phone TEXT,
+      password_hash TEXT, salt TEXT, role TEXT DEFAULT 'user', status TEXT DEFAULT 'active',
+      created_at INTEGER, updated_at INTEGER
+    );
+    CREATE TABLE sessions (
+      id TEXT PRIMARY KEY, user_id TEXT NOT NULL, expires_at INTEGER NOT NULL,
+      created_at INTEGER NOT NULL, ip_address TEXT, user_agent TEXT
+    );
+    CREATE TABLE packages (
+      id TEXT PRIMARY KEY, name TEXT, slug TEXT UNIQUE, price_ksh INTEGER,
+      reward_per_view_ksh INTEGER, max_views_per_task INTEGER,
+      features TEXT, badge TEXT, is_active INTEGER DEFAULT 1, created_at INTEGER
+    );
+    CREATE TABLE user_packages (
+      id TEXT PRIMARY KEY, user_id TEXT NOT NULL, package_id TEXT NOT NULL,
+      status TEXT DEFAULT 'active', activated_at INTEGER, expires_at INTEGER
+    );
+    CREATE TABLE payment_transactions (
+      id TEXT PRIMARY KEY, user_id TEXT, package_id TEXT, mpesa_receipt_number TEXT,
+      status TEXT DEFAULT 'pending', created_at INTEGER
+    );
+    CREATE TABLE wallets (
+      id TEXT PRIMARY KEY, user_id TEXT UNIQUE, available_balance_ksh INTEGER DEFAULT 0,
+      reserved_balance_ksh INTEGER DEFAULT 0, lifetime_earnings_ksh INTEGER DEFAULT 0,
+      lifetime_withdrawn_ksh INTEGER DEFAULT 0, updated_at INTEGER
+    );
+    CREATE TABLE rate_limits (
+      key TEXT PRIMARY KEY, attempts INTEGER NOT NULL DEFAULT 1,
+      last_attempt INTEGER NOT NULL, blocked_until INTEGER NOT NULL DEFAULT 0
+    );
+  `);
+
+  const now = Math.floor(Date.now() / 1000);
+  const { hash, salt } = await hashPassword('LegacyPass123!');
+  sqliteDb.prepare(`
+    INSERT INTO users (id, name, email, phone, password_hash, salt, role, status, created_at, updated_at)
+    VALUES ('usr_legacy1', 'Earlier Partner', 'legacy@example.com', '0712000111', ?, ?, 'user', 'active', ?, ?)
+  `).run(hash, salt, now, now);
+
+  const env = {
+    DB: createD1Wrapper(sqliteDb),
+    RECAPTCHA_VERIFY_FN: async () => ({ success: true, score: 0.9 })
+  };
+
+  // Earlier user must be able to sign in with correct password on legacy table
+  const loginRes = await loginPost({
+    request: postReq('http://localhost/api/auth/login', {
+      email: 'legacy@example.com',
+      password: 'LegacyPass123!',
+      recaptchaToken: 'tok_ok'
+    }),
+    env
+  });
+  const loginData = await loginRes.json();
+  assert.equal(loginRes.status, 200);
+  assert.equal(loginData.success, true);
+  assert.ok(loginData.user?.referralCode);
+
+  // New user registration must also succeed without server error
+  const regRes = await registerPost({
+    request: postReq('http://localhost/api/auth/register', {
+      name: 'New Legacy DB User',
+      email: 'newcomer@example.com',
+      phone: '0712999888',
+      password: 'NewPassword123!',
+      recaptchaToken: 'tok_ok'
+    }),
+    env
+  });
+  const regData = await regRes.json();
+  assert.equal(regRes.status, 201);
+  assert.equal(regData.registered, true);
+});
+
+

@@ -3,7 +3,7 @@
 // Route: POST /api/auth/register
 // ====================================================================
 
-import { jsonError, jsonSuccess, hashPassword, generateId, generateToken, checkRateLimit, recordFailedAttempt, verifyRecaptchaToken } from '../_utils.js';
+import { jsonError, jsonSuccess, hashPassword, generateId, generateToken, checkRateLimit, recordFailedAttempt, verifyRecaptchaToken, ensureAuthReferralSchema } from '../_utils.js';
 
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -64,9 +64,11 @@ export async function onRequestPost(context) {
   const cleanReferral = (referralCode || '').trim();
 
   try {
-    // 2. Check if email already registered
+    await ensureAuthReferralSchema(env.DB);
+
+    // 2. Check if email already registered (case-insensitive)
     const existing = await env.DB.prepare(
-      'SELECT id FROM users WHERE email = ? LIMIT 1'
+      'SELECT id FROM users WHERE LOWER(email) = ? LIMIT 1'
     ).bind(cleanEmail).first();
 
     if (existing) {
@@ -123,7 +125,7 @@ export async function onRequestPost(context) {
       await env.DB.prepare(`
         INSERT INTO referrals (id, referrer_id, referred_user_id, referral_code, status, created_at)
         VALUES (?, ?, ?, ?, 'registered', ?)
-      `).bind(refTrackingId, referrer.id, userId, cleanReferral, now).run();
+      `).bind(refTrackingId, referrer.id, userId, cleanReferral, now).run().catch(() => {});
     }
 
     // 7. Initialize Wallet

@@ -3,7 +3,7 @@
 // Route: POST /api/auth/login
 // ====================================================================
 
-import { jsonError, jsonSuccess, verifyPassword, generateToken, checkRateLimit, recordFailedAttempt, clearRateLimit, verifyRecaptchaToken } from '../_utils.js';
+import { jsonError, jsonSuccess, verifyPassword, generateToken, checkRateLimit, recordFailedAttempt, clearRateLimit, verifyRecaptchaToken, ensureAuthReferralSchema } from '../_utils.js';
 
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -64,11 +64,13 @@ export async function onRequestPost(context) {
   }
 
   try {
-    // 2. Fetch user by email
+    await ensureAuthReferralSchema(env.DB);
+
+    // 2. Fetch user by email (case-insensitive for legacy records)
     let user = await env.DB.prepare(`
       SELECT id, name, email, phone, password_hash, salt, role, status, referral_code, referred_by
       FROM users
-      WHERE email = ?
+      WHERE LOWER(email) = ?
       LIMIT 1
     `).bind(cleanEmail).first();
 

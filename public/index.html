@@ -13327,6 +13327,8 @@
       cooldown: null,
       packages: [],
       productsPosts: [],
+      productsPostsTotalCount: 0,
+      isPublicProductSample: true,
       currentView: 'home',
       calculatorTierRate: 50,
       evidenceBase64: null,
@@ -13680,6 +13682,9 @@
             if (typeof renderPackagesList === 'function' && AppState.packages?.length) {
               renderPackagesList(AppState.packages);
             }
+            if (isPartnerActiveForProducts() && AppState.isPublicProductSample) {
+              fetchProductsPosts();
+            }
 
             // Strict admin check: Eject non-admin email from admin view immediately
             const isAuthorizedAdmin = AppState.user.role === 'admin' &&
@@ -13773,8 +13778,8 @@
         if (mobAdmin) mobAdmin.style.display = 'none';
       }
 
-      // Re-render home cards so button says 'Open in Dashboard'
-      renderFilteredProductsCards(AppState.productsPosts || []);
+      // Re-render products across hero, home sample/partner feed, and dashboard
+      renderProductsPosts(AppState.productsPosts || []);
 
       // Populate dashboard values
       document.getElementById('dash-user-name').textContent = AppState.user.name;
@@ -13894,8 +13899,8 @@
       const mobAdmin = document.getElementById('mob-nav-admin');
       if (mobAdmin) mobAdmin.style.display = 'none';
 
-      // Re-render home cards so button says 'Join Us'
-      renderFilteredProductsCards(AppState.productsPosts || []);
+      // Re-render products so public view reverts strictly to the 3-post sample
+      renderProductsPosts((AppState.productsPosts || []).slice(0, 3));
     }
 
     function renderPackageGatingBanner() {
@@ -14629,13 +14634,19 @@
     // Admin-posted products only - no mock posts
     const defaultWeeklyCampaignPosts = [];
 
+    function isPartnerActiveForProducts() {
+      if (!AppState.user) return false;
+      if (AppState.user.role === 'admin') return true;
+      return Boolean(AppState.hasActivePackage && !AppState.isTrialExpiredLockout);
+    }
+
     function initFastProductsPosts() {
       try {
         const cached = localStorage.getItem('almai_cached_products_posts');
         if (cached) {
           const parsed = JSON.parse(cached);
           if (Array.isArray(parsed) && parsed.length) {
-            AppState.productsPosts = parsed;
+            AppState.productsPosts = parsed.slice(0, 3);
             renderProductsPosts(AppState.productsPosts);
           }
         }
@@ -14644,16 +14655,16 @@
 
     async function fetchProductsPosts() {
       try {
-        const res = await fetch('/api/products-posts');
+        const res = await fetch('/api/products-posts', { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
           const remotePosts = (data && (data.posts || data.productPosts)) || [];
-          if (Array.isArray(remotePosts) && remotePosts.length) {
-            AppState.productsPosts = remotePosts;
-            try {
-              localStorage.setItem('almai_cached_products_posts', JSON.stringify(remotePosts));
-            } catch (e) { }
-          }
+          AppState.productsPosts = Array.isArray(remotePosts) ? remotePosts : [];
+          AppState.productsPostsTotalCount = Number(data?.totalCount ?? AppState.productsPosts.length);
+          AppState.isPublicProductSample = data?.hasFullAccess === true ? false : true;
+          try {
+            localStorage.setItem('almai_cached_products_posts', JSON.stringify(AppState.productsPosts.slice(0, 3)));
+          } catch (e) { }
         }
       } catch (err) {
         console.warn('Failed to fetch product creatives from server:', err);
@@ -14664,17 +14675,31 @@
     let activeProductCategoryFilter = 'all';
 
     function filterProductsByCategory(dayKey, btn) {
-      activeProductCategoryFilter = dayKey;
+      const partnerActive = isPartnerActiveForProducts();
+      activeProductCategoryFilter = partnerActive ? dayKey : 'all';
+
       const allFilterBtns = document.querySelectorAll('.cat-filter-btn');
       allFilterBtns.forEach(b => b.classList.remove('active'));
-      if (btn) btn.classList.add('active');
+      if (partnerActive && btn) {
+        btn.classList.add('active');
+      } else if (!partnerActive && btn && dayKey !== 'all') {
+        btn.classList.add('active');
+      } else {
+        const defaultBtn = document.querySelector('#products-category-filter .cat-filter-btn');
+        if (defaultBtn) defaultBtn.classList.add('active');
+      }
+
+      if (!partnerActive && dayKey !== 'all') {
+        renderFilteredProductsCards([], { lockedCategory: dayKey });
+        return;
+      }
 
       const allPosts = (AppState.productsPosts && AppState.productsPosts.length)
         ? AppState.productsPosts
         : [];
 
-      let filtered = allPosts;
-      if (dayKey !== 'all') {
+      let filtered = partnerActive ? allPosts : allPosts.slice(0, 3);
+      if (partnerActive && dayKey !== 'all') {
         filtered = allPosts.filter(p => {
           if (p.day && p.day.toLowerCase() === dayKey.toLowerCase()) return true;
           const text = ((p.title || '') + ' ' + (p.description || '') + ' ' + (p.caption || '')).toLowerCase();
@@ -14827,11 +14852,43 @@
       }
     }
 
-    function renderFilteredProductsCards(posts) {
+    function renderFilteredProductsCards(posts, options = {}) {
       const homeContainer = document.getElementById('home-products-container');
       if (!homeContainer) return;
 
-      if (!posts || !posts.length) {
+      const partnerActive = isPartnerActiveForProducts();
+      const displayPosts = partnerActive ? (posts || []) : (posts || []).slice(0, 3);
+
+      if (!partnerActive && options.lockedCategory) {
+        const dayNames = {
+          monday: 'Monday: Beverages',
+          tuesday: 'Tuesday: Vehicles on Sale',
+          wednesday: 'Wednesday: Tech & Gadgets',
+          thursday: 'Thursday: Fashion & Beauty',
+          friday: 'Friday: Desserts & Treats'
+        };
+        const catLabel = dayNames[options.lockedCategory] || 'Daily Partner Category';
+        homeContainer.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 44px 24px; color: var(--charcoal-muted); background: linear-gradient(135deg, #FAF5FF 0%, #FFFBEB 100%); border-radius: var(--radius-md); border: 1.5px solid #DDD6FE;">
+            <div style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: #EDE9FE; color: #5B21B6; margin-bottom: 12px; font-size: 22px;">🔒</div>
+            <h3 style="font-size: 18px; font-weight: 850; color: var(--deep-purple-heading); margin-bottom: 6px;">${escapeHTML(catLabel)} Is Exclusive to Active Partners</h3>
+            <p style="font-size: 14px; margin: 0 auto 16px; max-width: 520px; line-height: 1.55;">
+              Only active partners can browse and download the full daily category catalog. Public visitors can preview 3 sample campaigns under <strong>All Categories</strong>.
+            </p>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="filterProductsByCategory('all', document.querySelector('#products-category-filter .cat-filter-btn'))">
+                View 3 Public Samples
+              </button>
+              <button type="button" class="btn btn-primary btn-sm" onclick="${AppState.user ? 'scrollToPackages()' : "showAuthModal('register')"}">
+                ${AppState.user ? 'Activate Partner Package →' : 'Sign In / Become a Partner →'}
+              </button>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      if (!displayPosts.length) {
         homeContainer.innerHTML = `
           <div style="grid-column: 1 / -1; text-align: center; padding: 48px 24px; color: var(--charcoal-muted); background: var(--bg-cream); border-radius: var(--radius-md); border: 1.5px dashed var(--beige-border);">
             <div style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: rgba(99, 102, 241, 0.1); color: var(--primary-purple); margin-bottom: 12px;">
@@ -14848,26 +14905,33 @@
         return;
       }
 
-      homeContainer.innerHTML = posts.map(p => {
+      const cardsHTML = displayPosts.map(p => {
         const imgSource = p.image_base64 || p.image_url || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="200" fill="%232D1537"%3E%3Ctext x="50%25" y="50%25" fill="%23D8B4FE" font-size="16" text-anchor="middle" dominant-baseline="middle"%3EAlmai Creative%3C/text%3E%3C/svg%3E';
         const escapedCaption = escapeHTML(p.caption || '');
         const escapedTitle = escapeHTML(p.title || 'Brand Product Post');
         const escapedBrand = escapeHTML(p.brand_name || 'Almai Verified Partner');
         const filename = (p.image_name || (p.title ? p.title.toLowerCase().replace(/[^a-z0-9]/g, '_') : 'almai_product') + '.jpg');
 
-        const actionBtn = AppState.user
+        const actionBtn = partnerActive
           ? `<button class="btn btn-primary btn-sm" style="flex: 1;" onclick="switchView('dashboard')">
                <span class="svg-icon" style="width: 14px; height: 14px; margin-right: 4px;">
                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                </span>
                Open in Dashboard &rarr;
              </button>`
-          : `<button class="btn btn-primary btn-sm" style="flex: 1;" onclick="showAuthModal('register')">
-               <span class="svg-icon" style="width: 14px; height: 14px; margin-right: 4px;">
-                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
-               </span>
-               Join Us &rarr;
-             </button>`;
+          : (AppState.user
+            ? `<button class="btn btn-primary btn-sm" style="flex: 1;" onclick="scrollToPackages()">
+                 <span class="svg-icon" style="width: 14px; height: 14px; margin-right: 4px;">
+                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                 </span>
+                 Activate Plan to Post &rarr;
+               </button>`
+            : `<button class="btn btn-primary btn-sm" style="flex: 1;" onclick="showAuthModal('register')">
+                 <span class="svg-icon" style="width: 14px; height: 14px; margin-right: 4px;">
+                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+                 </span>
+                 Join Us &rarr;
+               </button>`);
 
         return `
           <div class="product-post-card">
@@ -14907,20 +14971,58 @@
           </div>
         `;
       }).join('');
+
+      const totalCount = Math.max(displayPosts.length, Number(AppState.productsPostsTotalCount || 0));
+      const publicSampleNoticeHTML = !partnerActive
+        ? `
+          <div style="grid-column: 1 / -1; margin-top: 8px; padding: 18px 22px; border-radius: var(--radius-md); background: linear-gradient(135deg, #FAF5FF 0%, #F0FDF4 100%); border: 1.5px solid #DDD6FE; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px;">
+            <div>
+              <div style="font-size: 14.5px; font-weight: 850; color: var(--deep-purple-heading);">
+                🔒 Showing ${displayPosts.length} Public Sample${displayPosts.length === 1 ? '' : 's'}${totalCount > displayPosts.length ? ` of ${totalCount} Daily Partner Products` : ''}
+              </div>
+              <div style="font-size: 13.5px; color: var(--charcoal-muted); margin-top: 3px;">
+                The complete daily product library and category feeds are strictly reserved for active partners.
+              </div>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" onclick="${AppState.user ? 'scrollToPackages()' : "showAuthModal('register')"}">
+              ${AppState.user ? 'Activate Partner Package →' : 'Sign In / Activate Partner Plan →'}
+            </button>
+          </div>
+        `
+        : '';
+
+      homeContainer.innerHTML = cardsHTML + publicSampleNoticeHTML;
     }
 
     function renderProductsPosts(posts) {
       const dashContainer = document.getElementById('dash-products-container');
       const allPosts = (posts && posts.length) ? posts : [];
+      const partnerActive = isPartnerActiveForProducts();
 
-      // Update hero sideways animated marquee showcase with admin posted creatives
-      renderHeroShowcase(allPosts);
+      // Update hero sideways animated marquee showcase (capped to 3 samples in public)
+      renderHeroShowcase(partnerActive ? allPosts : allPosts.slice(0, 3));
 
-      // Render home products with current active category filter
-      filterProductsByCategory(activeProductCategoryFilter, document.querySelector(`.cat-filter-btn[onclick*="${activeProductCategoryFilter}"]`));
+      // Render home products with current active category filter (enforces 3-post public sample in 'all')
+      filterProductsByCategory(
+        partnerActive ? activeProductCategoryFilter : 'all',
+        document.querySelector(`.cat-filter-btn[onclick*="${partnerActive ? activeProductCategoryFilter : 'all'}"]`)
+      );
 
       if (dashContainer) {
-        if (!allPosts.length) {
+        if (!partnerActive) {
+          dashContainer.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 40px 24px; color: var(--charcoal-muted); background: linear-gradient(135deg, #FAF5FF 0%, #FFF7ED 100%); border-radius: var(--radius-md); border: 1.5px solid #DDD6FE;">
+              <div style="display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border-radius: 50%; background: #EDE9FE; color: #5B21B6; margin-bottom: 10px; font-size: 20px;">🔒</div>
+              <h4 style="font-size: 17px; font-weight: 850; color: var(--deep-purple-heading); margin-bottom: 6px;">Active Partner Package Required</h4>
+              <p style="font-size: 14px; margin: 0 auto 14px; max-width: 500px; line-height: 1.5;">
+                Daily WhatsApp status product creatives are exclusively unlocked for active partners. ${AppState.isTrialExpiredLockout ? 'Your 1-day free trial has expired — upgrade to a paid plan to continue.' : 'Activate a partner package or 1-day trial to access all daily product posts.'}
+              </p>
+              <button type="button" class="btn btn-primary btn-sm" onclick="scrollToPackages()">
+                ${AppState.isTrialExpiredLockout ? 'Upgrade to Paid Plan →' : 'View Partner Packages →'}
+              </button>
+            </div>
+          `;
+        } else if (!allPosts.length) {
           dashContainer.innerHTML = `
             <div style="grid-column: 1 / -1; text-align: center; padding: 44px 20px; color: var(--charcoal-muted); background: var(--bg-cream); border-radius: var(--radius-md); border: 1.5px dashed var(--beige-border);">
               <div style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: rgba(16, 185, 129, 0.1); color: #059669; margin-bottom: 10px;">
@@ -14997,12 +15099,17 @@
 
     async function downloadProductImage(id, source, filename) {
       if (!AppState.user) {
-        alert('Product creative downloads are reserved for registered partners. Please sign in or create an account to download pictures and submit proof for payouts.');
+        alert('Product creative downloads are reserved for active partners. Please sign in or create an account to download pictures and submit proof for payouts.');
         showAuthModal('login');
         return;
       }
       if (AppState.isTrialExpiredLockout) {
         alert('🔒 Your 1-Day Free Trial has expired. Please upgrade to Starter Pro, Exclusive, or Premium to unlock creative downloads.');
+        scrollToPackages();
+        return;
+      }
+      if (!isPartnerActiveForProducts()) {
+        alert('🔒 An active partner package is required to download daily product creatives. Please activate a package first.');
         scrollToPackages();
         return;
       }
@@ -15612,15 +15719,22 @@
           return;
         } else {
           resetRecaptchaFor('login');
+          const errDetails = (data && data.details) || {};
+          const attempts = typeof errDetails.attempts === 'number'
+            ? errDetails.attempts
+            : (typeof data.attempts === 'number' ? data.attempts : null);
+          const remaining = typeof errDetails.remaining === 'number'
+            ? errDetails.remaining
+            : (typeof data.remaining === 'number' ? data.remaining : null);
+          const isLockedResp = res.status === 429 || Boolean(errDetails.locked ?? data.locked) || (attempts !== null && attempts >= 3);
+
           // Check if 3-trial lockout triggered
-          if (res.status === 429 || data.locked || data.attempts >= 3) {
+          if (isLockedResp) {
             isLocked = true;
-            const waitSecs = data.waitSeconds || (data.waitMinutes ? data.waitMinutes * 60 : 300);
+            const waitSecs = Number(errDetails.waitSeconds ?? data.waitSeconds) || (Number(errDetails.waitMinutes ?? data.waitMinutes) * 60) || 300;
             localStorage.setItem('almai_login_locked_until', Date.now() + waitSecs * 1000);
             startLoginLockoutTimer(waitSecs);
-          } else {
-            const attempts = data.attempts || 1;
-            const remaining = typeof data.remaining === 'number' ? data.remaining : Math.max(0, 3 - attempts);
+          } else if (res.status === 401 && remaining !== null) {
             alertEl.className = 'alert alert-error';
             alertEl.style.display = 'flex';
 
@@ -15639,6 +15753,10 @@
             } else {
               alertEl.textContent = data.error || 'Invalid email or password.';
             }
+          } else {
+            alertEl.className = 'alert alert-error';
+            alertEl.textContent = data.error || 'Sign in failed. Please try again.';
+            alertEl.style.display = 'flex';
           }
         }
       } catch (err) {
@@ -15740,13 +15858,19 @@
         console.error('Logout error:', err);
       }
       localStorage.removeItem('almai_token');
+      localStorage.removeItem('almai_cached_products_posts');
       AppState.user = null;
       AppState.wallet = null;
       AppState.activePackage = null;
       AppState.pendingPackage = null;
       AppState.hasActivePackage = false;
+      AppState.isTrialActive = false;
+      AppState.isTrialExpiredLockout = false;
+      AppState.isPublicProductSample = true;
+      AppState.productsPosts = (AppState.productsPosts || []).slice(0, 3);
       renderGuestUI();
       renderPackageGatingBanner();
+      fetchProductsPosts();
       switchView('home');
       showReferralToast('Signed out successfully.');
     }
@@ -16291,6 +16415,7 @@
         const data = await res.json();
         if (res.ok && data.success) {
           await checkAuthSession();
+          fetchProductsPosts();
           renderPackageGatingBanner();
           if (AppState.packages?.length) renderPackagesList(AppState.packages);
           alert(`🎉 ${data.message || `${name} activated for 24 hours!`}`);

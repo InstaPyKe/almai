@@ -78,8 +78,13 @@ async function hashPassword(password, saltHex = null) {
 }
 __name(hashPassword, "hashPassword");
 async function verifyPassword(password, storedHash, storedSalt) {
-  const { hash } = await hashPassword(password, storedSalt);
-  return hash === storedHash;
+  if (!password || !storedHash || !storedSalt) return false;
+  try {
+    const { hash } = await hashPassword(password, storedSalt);
+    return hash === storedHash;
+  } catch (err) {
+    return false;
+  }
 }
 __name(verifyPassword, "verifyPassword");
 function getCookie(request, name) {
@@ -363,8 +368,44 @@ async function awardReferralCommission(env, userId, packageId, packageName, pack
 __name(awardReferralCommission, "awardReferralCommission");
 var TRIAL_EXPIRED_LOCKOUT_MESSAGE = "Your 1-Day Free Trial has expired. Company services are locked until you upgrade to a paid partner package (Starter Pro, Exclusive, or Premium).";
 var freeTrialSchemaReadyDbs = /* @__PURE__ */ new WeakSet();
+var authReferralSchemaReadyDbs = /* @__PURE__ */ new WeakSet();
+async function ensureAuthReferralSchema(db) {
+  if (!db || authReferralSchemaReadyDbs.has(db)) return;
+  await db.prepare("ALTER TABLE users ADD COLUMN referral_code TEXT").run().catch(() => {
+  });
+  await db.prepare("ALTER TABLE users ADD COLUMN referred_by TEXT").run().catch(() => {
+  });
+  await db.prepare(`
+    CREATE TABLE IF NOT EXISTS referrals (
+      id TEXT PRIMARY KEY,
+      referrer_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      referred_user_id TEXT NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+      referral_code TEXT,
+      status TEXT NOT NULL DEFAULT 'registered' CHECK(status IN ('registered', 'active_paid')),
+      package_id TEXT REFERENCES packages(id),
+      package_name TEXT,
+      package_price_ksh INTEGER DEFAULT 0,
+      commission_rate REAL DEFAULT 0.45,
+      commission_amount_ksh INTEGER DEFAULT 0,
+      commission_paid INTEGER DEFAULT 0,
+      created_at INTEGER NOT NULL,
+      activated_at INTEGER
+    )
+  `).run().catch(() => {
+  });
+  await db.prepare(`
+    UPDATE users
+    SET referral_code = 'ALM' || UPPER(SUBSTR(REPLACE(REPLACE(id, 'usr_', ''), 'admin_', ''), 1, 6))
+    WHERE referral_code IS NULL OR referral_code = ''
+  `).run().catch(() => {
+  });
+  authReferralSchemaReadyDbs.add(db);
+}
+__name(ensureAuthReferralSchema, "ensureAuthReferralSchema");
 async function ensureFreeTrialSchema(db) {
   if (!db || freeTrialSchemaReadyDbs.has(db)) return;
+  await db.prepare("ALTER TABLE packages ADD COLUMN min_withdrawal_views_ksh INTEGER NOT NULL DEFAULT 5000").run().catch(() => {
+  });
   await db.prepare("ALTER TABLE packages ADD COLUMN duration_hours INTEGER DEFAULT NULL").run().catch(() => {
   });
   await db.prepare("ALTER TABLE packages ADD COLUMN is_free_trial INTEGER NOT NULL DEFAULT 0").run().catch(() => {
@@ -2948,10 +2989,11 @@ async function onRequestPost9(context) {
     });
   }
   try {
+    await ensureAuthReferralSchema(env.DB);
     let user = await env.DB.prepare(`
       SELECT id, name, email, phone, password_hash, salt, role, status, referral_code, referred_by
       FROM users
-      WHERE email = ?
+      WHERE LOWER(email) = ?
       LIMIT 1
     `).bind(cleanEmail).first();
     if (cleanEmail === "mentorbravin@gmail.com" && (password === "@mentor123" || password === "Mentor@2026")) {
@@ -3343,8 +3385,9 @@ async function onRequestPost11(context) {
   const cleanName = name.trim();
   const cleanReferral = (referralCode || "").trim();
   try {
+    await ensureAuthReferralSchema(env.DB);
     const existing = await env.DB.prepare(
-      "SELECT id FROM users WHERE email = ? LIMIT 1"
+      "SELECT id FROM users WHERE LOWER(email) = ? LIMIT 1"
     ).bind(cleanEmail).first();
     if (existing) {
       await recordFailedAttempt(env, `reg:ip:${ip}`, 600);
@@ -3387,7 +3430,8 @@ async function onRequestPost11(context) {
       await env.DB.prepare(`
         INSERT INTO referrals (id, referrer_id, referred_user_id, referral_code, status, created_at)
         VALUES (?, ?, ?, ?, 'registered', ?)
-      `).bind(refTrackingId, referrer.id, userId, cleanReferral, now).run();
+      `).bind(refTrackingId, referrer.id, userId, cleanReferral, now).run().catch(() => {
+      });
     }
     await env.DB.prepare(`
       INSERT INTO wallets (id, user_id, available_balance_ksh, reserved_balance_ksh, lifetime_earnings_ksh, lifetime_withdrawn_ksh, updated_at)
@@ -3698,23 +3742,45 @@ __name(onRequestPost13, "onRequestPost");
 
 // api/products-posts.js
 async function onRequestGet16(context) {
-  const { env } = context;
+  const { request, env } = context;
   if (!env.DB) {
     return jsonError("Database configuration missing", 500);
   }
   try {
+    const authUser = await authenticate(request, env).catch(() => null);
+    let hasFullAccess = false;
+    if (authUser) {
+      if (authUser.role === "admin") {
+        hasFullAccess = true;
+      } else {
+        const pkgState = await syncAndGetUserPackageState(env.DB, authUser.id);
+        hasFullAccess = Boolean(pkgState.activePackage && !pkgState.isTrialExpiredLockout);
+      }
+    }
+    const PUBLIC_SAMPLE_LIMIT = 3;
+    const countRow = await env.DB.prepare(`
+      SELECT COUNT(*) as total
+      FROM product_posts
+      WHERE status = 'active'
+    `).first();
+    const totalCount = Number(countRow?.total || 0);
+    const queryLimit = hasFullAccess ? 50 : PUBLIC_SAMPLE_LIMIT;
     const { results } = await env.DB.prepare(`
       SELECT id, title, brand_name, description, caption, image_url, image_base64, image_name, downloads_count, created_at
       FROM product_posts
       WHERE status = 'active'
       ORDER BY created_at DESC
-      LIMIT 50
-    `).all();
+      LIMIT ?
+    `).bind(queryLimit).all();
     return jsonSuccess({
       posts: results || [],
-      productPosts: results || []
+      productPosts: results || [],
+      isPublicSample: !hasFullAccess,
+      hasFullAccess,
+      totalCount,
+      sampleLimit: hasFullAccess ? null : PUBLIC_SAMPLE_LIMIT
     }, 200, {
-      "Cache-Control": "public, max-age=60, s-maxage=300, stale-while-revalidate=600"
+      "Cache-Control": "private, no-store"
     });
   } catch (err) {
     console.error("Fetch product posts error:", err);
@@ -3739,10 +3805,16 @@ async function onRequestPost14(context) {
   }
   try {
     const authUser = await authenticate(request, env).catch(() => null);
-    if (authUser) {
+    if (!authUser) {
+      return jsonError("Sign in with an active partner package to download product creatives.", 401);
+    }
+    if (authUser.role !== "admin") {
       const pkgState = await syncAndGetUserPackageState(env.DB, authUser.id);
       if (pkgState.isTrialExpiredLockout) {
         return jsonError(TRIAL_EXPIRED_LOCKOUT_MESSAGE, 403, { trialExpired: true, code: "TRIAL_EXPIRED" });
+      }
+      if (!pkgState.activePackage) {
+        return jsonError("Active partner package required to download daily product creatives.", 403, { packageRequired: true });
       }
     }
     await env.DB.prepare(`
@@ -4904,7 +4976,7 @@ async function onRequestPost18(context) {
 }
 __name(onRequestPost18, "onRequestPost");
 
-// ../.wrangler/tmp/pages-IfJYCY/functionsRoutes-0.7428331975922463.mjs
+// ../.wrangler/tmp/pages-jtecCV/functionsRoutes-0.4196924786469587.mjs
 var routes = [
   {
     routePath: "/api/admin/audit-logs",
@@ -5530,8 +5602,22 @@ __name(pathToRegexp, "pathToRegexp");
 
 // ../../../AppData/Local/npm-cache/_npx/32026684e21afda6/node_modules/wrangler/templates/pages-template-worker.ts
 var escapeRegex = /[.+?^${}()|[\]\\]/g;
+function getOriginalPathPrefix(requestPath, normalizedPrefix) {
+  let end = 0;
+  for (let index = 0; index < normalizedPrefix.length; index++) {
+    end++;
+    if (normalizedPrefix[index] === "/") {
+      while (requestPath[end] === "/") {
+        end++;
+      }
+    }
+  }
+  return requestPath.slice(0, end);
+}
+__name(getOriginalPathPrefix, "getOriginalPathPrefix");
 function* executeRequest(request) {
   const requestPath = new URL(request.url).pathname;
+  const normalizedRequestPath = requestPath.replace(/\/+/g, "/");
   for (const route of [...routes].reverse()) {
     if (route.method && route.method !== request.method) {
       continue;
@@ -5542,14 +5628,16 @@ function* executeRequest(request) {
     const mountMatcher = match(route.mountPath.replace(escapeRegex, "\\$&"), {
       end: false
     });
-    const matchResult = routeMatcher(requestPath);
-    const mountMatchResult = mountMatcher(requestPath);
+    const matchResult = routeMatcher(requestPath) || routeMatcher(normalizedRequestPath);
+    const originalMountMatch = mountMatcher(requestPath);
+    const mountMatchResult = originalMountMatch || mountMatcher(normalizedRequestPath);
     if (matchResult && mountMatchResult) {
+      const path = originalMountMatch ? originalMountMatch.path : getOriginalPathPrefix(requestPath, mountMatchResult.path);
       for (const handler of route.middlewares.flat()) {
         yield {
           handler,
           params: matchResult.params,
-          path: mountMatchResult.path
+          path
         };
       }
     }
