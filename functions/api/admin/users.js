@@ -115,9 +115,56 @@ export async function onRequestPost(context) {
   }
 
   const targetUserId = body.targetUserId || body.userId;
-  const { action, packageId, newStatus, newRole } = body;
+  const { action, packageId, newStatus, newRole, userIds } = body;
 
-  if (!targetUserId || !action) {
+  if (!action) {
+    return jsonError('action is required', 400);
+  }
+
+  // Handle bulk partner deletion cleanly before single-user lookup
+  if (action === 'bulk_delete_users') {
+    const ids = Array.isArray(userIds) ? userIds.filter(Boolean) : [];
+    if (ids.length === 0) {
+      return jsonError('Please select at least one partner to delete', 400);
+    }
+    const ip = request.headers.get('cf-connecting-ip') || '';
+    const deleted = [];
+    const skipped = [];
+    for (const uid of ids) {
+      if (uid === admin.id) {
+        skipped.push({ id: uid, reason: 'Cannot delete active admin session' });
+        continue;
+      }
+      const targetRow = await env.DB.prepare('SELECT id, name, email, role FROM users WHERE id = ?').bind(uid).first();
+      if (!targetRow) {
+        skipped.push({ id: uid, reason: 'Not found' });
+        continue;
+      }
+      if (targetRow.role === 'admin') {
+        skipped.push({ id: uid, reason: 'Cannot delete administrator account' });
+        continue;
+      }
+      await deletePartnerCascade(env, uid);
+      deleted.push({ id: uid, email: targetRow.email, name: targetRow.name });
+    }
+
+    await createAuditLog(env, {
+      adminId: admin.id,
+      action: 'ADMIN_BULK_DELETE_USERS',
+      targetType: 'users',
+      targetId: 'bulk',
+      details: { deletedCount: deleted.length, skippedCount: skipped.length, deletedEmails: deleted.map(d => d.email) },
+      ip
+    });
+
+    return jsonSuccess({
+      message: `Deleted ${deleted.length} partner account(s)${skipped.length ? ` (${skipped.length} skipped)` : ''}.`,
+      deletedCount: deleted.length,
+      skipped
+    });
+  }
+
+  if (!targetUserId) {
     return jsonError('targetUserId and action are required', 400);
   }
 
@@ -531,6 +578,30 @@ export async function onRequestPost(context) {
         totalTickets
       });
 
+    } else if (action === 'delete_user') {
+      if (target.id === admin.id) {
+        return jsonError('You cannot delete your own active administrator account', 400);
+      }
+      if (target.role === 'admin') {
+        return jsonError('Administrator accounts cannot be deleted here', 403);
+      }
+
+      await deletePartnerCascade(env, target.id);
+
+      await createAuditLog(env, {
+        adminId: admin.id,
+        action: 'ADMIN_DELETE_USER',
+        targetType: 'user',
+        targetId: target.id,
+        details: { name: target.name, email: target.email, phone: target.phone },
+        ip
+      });
+
+      return jsonSuccess({
+        message: `Partner "${target.name}" (${target.email}) and all associated records have been deleted permanently.`,
+        deletedUserId: target.id
+      });
+
     } else {
       return jsonError('Invalid action specified', 400);
     }
@@ -539,4 +610,109 @@ export async function onRequestPost(context) {
     console.error('Admin user action error:', err);
     return jsonError('Failed to perform user administrative action', 500);
   }
+}
+
+/**
+ * DELETE /api/admin/users
+ * Delete an individual partner or bulk delete partners
+ */
+export async function onRequestDelete(context) {
+  const { request, env } = context;
+
+  const auth = await requireAdmin(request, env);
+  if (auth.errorResponse) return auth.errorResponse;
+
+  const admin = auth.user;
+  const url = new URL(request.url);
+  let targetId = url.searchParams.get('id') || url.searchParams.get('userId');
+  let userIds = null;
+
+  if (!targetId) {
+    try {
+      const text = await request.text();
+      if (text && text.trim()) {
+        const body = JSON.parse(text);
+        targetId = body?.userId || body?.targetUserId || body?.id;
+        if (Array.isArray(body?.userIds)) userIds = body.userIds;
+      }
+    } catch (e) {}
+  }
+
+  const ip = request.headers.get('cf-connecting-ip') || '';
+
+  try {
+    if (Array.isArray(userIds) && userIds.length > 0) {
+      let deletedCount = 0;
+      for (const uid of userIds) {
+        if (!uid || uid === admin.id) continue;
+        const target = await env.DB.prepare('SELECT id, role FROM users WHERE id = ?').bind(uid).first();
+        if (target && target.role !== 'admin') {
+          await deletePartnerCascade(env, uid);
+          deletedCount++;
+        }
+      }
+      await createAuditLog(env, {
+        adminId: admin.id,
+        action: 'ADMIN_BULK_DELETE_USERS',
+        targetType: 'users',
+        targetId: 'bulk',
+        details: { deletedCount },
+        ip
+      });
+      return jsonSuccess({ message: `Deleted ${deletedCount} partner account(s).`, deletedCount });
+    }
+
+    if (!targetId) {
+      return jsonError('Partner userId is required', 400);
+    }
+    if (targetId === admin.id) {
+      return jsonError('Cannot delete active administrator account', 400);
+    }
+
+    const target = await env.DB.prepare('SELECT id, name, email, role FROM users WHERE id = ?').bind(targetId).first();
+    if (!target) {
+      return jsonError('Partner account not found', 404);
+    }
+    if (target.role === 'admin') {
+      return jsonError('Cannot delete administrator account', 403);
+    }
+
+    await deletePartnerCascade(env, targetId);
+
+    await createAuditLog(env, {
+      adminId: admin.id,
+      action: 'ADMIN_DELETE_USER',
+      targetType: 'user',
+      targetId: target.id,
+      details: { name: target.name, email: target.email },
+      ip
+    });
+
+    return jsonSuccess({
+      message: `Partner "${target.name}" has been deleted.`,
+      deletedUserId: target.id
+    });
+  } catch (err) {
+    console.error('Delete partner error:', err);
+    return jsonError('Failed to delete partner account', 500);
+  }
+}
+
+/**
+ * Safely cascade delete all dependent data for a partner account
+ */
+async function deletePartnerCascade(env, userId) {
+  await env.DB.prepare('DELETE FROM survey_responses WHERE user_id = ?').bind(userId).run().catch(() => {});
+  await env.DB.prepare('DELETE FROM referrals WHERE referrer_id = ? OR referred_user_id = ?').bind(userId, userId).run().catch(() => {});
+  await env.DB.prepare('DELETE FROM wallet_transactions WHERE user_id = ?').bind(userId).run().catch(() => {});
+  await env.DB.prepare('DELETE FROM withdrawal_requests WHERE user_id = ?').bind(userId).run().catch(() => {});
+  await env.DB.prepare('DELETE FROM payment_transactions WHERE user_id = ?').bind(userId).run().catch(() => {});
+  await env.DB.prepare('UPDATE task_submissions SET reviewed_by = NULL WHERE reviewed_by = ?').bind(userId).run().catch(() => {});
+  await env.DB.prepare('UPDATE withdrawal_requests SET processed_by = NULL WHERE processed_by = ?').bind(userId).run().catch(() => {});
+  await env.DB.prepare('DELETE FROM task_submissions WHERE user_id = ?').bind(userId).run().catch(() => {});
+  await env.DB.prepare('DELETE FROM user_packages WHERE user_id = ?').bind(userId).run().catch(() => {});
+  await env.DB.prepare('DELETE FROM wallets WHERE user_id = ?').bind(userId).run().catch(() => {});
+  await env.DB.prepare('DELETE FROM sessions WHERE user_id = ?').bind(userId).run().catch(() => {});
+  await env.DB.prepare('DELETE FROM admin_audit_logs WHERE admin_id = ?').bind(userId).run().catch(() => {});
+  await env.DB.prepare('DELETE FROM users WHERE id = ?').bind(userId).run();
 }

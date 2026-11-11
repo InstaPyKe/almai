@@ -6981,6 +6981,314 @@
       }
     }
 
+    /* ====================================================================
+       CURRENCY SWITCHER (KSH ↔ USD)
+       ==================================================================== */
+    .currency-switcher {
+      display: inline-flex;
+      align-items: center;
+      background: #F3EEFA;
+      border-radius: 999px;
+      padding: 3px;
+      gap: 3px;
+      box-shadow: inset 0 1px 2px rgba(76, 29, 149, 0.08), 0 0 0 1px rgba(139, 92, 246, 0.14);
+      flex-shrink: 0;
+    }
+    .currency-opt-btn {
+      border: none;
+      background: transparent;
+      color: #5B21B6;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12px;
+      font-weight: 850;
+      padding: 5px 11px;
+      border-radius: 999px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.18s ease;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .currency-opt-btn:hover {
+      color: #4C1D95;
+      background: rgba(255, 255, 255, 0.6);
+    }
+    .currency-opt-btn.active {
+      background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%);
+      color: #FFFFFF;
+      box-shadow: 0 3px 10px rgba(109, 40, 217, 0.28);
+    }
+    .currency-switcher-mobile {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #FAF7FF;
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.14), 0 4px 12px rgba(76, 29, 149, 0.06);
+    }
+    .currency-switcher-mobile-lbl {
+      font-size: 13px;
+      font-weight: 800;
+      color: #4C1D95;
+    }
+
+    /* ====================================================================
+       ADMIN CENTER LUXURY CREAMY BORDERLESS UI (MATCHES PARTNER DASHBOARD)
+       ==================================================================== */
+    .admin-header-card {
+      background: linear-gradient(135deg, #FBF7FF 0%, #F4ECFF 52%, #FFF5FA 100%) !important;
+      border: none !important;
+      border-radius: var(--radius-lg) !important;
+      padding: 26px 28px !important;
+      box-shadow: 0 0 0 1px rgba(168, 85, 247, 0.14),
+                  0 10px 30px -4px rgba(139, 92, 246, 0.16),
+                  0 22px 50px -8px rgba(76, 29, 149, 0.10),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+    }
+    .admin-header-card h2 {
+      font-family: 'Space Grotesk', sans-serif !important;
+      font-size: 28px !important;
+      font-weight: 950 !important;
+      letter-spacing: -0.025em !important;
+      color: #3B0764 !important;
+    }
+    .admin-sidebar {
+      background: linear-gradient(165deg, #FFFFFF 0%, #FAF6FF 100%) !important;
+      border: none !important;
+      border-radius: var(--radius-lg) !important;
+      padding: 16px !important;
+      box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.12),
+                  0 10px 28px -4px rgba(76, 29, 149, 0.10),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+    }
+    .admin-sidebar-profile {
+      background: linear-gradient(135deg, #F7F1FF 0%, #FFF3F8 100%) !important;
+      border: none !important;
+      box-shadow: 0 0 0 1px rgba(168, 85, 247, 0.12), 0 4px 14px rgba(139, 92, 246, 0.08) !important;
+    }
+    .admin-tab {
+      border: none !important;
+      border-radius: 12px !important;
+      font-weight: 750 !important;
+      transition: all 0.2s ease !important;
+    }
+    .admin-tab:hover {
+      background: #F4EEFF !important;
+      transform: translateX(2px);
+    }
+    .admin-tab.active {
+      background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%) !important;
+      color: #FFFFFF !important;
+      box-shadow: 0 6px 18px rgba(109, 40, 217, 0.28) !important;
+    }
+    .admin-kpi-card {
+      border: none !important;
+      border-radius: 18px !important;
+      padding: 20px 22px !important;
+      position: relative !important;
+      overflow: hidden !important;
+      transition: transform 0.22s ease, box-shadow 0.22s ease !important;
+    }
+    .admin-kpi-card:hover {
+      transform: translateY(-4px) !important;
+    }
+    .admin-kpi-card.kpi-amber {
+      background: linear-gradient(145deg, #FFFDF5 0%, #FEF5D4 100%) !important;
+      box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.16), 0 8px 22px rgba(245, 158, 11, 0.14) !important;
+    }
+    .admin-kpi-card.kpi-sky {
+      background: linear-gradient(145deg, #FAF7FF 0%, #EFE6FF 100%) !important;
+      box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.16), 0 8px 22px rgba(139, 92, 246, 0.14) !important;
+    }
+    .admin-kpi-card.kpi-crimson {
+      background: linear-gradient(145deg, #FFF7F9 0%, #FFE4EC 100%) !important;
+      box-shadow: 0 0 0 1px rgba(244, 63, 94, 0.16), 0 8px 22px rgba(244, 63, 94, 0.14) !important;
+    }
+    .admin-kpi-card.kpi-emerald {
+      background: linear-gradient(145deg, #F4FFF9 0%, #DCFAEA 100%) !important;
+      box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.16), 0 8px 22px rgba(16, 185, 129, 0.14) !important;
+    }
+    .admin-kpi-card .dash-metric-val {
+      font-family: 'Space Grotesk', sans-serif !important;
+      font-weight: 950 !important;
+      font-size: 28px !important;
+      letter-spacing: -0.02em !important;
+    }
+
+    /* Admin Borderless Creamy Alternating Content Sections */
+    .admin-content-section {
+      border: none !important;
+      border-radius: var(--radius-lg) !important;
+      padding: 24px 24px 28px !important;
+      position: relative !important;
+      overflow: hidden !important;
+      margin-bottom: 24px !important;
+    }
+    .admin-theme-creamy-pink {
+      background: linear-gradient(145deg, #FFF7F9 0%, #FFEBF1 45%, #FFDFE8 100%) !important;
+      box-shadow: 0 0 0 1px rgba(244, 114, 182, 0.16), 0 10px 28px rgba(244, 114, 182, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+    }
+    .admin-theme-creamy-yellow {
+      background: linear-gradient(145deg, #FFFDF5 0%, #FEF6D8 45%, #FDEEB8 100%) !important;
+      box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.16), 0 10px 28px rgba(245, 158, 11, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+    }
+    .admin-theme-creamy-orange {
+      background: linear-gradient(145deg, #FFF9F3 0%, #FFECD8 45%, #FFE0BE 100%) !important;
+      box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.16), 0 10px 28px rgba(249, 115, 22, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+    }
+    .admin-theme-creamy-purple {
+      background: linear-gradient(145deg, #FAF6FF 0%, #EFE6FF 45%, #E5D6FF 100%) !important;
+      box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.16), 0 10px 28px rgba(139, 92, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+    }
+    .admin-theme-creamy-red {
+      background: linear-gradient(145deg, #FFF6F6 0%, #FFE6E6 45%, #FFD6D6 100%) !important;
+      box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.16), 0 10px 28px rgba(239, 68, 68, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+    }
+    .admin-theme-creamy-green {
+      background: linear-gradient(145deg, #F4FFF9 0%, #DDFCEB 45%, #C8F7DE 100%) !important;
+      box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.16), 0 10px 28px rgba(16, 185, 129, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+    }
+    .admin-content-section .admin-section-banner {
+      background: rgba(255, 255, 255, 0.78) !important;
+      backdrop-filter: blur(8px);
+      border: none !important;
+      border-radius: 16px !important;
+      padding: 18px 20px !important;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+      margin-bottom: 18px !important;
+      position: relative;
+      z-index: 2;
+    }
+    .admin-content-section .admin-section-banner h3 {
+      font-family: 'Space Grotesk', sans-serif !important;
+      font-weight: 950 !important;
+      font-size: 20px !important;
+      letter-spacing: -0.02em !important;
+    }
+    .admin-content-section .table-responsive-clean {
+      background: #FFFFFF !important;
+      border: none !important;
+      border-radius: 16px !important;
+      box-shadow: 0 6px 24px rgba(15, 23, 42, 0.06), 0 0 0 1px rgba(15, 23, 42, 0.04) !important;
+      position: relative;
+      z-index: 2;
+    }
+    .admin-content-section .table-responsive-clean th {
+      border-bottom: none !important;
+      background: #FAF8FE !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+      font-weight: 850 !important;
+      font-size: 12px !important;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .admin-prod-form-card,
+    .admin-prod-item {
+      border: none !important;
+      background: #FFFFFF !important;
+      border-radius: 16px !important;
+      box-shadow: 0 6px 22px rgba(249, 115, 22, 0.10), 0 0 0 1px rgba(249, 115, 22, 0.10) !important;
+    }
+    .admin-prod-item:hover {
+      box-shadow: 0 12px 28px rgba(249, 115, 22, 0.18), 0 0 0 1px rgba(249, 115, 22, 0.22) !important;
+    }
+
+    /* Multi-select Bulk Bars, Checkboxes & Junk Cleanup Card */
+    .admin-checkbox {
+      width: 17px;
+      height: 17px;
+      accent-color: #7C3AED;
+      cursor: pointer;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .admin-bulk-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 14px;
+      padding: 11px 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05), 0 0 0 1px rgba(15, 23, 42, 0.05);
+      position: relative;
+      z-index: 2;
+    }
+    .admin-bulk-bar-info {
+      font-size: 13px;
+      font-weight: 800;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .admin-bulk-bar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .admin-cleanup-panel {
+      background: #FFFFFF;
+      border-radius: 18px;
+      padding: 20px 22px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 26px rgba(239, 68, 68, 0.10), 0 0 0 1px rgba(239, 68, 68, 0.12);
+      position: relative;
+      z-index: 2;
+    }
+    .admin-cleanup-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 12px;
+      margin: 14px 0 16px;
+    }
+    .admin-cleanup-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: #FFF9FA;
+      border-radius: 12px;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+      box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.10), 0 2px 8px rgba(239, 68, 68, 0.05);
+    }
+    .admin-cleanup-item:hover {
+      background: #FFF1F2;
+      transform: translateY(-2px);
+      box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.22), 0 6px 14px rgba(239, 68, 68, 0.10);
+    }
+    .admin-cleanup-item-title {
+      font-weight: 850;
+      font-size: 13.5px;
+      color: #881337;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+    .admin-cleanup-count {
+      background: #FFE4E6;
+      color: #BE123C;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+    .admin-cleanup-item-desc {
+      font-size: 11.5px;
+      color: #64748B;
+      margin-top: 3px;
+      line-height: 1.35;
+    }
+
   </style>
 </head>
 <body>
@@ -7023,6 +7331,12 @@
 
       <!-- Desktop Action Buttons -->
       <div class="nav-actions">
+        <!-- Global Currency Switcher -->
+        <div class="currency-switcher" role="group" aria-label="Currency Switcher" title="Switch display currency (KSH / USD)">
+          <button type="button" class="currency-opt-btn active" data-curr="KSH" onclick="switchCurrency('KSH')">KSH</button>
+          <button type="button" class="currency-opt-btn" data-curr="USD" onclick="switchCurrency('USD')">USD</button>
+        </div>
+
         <!-- Guest Actions -->
         <div id="nav-guest-actions" style="display: flex; gap: 10px;">
           <button class="btn btn-secondary btn-sm" onclick="showAuthModal('login')">Sign In</button>
@@ -7134,6 +7448,14 @@
     </ul>
 
     <div class="mobile-drawer-footer">
+      <div class="currency-switcher-mobile">
+        <span class="currency-switcher-mobile-lbl">Display Currency</span>
+        <div class="currency-switcher" role="group" aria-label="Mobile Currency Switcher">
+          <button type="button" class="currency-opt-btn active" data-curr="KSH" onclick="switchCurrency('KSH')">KSH</button>
+          <button type="button" class="currency-opt-btn" data-curr="USD" onclick="switchCurrency('USD')">USD</button>
+        </div>
+      </div>
+
       <div id="mob-guest-actions" style="display: flex; flex-direction: column; gap: 8px;">
         <button class="btn btn-primary btn-block" onclick="showAuthModal('register'); closeMobileNav();">
           Get Started
@@ -7865,8 +8187,12 @@
           </div>
         </div>
 
-        <!-- Action Call-to-Actions (Upgrade & Payout) -->
+        <!-- Action Call-to-Actions (Currency, Upgrade & Payout) -->
         <div class="dash-header-actions">
+          <div class="currency-switcher" role="group" aria-label="Dashboard Currency Switcher" title="Switch currency between KSH and USD">
+            <button type="button" class="currency-opt-btn active" data-curr="KSH" onclick="switchCurrency('KSH')">KSH</button>
+            <button type="button" class="currency-opt-btn" data-curr="USD" onclick="switchCurrency('USD')">USD</button>
+          </div>
           <button class="btn btn-secondary btn-upgrade-cta" onclick="switchView('products')">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
             <span>Upgrade Tier</span>
@@ -9072,9 +9398,9 @@
 
         <!-- Amount Input -->
         <div class="form-group" style="margin-bottom: 14px;">
-          <label class="form-label" for="withdraw-amount" id="withdraw-amount-label" style="font-size: 13px;">Amount to Withdraw (KSh)</label>
-          <input type="number" id="withdraw-amount" min="1200" required placeholder="Min KSh 1,200" style="font-weight: 750;">
-          <div id="withdraw-amount-hint" style="display: none;"></div>
+          <label class="form-label" for="withdraw-amount" id="withdraw-amount-label" style="font-size: 13px;">Amount to Withdraw</label>
+          <input type="number" id="withdraw-amount" step="any" min="1200" required placeholder="Min KSh 1,200" style="font-weight: 750;" oninput="updateWithdrawUsdHint()">
+          <div id="withdraw-amount-hint" style="display: none; font-size: 12px; color: #6D28D9; font-weight: 750; margin-top: 4px;"></div>
         </div>
 
         <div id="withdraw-alert" style="display: none;" class="alert"></div>
@@ -9267,16 +9593,41 @@
     <div class="container" style="padding-bottom: 60px;">
       <!-- Admin Top Card -->
       <div class="admin-header-card">
-        <div>
+        <svg class="leafy-branch-decor" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="leafGradAdmA" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#34D399"/>
+              <stop offset="50%" stop-color="#10B981"/>
+              <stop offset="100%" stop-color="#059669"/>
+            </linearGradient>
+            <linearGradient id="leafGradAdmB" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#86EFAC"/>
+              <stop offset="50%" stop-color="#22C55E"/>
+              <stop offset="100%" stop-color="#15803D"/>
+            </linearGradient>
+          </defs>
+          <g>
+            <path d="M165,-5 C142,22 112,62 52,108 C32,123 12,138 -5,148" stroke="#047857" stroke-width="4" stroke-linecap="round"/>
+            <path d="M146,16 C131,5 116,2 106,8 C96,14 101,28 116,32 C131,36 143,28 146,16 Z" fill="url(#leafGradAdmB)"/>
+            <path d="M136,36 C146,46 156,56 153,66 C150,76 136,76 126,66 C116,56 123,43 136,36 Z" fill="url(#leafGradAdmA)"/>
+            <path d="M112,52 C94,44 80,47 74,57 C68,67 76,80 92,82 C108,84 116,70 112,52 Z" fill="url(#leafGradAdmB)"/>
+            <path d="M100,76 C110,89 122,96 124,106 C126,116 112,121 100,113 C88,105 90,91 100,76 Z" fill="url(#leafGradAdmA)"/>
+          </g>
+        </svg>
+        <div style="position: relative; z-index: 2;">
           <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 6px; flex-wrap: wrap;">
-            <h2 style="font-size: 26px; color: var(--deep-purple-heading); margin: 0;">Almai Administration Center</h2>
+            <h2 style="font-size: 28px; color: var(--deep-purple-heading); margin: 0;">Almai Administration Center</h2>
             <span class="status-badge status-completed" style="font-size: 13.5px; padding: 4px 14px;">Super Administrator</span>
           </div>
           <p style="margin: 0; font-size: 15px; color: var(--charcoal-muted); font-weight: 600;">
             Logged in as <strong id="admin-header-email">mentorbravin@gmail.com</strong> &bull; Complete platform financial ledger, user directory &amp; marketing distribution
           </p>
         </div>
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; position: relative; z-index: 2;">
+          <div class="currency-switcher" role="group" aria-label="Admin Currency Switcher" title="Switch currency between KSH and USD">
+            <button type="button" class="currency-opt-btn active" data-curr="KSH" onclick="switchCurrency('KSH')">KSH</button>
+            <button type="button" class="currency-opt-btn" data-curr="USD" onclick="switchCurrency('USD')">USD</button>
+          </div>
           <button class="btn btn-secondary btn-sm" onclick="switchView('dashboard')">
             <span class="svg-icon" style="width: 15px; height: 15px; margin-right: 4px;">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
@@ -9424,7 +9775,7 @@
           </div>
 
           <!-- Tab 1: Payment Verification (M-Pesa Codes) -->
-          <div id="asec-payments" class="admin-content-section admin-sec-yellow">
+          <div id="asec-payments" class="admin-content-section admin-theme-creamy-pink">
             <div class="admin-section-banner banner-theme-amber">
               <div class="admin-banner-lead">
                 <div class="admin-banner-chip chip-bg-amber">
@@ -9442,6 +9793,20 @@
               </div>
             </div>
 
+            <div class="admin-bulk-bar">
+              <div class="admin-bulk-bar-info">
+                <span id="admin-sel-count-payments">0 selected</span>
+              </div>
+              <div class="admin-bulk-bar-actions">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="adminClearFailedPaymentsQuick()" style="color: #BE123C; font-weight: 800;">
+                  Clear Failed/Rejected Codes
+                </button>
+                <button type="button" class="btn btn-danger btn-sm" onclick="adminClearSelectedPayments()">
+                  Delete Selected Codes
+                </button>
+              </div>
+            </div>
+
             <div class="table-scroll-hint">
               <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
               <span>Swipe table horizontally to inspect all payment codes &amp; actions &rarr;</span>
@@ -9450,9 +9815,10 @@
               <table>
                 <thead>
                   <tr>
+                    <th style="width: 36px; text-align: center;"><input type="checkbox" class="admin-checkbox" id="admin-chkall-payments" onclick="toggleAdminSelectAll('payments', this.checked)" title="Select all codes"></th>
                     <th>Partner User</th>
                     <th>Target Package</th>
-                    <th>Amount (KSh)</th>
+                    <th>Amount</th>
                     <th>M-Pesa Code</th>
                     <th>Submitted</th>
                     <th>Status</th>
@@ -9461,7 +9827,7 @@
                 </thead>
                 <tbody id="tbody-admin-payments">
                   <tr>
-                    <td colspan="7" style="text-align: center; padding: 24px;">Loading payment codes...</td>
+                    <td colspan="8" style="text-align: center; padding: 24px;">Loading payment codes...</td>
                   </tr>
                 </tbody>
               </table>
@@ -9469,7 +9835,7 @@
           </div>
 
           <!-- Tab 2: User Accounts Directory -->
-          <div id="asec-users" class="admin-content-section admin-sec-blue" style="display: none;">
+          <div id="asec-users" class="admin-content-section admin-theme-creamy-yellow" style="display: none;">
             <div class="admin-section-banner banner-theme-purple">
               <div class="admin-banner-lead">
                 <div class="admin-banner-chip chip-bg-purple">
@@ -9477,11 +9843,22 @@
                 </div>
                 <div>
                   <div class="admin-banner-title">Registered Partner Users Directory</div>
-                  <p class="admin-banner-subtitle">Lookup partner accounts, assign or upgrade packages, and review wallet balances.</p>
+                  <p class="admin-banner-subtitle">Lookup partner accounts, assign packages, edit balances, or permanently remove accounts.</p>
                 </div>
               </div>
               <div style="width: 320px; max-width: 100%;">
                 <input type="text" id="admin-user-search" placeholder="Search name, email, phone..." oninput="debounceUserSearch()" style="padding: 10px 14px; font-size: 14px; width: 100%;">
+              </div>
+            </div>
+
+            <div class="admin-bulk-bar">
+              <div class="admin-bulk-bar-info">
+                <span id="admin-sel-count-users">0 partners selected</span>
+              </div>
+              <div class="admin-bulk-bar-actions">
+                <button type="button" class="btn btn-danger btn-sm" onclick="adminBulkDeleteUsers()">
+                  Delete Selected Partners
+                </button>
               </div>
             </div>
 
@@ -9493,6 +9870,7 @@
               <table>
                 <thead>
                   <tr>
+                    <th style="width: 36px; text-align: center;"><input type="checkbox" class="admin-checkbox" id="admin-chkall-users" onclick="toggleAdminSelectAll('users', this.checked)" title="Select all non-admin partners"></th>
                     <th>User Details</th>
                     <th>Role &amp; Status</th>
                     <th>Active Package</th>
@@ -9504,7 +9882,7 @@
                 </thead>
                 <tbody id="tbody-admin-users">
                   <tr>
-                    <td colspan="7" style="text-align: center; padding: 24px;">Loading users directory...</td>
+                    <td colspan="8" style="text-align: center; padding: 24px;">Loading users directory...</td>
                   </tr>
                 </tbody>
               </table>
@@ -9512,7 +9890,7 @@
           </div>
 
           <!-- Tab 3: Post WhatsApp Products -->
-          <div id="asec-products" class="admin-content-section admin-sec-green" style="display: none;">
+          <div id="asec-products" class="admin-content-section admin-theme-creamy-orange" style="display: none;">
             <div class="admin-section-banner banner-theme-pink">
               <div class="admin-banner-lead">
                 <div class="admin-banner-chip chip-bg-pink">
@@ -9582,13 +9960,24 @@
               <!-- Existing products list -->
               <div>
                 <div class="admin-prods-header">
-                  <h3 style="font-size: 18.5px; margin: 0; color: var(--deep-purple-heading);">Live Products on Platform (<span id="admin-prod-count">0</span>)</h3>
-                  <button class="btn btn-secondary btn-sm" id="btn-admin-clear-prods" onclick="adminClearAllProducts()" style="color: var(--warning-red); border-color: rgba(220, 38, 38, 0.4); font-weight: 750;" title="Delete and clear all existing posted product creatives">
-                    <span class="svg-icon" style="width: 14px; height: 14px; margin-right: 4px;">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                    </span>
-                    Clear All Products
-                  </button>
+                  <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 800; font-size: 13px; color: #9A3412;">
+                      <input type="checkbox" class="admin-checkbox" id="admin-chkall-products" onclick="toggleAdminSelectAll('products', this.checked)">
+                      Select All
+                    </label>
+                    <h3 style="font-size: 18.5px; margin: 0; color: var(--deep-purple-heading);">Live Products (<span id="admin-prod-count">0</span>)</h3>
+                  </div>
+                  <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button type="button" class="btn btn-danger btn-sm" id="btn-admin-delete-sel-prods" onclick="adminBulkDeleteSelectedProducts()">
+                      Delete Selected
+                    </button>
+                    <button class="btn btn-secondary btn-sm" id="btn-admin-clear-prods" onclick="adminClearAllProducts()" style="color: var(--warning-red); font-weight: 750;" title="Delete and clear all existing posted product creatives">
+                      <span class="svg-icon" style="width: 14px; height: 14px; margin-right: 4px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                      </span>
+                      Clear All Products
+                    </button>
+                  </div>
                 </div>
                 <div id="admin-products-list" class="admin-prods-list-container">
                   <div style="text-align: center; padding: 24px; color: var(--charcoal-muted);">Loading products...</div>
@@ -9598,7 +9987,7 @@
           </div>
 
           <!-- Tab 4: Tasks Review -->
-          <div id="asec-tasks" class="admin-content-section admin-sec-purple" style="display: none;">
+          <div id="asec-tasks" class="admin-content-section admin-theme-creamy-purple" style="display: none;">
             <div class="admin-section-banner banner-theme-violet">
               <div class="admin-banner-lead">
                 <div class="admin-banner-chip chip-bg-violet">
@@ -9606,8 +9995,22 @@
                 </div>
                 <div>
                   <div class="admin-banner-title">Pending 18h Status Task Proofs</div>
-                  <p class="admin-banner-subtitle">Inspect submitted status screenshots and view counts for instant M-Pesa clearance.</p>
+                  <p class="admin-banner-subtitle">Inspect submitted status screenshots and view counts for instant clearance.</p>
                 </div>
+              </div>
+            </div>
+
+            <div class="admin-bulk-bar">
+              <div class="admin-bulk-bar-info">
+                <span id="admin-sel-count-tasks">0 task proofs selected</span>
+              </div>
+              <div class="admin-bulk-bar-actions">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="adminQuickCleanupTargets(['rejected_tasks', 'orphaned_evidence'], 'Clear all rejected task proofs & orphaned screenshots?')" style="color: #7C3AED; font-weight: 800;">
+                  Clear Rejected Proofs &amp; Junk Blobs
+                </button>
+                <button type="button" class="btn btn-danger btn-sm" onclick="adminClearSelectedTasks()">
+                  Delete Selected Tasks
+                </button>
               </div>
             </div>
 
@@ -9619,6 +10022,7 @@
               <table>
                 <thead>
                   <tr>
+                    <th style="width: 36px; text-align: center;"><input type="checkbox" class="admin-checkbox" id="admin-chkall-tasks" onclick="toggleAdminSelectAll('tasks', this.checked)" title="Select all task rows"></th>
                     <th>Partner</th>
                     <th>Package Tier</th>
                     <th>Reported Views</th>
@@ -9628,7 +10032,7 @@
                 </thead>
                 <tbody id="tbody-admin-tasks">
                   <tr>
-                    <td colspan="5" style="text-align: center; padding: 24px;">Loading pending task proofs...</td>
+                    <td colspan="6" style="text-align: center; padding: 24px;">Loading pending task proofs...</td>
                   </tr>
                 </tbody>
               </table>
@@ -9636,7 +10040,7 @@
           </div>
 
           <!-- Tab 5: Withdrawals Queue -->
-          <div id="asec-withdrawals" class="admin-content-section admin-sec-yellow" style="display: none;">
+          <div id="asec-withdrawals" class="admin-content-section admin-theme-creamy-green" style="display: none;">
             <div class="admin-section-banner banner-theme-emerald">
               <div class="admin-banner-lead">
                 <div class="admin-banner-chip chip-bg-emerald">
@@ -9649,6 +10053,20 @@
               </div>
             </div>
 
+            <div class="admin-bulk-bar">
+              <div class="admin-bulk-bar-info">
+                <span id="admin-sel-count-withdrawals">0 payout requests selected</span>
+              </div>
+              <div class="admin-bulk-bar-actions">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="adminQuickCleanupTargets(['rejected_withdrawals'], 'Clear all rejected withdrawal history entries?')" style="color: #047857; font-weight: 800;">
+                  Clear Rejected Payouts
+                </button>
+                <button type="button" class="btn btn-danger btn-sm" onclick="adminClearSelectedWithdrawals()">
+                  Delete Selected Non-Pending
+                </button>
+              </div>
+            </div>
+
             <div class="table-scroll-hint">
               <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
               <span>Swipe table horizontally to process pending cashout queues &rarr;</span>
@@ -9657,16 +10075,17 @@
               <table>
                 <thead>
                   <tr>
+                    <th style="width: 36px; text-align: center;"><input type="checkbox" class="admin-checkbox" id="admin-chkall-withdrawals" onclick="toggleAdminSelectAll('withdrawals', this.checked)" title="Select all withdrawal rows"></th>
                     <th>Partner</th>
-                    <th>Amount (KSh)</th>
-                    <th>Target Phone</th>
+                    <th>Amount</th>
+                    <th>Target Phone / PayPal</th>
                     <th>Requested At</th>
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody id="tbody-admin-withdrawals">
                   <tr>
-                    <td colspan="5" style="text-align: center; padding: 24px;">Loading pending withdrawals...</td>
+                    <td colspan="6" style="text-align: center; padding: 24px;">Loading pending withdrawals...</td>
                   </tr>
                 </tbody>
               </table>
@@ -9674,7 +10093,7 @@
           </div>
 
           <!-- Tab 6: Stats -->
-          <div id="asec-stats" class="admin-content-section admin-sec-blue" style="display: none;">
+          <div id="asec-stats" class="admin-content-section admin-theme-creamy-yellow" style="display: none;">
             <div class="admin-section-banner banner-theme-indigo">
               <div class="admin-banner-lead">
                 <div class="admin-banner-chip chip-bg-indigo">
@@ -9692,17 +10111,118 @@
             </div>
           </div>
 
-          <!-- Tab 7: Audit Logs -->
-          <div id="asec-audit" class="admin-content-section admin-sec-green" style="display: none;">
+          <!-- Tab 7: Audit Logs & System Junk Multi-Clear -->
+          <div id="asec-audit" class="admin-content-section admin-theme-creamy-red" style="display: none;">
             <div class="admin-section-banner banner-theme-slate">
               <div class="admin-banner-lead">
                 <div class="admin-banner-chip chip-bg-slate">
                   <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
                 </div>
                 <div>
-                  <div class="admin-banner-title">Recent System Audit Trail</div>
-                  <p class="admin-banner-subtitle">All administrative actions, verification stamps, and ledger adjustments are securely logged.</p>
+                  <div class="admin-banner-title">System Audit Trail &amp; Junk Multi-Clear</div>
+                  <p class="admin-banner-subtitle">Review administrative actions or multi-select stale sessions, failed codes, rejected proofs, and old logs to keep the database clean.</p>
                 </div>
+              </div>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="loadAdminCleanupCounts()">
+                Refresh Counts
+              </button>
+            </div>
+
+            <!-- Multi-Clear System Junk Panel -->
+            <div class="admin-cleanup-panel" id="admin-junk-cleanup-panel">
+              <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                <div>
+                  <h4 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 900; color: #881337;">Multi-Clear Junk System Information</h4>
+                  <p style="margin: 3px 0 0; font-size: 12.5px; color: #64748B;">Tick categories below to permanently clear stale records without affecting active user wallets.</p>
+                </div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="selectSafeCleanupJunk(true)">Select All Safe Junk</button>
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="selectSafeCleanupJunk(false)">Uncheck All</button>
+                  <button type="button" class="btn btn-danger btn-sm" id="btn-run-system-cleanup" onclick="adminRunSystemCleanup()">Purge Selected Junk</button>
+                </div>
+              </div>
+
+              <div class="admin-cleanup-grid">
+                <label class="admin-cleanup-item">
+                  <input type="checkbox" class="admin-checkbox cleanup-target-cb" value="expired_sessions" data-safe="1">
+                  <div style="flex: 1; min-width: 0;">
+                    <div class="admin-cleanup-item-title">
+                      <span>Expired Sessions</span>
+                      <span class="admin-cleanup-count" id="cleanup-cnt-expired_sessions">0</span>
+                    </div>
+                    <div class="admin-cleanup-item-desc">Signed-out or expired login tokens clogging the session table.</div>
+                  </div>
+                </label>
+
+                <label class="admin-cleanup-item">
+                  <input type="checkbox" class="admin-checkbox cleanup-target-cb" value="failed_payments" data-safe="1">
+                  <div style="flex: 1; min-width: 0;">
+                    <div class="admin-cleanup-item-title">
+                      <span>Failed / Rejected Codes</span>
+                      <span class="admin-cleanup-count" id="cleanup-cnt-failed_payments">0</span>
+                    </div>
+                    <div class="admin-cleanup-item-desc">Rejected or failed M-Pesa package activation attempts.</div>
+                  </div>
+                </label>
+
+                <label class="admin-cleanup-item">
+                  <input type="checkbox" class="admin-checkbox cleanup-target-cb" value="rejected_tasks" data-safe="1">
+                  <div style="flex: 1; min-width: 0;">
+                    <div class="admin-cleanup-item-title">
+                      <span>Rejected Task Proofs</span>
+                      <span class="admin-cleanup-count" id="cleanup-cnt-rejected_tasks">0</span>
+                    </div>
+                    <div class="admin-cleanup-item-desc">Previously declined 18h status submissions.</div>
+                  </div>
+                </label>
+
+                <label class="admin-cleanup-item">
+                  <input type="checkbox" class="admin-checkbox cleanup-target-cb" value="orphaned_evidence" data-safe="1">
+                  <div style="flex: 1; min-width: 0;">
+                    <div class="admin-cleanup-item-title">
+                      <span>Orphaned Screenshots</span>
+                      <span class="admin-cleanup-count" id="cleanup-cnt-orphaned_evidence">0</span>
+                    </div>
+                    <div class="admin-cleanup-item-desc">Unused task evidence image blobs taking database storage.</div>
+                  </div>
+                </label>
+
+                <label class="admin-cleanup-item">
+                  <input type="checkbox" class="admin-checkbox cleanup-target-cb" value="rejected_withdrawals" data-safe="1">
+                  <div style="flex: 1; min-width: 0;">
+                    <div class="admin-cleanup-item-title">
+                      <span>Rejected Withdrawals</span>
+                      <span class="admin-cleanup-count" id="cleanup-cnt-rejected_withdrawals">0</span>
+                    </div>
+                    <div class="admin-cleanup-item-desc">Declined payout logs already refunded to wallets.</div>
+                  </div>
+                </label>
+
+                <label class="admin-cleanup-item">
+                  <input type="checkbox" class="admin-checkbox cleanup-target-cb" value="old_audit_logs" data-safe="1">
+                  <div style="flex: 1; min-width: 0;">
+                    <div class="admin-cleanup-item-title">
+                      <span>Old Audit Logs (&gt;7d)</span>
+                      <span class="admin-cleanup-count" id="cleanup-cnt-audit_logs">0 total</span>
+                    </div>
+                    <div class="admin-cleanup-item-desc">Purges system audit entries older than 7 days.</div>
+                  </div>
+                </label>
+              </div>
+              <div id="admin-cleanup-feedback" style="display: none; font-size: 13px; font-weight: 800; padding: 10px 14px; border-radius: 10px; background: #ECFDF5; color: #047857;"></div>
+            </div>
+
+            <div class="admin-bulk-bar">
+              <div class="admin-bulk-bar-info">
+                <span id="admin-sel-count-audit">0 log entries selected</span>
+              </div>
+              <div class="admin-bulk-bar-actions">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="adminClearSelectedAuditLogs()" style="color: #BE123C; font-weight: 800;">
+                  Delete Selected Logs
+                </button>
+                <button type="button" class="btn btn-danger btn-sm" onclick="adminClearAllAuditLogs()">
+                  Clear All Audit Logs
+                </button>
               </div>
             </div>
 
@@ -9714,6 +10234,7 @@
               <table>
                 <thead>
                   <tr>
+                    <th style="width: 36px; text-align: center;"><input type="checkbox" class="admin-checkbox" id="admin-chkall-audit" onclick="toggleAdminSelectAll('audit', this.checked)" title="Select all audit logs"></th>
                     <th>Time</th>
                     <th>Administrator</th>
                     <th>Action</th>
@@ -9723,7 +10244,7 @@
                 </thead>
                 <tbody id="tbody-admin-audit">
                   <tr>
-                    <td colspan="5" style="text-align: center; padding: 24px;">Loading audit logs...</td>
+                    <td colspan="6" style="text-align: center; padding: 24px;">Loading audit logs...</td>
                   </tr>
                 </tbody>
               </table>
@@ -9731,7 +10252,7 @@
           </div>
 
           <!-- Tab 8: Paid Consumer Surveys Manager -->
-          <div id="asec-surveys" class="admin-content-section admin-sec-blue" style="display: none;">
+          <div id="asec-surveys" class="admin-content-section admin-theme-creamy-pink" style="display: none;">
             <div class="admin-section-banner banner-theme-blue">
               <div class="admin-banner-lead">
                 <div class="admin-banner-chip chip-bg-blue">
@@ -10009,8 +10530,152 @@
       adminProductBase64: null,
       adminProductFileName: null,
       userSearchTimeout: null,
-      activePayFilter: 'pending'
+      activePayFilter: 'pending',
+      currency: (typeof localStorage !== 'undefined' && localStorage.getItem('almai_currency') === 'USD') ? 'USD' : 'KSH'
     };
+
+    // ====================================================================
+    // GLOBAL CURRENCY ENGINE (KSH ↔ USD, 1 USD = 130 KSh)
+    // ====================================================================
+    const USD_EXCHANGE_RATE = 130;
+
+    function formatMoney(amountKsh, opts = {}) {
+      const ksh = Number(amountKsh) || 0;
+      const curr = (opts.forceCurrency || AppState.currency || 'KSH').toUpperCase();
+      if (curr === 'USD') {
+        const usd = ksh / USD_EXCHANGE_RATE;
+        const decimals = opts.decimals !== undefined
+          ? opts.decimals
+          : (Math.abs(usd - Math.round(usd)) < 0.005 ? (usd >= 10 || opts.compact ? 0 : 2) : 2);
+        return '$' + usd.toLocaleString('en-US', {
+          minimumFractionDigits: decimals,
+          maximumFractionDigits: decimals
+        });
+      }
+      return 'KSh ' + Math.round(ksh).toLocaleString();
+    }
+
+    function syncCurrencyButtons() {
+      const curr = (AppState.currency || 'KSH').toUpperCase();
+      document.querySelectorAll('.currency-opt-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-curr') === curr);
+      });
+    }
+
+    function applyCurrencyConversionAcrossDOM(rootEl) {
+      const targetRoot = rootEl || document.body;
+      if (!targetRoot) return;
+
+      // 1. Wrap any raw "KSh 1,200" text nodes into tracked spans on first encounter
+      try {
+        const walker = document.createTreeWalker(targetRoot, NodeFilter.SHOW_TEXT, {
+          acceptNode(node) {
+            const p = node.parentElement;
+            if (!p) return NodeFilter.FILTER_REJECT;
+            const tag = p.tagName;
+            if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'TEXTAREA' || tag === 'INPUT' || tag === 'OPTION' || tag === 'NOSCRIPT') {
+              return NodeFilter.FILTER_REJECT;
+            }
+            if (p.closest('.almai-money') || p.closest('.no-currency-convert') || p.closest('.currency-switcher')) {
+              return NodeFilter.FILTER_REJECT;
+            }
+            if (!/\bK[Ss][Hh]\.?\s*[0-9]/.test(node.nodeValue)) {
+              return NodeFilter.FILTER_REJECT;
+            }
+            return NodeFilter.FILTER_ACCEPT;
+          }
+        });
+
+        const nodes = [];
+        let cur;
+        while ((cur = walker.nextNode())) nodes.push(cur);
+
+        const re = /\bK[Ss][Hh]\.?\s*([0-9][0-9,]*(?:\.[0-9]+)?)/g;
+        for (const textNode of nodes) {
+          const val = textNode.nodeValue;
+          re.lastIndex = 0;
+          let match;
+          let lastIdx = 0;
+          const frag = document.createDocumentFragment();
+          let changed = false;
+
+          while ((match = re.exec(val)) !== null) {
+            if (match.index > lastIdx) {
+              frag.appendChild(document.createTextNode(val.slice(lastIdx, match.index)));
+            }
+            const rawNum = parseFloat(match[1].replace(/,/g, ''));
+            if (!Number.isNaN(rawNum)) {
+              const span = document.createElement('span');
+              span.className = 'almai-money';
+              span.setAttribute('data-ksh', String(rawNum));
+              span.textContent = formatMoney(rawNum);
+              frag.appendChild(span);
+              changed = true;
+            } else {
+              frag.appendChild(document.createTextNode(match[0]));
+            }
+            lastIdx = re.lastIndex;
+          }
+          if (changed) {
+            if (lastIdx < val.length) {
+              frag.appendChild(document.createTextNode(val.slice(lastIdx)));
+            }
+            textNode.parentNode.replaceChild(frag, textNode);
+          }
+        }
+      } catch (e) {
+        console.warn('Currency DOM scan warning:', e);
+      }
+
+      // 2. Refresh all tracked spans to the active currency
+      document.querySelectorAll('.almai-money[data-ksh]').forEach(el => {
+        const ksh = Number(el.getAttribute('data-ksh'));
+        if (!Number.isNaN(ksh)) {
+          el.textContent = formatMoney(ksh);
+        }
+      });
+    }
+
+    function switchCurrency(curr, silent = false) {
+      const normalized = String(curr || '').toUpperCase() === 'USD' ? 'USD' : 'KSH';
+      AppState.currency = normalized;
+      try {
+        localStorage.setItem('almai_currency', normalized);
+      } catch (_) {}
+
+      syncCurrencyButtons();
+      applyCurrencyConversionAcrossDOM();
+
+      // Refresh dynamically computed UI sections so charts, tables, modals & calculator match currency
+      if (typeof renderPackagesList === 'function' && AppState.packages?.length) {
+        renderPackagesList(AppState.packages);
+      }
+      if (typeof updateCalculator === 'function') {
+        updateCalculator();
+      }
+      if (AppState.user) {
+        if (typeof renderAuthenticatedUI === 'function') renderAuthenticatedUI();
+        if (typeof fetchUserTasks === 'function' && AppState.tasks?.length) renderUserTasks(AppState.tasks);
+        if (typeof renderUserSurveys === 'function' && AppState.surveys?.length) {
+          renderUserSurveys(AppState.activeSurveyFilter || 'all');
+        }
+        if (document.getElementById('modal-withdraw')?.classList.contains('active')) {
+          const activeTab = document.getElementById('withdraw-balance-type')?.value || 'views';
+          setWithdrawalBalanceType(activeTab);
+        }
+        if (AppState.user.role === 'admin' && document.getElementById('view-admin')?.classList.contains('active-view')) {
+          if (typeof loadAdminPayments === 'function') loadAdminPayments(AppState.activePayFilter || 'pending');
+          if (typeof loadAdminUsers === 'function') loadAdminUsers(document.getElementById('admin-user-search')?.value || '');
+          if (typeof loadAdminWithdrawals === 'function') loadAdminWithdrawals();
+          if (typeof loadAdminStats === 'function') loadAdminStats();
+          if (typeof loadAdminSurveys === 'function') loadAdminSurveys();
+        }
+      }
+
+      if (!silent && typeof showReferralToast === 'function') {
+        showReferralToast(`Display currency switched to ${normalized} (${normalized === 'USD' ? '1 USD ≈ KSh 130' : 'Kenyan Shillings'})`);
+      }
+    }
 
     document.getElementById('cur-year').textContent = new Date().getFullYear();
 
@@ -10163,6 +10828,8 @@
       initFastPackages();
       initFastProductsPosts();
       initWeeklyTimetable();
+      syncCurrencyButtons();
+      applyCurrencyConversionAcrossDOM();
 
       // 2. RUN NETWORK CALLS CONCURRENTLY IN PARALLEL (ELIMINATE WATERFALL)
       Promise.allSettled([
@@ -10314,20 +10981,20 @@
       const earned = AppState.wallet?.lifetime_earnings_ksh || 0;
       const withdrawn = AppState.wallet?.lifetime_withdrawn_ksh || 0;
 
-      document.getElementById('dash-val-avail').textContent = `KSh ${avail.toLocaleString()}`;
-      document.getElementById('dash-val-reserved').textContent = `KSh ${reserved.toLocaleString()}`;
-      document.getElementById('dash-val-earned').textContent = `KSh ${earned.toLocaleString()}`;
-      document.getElementById('dash-val-withdrawn').textContent = `KSh ${withdrawn.toLocaleString()}`;
+      document.getElementById('dash-val-avail').textContent = formatMoney(avail);
+      document.getElementById('dash-val-reserved').textContent = formatMoney(reserved);
+      document.getElementById('dash-val-earned').textContent = formatMoney(earned);
+      document.getElementById('dash-val-withdrawn').textContent = formatMoney(withdrawn);
 
       // Populate separate views, referral and surveys sub-ledgers
       const viewsAvailEl = document.getElementById('dash-val-views');
-      if (viewsAvailEl) viewsAvailEl.textContent = `KSh ${viewsAvail.toLocaleString()}`;
+      if (viewsAvailEl) viewsAvailEl.textContent = formatMoney(viewsAvail);
 
       const refAvailEl = document.getElementById('dash-val-referrals');
-      if (refAvailEl) refAvailEl.textContent = `KSh ${refAvail.toLocaleString()}`;
+      if (refAvailEl) refAvailEl.textContent = formatMoney(refAvail);
 
       const surveysAvailEl = document.getElementById('dash-val-surveys');
-      if (surveysAvailEl) surveysAvailEl.textContent = `KSh ${surveysAvail.toLocaleString()}`;
+      if (surveysAvailEl) surveysAvailEl.textContent = formatMoney(surveysAvail);
 
       const pkg = AppState.activePackage;
       const minViews = pkg?.min_withdrawal_views_ksh || (pkg?.slug === 'premium' ? 12000 : (pkg?.slug === 'exclusive' ? 8000 : 5000));
@@ -10340,16 +11007,16 @@
       if (viewsFillEl && viewsTextEl) {
         const pct = Math.min(100, Math.round((viewsAvail / minViews) * 100));
         viewsFillEl.style.width = `${pct}%`;
-        viewsTextEl.textContent = `${pct}% towards ${pkg ? pkg.name : 'Starter Pro'} payout threshold (KSh ${viewsAvail.toLocaleString()} / KSh ${minViews.toLocaleString()})`;
+        viewsTextEl.textContent = `${pct}% towards ${pkg ? pkg.name : 'Starter Pro'} payout threshold (${formatMoney(viewsAvail)} / ${formatMoney(minViews)})`;
       }
 
       // Also update withdrawal modal if elements exist
       const modalViewsAvail = document.getElementById('withdraw-modal-views-avail');
-      if (modalViewsAvail) modalViewsAvail.textContent = `KSh ${viewsAvail.toLocaleString()}`;
+      if (modalViewsAvail) modalViewsAvail.textContent = formatMoney(viewsAvail);
       const modalRefAvail = document.getElementById('withdraw-modal-referrals-avail');
-      if (modalRefAvail) modalRefAvail.textContent = `KSh ${refAvail.toLocaleString()}`;
+      if (modalRefAvail) modalRefAvail.textContent = formatMoney(refAvail);
       const modalSurveysAvail = document.getElementById('withdraw-modal-surveys-avail');
-      if (modalSurveysAvail) modalSurveysAvail.textContent = `KSh ${surveysAvail.toLocaleString()}`;
+      if (modalSurveysAvail) modalSurveysAvail.textContent = formatMoney(surveysAvail);
 
       // View counts
       document.getElementById('dash-views-reported').textContent = (AppState.stats?.reportedViews || 0).toLocaleString();
@@ -10357,7 +11024,7 @@
       document.getElementById('dash-views-approved').textContent = (AppState.stats?.approvedViews || 0).toLocaleString();
       
       const ratePerView = AppState.activePackage?.reward_per_view_ksh || (AppState.pendingPackage ? 20 : 0);
-      document.getElementById('dash-rate-per-view').textContent = `KSh ${ratePerView}`;
+      document.getElementById('dash-rate-per-view').textContent = formatMoney(ratePerView);
 
       renderCooldownState();
     }
@@ -10901,15 +11568,19 @@
 
       container.innerHTML = packages.map(pkg => {
         const isFeatured = pkg.slug === 'exclusive' || pkg.slug === 'growth';
-                return `
+        const isUsd = (AppState.currency || 'KSH').toUpperCase() === 'USD';
+        const priceDisplayNum = isUsd
+          ? (pkg.price_ksh / USD_EXCHANGE_RATE).toFixed(2)
+          : pkg.price_ksh.toLocaleString();
+        return `
           <div class="pkg-card ${isFeatured ? 'featured' : ''}">
             ${pkg.badge ? `<span class="pkg-badge">${escapeHTML(pkg.badge)}</span>` : ''}
             <h3 class="pkg-name">${escapeHTML(pkg.name)}</h3>
-            <div class="pkg-cost-headline">KSh ${pkg.reward_per_view_ksh}/view — Pay KSh ${pkg.price_ksh.toLocaleString()}</div>
+            <div class="pkg-cost-headline">${formatMoney(pkg.reward_per_view_ksh)}/view — Pay ${formatMoney(pkg.price_ksh)}</div>
             
             <div class="pkg-price-row">
-              <span class="pkg-currency">KSh</span>
-              <span class="pkg-price">${pkg.price_ksh.toLocaleString()}</span>
+              <span class="pkg-currency">${isUsd ? 'USD $' : 'KSh'}</span>
+              <span class="pkg-price">${priceDisplayNum}</span>
               <span style="font-size: 13.5px; color: var(--charcoal-muted); margin-left: 4px;">one-time activation</span>
             </div>
 
@@ -10918,7 +11589,7 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
               </span>
               <div class="pkg-reward-text">
-                KSh ${pkg.reward_per_view_ksh} per approved view
+                ${formatMoney(pkg.reward_per_view_ksh)} per approved view
                 <div style="font-size: 12px; font-weight: 500; color: var(--charcoal-muted);">Up to ${pkg.max_views_per_task} views per 18h task</div>
               </div>
             </div>
@@ -10935,11 +11606,12 @@
             </ul>
 
             <button class="btn ${isFeatured ? 'btn-primary' : 'btn-secondary'} btn-block btn-lg" onclick="triggerPackageActivation('${pkg.id}', '${escapeHTML(pkg.name)}', ${pkg.price_ksh})">
-              Activate ${escapeHTML(pkg.name)} (KSh ${pkg.price_ksh.toLocaleString()})
+              Activate ${escapeHTML(pkg.name)} (${formatMoney(pkg.price_ksh)})
             </button>
           </div>
         `;
       }).join('');
+      applyCurrencyConversionAcrossDOM(container);
     }
 
     function setCalcTier(slug, rate) {
@@ -10956,7 +11628,7 @@
       });
       const names = { starter: 'Starter Pro', exclusive: 'Exclusive', premium: 'Premium' };
       const name = names[slug] || 'Tier';
-      document.getElementById('calc-tier-label').textContent = `${name} (KSh ${rate}/view)`;
+      document.getElementById('calc-tier-label').textContent = `${name} (${formatMoney(rate)}/view)`;
       updateCalculator();
     }
 
@@ -10968,13 +11640,21 @@
       if (display) display.textContent = `${views} Views`;
 
       const rate = AppState.calculatorTierRate || 20;
+      const activeBtn = document.querySelector('.calc-tier-btn.active');
+      const namesMap = { 'calc-btn-starter': 'Starter Pro', 'calc-btn-exclusive': 'Exclusive', 'calc-btn-premium': 'Premium' };
+      const tierLabelEl = document.getElementById('calc-tier-label');
+      if (tierLabelEl && activeBtn) {
+        const tName = namesMap[activeBtn.id] || 'Tier';
+        tierLabelEl.textContent = `${tName} (${formatMoney(rate)}/view)`;
+      }
+
       const daily = views * rate;
       const monthly = daily * 30;
 
       const dailyEl = document.getElementById('calc-daily-res');
-      if (dailyEl) dailyEl.textContent = `KSh ${daily.toLocaleString()}`;
+      if (dailyEl) dailyEl.textContent = formatMoney(daily);
       const monthlyEl = document.getElementById('calc-monthly-res');
-      if (monthlyEl) monthlyEl.textContent = `KSh ${monthly.toLocaleString()}`;
+      if (monthlyEl) monthlyEl.textContent = formatMoney(monthly);
     }
 
     // ====================================================================
@@ -11875,9 +12555,9 @@
             <td><strong>${dateStr}</strong></td>
             <td>${t.reported_views} views</td>
             <td>${t.approved_views ? `${t.approved_views} views` : '—'}</td>
-            <td>KSh ${t.reward_rate_ksh}</td>
+            <td>${formatMoney(t.reward_rate_ksh)}</td>
             <td style="font-weight: 700; color: var(--primary-purple);">
-              ${t.reward_amount_ksh > 0 ? `KSh ${t.reward_amount_ksh.toLocaleString()}` : '—'}
+              ${t.reward_amount_ksh > 0 ? formatMoney(t.reward_amount_ksh) : '—'}
             </td>
             <td><span class="status-badge ${statusClass}">${escapeHTML(t.status)}</span></td>
             <td style="font-size: 12.5px; color: var(--charcoal-muted);">${escapeHTML(t.admin_notes || '—')}</td>
@@ -11929,7 +12609,7 @@
                 ${isRef ? '👥 Referrals' : '📱 Status Views'}
               </span>
             </td>
-            <td style="font-weight: 700; color: var(--deep-purple-heading);">KSh ${w.amount_ksh.toLocaleString()}</td>
+            <td style="font-weight: 700; color: var(--deep-purple-heading);">${formatMoney(w.amount_ksh)}</td>
             <td>${escapeHTML(w.phone_number)}</td>
             <td><span class="status-badge ${statusClass}">${escapeHTML(w.status)}</span></td>
             <td style="font-size: 13px;">${refInfo}</td>
@@ -12091,13 +12771,13 @@
       const surveysAvail = AppState.wallet?.surveys_balance_ksh ?? 0;
 
       const viewsAvailEl = document.getElementById('withdraw-modal-views-avail');
-      if (viewsAvailEl) viewsAvailEl.textContent = `KSh ${viewsAvail.toLocaleString()}`;
+      if (viewsAvailEl) viewsAvailEl.textContent = formatMoney(viewsAvail);
 
       const refAvailEl = document.getElementById('withdraw-modal-referrals-avail');
-      if (refAvailEl) refAvailEl.textContent = `KSh ${refAvail.toLocaleString()}`;
+      if (refAvailEl) refAvailEl.textContent = formatMoney(refAvail);
 
       const surveysAvailEl = document.getElementById('withdraw-modal-surveys-avail');
-      if (surveysAvailEl) surveysAvailEl.textContent = `KSh ${surveysAvail.toLocaleString()}`;
+      if (surveysAvailEl) surveysAvailEl.textContent = formatMoney(surveysAvail);
 
       const pkg = AppState.activePackage;
       const minViews = pkg?.min_withdrawal_views_ksh || (pkg?.slug === 'premium' ? 12000 : (pkg?.slug === 'exclusive' ? 8000 : 5000));
@@ -12106,7 +12786,7 @@
       if (pkgTierEl) pkgTierEl.textContent = pkg ? `${pkg.name} Package` : 'Starter Pro Package';
 
       const viewsLimitEl = document.getElementById('withdraw-modal-views-limit');
-      if (viewsLimitEl) viewsLimitEl.textContent = `KSh ${minViews.toLocaleString()}`;
+      if (viewsLimitEl) viewsLimitEl.textContent = formatMoney(minViews);
 
       setWithdrawalBalanceType(defaultTab);
       setPayoutMethod('mpesa');
@@ -12144,49 +12824,74 @@
         card.classList.remove('theme-views', 'theme-referrals', 'theme-surveys');
       }
 
+      const isUsd = (AppState.currency || 'KSH').toUpperCase() === 'USD';
+
       if (type === 'surveys') {
         if (tabSurveys) tabSurveys.classList.add('active');
         if (card) card.classList.add('theme-surveys');
         if (availLbl) availLbl.textContent = 'Surveys Balance';
-        if (availVal) availVal.textContent = `KSh ${surveysAvail.toLocaleString()}`;
-        if (minPill) minPill.textContent = 'Min Payout: KSh 1,200';
-        if (label) label.textContent = 'Amount to Withdraw (KSh)';
+        if (availVal) availVal.textContent = formatMoney(surveysAvail);
+        if (minPill) minPill.textContent = `Min Payout: ${formatMoney(1200)}`;
+        if (label) label.textContent = isUsd ? 'Amount to Withdraw (USD)' : 'Amount to Withdraw (KSh)';
         if (amountInput) {
-          amountInput.min = '1200';
-          amountInput.placeholder = 'Min KSh 1,200';
-          amountInput.value = surveysAvail >= 1200 ? surveysAvail : '';
+          const minDisplay = isUsd ? Number((1200 / USD_EXCHANGE_RATE).toFixed(2)) : 1200;
+          amountInput.min = String(minDisplay);
+          amountInput.placeholder = `Min ${formatMoney(1200)}`;
+          amountInput.value = surveysAvail >= 1200 ? (isUsd ? Number((surveysAvail / USD_EXCHANGE_RATE).toFixed(2)) : surveysAvail) : '';
         }
       } else if (type === 'referrals') {
         if (tabRefs) tabRefs.classList.add('active');
         if (card) card.classList.add('theme-referrals');
         if (availLbl) availLbl.textContent = 'Referrals Balance';
-        if (availVal) availVal.textContent = `KSh ${refAvail.toLocaleString()}`;
-        if (minPill) minPill.textContent = 'Min Payout: KSh 1,200';
-        if (label) label.textContent = 'Amount to Withdraw (KSh)';
+        if (availVal) availVal.textContent = formatMoney(refAvail);
+        if (minPill) minPill.textContent = `Min Payout: ${formatMoney(1200)}`;
+        if (label) label.textContent = isUsd ? 'Amount to Withdraw (USD)' : 'Amount to Withdraw (KSh)';
         if (amountInput) {
-          amountInput.min = '1200';
-          amountInput.placeholder = 'Min KSh 1,200';
-          amountInput.value = refAvail >= 1200 ? refAvail : '';
+          const minDisplay = isUsd ? Number((1200 / USD_EXCHANGE_RATE).toFixed(2)) : 1200;
+          amountInput.min = String(minDisplay);
+          amountInput.placeholder = `Min ${formatMoney(1200)}`;
+          amountInput.value = refAvail >= 1200 ? (isUsd ? Number((refAvail / USD_EXCHANGE_RATE).toFixed(2)) : refAvail) : '';
         }
       } else {
         // default: views
         if (tabViews) tabViews.classList.add('active');
         if (card) card.classList.add('theme-views');
         if (availLbl) availLbl.textContent = 'Status Views Balance';
-        if (availVal) availVal.textContent = `KSh ${viewsAvail.toLocaleString()}`;
-        if (minPill) minPill.textContent = `Min: KSh ${effectiveMinViews.toLocaleString()} (${pkg ? pkg.name : 'Views'})`;
-        if (label) label.textContent = 'Amount to Withdraw (KSh)';
+        if (availVal) availVal.textContent = formatMoney(viewsAvail);
+        if (minPill) minPill.textContent = `Min: ${formatMoney(effectiveMinViews)} (${pkg ? pkg.name : 'Views'})`;
+        if (label) label.textContent = isUsd ? 'Amount to Withdraw (USD)' : 'Amount to Withdraw (KSh)';
         if (amountInput) {
-          amountInput.min = String(effectiveMinViews);
-          amountInput.placeholder = `Min KSh ${effectiveMinViews.toLocaleString()}`;
-          amountInput.value = viewsAvail >= effectiveMinViews ? viewsAvail : '';
+          const minDisplay = isUsd ? Number((effectiveMinViews / USD_EXCHANGE_RATE).toFixed(2)) : effectiveMinViews;
+          amountInput.min = String(minDisplay);
+          amountInput.placeholder = `Min ${formatMoney(effectiveMinViews)}`;
+          amountInput.value = viewsAvail >= effectiveMinViews ? (isUsd ? Number((viewsAvail / USD_EXCHANGE_RATE).toFixed(2)) : viewsAvail) : '';
         }
+      }
+      updateWithdrawUsdHint();
+    }
+
+    function updateWithdrawUsdHint() {
+      const hint = document.getElementById('withdraw-amount-hint');
+      const inp = document.getElementById('withdraw-amount');
+      if (!hint || !inp) return;
+      if ((AppState.currency || 'KSH').toUpperCase() === 'USD') {
+        const usdVal = parseFloat(inp.value) || 0;
+        const equivKsh = Math.round(usdVal * USD_EXCHANGE_RATE);
+        hint.style.display = 'block';
+        hint.textContent = usdVal > 0
+          ? `Equivalent payout amount: KSh ${equivKsh.toLocaleString()} (1 USD = KSh ${USD_EXCHANGE_RATE})`
+          : `Enter USD amount (1 USD = KSh ${USD_EXCHANGE_RATE})`;
+      } else {
+        hint.style.display = 'none';
       }
     }
 
     async function handleWithdrawalSubmit(e) {
       e.preventDefault();
-      const amountKsh = document.getElementById('withdraw-amount').value;
+      const rawAmount = parseFloat(document.getElementById('withdraw-amount').value) || 0;
+      const amountKsh = (AppState.currency || 'KSH').toUpperCase() === 'USD'
+        ? Math.round(rawAmount * USD_EXCHANGE_RATE)
+        : Math.round(rawAmount);
       const destination = document.getElementById('withdraw-phone').value;
       const balanceType = document.getElementById('withdraw-balance-type')?.value || 'views';
       const paymentMethod = currentPayoutMethod || 'mpesa';
@@ -12243,8 +12948,8 @@
         return;
       }
       document.getElementById('activate-pkg-id').value = packageId;
-      document.getElementById('modal-pkg-subtitle').textContent = `${name} — Pay KSh ${price.toLocaleString()} Activation`;
-      document.getElementById('modal-pkg-amount').textContent = `KSh ${price.toLocaleString()}`;
+      document.getElementById('modal-pkg-subtitle').textContent = `${name} — Pay ${formatMoney(price)} Activation`;
+      document.getElementById('modal-pkg-amount').textContent = formatMoney(price);
       
       const till = AppState.paymentSettings?.tillNumber || '1870141';
       const biz = AppState.paymentSettings?.businessName || 'ALMAIZA AGENCIES';
@@ -12455,7 +13160,10 @@
       if (tab === 'withdrawals') loadAdminWithdrawals();
       if (tab === 'surveys') loadAdminSurveys();
       if (tab === 'stats') loadAdminStats();
-      if (tab === 'audit') loadAdminAudit();
+      if (tab === 'audit') {
+        loadAdminAudit();
+        loadAdminCleanupCounts();
+      }
     }
 
     async function refreshAdminKpis() {
@@ -12522,7 +13230,9 @@
 
     async function loadAdminPayments(filter = 'pending') {
       const tbody = document.getElementById('tbody-admin-payments');
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">Loading M-Pesa transaction codes...</td></tr>';
+      const chkAll = document.getElementById('admin-chkall-payments');
+      if (chkAll) chkAll.checked = false;
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 20px;">Loading M-Pesa transaction codes...</td></tr>';
 
       try {
         const url = filter === 'all' ? '/api/admin/payments' : `/api/admin/payments?status=${encodeURIComponent(filter)}`;
@@ -12531,7 +13241,8 @@
 
         if (res.ok && data.payments) {
           if (!data.payments.length) {
-            tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 26px; color: var(--charcoal-muted);">No ${filter === 'all' ? '' : filter} payment transaction codes found.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 26px; color: var(--charcoal-muted);">No ${filter === 'all' ? '' : filter} payment transaction codes found.</td></tr>`;
+            updateAdminSelectedCount('payments');
             return;
           }
 
@@ -12543,16 +13254,19 @@
 
             return `
               <tr>
+                <td style="text-align: center;">
+                  <input type="checkbox" class="admin-checkbox admin-sel-payments" value="${escapeHTML(p.id)}" onchange="updateAdminSelectedCount('payments')">
+                </td>
                 <td>
                   <strong>${escapeHTML(p.user_name || 'Partner')}</strong><br>
                   <span style="font-size: 12px; color: var(--charcoal-muted);">${escapeHTML(p.user_email || '')} | ${escapeHTML(p.phone_number || p.user_phone || '')}</span>
                 </td>
                 <td>
                   <strong>${escapeHTML(p.package_name || 'Partner Tier')}</strong><br>
-                  <span style="font-size: 11.5px; color: var(--primary-purple);">Rate: KSh ${p.reward_per_view_ksh || 20}/view</span>
+                  <span style="font-size: 11.5px; color: var(--primary-purple);">Rate: ${formatMoney(p.reward_per_view_ksh || 20)}/view</span>
                 </td>
                 <td style="font-weight: 800; font-size: 15px; color: var(--deep-purple-heading);">
-                  KSh ${(p.amount_ksh || 0).toLocaleString()}
+                  ${formatMoney(p.amount_ksh || 0)}
                 </td>
                 <td>
                   <span class="mpesa-code-tag">${escapeHTML(p.mpesa_receipt_number || 'N/A')}</span>
@@ -12574,11 +13288,12 @@
               </tr>
             `;
           }).join('');
+          updateAdminSelectedCount('payments');
         } else {
-          tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--warning-red);">${data.error || 'Failed to load payments.'}</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--warning-red);">${data.error || 'Failed to load payments.'}</td></tr>`;
         }
       } catch (err) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--warning-red);">Failed to connect to payments API.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--warning-red);">Failed to connect to payments API.</td></tr>';
       }
     }
 
@@ -12639,7 +13354,9 @@
 
     async function loadAdminUsers(search = '') {
       const tbody = document.getElementById('tbody-admin-users');
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">Loading users directory...</td></tr>';
+      const chkAll = document.getElementById('admin-chkall-users');
+      if (chkAll) chkAll.checked = false;
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 20px;">Loading users directory...</td></tr>';
 
       try {
         const url = search ? `/api/admin/users?q=${encodeURIComponent(search)}` : '/api/admin/users';
@@ -12648,7 +13365,8 @@
 
         if (res.ok && data.users) {
           if (!data.users.length) {
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 26px; color: var(--charcoal-muted);">No users found matching search criteria.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 26px; color: var(--charcoal-muted);">No users found matching search criteria.</td></tr>';
+            updateAdminSelectedCount('users');
             return;
           }
 
@@ -12662,9 +13380,14 @@
             const viewsBal = u.views_balance_ksh ?? u.available_balance_ksh ?? 0;
             const refBal = u.referrals_balance_ksh ?? 0;
             const totalAvail = u.available_balance_ksh || 0;
+            const isProtected = u.role === 'admin' || u.id === AppState.user?.id;
+            const safeNameAttr = escapeHTML(u.name || 'Partner').replace(/'/g, '&#39;');
 
             return `
               <tr>
+                <td style="text-align: center;">
+                  <input type="checkbox" class="admin-checkbox admin-sel-users" value="${escapeHTML(u.id)}" ${isProtected ? 'disabled title="Protected administrator account"' : ''} onchange="updateAdminSelectedCount('users')">
+                </td>
                 <td>
                   <strong>${escapeHTML(u.name)}</strong><br>
                   <span style="font-size: 12px; color: var(--charcoal-muted);">${escapeHTML(u.email)} | ${escapeHTML(u.phone || 'No phone')}</span>
@@ -12687,30 +13410,33 @@
                   </div>
                 </td>
                 <td>
-                  <div style="font-weight: 850; font-size: 14.5px; color: var(--primary-purple);">KSh ${totalAvail.toLocaleString()}</div>
+                  <div style="font-weight: 850; font-size: 14.5px; color: var(--primary-purple);">${formatMoney(totalAvail)}</div>
                   <div style="font-size: 11px; color: #475569; font-weight: 700; margin-top: 2px;">
-                    Views: KSh ${viewsBal.toLocaleString()} | Ref: KSh ${refBal.toLocaleString()}
+                    Views: ${formatMoney(viewsBal)} | Ref: ${formatMoney(refBal)}
                   </div>
                 </td>
-                <td>KSh ${(u.lifetime_earnings_ksh || 0).toLocaleString()}</td>
+                <td>${formatMoney(u.lifetime_earnings_ksh || 0)}</td>
                 <td style="font-size: 12px;">${dateStr}</td>
                 <td>
                   <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                    <button class="btn btn-secondary btn-sm" onclick="adminAssignPackage('${u.id}', '${escapeHTML(u.name)}')">
+                    <button class="btn btn-secondary btn-sm" onclick="adminAssignPackage('${u.id}', '${safeNameAttr}')">
                       Assign Package
                     </button>
-                    <button class="btn btn-sm" style="background: #FAF5FF; color: #6D28D9; border: 1.5px solid #C4B5FD; font-weight: 800; padding: 5px 10px; border-radius: 8px;" onclick="adminModifyUserViews('${u.id}', '${escapeHTML(u.name)}', ${u.active_package_rate || 20}, ${approvedViews})">
+                    <button class="btn btn-sm" style="background: #FAF5FF; color: #6D28D9; border: 1.5px solid #C4B5FD; font-weight: 800; padding: 5px 10px; border-radius: 8px;" onclick="adminModifyUserViews('${u.id}', '${safeNameAttr}', ${u.active_package_rate || 20}, ${approvedViews})">
                       📱 Modify Views
                     </button>
-                    <button class="btn btn-sm" style="background: #EFF6FF; color: #1D4ED8; border: 1.5px solid #93C5FD; font-weight: 800; padding: 5px 10px; border-radius: 8px;" onclick="adminModifyUserBalance('${u.id}', '${escapeHTML(u.name)}', ${viewsBal}, ${refBal})">
+                    <button class="btn btn-sm" style="background: #EFF6FF; color: #1D4ED8; border: 1.5px solid #93C5FD; font-weight: 800; padding: 5px 10px; border-radius: 8px;" onclick="adminModifyUserBalance('${u.id}', '${safeNameAttr}', ${viewsBal}, ${refBal})">
                       💰 Modify Balance
                     </button>
-                    <button class="btn btn-sm" style="background: #ECFDF5; color: #15803D; border: 1.5px solid #86EFAC; font-weight: 800; padding: 5px 10px; border-radius: 8px;" onclick="adminGrantSubmissionTicket('${u.id}', '${escapeHTML(u.name)}', ${u.submission_tickets || 0})">
+                    <button class="btn btn-sm" style="background: #ECFDF5; color: #15803D; border: 1.5px solid #86EFAC; font-weight: 800; padding: 5px 10px; border-radius: 8px;" onclick="adminGrantSubmissionTicket('${u.id}', '${safeNameAttr}', ${u.submission_tickets || 0})">
                       🎟️ +Ticket (18h)
                     </button>
-                    ${u.role !== 'admin' ? `
-                      <button class="btn ${u.status === 'active' ? 'btn-danger' : 'btn-success'} btn-sm" onclick="adminToggleUserStatus('${u.id}', '${u.status}')">
+                    ${!isProtected ? `
+                      <button class="btn ${u.status === 'active' ? 'btn-secondary' : 'btn-success'} btn-sm" onclick="adminToggleUserStatus('${u.id}', '${u.status}')">
                         ${u.status === 'active' ? 'Suspend' : 'Activate'}
+                      </button>
+                      <button class="btn btn-danger btn-sm" onclick="adminDeleteUser('${u.id}', '${safeNameAttr}')" title="Permanently delete partner account and records">
+                        Delete Partner
                       </button>
                     ` : ''}
                   </div>
@@ -12718,6 +13444,7 @@
               </tr>
             `;
           }).join('');
+          updateAdminSelectedCount('users');
         } else {
           tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--warning-red);">${data.error || 'Failed to load users.'}</td></tr>`;
         }
@@ -13077,6 +13804,7 @@
             return `
               <div class="admin-prod-item">
                 <div class="admin-prod-item-main-row">
+                  <input type="checkbox" class="admin-checkbox admin-sel-products" value="${escapeHTML(p.id)}" onchange="updateAdminSelectedCount('products')">
                   <div class="admin-prod-item-thumb" onclick="openProductLightbox('${p.id}', '${imgSource}', '${safeTitle}', '${safeCaption}', '${safeBrand}', 'almai_product.jpg')" title="Tap to preview high-res image">
                     <div class="img-backdrop-glow" style="background-image: url('${imgSource}');"></div>
                     <img src="${imgSource}" alt="${safeTitle}" loading="lazy">
@@ -13186,24 +13914,30 @@
     // --- TAB 4: TASKS REVIEW ---
     async function loadAdminTasks() {
       const tbody = document.getElementById('tbody-admin-tasks');
-      tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">Loading pending task proofs...</td></tr>';
+      const chkAll = document.getElementById('admin-chkall-tasks');
+      if (chkAll) chkAll.checked = false;
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">Loading pending task proofs...</td></tr>';
 
       try {
         const res = await fetch('/api/admin/tasks?status=pending', { cache: 'no-store' });
         const data = await res.json();
         if (res.ok && data.submissions) {
           if (!data.submissions.length) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 26px; color: var(--charcoal-muted);">No pending task submissions in queue. Clean inbox!</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 26px; color: var(--charcoal-muted);">No pending task submissions in queue. Clean inbox!</td></tr>';
+            updateAdminSelectedCount('tasks');
             return;
           }
 
           tbody.innerHTML = data.submissions.map(ts => `
             <tr>
+              <td style="text-align: center;">
+                <input type="checkbox" class="admin-checkbox admin-sel-tasks" value="${escapeHTML(ts.id)}" onchange="updateAdminSelectedCount('tasks')">
+              </td>
               <td>
                 <strong>${escapeHTML(ts.user_name)}</strong><br>
                 <span style="font-size: 12px; color: var(--charcoal-muted);">${escapeHTML(ts.user_email)} | ${escapeHTML(ts.user_phone)}</span>
               </td>
-              <td>${escapeHTML(ts.package_name || 'Starter Pro')}<br><span style="font-size: 12px; color: var(--primary-purple);">Rate: KSh ${ts.reward_rate_ksh}/view</span></td>
+              <td>${escapeHTML(ts.package_name || 'Starter Pro')}<br><span style="font-size: 12px; color: var(--primary-purple);">Rate: ${formatMoney(ts.reward_rate_ksh)}/view</span></td>
               <td><strong>${ts.reported_views} views</strong></td>
               <td>
                 <button class="btn btn-secondary btn-sm" onclick="viewEvidenceModal('${ts.evidence_id}')">
@@ -13225,9 +13959,10 @@
               </td>
             </tr>
           `).join('');
+          updateAdminSelectedCount('tasks');
         }
       } catch (err) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--warning-red);">Failed to load task queue.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--warning-red);">Failed to load task queue.</td></tr>';
       }
     }
 
@@ -13268,27 +14003,35 @@
     // --- TAB 5: WITHDRAWALS QUEUE ---
     async function loadAdminWithdrawals() {
       const tbody = document.getElementById('tbody-admin-withdrawals');
-      tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">Loading pending withdrawals...</td></tr>';
+      const chkAll = document.getElementById('admin-chkall-withdrawals');
+      if (chkAll) chkAll.checked = false;
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">Loading pending withdrawals...</td></tr>';
 
       try {
         const res = await fetch('/api/admin/withdrawals?status=pending', { cache: 'no-store' });
         const data = await res.json();
         if (res.ok && data.withdrawals) {
           if (!data.withdrawals.length) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 26px; color: var(--charcoal-muted);">No pending withdrawals in queue. All disbursements up to date!</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 26px; color: var(--charcoal-muted);">No pending withdrawals in queue. All disbursements up to date!</td></tr>';
+            updateAdminSelectedCount('withdrawals');
             return;
           }
 
           tbody.innerHTML = data.withdrawals.map(w => {
             const dateStr = new Date(w.created_at * 1000).toLocaleString('en-KE');
             const isRef = w.balance_type === 'referrals';
+            const isSurvey = w.balance_type === 'surveys';
+            const badgeLabel = isSurvey ? '📝 Paid Surveys' : (isRef ? '👥 Referrals' : '📱 Status Views');
             return `
               <tr>
+                <td style="text-align: center;">
+                  <input type="checkbox" class="admin-checkbox admin-sel-withdrawals" value="${escapeHTML(w.id)}" onchange="updateAdminSelectedCount('withdrawals')">
+                </td>
                 <td><strong>${escapeHTML(w.user_name)}</strong><br><span style="font-size: 12px; color: var(--charcoal-muted);">${escapeHTML(w.user_email)}</span></td>
                 <td>
-                  <div style="font-size: 15px; font-weight: 850; color: var(--deep-purple-heading);">KSh ${w.amount_ksh.toLocaleString()}</div>
+                  <div style="font-size: 15px; font-weight: 850; color: var(--deep-purple-heading);">${formatMoney(w.amount_ksh)}</div>
                   <span class="badge" style="display: inline-flex; align-items: center; gap: 4px; font-size: 11px; padding: 2px 7px; border-radius: 4px; font-weight: 800; margin-top: 3px; background: ${isRef ? '#ECFDF5; color: #047857; border: 1px solid #A7F3D0;' : '#FAF5FF; color: #6D28D9; border: 1px solid #DDD6FE;'}">
-                    ${isRef ? '👥 Referrals' : '📱 Status Views'}
+                    ${badgeLabel}
                   </span>
                 </td>
                 <td><strong>${escapeHTML(w.phone_number)}</strong></td>
@@ -13306,9 +14049,10 @@
               </tr>
             `;
           }).join('');
+          updateAdminSelectedCount('withdrawals');
         }
       } catch (err) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--warning-red);">Failed to load withdrawals.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--warning-red);">Failed to load withdrawals.</td></tr>';
       }
     }
 
@@ -13366,7 +14110,7 @@
             <div class="dash-metric-card highlight">
               <div class="dash-metric-lbl">Pending Verification M-Pesa Codes</div>
               <div class="dash-metric-val">${(m.pendingPaymentsCount || 0).toLocaleString()}</div>
-              <div class="dash-metric-sub">KSh ${(m.pendingPaymentsAmountKsh || 0).toLocaleString()} awaiting audit</div>
+              <div class="dash-metric-sub">${formatMoney(m.pendingPaymentsAmountKsh || 0)} awaiting audit</div>
             </div>
             <div class="dash-metric-card">
               <div class="dash-metric-lbl">Total Registered Users</div>
@@ -13378,12 +14122,12 @@
             </div>
             <div class="dash-metric-card">
               <div class="dash-metric-lbl">Pending Withdrawals Queue</div>
-              <div class="dash-metric-val">KSh ${m.pendingWithdrawalsAmountKsh.toLocaleString()}</div>
+              <div class="dash-metric-val">${formatMoney(m.pendingWithdrawalsAmountKsh)}</div>
               <div class="dash-metric-sub">${m.pendingWithdrawalsCount} requests awaiting payout</div>
             </div>
             <div class="dash-metric-card">
               <div class="dash-metric-lbl">Total Disbursed M-Pesa</div>
-              <div class="dash-metric-val">KSh ${m.totalDisbursedKsh.toLocaleString()}</div>
+              <div class="dash-metric-val">${formatMoney(m.totalDisbursedKsh)}</div>
               <div class="dash-metric-sub">${m.completedWithdrawalsCount} successful payouts</div>
             </div>
             <div class="dash-metric-card">
@@ -13397,7 +14141,7 @@
             </div>
             <div class="dash-metric-card">
               <div class="dash-metric-lbl">System Available Liability</div>
-              <div class="dash-metric-val">KSh ${m.totalAvailableInSystemKsh.toLocaleString()}</div>
+              <div class="dash-metric-val">${formatMoney(m.totalAvailableInSystemKsh)}</div>
             </div>
           `;
         }
@@ -13406,17 +14150,20 @@
       }
     }
 
-    // --- TAB 7: AUDIT LOGS ---
+    // --- TAB 7: AUDIT LOGS & SYSTEM JUNK CLEANUP ---
     async function loadAdminAudit() {
       const tbody = document.getElementById('tbody-admin-audit');
-      tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">Loading audit logs...</td></tr>';
+      const chkAll = document.getElementById('admin-chkall-audit');
+      if (chkAll) chkAll.checked = false;
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">Loading audit logs...</td></tr>';
 
       try {
-        const res = await fetch('/api/admin/audit-logs');
+        const res = await fetch('/api/admin/audit-logs', { cache: 'no-store' });
         const data = await res.json();
         if (res.ok && data.auditLogs) {
           if (!data.auditLogs.length) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">No audit events logged yet.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">No audit events logged yet.</td></tr>';
+            updateAdminSelectedCount('audit');
             return;
           }
 
@@ -13424,6 +14171,9 @@
             const dateStr = new Date(a.created_at * 1000).toLocaleString('en-KE');
             return `
               <tr>
+                <td style="text-align: center;">
+                  <input type="checkbox" class="admin-checkbox admin-sel-audit" value="${escapeHTML(a.id)}" onchange="updateAdminSelectedCount('audit')">
+                </td>
                 <td style="font-size: 12px;">${dateStr}</td>
                 <td><strong>${escapeHTML(a.admin_name || 'Admin')}</strong></td>
                 <td><span class="status-badge status-pending">${escapeHTML(a.action)}</span></td>
@@ -13432,9 +14182,358 @@
               </tr>
             `;
           }).join('');
+          updateAdminSelectedCount('audit');
         }
       } catch (err) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--warning-red);">Failed to load audit logs.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--warning-red);">Failed to load audit logs.</td></tr>';
+      }
+    }
+
+    // ====================================================================
+    // ADMIN MULTI-SELECT, DELETE PARTNER & SYSTEM JUNK MULTI-CLEAR
+    // ====================================================================
+    function toggleAdminSelectAll(scope, isChecked) {
+      const boxes = document.querySelectorAll(`.admin-sel-${scope}:not(:disabled)`);
+      boxes.forEach(cb => { cb.checked = !!isChecked; });
+      updateAdminSelectedCount(scope);
+    }
+
+    function getAdminSelectedIds(scope) {
+      return Array.from(document.querySelectorAll(`.admin-sel-${scope}:checked`))
+        .map(cb => cb.value)
+        .filter(Boolean);
+    }
+
+    function updateAdminSelectedCount(scope) {
+      const ids = getAdminSelectedIds(scope);
+      const labelEl = document.getElementById(`admin-sel-count-${scope}`);
+      if (!labelEl) return;
+      const nounMap = {
+        payments: 'selected',
+        users: 'partners selected',
+        tasks: 'task proofs selected',
+        withdrawals: 'payout requests selected',
+        audit: 'log entries selected'
+      };
+      labelEl.textContent = `${ids.length} ${nounMap[scope] || 'selected'}`;
+    }
+
+    async function adminDeleteUser(userId, userName) {
+      if (!confirm(`⚠️ PERMANENT DELETE PARTNER:\n\nAre you sure you want to permanently delete "${userName}"?\nThis deletes their wallet, packages, tasks, withdrawals, and sessions cleanly.`)) {
+        return;
+      }
+      const typed = prompt(`Type DELETE to permanently remove partner "${userName}":`);
+      if (typed !== 'DELETE') {
+        alert('Deletion canceled.');
+        return;
+      }
+      try {
+        const res = await fetch('/api/admin/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'delete_user', userId })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert(`✓ ${data.message || 'Partner deleted successfully.'}`);
+          loadAdminUsers(document.getElementById('admin-user-search')?.value || '');
+          refreshAdminKpis();
+          loadAdminCleanupCounts();
+        } else {
+          alert(data.error || 'Failed to delete partner');
+        }
+      } catch (err) {
+        alert('Network error while deleting partner.');
+      }
+    }
+
+    async function adminBulkDeleteUsers() {
+      const userIds = getAdminSelectedIds('users');
+      if (!userIds.length) {
+        alert('Select one or more partner accounts first using the checkboxes.');
+        return;
+      }
+      if (!confirm(`⚠️ PERMANENTLY DELETE ${userIds.length} SELECTED PARTNER ACCOUNT(S)?\n\nAll their wallets, tasks, sessions, and records will be removed.`)) {
+        return;
+      }
+      const typed = prompt(`Type DELETE to remove ${userIds.length} selected partner account(s):`);
+      if (typed !== 'DELETE') {
+        alert('Bulk partner deletion canceled.');
+        return;
+      }
+      try {
+        const res = await fetch('/api/admin/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'bulk_delete_users', userIds })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert(`✓ ${data.message || `Deleted ${data.deletedCount || userIds.length} partner(s).`}`);
+          loadAdminUsers(document.getElementById('admin-user-search')?.value || '');
+          refreshAdminKpis();
+          loadAdminCleanupCounts();
+        } else {
+          alert(data.error || 'Bulk delete failed');
+        }
+      } catch (err) {
+        alert('Network error during bulk partner deletion.');
+      }
+    }
+
+    async function adminBulkDeleteSelectedProducts() {
+      const postIds = getAdminSelectedIds('products');
+      if (!postIds.length) {
+        alert('Tick the checkboxes on one or more product cards first.');
+        return;
+      }
+      if (!confirm(`Delete ${postIds.length} selected product creative(s)?`)) return;
+      try {
+        const res = await fetch('/api/admin/products-posts', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ postIds })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert(`✓ Deleted ${data.deletedCount ?? postIds.length} selected product(s).`);
+          const chkAll = document.getElementById('admin-chkall-products');
+          if (chkAll) chkAll.checked = false;
+          loadAdminProducts();
+          fetchProductsPosts();
+          refreshAdminKpis();
+        } else {
+          alert(data.error || 'Failed to delete selected products');
+        }
+      } catch (err) {
+        alert('Network error deleting selected products.');
+      }
+    }
+
+    async function adminClearSelectedPayments() {
+      const paymentIds = getAdminSelectedIds('payments');
+      if (!paymentIds.length) {
+        alert('Select one or more M-Pesa transaction code rows first.');
+        return;
+      }
+      if (!confirm(`Permanently clear ${paymentIds.length} selected M-Pesa transaction code record(s)?`)) return;
+      try {
+        const res = await fetch('/api/admin/cleanup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ paymentIds })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert(`✓ Cleared ${data.totalDeleted ?? paymentIds.length} payment record(s).`);
+          loadAdminPayments(AppState.activePayFilter || 'pending');
+          refreshAdminKpis();
+          loadAdminCleanupCounts();
+        } else {
+          alert(data.error || 'Failed to clear selected payments');
+        }
+      } catch (err) {
+        alert('Network error clearing selected payments.');
+      }
+    }
+
+    async function adminClearFailedPaymentsQuick() {
+      if (!confirm('Clear all failed and rejected M-Pesa transaction code attempts from the database?')) return;
+      await adminQuickCleanupTargets(['failed_payments']);
+      loadAdminPayments(AppState.activePayFilter || 'pending');
+    }
+
+    async function adminClearSelectedTasks() {
+      const taskIds = getAdminSelectedIds('tasks');
+      if (!taskIds.length) {
+        alert('Select one or more task rows first.');
+        return;
+      }
+      if (!confirm(`Delete ${taskIds.length} selected task proof record(s)?`)) return;
+      try {
+        const res = await fetch('/api/admin/cleanup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ taskIds })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert(`✓ Deleted ${data.totalDeleted ?? taskIds.length} task record(s).`);
+          loadAdminTasks();
+          refreshAdminKpis();
+          loadAdminCleanupCounts();
+        } else {
+          alert(data.error || 'Failed to delete selected tasks');
+        }
+      } catch (err) {
+        alert('Network error deleting selected tasks.');
+      }
+    }
+
+    async function adminClearSelectedWithdrawals() {
+      const withdrawalIds = getAdminSelectedIds('withdrawals');
+      if (!withdrawalIds.length) {
+        alert('Select one or more non-pending withdrawal rows first.');
+        return;
+      }
+      if (!confirm(`Clear ${withdrawalIds.length} selected non-pending withdrawal record(s)? (Pending payouts are protected automatically.)`)) return;
+      try {
+        const res = await fetch('/api/admin/cleanup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ withdrawalIds })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert(`✓ Cleared ${data.totalDeleted ?? 0} non-pending withdrawal record(s).`);
+          loadAdminWithdrawals();
+          refreshAdminKpis();
+          loadAdminCleanupCounts();
+        } else {
+          alert(data.error || 'Failed to clear selected withdrawals');
+        }
+      } catch (err) {
+        alert('Network error clearing withdrawals.');
+      }
+    }
+
+    async function adminClearSelectedAuditLogs() {
+      const ids = getAdminSelectedIds('audit');
+      if (!ids.length) {
+        alert('Select one or more audit log entries first.');
+        return;
+      }
+      if (!confirm(`Delete ${ids.length} selected audit log entry(ies)?`)) return;
+      try {
+        const res = await fetch('/api/admin/audit-logs', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ids })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert(`✓ Deleted ${data.deletedCount ?? ids.length} audit log entry(ies).`);
+          loadAdminAudit();
+          loadAdminCleanupCounts();
+        } else {
+          alert(data.error || 'Failed to clear selected audit logs');
+        }
+      } catch (err) {
+        alert('Network error clearing audit logs.');
+      }
+    }
+
+    async function adminClearAllAuditLogs() {
+      if (!confirm('Clear ALL system audit log records?')) return;
+      try {
+        const res = await fetch('/api/admin/audit-logs?clearAll=true', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ clearAll: true })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert(`✓ Cleared ${data.deletedCount ?? 0} audit log entries.`);
+          loadAdminAudit();
+          loadAdminCleanupCounts();
+        } else {
+          alert(data.error || 'Failed to clear audit logs');
+        }
+      } catch (err) {
+        alert('Network error clearing audit logs.');
+      }
+    }
+
+    async function loadAdminCleanupCounts() {
+      try {
+        const res = await fetch('/api/admin/cleanup', { cache: 'no-store' });
+        if (!res.ok) return;
+        const data = await res.json();
+        const c = data.junkCounts || {};
+        const setTxt = (id, val, suffix = '') => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = `${Number(val || 0).toLocaleString()}${suffix}`;
+        };
+        setTxt('cleanup-cnt-expired_sessions', c.expiredSessions);
+        setTxt('cleanup-cnt-failed_payments', c.failedPayments);
+        setTxt('cleanup-cnt-rejected_tasks', c.rejectedTasks);
+        setTxt('cleanup-cnt-orphaned_evidence', c.orphanedEvidence);
+        setTxt('cleanup-cnt-rejected_withdrawals', c.rejectedWithdrawals);
+        setTxt('cleanup-cnt-audit_logs', c.auditLogs, ' total');
+      } catch (err) {
+        console.warn('Cleanup counts load error:', err);
+      }
+    }
+
+    function selectSafeCleanupJunk(checked) {
+      document.querySelectorAll('.cleanup-target-cb[data-safe="1"]').forEach(cb => {
+        cb.checked = !!checked;
+      });
+    }
+
+    async function adminQuickCleanupTargets(targets, confirmMsg = null) {
+      if (confirmMsg && !confirm(confirmMsg)) return;
+      try {
+        const res = await fetch('/api/admin/cleanup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ targets })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert(`✓ ${data.message || `Purged ${data.totalDeleted ?? 0} junk record(s).`}`);
+          refreshAdminKpis();
+          loadAdminCleanupCounts();
+        } else {
+          alert(data.error || 'Cleanup failed');
+        }
+      } catch (err) {
+        alert('Network error during system cleanup.');
+      }
+    }
+
+    async function adminRunSystemCleanup() {
+      const targets = Array.from(document.querySelectorAll('.cleanup-target-cb:checked')).map(cb => cb.value);
+      if (!targets.length) {
+        alert('Tick one or more junk categories above first.');
+        return;
+      }
+      if (!confirm(`Purge ${targets.length} selected system junk category(ies)? Active user accounts, active packages, and pending/available wallet funds remain untouched.`)) {
+        return;
+      }
+
+      const btn = document.getElementById('btn-run-system-cleanup');
+      const feedback = document.getElementById('admin-cleanup-feedback');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Purging...';
+      }
+      try {
+        const res = await fetch('/api/admin/cleanup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ targets })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          if (feedback) {
+            feedback.style.display = 'block';
+            feedback.textContent = `✓ ${data.message || `Successfully purged ${data.totalDeleted ?? 0} junk record(s).`}`;
+          }
+          document.querySelectorAll('.cleanup-target-cb').forEach(cb => { cb.checked = false; });
+          loadAdminCleanupCounts();
+          loadAdminAudit();
+          refreshAdminKpis();
+        } else {
+          alert(data.error || 'System cleanup failed');
+        }
+      } catch (err) {
+        alert('Network error running system junk cleanup.');
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = 'Purge Selected Junk';
+        }
       }
     }
 
@@ -13638,12 +14737,12 @@
       if (!data) return;
 
       const earnEl = document.getElementById('dash-ref-earnings');
-      if (earnEl) earnEl.textContent = `KSh ${(data.totalEarningsKsh || 0).toLocaleString()}`;
+      if (earnEl) earnEl.textContent = formatMoney(data.totalEarningsKsh || 0);
 
       const withdrawableRefEl = document.getElementById('dash-ref-withdrawable-badge');
       if (withdrawableRefEl) {
         const withRef = data.withdrawableReferralsKsh ?? AppState.wallet?.referrals_balance_ksh ?? 0;
-        withdrawableRefEl.textContent = `KSh ${withRef.toLocaleString()} Withdrawable Separately`;
+        withdrawableRefEl.textContent = `${formatMoney(withRef)} Withdrawable Separately`;
       }
 
       const activeCountEl = document.getElementById('dash-ref-active-count');
@@ -13707,10 +14806,10 @@
             </td>
             <td><span style="font-family: monospace; font-weight: 800; color: #334155; font-size: 13.5px;">${maskedPhone}</span></td>
             <td><span class="user-pkg-tag" style="background: #F3E8FF; color: #6D28D9; border: 1.5px solid #C084FC; font-size: 12px; padding: 3px 9px;">${escapeHTML(pkgTier)}</span></td>
-            <td><strong style="color: #0F172A; font-size: 14.5px;">KSh ${pkgPrice.toLocaleString()}</strong></td>
+            <td><strong style="color: #0F172A; font-size: 14.5px;">${formatMoney(pkgPrice)}</strong></td>
             <td>
               <span class="commission-earn-chip">
-                +KSh ${commKsh.toLocaleString()}
+                +${formatMoney(commKsh)}
               </span>
             </td>
             <td style="color: #475569; font-weight: 700; font-size: 13px;">${dateStr}</td>
@@ -13851,7 +14950,7 @@
 
           const statsHint = document.getElementById('dash-surveys-stats-hint');
           if (statsHint && data.stats) {
-            statsHint.textContent = `${availCount} Available • KSh ${(data.stats.totalSurveyEarningsKsh || 0).toLocaleString()} earned`;
+            statsHint.textContent = `${availCount} Available • ${formatMoney(data.stats.totalSurveyEarningsKsh || 0)} earned`;
           }
 
           renderUserSurveys(AppState.activeSurveyFilter || 'all');
@@ -13906,7 +15005,7 @@
             <div>
               <div class="survey-card-top">
                 <span class="survey-cat-badge">${escapeHTML(s.category || 'Consumer Pulse')}</span>
-                <span class="survey-reward-pill">+KSh ${Number(s.rewardKsh).toLocaleString()}</span>
+                <span class="survey-reward-pill">+${formatMoney(s.rewardKsh)}</span>
               </div>
               <h4 class="survey-card-title">${escapeHTML(s.title)}</h4>
               <p class="survey-card-desc">${escapeHTML(s.description)}</p>
@@ -13920,7 +15019,7 @@
               <div>
                 ${isComp ? `
                   <span class="survey-completed-badge">
-                    ✓ Completed (+KSh ${Number(s.userEarnedRewardKsh || s.rewardKsh).toLocaleString()})
+                    ✓ Completed (+${formatMoney(s.userEarnedRewardKsh || s.rewardKsh)})
                   </span>
                 ` : `
                   <button type="button" class="btn btn-primary btn-sm" onclick="openSurveyModal('${s.id}')">
@@ -13947,9 +15046,9 @@
       document.getElementById('survey-modal-cat').textContent = survey.category || 'Consumer Habits';
       document.getElementById('survey-modal-title').textContent = survey.title;
       document.getElementById('survey-modal-desc').textContent = survey.description;
-      document.getElementById('survey-modal-reward-badge').textContent = `+KSh ${Number(survey.rewardKsh).toLocaleString()}`;
+      document.getElementById('survey-modal-reward-badge').textContent = `+${formatMoney(survey.rewardKsh)}`;
       document.getElementById('survey-modal-time').textContent = `⏱️ ~${survey.estimatedMinutes || 3} mins`;
-      document.getElementById('survey-modal-submit-reward').textContent = `KSh ${Number(survey.rewardKsh).toLocaleString()}`;
+      document.getElementById('survey-modal-submit-reward').textContent = formatMoney(survey.rewardKsh);
 
       const alertEl = document.getElementById('survey-modal-alert');
       if (alertEl) alertEl.style.display = 'none';
@@ -14075,7 +15174,7 @@
                   <span style="font-size: 12px; color: #64748B;">ID: ${escapeHTML(s.id)}</span>
                 </td>
                 <td><span class="survey-cat-badge" style="font-size: 11px;">${escapeHTML(s.category)}</span></td>
-                <td><strong style="color: #059669;">KSh ${Number(s.reward_ksh).toLocaleString()}</strong></td>
+                <td><strong style="color: #059669;">${formatMoney(s.reward_ksh)}</strong></td>
                 <td>${s.questionsCount || (s.questions ? s.questions.length : 0)} questions</td>
                 <td><strong>${s.completions_count || 0}</strong> / ${s.max_completions || 5000}</td>
                 <td>

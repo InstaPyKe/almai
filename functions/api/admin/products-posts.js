@@ -161,6 +161,7 @@ export async function onRequestDelete(context) {
   const url = new URL(request.url);
   let isClearAll = url.searchParams.get('clearAll') === 'true' || url.searchParams.get('action') === 'clear_all';
   let postId = url.searchParams.get('id') || url.searchParams.get('postId');
+  let postIds = null;
 
   if (!postId && !isClearAll) {
     try {
@@ -168,6 +169,9 @@ export async function onRequestDelete(context) {
       if (text && text.trim().length > 0) {
         const body = JSON.parse(text);
         postId = body?.postId || body?.id;
+        if (Array.isArray(body?.postIds)) {
+          postIds = body.postIds.filter(Boolean);
+        }
         if (body?.action === 'clear_all' || body?.clearAll === true) {
           isClearAll = true;
         }
@@ -181,8 +185,35 @@ export async function onRequestDelete(context) {
     return await handleClearAll(env, admin, request);
   }
 
+  if (Array.isArray(postIds) && postIds.length > 0) {
+    try {
+      let deletedCount = 0;
+      for (const pid of postIds) {
+        await env.DB.prepare('DELETE FROM product_posts WHERE id = ?').bind(pid).run();
+        await env.DB.prepare('DELETE FROM campaigns WHERE id = ?').bind(`camp_${pid}`).run();
+        deletedCount++;
+      }
+      const ip = request.headers.get('cf-connecting-ip') || '';
+      await createAuditLog(env, {
+        adminId: admin.id,
+        action: 'BULK_DELETE_PRODUCTS',
+        targetType: 'product_posts',
+        targetId: 'bulk',
+        details: { deletedCount, postIds },
+        ip
+      });
+      return jsonSuccess({
+        message: `Successfully deleted ${deletedCount} selected product creative(s).`,
+        deletedCount
+      });
+    } catch (err) {
+      console.error('Bulk delete products error:', err);
+      return jsonError('Failed to delete selected products', 500);
+    }
+  }
+
   if (!postId) {
-    return jsonError('Product ID or clearAll parameter is required', 400);
+    return jsonError('Product ID, postIds array, or clearAll parameter is required', 400);
   }
 
   try {
