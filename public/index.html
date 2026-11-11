@@ -2778,16 +2778,17 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
-      margin: 14px 0 18px 0;
-      min-height: 82px;
+      margin: 12px 0 16px 0;
+      min-height: 68px;
       overflow: visible;
     }
 
     .g-recaptcha-slot {
       display: flex;
       justify-content: center;
-      min-width: 304px;
-      min-height: 78px;
+      align-items: center;
+      min-width: 256px;
+      min-height: 60px;
     }
 
     .recaptcha-status-note {
@@ -15174,6 +15175,7 @@
     const RECAPTCHA_SITE_KEY = '6LfdzhouAAAAAPxDLqCVpSCr1rcPrW7a4lTcu-D-';
     const recaptchaWidgets = { login: null, register: null };
     const recaptchaTokens = { login: '', register: '' };
+    const recaptchaPending = { login: null, register: null };
     let recaptchaPollTimer = null;
     let recaptchaFallbackInjected = false;
 
@@ -15182,10 +15184,34 @@
       if (el) el.innerHTML = htmlMessage || '';
     }
 
+    function resolvePendingRecaptcha(which, token) {
+      const pending = recaptchaPending[which];
+      if (!pending) return;
+      recaptchaPending[which] = null;
+      if (pending.timer) clearTimeout(pending.timer);
+      pending.resolve(token || '');
+    }
+
+    function rejectPendingRecaptcha(which, err) {
+      const pending = recaptchaPending[which];
+      if (!pending) return;
+      recaptchaPending[which] = null;
+      if (pending.timer) clearTimeout(pending.timer);
+      pending.reject(err instanceof Error ? err : new Error(String(err || 'reCAPTCHA verification failed')));
+    }
+
     function reloadRecaptchaScript(useMirror = false) {
       try {
         const oldScript = document.getElementById('almai-recaptcha-script');
         if (oldScript) oldScript.remove();
+        recaptchaWidgets.login = null;
+        recaptchaWidgets.register = null;
+        recaptchaTokens.login = '';
+        recaptchaTokens.register = '';
+        ['login-recaptcha-container', 'register-recaptcha-container'].forEach(id => {
+          const c = document.getElementById(id);
+          if (c) c.innerHTML = '';
+        });
         const s = document.createElement('script');
         s.id = 'almai-recaptcha-script';
         const host = useMirror ? 'https://www.recaptcha.net' : 'https://www.google.com';
@@ -15193,8 +15219,8 @@
         s.async = true;
         s.defer = true;
         document.head.appendChild(s);
-        setRecaptchaStatus('login', 'Loading security check...');
-        setRecaptchaStatus('register', 'Loading security check...');
+        setRecaptchaStatus('login', 'Loading security verification...');
+        setRecaptchaStatus('register', 'Loading security verification...');
         scheduleRecaptchaRender(0);
       } catch (e) { }
     }
@@ -15212,14 +15238,13 @@
         return false;
       }
 
-      // Already rendered cleanly with iframe inside
-      if (recaptchaWidgets[which] !== null && el.querySelector('iframe')) {
-        setRecaptchaStatus(which, '');
+      // Already rendered cleanly with badge/iframe inside
+      if (recaptchaWidgets[which] !== null && (el.querySelector('iframe') || el.querySelector('.grecaptcha-badge'))) {
         return true;
       }
 
-      // If previous render left an empty/broken container without an iframe, clear and re-render
-      if (el.childElementCount > 0 && !el.querySelector('iframe')) {
+      // Clear partial/broken mount before rendering cleanly
+      if (el.childElementCount > 0 && !el.querySelector('iframe') && !el.querySelector('.grecaptcha-badge')) {
         el.innerHTML = '';
         recaptchaWidgets[which] = null;
       }
@@ -15228,21 +15253,26 @@
         try {
           recaptchaWidgets[which] = grecaptcha.render(containerId, {
             sitekey: RECAPTCHA_SITE_KEY,
-            theme: 'light',
+            size: 'invisible',
+            badge: 'inline',
             callback: function (token) {
               recaptchaTokens[which] = token || '';
-              setRecaptchaStatus(which, '');
+              if (token) {
+                setRecaptchaStatus(which, '<span style="color:#059669;font-weight:600;">✓ Google reCAPTCHA verified</span>');
+              }
+              resolvePendingRecaptcha(which, token || '');
             },
             'expired-callback': function () {
               recaptchaTokens[which] = '';
-              setRecaptchaStatus(which, '<span style="color:#B45309;">reCAPTCHA expired. Please check "I am not a robot" again.</span>');
+              setRecaptchaStatus(which, '<span style="color:#B45309;">Security token refreshed. Ready to submit.</span>');
             },
             'error-callback': function () {
               recaptchaTokens[which] = '';
-              setRecaptchaStatus(which, '<span style="color:#DC2626;">reCAPTCHA error. <button type="button" class="recaptcha-reload-btn" onclick="reloadRecaptchaScript(true)">Reload check</button></span>');
+              rejectPendingRecaptcha(which, new Error('Google reCAPTCHA rejected verification for this domain or connection. Confirm almaiproductadvertismentcompany.calcare.co.ke is enabled in Google reCAPTCHA Domains.'));
+              setRecaptchaStatus(which, '<span style="color:#DC2626;">reCAPTCHA error (check domain or network). <button type="button" class="recaptcha-reload-btn" onclick="reloadRecaptchaScript(true)">Reload check</button></span>');
             }
           });
-          setRecaptchaStatus(which, '');
+          setRecaptchaStatus(which, '<span style="color:var(--charcoal-muted);">🛡️ Protected by Google reCAPTCHA</span>');
           return true;
         } catch (err) {
           console.warn('reCAPTCHA render retry needed for', which, err);
@@ -15310,17 +15340,6 @@
       scheduleRecaptchaRender(0);
     };
 
-    function getRecaptchaResponseFor(which) {
-      if (typeof grecaptcha !== 'undefined' && typeof grecaptcha.getResponse === 'function') {
-        const wid = recaptchaWidgets[which];
-        if (wid !== null && wid !== undefined) {
-          const live = grecaptcha.getResponse(wid);
-          if (live) return live;
-        }
-      }
-      return recaptchaTokens[which] || '';
-    }
-
     function resetRecaptchaFor(which) {
       recaptchaTokens[which] = '';
       if (typeof grecaptcha === 'undefined' || typeof grecaptcha.reset !== 'function') return;
@@ -15330,6 +15349,66 @@
           grecaptcha.reset(wid);
         } catch (e) { }
       }
+    }
+
+    async function getRecaptchaTokenAsync(which, action) {
+      // Wait briefly if Google reCAPTCHA script is still loading
+      let waited = 0;
+      while ((typeof grecaptcha === 'undefined' || typeof grecaptcha.render !== 'function') && waited < 6000) {
+        if (waited === 2400 && !recaptchaFallbackInjected) {
+          recaptchaFallbackInjected = true;
+          reloadRecaptchaScript(true);
+        }
+        await new Promise(r => setTimeout(r, 200));
+        waited += 200;
+      }
+
+      if (typeof grecaptcha === 'undefined' || typeof grecaptcha.execute !== 'function') {
+        throw new Error('Security verification (reCAPTCHA) is blocked or still loading. Please allow Google reCAPTCHA or disable ad-blockers and try again.');
+      }
+
+      renderSingleRecaptchaWidget(which, `${which}-recaptcha-container`);
+      const wid = recaptchaWidgets[which];
+      if (wid === null || wid === undefined) {
+        throw new Error('Could not initialize Google reCAPTCHA widget. Please tap "Reload check" and retry.');
+      }
+
+      // Cancel any stale pending request and reset prior token cleanly so every submit receives a fresh token
+      rejectPendingRecaptcha(which, new Error('Superseded by new submission'));
+      resetRecaptchaFor(which);
+
+      return await new Promise((resolve, reject) => {
+        const timer = setTimeout(() => {
+          rejectPendingRecaptcha(which, new Error('Google reCAPTCHA verification timed out. Confirm almaiproductadvertismentcompany.calcare.co.ke is added in Google reCAPTCHA Domains or check your connection.'));
+        }, 45000);
+
+        recaptchaPending[which] = { resolve, reject, timer };
+
+        try {
+          let execResult;
+          try {
+            execResult = grecaptcha.execute(wid, { action: action || which });
+          } catch (argErr) {
+            execResult = grecaptcha.execute(wid);
+          }
+
+          if (execResult && typeof execResult.then === 'function') {
+            execResult.then(
+              (tok) => {
+                if (tok) {
+                  recaptchaTokens[which] = tok;
+                  resolvePendingRecaptcha(which, tok);
+                }
+              },
+              (err) => {
+                rejectPendingRecaptcha(which, err || new Error('reCAPTCHA verification failed.'));
+              }
+            );
+          }
+        } catch (execErr) {
+          rejectPendingRecaptcha(which, execErr);
+        }
+      });
     }
 
     function switchAuthTab(mode) {
@@ -15460,24 +15539,32 @@
       const alertEl = document.getElementById('auth-alert');
       const btn = document.getElementById('btn-login-submit');
 
-      ensureRecaptchaWidgetsRendered();
-      const recaptchaToken = getRecaptchaResponseFor('login');
-      if (!recaptchaToken) {
-        alertEl.className = 'alert alert-error';
-        alertEl.textContent = typeof grecaptcha === 'undefined'
-          ? 'Security verification (reCAPTCHA) is still loading or blocked. Please wait or allow Google reCAPTCHA and try again.'
-          : 'Please complete the "I am not a robot" reCAPTCHA verification before signing in.';
-        alertEl.style.display = 'flex';
-        return;
-      }
-
       btn.disabled = true;
-      btn.textContent = 'Signing in...';
+      btn.textContent = 'Verifying security...';
       alertEl.style.display = 'none';
 
       let isLocked = false;
 
       try {
+        let recaptchaToken = '';
+        try {
+          recaptchaToken = await getRecaptchaTokenAsync('login', 'login');
+        } catch (rcErr) {
+          alertEl.className = 'alert alert-error';
+          alertEl.textContent = (rcErr && rcErr.message) || 'Security verification (reCAPTCHA) failed or timed out. Please try again.';
+          alertEl.style.display = 'flex';
+          return;
+        }
+
+        if (!recaptchaToken) {
+          alertEl.className = 'alert alert-error';
+          alertEl.textContent = 'Security verification (reCAPTCHA) did not return a token. Please reload the check and try again.';
+          alertEl.style.display = 'flex';
+          return;
+        }
+
+        btn.textContent = 'Signing in...';
+
         const res = await fetch('/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -15577,22 +15664,30 @@
       const alert = document.getElementById('auth-alert');
       const btn = document.getElementById('btn-register-submit');
 
-      ensureRecaptchaWidgetsRendered();
-      const recaptchaToken = getRecaptchaResponseFor('register');
-      if (!recaptchaToken) {
-        alert.className = 'alert alert-error';
-        alert.textContent = typeof grecaptcha === 'undefined'
-          ? 'Security verification (reCAPTCHA) is still loading or blocked. Please wait or allow Google reCAPTCHA and try again.'
-          : 'Please complete the "I am not a robot" reCAPTCHA verification before registering.';
-        alert.style.display = 'flex';
-        return;
-      }
-
       btn.disabled = true;
-      btn.textContent = 'Creating Account...';
+      btn.textContent = 'Verifying security...';
       alert.style.display = 'none';
 
       try {
+        let recaptchaToken = '';
+        try {
+          recaptchaToken = await getRecaptchaTokenAsync('register', 'register');
+        } catch (rcErr) {
+          alert.className = 'alert alert-error';
+          alert.textContent = (rcErr && rcErr.message) || 'Security verification (reCAPTCHA) failed or timed out. Please try again.';
+          alert.style.display = 'flex';
+          return;
+        }
+
+        if (!recaptchaToken) {
+          alert.className = 'alert alert-error';
+          alert.textContent = 'Security verification (reCAPTCHA) did not return a token. Please reload the check and try again.';
+          alert.style.display = 'flex';
+          return;
+        }
+
+        btn.textContent = 'Creating Account...';
+
         const res = await fetch('/api/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
